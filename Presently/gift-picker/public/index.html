@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+
+    <!-- REACT STUFF -->
+    <meta charset="utf-8" />
+    <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#000000" />
+    <meta
+      name="description"
+      content="Web site created using create-react-app"
+    />
+    <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
+    <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
+
+    <!-- FONTS -->
+    <link rel="preconnect" href="https://fonts.googleapis.com"> 
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin> 
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com"> 
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin> 
+    <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
+
+    <!-- TAB TITLE -->
+    <title>🎁💜</title>
+
+  </head>
+  <body>
+
+    <div id="root"></div>
+    <hr>
+
+    <!-- Quiz Structure -->
+    <div id="quiz"></div>
+    <button id="submit">Get Results</button>
+    <div id="results"></div>
+
+    <script>
+    function buildQuiz(){
+      const output = [];
+
+      myQuestions.forEach((currentQuestion, questionNumber) => {
+          const answers = [];
+
+          for(letter in currentQuestion.answers) {
+              answers.push(
+                `<label>
+                    <input type="radio" name="question${questionNumber}" value="${letter}">
+                    ${letter} :
+                    ${currentQuestion.answers[letter]}
+                </label>`
+              );
+            }
+          output.push(
+            `<div class="question">${currentQuestion.question}</div>
+            <div class="answers">${answers.join('')}</div>`
+          );
+        });
+      quizContainer.innerHTML = output.join('');
+    }
+
+    function showResults() {
+      const answerContainers = quizContainer.querySelectorAll('.answers');
+      let numCorrect = 0;
+
+      myQuestions.forEach((currentQuestion, questionNumber) => {
+          const answerContainer = answerContainers[questionNumber];
+          const selector = `input[name=question${questionNumber}]:checked`;
+          const userAnswer = (answerContainer.querySelector(selector) || {}).nodeValue;
+
+          if(userAnswer === currentQuestion){
+              numCorrect++
+              answerContainers[questionNumber].getElementsByClassName.color = '';
+            }
+          else {
+            answerContainers[questionNumber].getElementsByClassName.color = '';
+          }
+        });
+      resultsContainer.innerHTML = `${numCorrect} out of ${myQuestions.length}`;
+    }
+
+    const quizContainer = document.getElementById('quiz');
+    const resultsContainer = document.getElementById('results');
+    const submitButton = document.getElementById('submit');
+    const myQuestions = [{
+        question: "What is the recipient's age? (Select 1)",
+        answers: {
+          a: "Baby",
+          b: "Child",
+          c: "Teen",
+          d: "Young Adult",
+          e: "Adult",
+          f: "Senior"
+        },
+        correctAnswer: ""
+      },
+      {
+        question: "What kind of gift is this? (Select 1)",
+        answers: {
+          a: "Fun",
+          b: "Practical",
+          c: "Sentimental"
+        },
+        correctAnswer: ""
+      },
+      {
+        question: "What does the recipient enjoy? (Select up to 3)",
+        answers: {
+          a: "Arts & Crafts",
+          b: "Beauty",
+          c: "Cooking",
+          d: "Decor",
+          e: "Entertainment",
+          f: "Fashion",
+          g: "Fitness",
+          h: "Food & Drinks",
+          i: "Fragrance",
+          j: "Health & Wellness",
+          k: "Learning",
+          l: "Music",
+          m: "Nature",
+          n: "Personalization",
+          o: "Pets",
+          p: "Philanthropy",
+          q: "Productivity & Organization",
+          r: "Quality Time",
+          s: "Relaxation",
+          t: "Subscriptions",
+          u: "Sustainability",
+          v: "Tech",
+          w: "Travel",
+          x: "Trends"
+        },
+        correctAnswer: ""
+      },
+      {
+        question: "What is the budget for this gift? (Select 1)",
+        answers: {
+          a: "Under $25",
+          b: "Under $50",
+          c: "Under $100",
+          d: "Under $250",
+          e: "Under $500",
+          f: "Under $1000"
+        },
+        correctAnswer: ""
+      }
+      ];
+
+    buildQuiz();
+    submitButton.addEventListener('click', showResults);
+    </script>
+
+    <!-- Results -->
+    <div class="results">
+      <hr>
+      <h3>Results!</h3>
+      <div class="flexcontainer">
+        <div class="result1">
+          <p></p>Suggestion 1:</p>
+          <h4>Gift Title</h4>
+          <img src={logo.svg} height="100"><br>
+          <a href="">Link</a>
+        </div>
+        <div class="result2">
+          <p>Suggestion 2:</p>
+          <h4>Gift Title</h4>
+          <img src={logo.svg} height="100"><br>
+          <a href="">Link</a>
+        </div>
+        <div class="result3">
+          <p>Suggestion 3:</p>
+          <h4>Gift Title</h4>
+          <img src={logo.svg} height="100"><br>
+          <a href="">Link</a>
+        </div>
+      </div>
+      <br/>
+      <p>🔄 Refresh for another 3 suggestions</p>
+    </div>
+
+    <!-- JAVASCRIPT AUTH (WITHOUT SIGN IN)-->
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
+    <script type="text/javascript">
+      var settings = {
+        "url": "https://v1.nocodeapi.com/qlangstaff/google_sheets/cIMNrJLsqTxDGZCn?tabId=Gifts&perPage=500&page=1&valueRenderOption=FORMATTED_VALUE?",
+        "method": "get",
+        "timeout": 0,
+        "headers": {
+          "Content-Type": "application/json"
+        },
+      };
+      $.ajax(settings).done(function (response) {
+        console.log(response);
+      });
+    </script>
+
+    <!-- JAVASCRIPT AUTH (WITH SIGN IN)-->
+    <!--
+    <button id="authorize_button" style="display: none;">Authorize</button>
+    <button id="signout_button" style="display: none;">Sign Out</button>
+    <pre id="content" style="white-space: pre-wrap;"></pre>
+
+    <script type="text/javascript">
+    var CLIENT_ID = '1089007490305-akbf33lre5jca8grj0ff4321btiq9gpn.apps.googleusercontent.com';
+    var API_KEY = 'AIzaSyA2TjxJhG3fWGD2TlKZUT-2hlxgzqIU018';
+    var DISCOVERY_DOCS = ["https://sheets.googleapis.com/$discovery/rest?version=v4"];
+    var SCOPES = "https://www.googleapis.com/auth/spreadsheets";
+
+    var authorizeButton = document.getElementById('authorize_button');
+    var signoutButton = document.getElementById('signout_button');
+
+    function handleClientLoad() {
+      gapi.load('client:auth2', initClient);
+    }
+
+    function initClient() {
+      gapi.client.init({
+        apiKey: API_KEY,
+        clientId: CLIENT_ID,
+        discoveryDocs: DISCOVERY_DOCS,
+        scope: SCOPES
+      }).then(function () {
+        gapi.auth2.getAuthInstance().isSignedIn.listen(updateSigninStatus);
+        updateSigninStatus(gapi.auth2.getAuthInstance().isSignedIn.get());
+        authorizeButton.onclick = handleAuthClick;
+        signoutButton.onclick = handleSignoutClick;
+      }, function(error) {
+        appendPre(JSON.stringify(error, null, 2));
+      });
+    }
+
+    function updateSigninStatus(isSignedIn) {
+      if (isSignedIn) {
+        authorizeButton.style.display = 'none';
+        signoutButton.style.display = 'block';
+        listGifts();
+      } else {
+        authorizeButton.style.display = 'block';
+        signoutButton.style.display = 'none';
+      }
+    }
+    
+    function handleAuthClick(event) {
+      gapi.auth2.getAuthInstance().signIn();
+    }
+
+    function handleSignoutClick(event) {
+      gapi.auth2.getAuthInstance().signOut();
+    }
+
+    function appendPre(message) {
+      var pre = document.getElementById('content');
+      var textContent = document.createTextNode(message + '\n');
+      pre.appendChild(textContent);
+    }
+
+    function listGifts() {
+      gapi.client.sheets.spreadsheets.values.get({
+        spreadsheetId: '1hXqeYl_sGuJWah8uJvWUIYzQIy1ipqihMNcXw2fB5Hw',
+        range: 'Gifts!A1:C19',
+      }).then(function(response) {
+        var range = response.result;
+        if (range.values.length > 0) {
+          appendPre('Gift, Age, Type:');
+          for (i = 0; i < range.values.length; i++) {
+            var row = range.values[i];
+            appendPre(row[0] + ', ' + row[1] + ', ' + row[2]);
+          }
+        } else {
+          appendPre('No data found.');
+        }
+      }, function(response) {
+        appendPre('Error: ' + response.result.error.message);
+      });
+    }
+    </script>
+    <script async defer src="https://apis.google.com/js/api.js"
+      onload="this.onload=function(){};handleClientLoad()"
+      onreadystatechange="if (this.readyState === 'complete') this.onload()">
+    </script> -->
+
+  </body>
+</html>
