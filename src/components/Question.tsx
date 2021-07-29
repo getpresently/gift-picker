@@ -11,7 +11,13 @@ interface ChoicesProps {
 }
 
 function Choices({ choices, onSelect }: ChoicesProps): JSX.Element {
-  return <div></div>;
+  return (
+    <div>
+      {choices.map((x) => (
+        <div onClick={onSelect}>{x}</div>
+      ))}
+    </div>
+  );
 }
 
 function Question({ title, choices }: QuestionProps): JSX.Element {
