@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-
     <!-- REACT STUFF -->
     <meta charset="utf-8" />
     <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
@@ -15,145 +14,149 @@
     <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
 
     <!-- FONTS -->
-    <link rel="preconnect" href="https://fonts.googleapis.com"> 
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin> 
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500&display=swap" rel="stylesheet">
-    <link rel="preconnect" href="https://fonts.googleapis.com"> 
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin> 
-    <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@500&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap"
+      rel="stylesheet"
+    />
 
     <!-- TAB TITLE -->
-    <title>🎁💜</title>
-
+    <title>Gift ideas for your loved ones</title>
   </head>
   <body>
-
     <div id="root"></div>
-    <hr>
 
-    <!-- Quiz Structure -->
+    <!-- Quiz Structure
     <div id="quiz"></div>
     <button id="submit">Get Results</button>
     <div id="results"></div>
 
     <script>
-    function buildQuiz(){
-      const output = [];
+      function buildQuiz() {
+        const output = [];
 
-      myQuestions.forEach((currentQuestion, questionNumber) => {
+        myQuestions.forEach((currentQuestion, questionNumber) => {
           const answers = [];
 
           // Third question needs to be checkbox instead of radio
-          for(letter in currentQuestion.answers) {
-              answers.push(
-                `<label>
+          for (letter in currentQuestion.answers) {
+            answers.push(
+              `<label>
                     <input type="radio" name="question${questionNumber}" value="${letter}">
                     ${currentQuestion.answers[letter]}
                 </label>`
-              );
-            }
+            );
+          }
           output.push(
             `<div class="question">${currentQuestion.question}</div>
-            <div class="answers">${answers.join('')}</div>`
+            <div class="answers">${answers.join("")}</div>`
           );
         });
-      quizContainer.innerHTML = output.join('');
-    }
+        quizContainer.innerHTML = output.join("");
+      }
 
-    function showResults() {
-      const answerContainers = quizContainer.querySelectorAll('.answers');
-      let numCorrect = 0;
+      function showResults() {
+        const answerContainers = quizContainer.querySelectorAll(".answers");
+        let numCorrect = 0;
 
-      myQuestions.forEach((currentQuestion, questionNumber) => {
+        myQuestions.forEach((currentQuestion, questionNumber) => {
           const answerContainer = answerContainers[questionNumber];
           const selector = `input[name=question${questionNumber}]:checked`;
-          const userAnswer = (answerContainer.querySelector(selector) || {}).nodeValue;
+          const userAnswer = (answerContainer.querySelector(selector) || {})
+            .nodeValue;
 
           // Don't need to count correct answers
-          if(userAnswer === currentQuestion){
-              numCorrect++
-              answerContainers[questionNumber].getElementsByClassName.color = '';
-            }
-          else {
-            answerContainers[questionNumber].getElementsByClassName.color = '';
+          if (userAnswer === currentQuestion) {
+            numCorrect++;
+            answerContainers[questionNumber].getElementsByClassName.color = "";
+          } else {
+            answerContainers[questionNumber].getElementsByClassName.color = "";
           }
         });
-      resultsContainer.innerHTML = `${numCorrect} out of ${myQuestions.length}`;
-    }
-
-    const quizContainer = document.getElementById('quiz');
-    const resultsContainer = document.getElementById('results');
-    const submitButton = document.getElementById('submit');
-    const myQuestions = [{
-        question: "What is the recipient's age? (Select 1)",
-        answers: {
-          a: "Baby",
-          b: "Child",
-          c: "Teen",
-          d: "Young Adult",
-          e: "Adult",
-          f: "Senior"
-        },
-        correctAnswer: ""
-      },
-      {
-        question: "What kind of gift is this? (Select 1)",
-        answers: {
-          a: "Fun",
-          b: "Practical",
-          c: "Sentimental"
-        },
-        correctAnswer: ""
-      },
-      { 
-        question: "What does the recipient enjoy? (Select up to 3)", // Need to change this to checkbox instead of radio to select more than 1
-        answers: {
-          a: "Arts & Crafts",
-          b: "Beauty",
-          c: "Cooking",
-          d: "Decor",
-          e: "Entertainment",
-          f: "Fashion",
-          g: "Fitness",
-          h: "Food & Drinks",
-          i: "Fragrance",
-          j: "Health & Wellness",
-          k: "Learning",
-          l: "Music",
-          m: "Nature",
-          n: "Personalization",
-          o: "Pets",
-          p: "Philanthropy",
-          q: "Productivity & Organization",
-          r: "Quality Time",
-          s: "Relaxation",
-          t: "Subscriptions",
-          u: "Sustainability",
-          v: "Tech",
-          w: "Travel",
-          x: "Trends"
-        },
-        correctAnswer: ""
-      },
-      {
-        question: "What is the budget for this gift? (Select 1)",
-        answers: {
-          a: "Under $50",
-          b: "Under $100",
-          c: "Under $250",
-          d: "Under $500",
-          e: "Under $1000",
-          f: "Over $1000"
-        },
-        correctAnswer: ""
+        resultsContainer.innerHTML = `${numCorrect} out of ${myQuestions.length}`;
       }
+
+      const quizContainer = document.getElementById("quiz");
+      const resultsContainer = document.getElementById("results");
+      const submitButton = document.getElementById("submit");
+      const myQuestions = [
+        {
+          question: "What is the recipient's age? (Select 1)",
+          answers: {
+            a: "Baby",
+            b: "Child",
+            c: "Teen",
+            d: "Young Adult",
+            e: "Adult",
+            f: "Senior",
+          },
+          correctAnswer: "",
+        },
+        {
+          question: "What kind of gift is this? (Select 1)",
+          answers: {
+            a: "Fun",
+            b: "Practical",
+            c: "Sentimental",
+          },
+          correctAnswer: "",
+        },
+        {
+          question: "What does the recipient enjoy? (Select up to 3)", // Need to change this to checkbox instead of radio to select more than 1
+          answers: {
+            a: "Arts & Crafts",
+            b: "Beauty",
+            c: "Cooking",
+            d: "Decor",
+            e: "Entertainment",
+            f: "Fashion",
+            g: "Fitness",
+            h: "Food & Drinks",
+            i: "Fragrance",
+            j: "Health & Wellness",
+            k: "Learning",
+            l: "Music",
+            m: "Nature",
+            n: "Personalization",
+            o: "Pets",
+            p: "Philanthropy",
+            q: "Productivity & Organization",
+            r: "Quality Time",
+            s: "Relaxation",
+            t: "Subscriptions",
+            u: "Sustainability",
+            v: "Tech",
+            w: "Travel",
+            x: "Trends",
+          },
+          correctAnswer: "",
+        },
+        {
+          question: "What is the budget for this gift? (Select 1)",
+          answers: {
+            a: "Under $50",
+            b: "Under $100",
+            c: "Under $250",
+            d: "Under $500",
+            e: "Under $1000",
+            f: "Over $1000",
+          },
+          correctAnswer: "",
+        },
       ];
 
-    buildQuiz();
-    submitButton.addEventListener('click', showResults);
+      // buildQuiz();
+      submitButton.addEventListener("click", showResults);
     </script>
 
-    <!-- Results: Idea for how I want the results to display once everything is working -->
+    <!-- Results: Idea for how I want the results to display once everything is working
 
     <div class="results">
       <hr>
@@ -199,7 +202,6 @@
         console.log(response);
       });
     </script> -->
-
 
     <!-- JAVASCRIPT AUTH (WITH SIGN IN)-->
     <!-- This doesn't work without a sign in button
@@ -286,6 +288,5 @@
       onload="this.onload=function(){};handleClientLoad()"
       onreadystatechange="if (this.readyState === 'complete') this.onload()">
     </script> -->
-
   </body>
 </html>
