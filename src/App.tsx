@@ -11,15 +11,20 @@ enum Scene {
 function App(): JSX.Element {
   const [scene, setScene] = useState<Scene>(Scene.Home);
 
-  function handleSceneChange(sceneTo: number) {
-    setScene(Scene[sceneTo]);
+  function handleSceneChange(sceneTo: Scene) {
+    setScene(sceneTo);
   }
 
-  // App title page and data should render below
-  // I want to move the rendered data to the very bottom of the page instead (below quiz structure)
-  // Quiz structure is in index.html but not sure if it should be moved to App.tsx
-
-  if (scene === Scene.Home) {
+  if (scene === Scene.Questions) {
+    return (
+      <div>
+        <Questions />
+      </div>
+    );
+  } else {
+    // App title page and data should render below
+    // I want to move the rendered data to the very bottom of the page instead (below quiz structure)
+    // Quiz structure is in index.html but not sure if it should be moved to App.tsx
     return (
       <div>
         <div className="App">
@@ -39,15 +44,11 @@ function App(): JSX.Element {
             <p>Helping you pick the perfect gift for any occasion</p>
           </header>
 
-          <button onClick={() => handleSceneChange(2)}>Go to Questions</button>
+          <button onClick={() => handleSceneChange(Scene.Questions)}>
+            Go to Questions
+          </button>
         </div>
         <div></div>
-      </div>
-    );
-  } else if (scene === Scene.Questions) {
-    return (
-      <div>
-        <Questions />
       </div>
     );
   }
