@@ -43,6 +43,7 @@
       myQuestions.forEach((currentQuestion, questionNumber) => {
           const answers = [];
 
+          // Third question needs to be checkbox instead of radio
           for(letter in currentQuestion.answers) {
               answers.push(
                 `<label>
@@ -68,6 +69,7 @@
           const selector = `input[name=question${questionNumber}]:checked`;
           const userAnswer = (answerContainer.querySelector(selector) || {}).nodeValue;
 
+          // Don't need to count correct answers
           if(userAnswer === currentQuestion){
               numCorrect++
               answerContainers[questionNumber].getElementsByClassName.color = '';
@@ -103,8 +105,8 @@
         },
         correctAnswer: ""
       },
-      {
-        question: "What does the recipient enjoy? (Select up to 3)",
+      { 
+        question: "What does the recipient enjoy? (Select up to 3)", // Need to change this to checkbox instead of radio to select more than 1
         answers: {
           a: "Arts & Crafts",
           b: "Beauty",
@@ -136,12 +138,12 @@
       {
         question: "What is the budget for this gift? (Select 1)",
         answers: {
-          a: "Under $25",
-          b: "Under $50",
-          c: "Under $100",
-          d: "Under $250",
-          e: "Under $500",
-          f: "Under $1000"
+          a: "Under $50",
+          b: "Under $100",
+          c: "Under $250",
+          d: "Under $500",
+          e: "Under $1000",
+          f: "Over $1000"
         },
         correctAnswer: ""
       }
@@ -151,7 +153,8 @@
     submitButton.addEventListener('click', showResults);
     </script>
 
-    <!-- Results -->
+    <!-- Results: Idea for how I want the results to display once everything is working -->
+
     <div class="results">
       <hr>
       <h3>Results!</h3>
@@ -180,6 +183,8 @@
     </div>
 
     <!-- JAVASCRIPT AUTH (WITHOUT SIGN IN)-->
+    <!-- This works and shows data in the console so maybe this should be used in App.tsx to render the data
+  
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
     <script type="text/javascript">
       var settings = {
@@ -193,10 +198,12 @@
       $.ajax(settings).done(function (response) {
         console.log(response);
       });
-    </script>
+    </script> -->
+
 
     <!-- JAVASCRIPT AUTH (WITH SIGN IN)-->
-    <!--
+    <!-- This doesn't work without a sign in button
+
     <button id="authorize_button" style="display: none;">Authorize</button>
     <button id="signout_button" style="display: none;">Sign Out</button>
     <pre id="content" style="white-space: pre-wrap;"></pre>
