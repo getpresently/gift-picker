@@ -6,9 +6,9 @@ function Questions(): JSX.Element {
 
   return (
     <div>
-      {/* {questions.map((x: Object) => (
-        <Question {...x} />
-      ))} */}
+      {questions.map((x, i) => (
+        <Question key={`que-${i}`} title={x.question} choices={x.answers} />
+      ))}
     </div>
   );
 }

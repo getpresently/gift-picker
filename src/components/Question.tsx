@@ -13,8 +13,10 @@ interface ChoicesProps {
 function Choices({ choices, onSelect }: ChoicesProps): JSX.Element {
   return (
     <div>
-      {choices.map((x) => (
-        <div onClick={onSelect}>{x}</div>
+      {choices.map((x, i) => (
+        <div key={`ch-${i}`} onClick={onSelect}>
+          {x}
+        </div>
       ))}
     </div>
   );
