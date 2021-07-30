@@ -8,7 +8,7 @@ const QuestionsSource =
   "https://v1.nocodeapi.com/qlangstaff/google_sheets/cIMNrJLsqTxDGZCn?tabId=Q&A&perPage=4&page=1&valueRenderOption=FORMATTED_VALUE";
 
 function fetcher(url: string) {
-  return fetch(url).then((r) => r.json());
+  return fetch(url).then((response) => response.json());
 }
 
 export function useIdeas() {

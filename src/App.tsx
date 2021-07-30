@@ -42,11 +42,11 @@ function App(): JSX.Element {
               💜
             </p>
             <p>Helping you pick the perfect gift for any occasion</p>
-          </header>
 
-          <button onClick={() => handleSceneChange(Scene.Questions)}>
-            Go to Questions
-          </button>
+            <button onClick={() => handleSceneChange(Scene.Questions)}>
+              Go to Questions
+            </button>
+          </header>
         </div>
         <div></div>
       </div>

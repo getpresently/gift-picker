@@ -6,9 +6,9 @@ function Questions(): JSX.Element {
 
   return (
     <div>
-      {questions.map((x: Object) => (
+      {/* {questions.map((x: Object) => (
         <Question {...x} />
-      ))}
+      ))} */}
     </div>
   );
 }
