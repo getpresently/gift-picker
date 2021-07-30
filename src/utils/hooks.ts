@@ -3,11 +3,9 @@ import useSWR from "swr";
 
 import { QAndA } from "./types";
 
-const IdeasSource =
-  "https://v1.nocodeapi.com/qlangstaff/google_sheets/cIMNrJLsqTxDGZCn?tabId=Gifts&perPage=500&page=1&valueRenderOption=FORMATTED_VALUE?";
+const IdeasSource = "https://v1.nocodeapi.com/qlangstaff/google_sheets/WmiYFvgDSyDXhouR?tabId=Gifts";
 
-const QuestionsSource =
-  "https://v1.nocodeapi.com/qlangstaff/google_sheets/cIMNrJLsqTxDGZCn?tabId=QandA&perPage=10&page=1&valueRenderOption=FORMATTED_VALUE";
+const QuestionsSource = "https://v1.nocodeapi.com/qlangstaff/google_sheets/WmiYFvgDSyDXhouR?tabId=QandA";
 
 function fetcher(url: string) {
   return fetch(url).then((response) => response.json());
