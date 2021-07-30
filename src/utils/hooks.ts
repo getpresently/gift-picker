@@ -1,7 +1,7 @@
+import { useEffect, useState } from "react";
 import fetch from "unfetch";
-import useSWR from "swr";
 
-import { QAndA } from "./types";
+import { QAndA, Gift } from "./types";
 
 const IdeasSource =
   "https://v1.nocodeapi.com/qlangstaff/google_sheets/cIMNrJLsqTxDGZCn?tabId=Gifts&perPage=500&page=1&valueRenderOption=FORMATTED_VALUE?";
@@ -9,24 +9,58 @@ const IdeasSource =
 const QuestionsSource =
   "https://v1.nocodeapi.com/qlangstaff/google_sheets/cIMNrJLsqTxDGZCn?tabId=QandA&perPage=10&page=1&valueRenderOption=FORMATTED_VALUE";
 
-function fetcher(url: string) {
-  return fetch(url).then((response) => response.json());
-}
+export function useFetch(url: string): { data: any; loading: boolean } {
+  const [data, setData] = useState();
+  const [loading, setLoading] = useState<boolean>(true);
 
-export function useIdeas() {
-  const { data } = useSWR(IdeasSource, fetcher);
-  console.log(data);
+  useEffect(() => {
+    fetch(url)
+      .then((response) => response.json())
+      .then((response) => {
+        setData(response);
+        setLoading(false);
+      });
+  }, [url]);
 
   return {
     data,
+    loading,
   };
 }
 
-export function useQuestions(): { data: QAndA[] } {
-  const response: QAndA[] = [];
-  const { data } = useSWR(QuestionsSource, fetcher);
+export function useIdeas(): { data: Gift[]; loading: boolean } {
+  const { data: response, loading } = useFetch(QuestionsSource);
 
-  for (const row of data.data) {
+  if (!response) {
+    return {
+      data: [],
+      loading: true,
+    };
+  }
+
+  const temp: Gift[] = [];
+  for (const row of response.data) {
+    // Clean and extract data here like in useQuestions
+  }
+
+  return {
+    data: temp,
+    loading,
+  };
+}
+
+export function useQuestions(): { data: QAndA[]; loading: boolean } {
+  const { data: response, loading } = useFetch(QuestionsSource);
+
+  if (!response) {
+    return {
+      data: [],
+      loading: true,
+    };
+  }
+
+  const temp: QAndA[] = [];
+  for (const row of response.data) {
     let qa: QAndA = {
       question: "",
       answers: [],
@@ -39,10 +73,11 @@ export function useQuestions(): { data: QAndA[] } {
       }
     }
 
-    response.push(qa);
+    temp.push(qa);
   }
 
   return {
-    data: response,
+    data: temp,
+    loading,
   };
 }

@@ -1,8 +1,13 @@
-export type Answer = string;
-
-export type Question = string;
-
 export interface QAndA {
-  question: Question;
-  answers: Answer[];
+  question: string;
+  answers: string[];
+}
+
+export interface Gift {
+  gift: string;
+  ages: string[];
+  types: string[];
+  interests: string[];
+  budget: number;
+  link: string;
 }
