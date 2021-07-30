@@ -1,10 +1,12 @@
 import { useState } from "react";
 import "./App.css";
 import Questions from "./components/Questions";
+import Suggestions from "./components/Suggestions";
 
 enum Scene {
   Home = 1,
   Questions,
+  Suggestions,
 }
 
 // Added any type to fix typescript errors
@@ -19,8 +21,17 @@ function App(): JSX.Element {
     return (
       <div>
         <Questions />
+        <br></br>
+        <button onClick={() => handleSceneChange(Scene.Suggestions)}>Submit</button>
       </div>
     );
+  } else if (scene === Scene.Suggestions) {
+    return (
+      <div>
+        <Suggestions />
+      </div>
+    );
+
   } else {
     // App title page and data should render below
     // I want to move the rendered data to the very bottom of the page instead (below quiz structure)
@@ -30,6 +41,7 @@ function App(): JSX.Element {
         <div className="App">
           <header className="App-header">
             <h1 className="App-title">GIFT PICKER 🎁</h1>
+            <div className="Presently-logo">
             <p>
               By{" "}
               <a
@@ -42,10 +54,9 @@ function App(): JSX.Element {
               💜
             </p>
             <p>Helping you pick the perfect gift for any occasion</p>
-
-            <button onClick={() => handleSceneChange(Scene.Questions)}>
-              Go to Questions
-            </button>
+            </div>
+            <br></br>
+            <button onClick={() => handleSceneChange(Scene.Questions)}>Get Started</button>
           </header>
         </div>
         <div></div>

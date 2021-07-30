@@ -27,7 +27,7 @@ export function useFetch(url: string): { data: any; loading: boolean } {
 }
 
 export function useIdeas(): { data: Gift[]; loading: boolean } {
-  const { data: response, loading } = useFetch(QuestionsSource);
+  const { data: response, loading } = useFetch(IdeasSource);
 
   if (!response) {
     return {
@@ -38,6 +38,36 @@ export function useIdeas(): { data: Gift[]; loading: boolean } {
 
   const temp: Gift[] = [];
   for (const row of response.data) {
+    let g: Gift = {
+      gift: "",
+      brand: "",
+      ages: [],
+      types: [],
+      interests: [],
+      budget: 0,
+      photo: "",
+      link: "",
+    };
+    for (const key of Object.keys(row)) {
+      if (key === "Gift") {
+        g.gift = row[key];
+      } else if (key === "Brand") {
+        g.brand = row[key];
+      } else if (key.slice(0, 1) === "Age") {
+        g.ages.push(row[key]);
+      } else if (key.slice(0, 1) === "Type") {
+        g.types.push(row[key]);
+      } else if (key.slice(0, 1) === "Interests") {
+        g.interests.push(row[key]);
+      } else if (key === "Budget") {
+        g.budget = row[key];
+      } else if (key === "PhotoAddress") {
+        g.photo = row[key];
+      } else if (key === "Link") {
+        g.link = row[key];
+      }
+    }
+    temp.push(g);
     // Clean and extract data here like in useQuestions
   }
 

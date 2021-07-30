@@ -1,7 +1,7 @@
 body {
   margin: 0;
   text-align: center;
-  background: #f8f8ff;
+  background: #fbfbfb;
   font-family: 'Poppins', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -12,22 +12,66 @@ code {
     monospace;
 }
 
-a:link {
+img {
+  background-color: white;
+  height: 300px;
+  width: 300px;
+  object-fit: scale-down;
+}
+button {
+  width: calc(170px + 2vw);
+  height: calc(50px + 2vh);
+  font-size: calc(10px + 2vmin);
+  font-family: 'Poppins', sans-serif;
+  color: #000;
+  background-color: #fff;
+  border: none;
+  border-radius: 45px;
+  box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease 0s;
+  cursor: pointer;
+  outline: none;
+}
+
+button:hover {
+  background-color: white;
+  box-shadow: 0px 15px 20px rgba(0, 0, 0, 0.1);
+  color: black;
+  transform: translateY(-3px);
+}
+
+.Presently-logo a:link {
   color: black;
   text-decoration: none;
   font-family: 'Pacifico', cursive;
+}
+
+.Presently-logo a:visited {
+  color: black;
+  text-decoration: none;
+  font-family: 'Pacifico', cursive;
+}
+
+.Presently-logo a:hover {
+  color: #a160fb;
+  text-decoration: none;
+  font-family: 'Pacifico', cursive;
+  transition: all 0.3s ease 0s;
+}
+
+a:link {
+  color: black;
+  text-decoration: underline;
 }
 
 a:visited {
   color: black;
-  text-decoration: none;
-  font-family: 'Pacifico', cursive;
+  text-decoration: underline;
 }
 
 a:hover {
-  color: #a160fb;
-  text-decoration: none;
-  font-family: 'Pacifico', cursive;
+  color: rgba(0, 0, 0, 0.5);
+  text-decoration: underline;
   transition: all 0.3s ease 0s;
 }
 
@@ -91,24 +135,6 @@ a:hover {
   flex-flow: row wrap;
   align-content: flex-end;
   margin: 30px
-}
-
-.results a:link {
-  color: black;
-  text-decoration: none;
-  font-family: 'Poppins', sans-serif;
-}
-
-.results a:visited {
-  color: black;
-  text-decoration: none;
-  font-family: 'Poppins', sans-serif;
-}
-
-.results a:hover {
-  color: black;
-  text-decoration: none;
-  font-family: 'Poppins', sans-serif;
 }
 
 hr {
