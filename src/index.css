@@ -1,7 +1,7 @@
 body {
   margin: 0;
   text-align: center;
-  background: #fbfbfb;
+  background: whitesmoke;
   font-family: 'Poppins', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -26,7 +26,8 @@ button {
   font-family: 'Poppins', sans-serif;
   color: #000;
   background-color: #fff;
-  border: 2px solid black;
+  border: 1.5px solid black;
+  box-shadow: 0px 10px 15px rgba(0, 0, 0, 0.1);
   transition: all 0.3s ease 0s;
   cursor: pointer;
   outline: none;
@@ -34,10 +35,10 @@ button {
 }
 
 button:hover {
-  background-color: white;
+  background-color: black;
   box-shadow: 0px 15px 20px rgba(0, 0, 0, 0.1);
-  color: black;
-  transform: translateY(-3px);
+  color: white;
+  
 }
 
 .Presently-logo a:link {
