@@ -1,17 +1,18 @@
 .App {
   text-align: center;
   font-family: 'Poppins', sans-serif;
+  font-size: calc(5px + 2vmin);
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+.logo {
+  height: 50vmin;
+  background-color: transparent;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+.arrow {
+  height: 5vmin;
+  width: 5vmin;
+  background-color: transparent;
 }
 
 .App-title {
@@ -26,12 +27,21 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
   color:black;
 }
 
 .App-link {
   color:black;
+}
+
+.choicesContainter {
+  display: flex;
+  flex-direction: row;
+} 
+
+.footer p {
+  text-align: left;
+  padding-left: 2em;
 }
 
 @keyframes App-logo-spin {

@@ -17,18 +17,43 @@ function App(): JSX.Element {
     setScene(sceneTo);
   }
 
-  if (scene === Scene.Questions) {
+  // Leaving this here incase we want button back later
+
+  //if (scene === Scene.Questions) {
+    //return (
+      //<div>
+        //<Questions />
+        //<br></br>
+        //<button onClick={() => handleSceneChange(Scene.Suggestions)}>Submit</button>
+      //</div>
+    //);
+  if (scene === Scene.Suggestions) {
     return (
       <div>
-        <Questions />
-        <br></br>
-        <button onClick={() => handleSceneChange(Scene.Suggestions)}>Submit</button>
-      </div>
-    );
-  } else if (scene === Scene.Suggestions) {
-    return (
-      <div>
-        <Suggestions />
+        <div>
+          <Suggestions />
+        </div>
+        <div className="footer">
+        <hr></hr>
+          <p>
+          <a 
+            href="mailto: qali@presently.fun"
+            target="_blank"
+            rel="noreferrer"
+          >
+              qali@presently.fun
+          </a>
+          </p>
+          <p>
+          <a 
+            href="https://getpresently.com"
+            target="_blank"
+            rel="noreferrer"
+          >
+            getpresently.com
+          </a>
+          </p>
+        </div>
       </div>
     );
 
@@ -40,7 +65,7 @@ function App(): JSX.Element {
       <div>
         <div className="App">
           <header className="App-header">
-            <h1 className="App-title">GIFT PICKER 🎁</h1>
+            <h1 className="App-title">GIFT PICKER</h1>
             <div className="Presently-logo">
             <p>
               By{" "}
@@ -50,16 +75,49 @@ function App(): JSX.Element {
                 rel="noreferrer"
               >
                 Presently
-              </a>{" "}
-              💜
+              </a>
             </p>
             <p>Helping you pick the perfect gift for any occasion</p>
             </div>
+            <img className="logo" src="./gift-logo.png" alt=""></img>
             <br></br>
-            <button onClick={() => handleSceneChange(Scene.Questions)}>Get Started</button>
+            <img className="arrow" src="./arrow-down.png" alt=""></img>
           </header>
+
+          <div>
+            <br></br>
+            <p>To get your personalized gift suggestions, simply answer these four quick questions:</p>
+            <br></br>
+          </div>
+
+          <div>
+            <Questions />
+            <br></br>
+            <button onClick={() => handleSceneChange(Scene.Suggestions)}>Submit</button>
+          </div>
+
+          <div className="footer">
+            <hr></hr>
+            <p>
+              <a 
+              href="mailto: qali@presently.fun"
+              target="_blank"
+              rel="noreferrer"
+              >
+                qali@presently.fun
+              </a>
+            </p>
+            <p>
+              <a 
+              href="https://getpresently.com"
+              target="_blank"
+              rel="noreferrer"
+              >
+                getpresently.com
+              </a>
+            </p>
+          </div>
         </div>
-        <div></div>
       </div>
     );
   }

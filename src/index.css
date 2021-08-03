@@ -16,21 +16,21 @@ img {
   background-color: white;
   height: 300px;
   width: 300px;
-  object-fit: scale-down;
+  object-fit: cover;
 }
+
 button {
-  width: calc(170px + 2vw);
+  width: calc(100px + 2vw);
   height: calc(50px + 2vh);
-  font-size: calc(10px + 2vmin);
+  font-size: calc(5px + 2vmin);
   font-family: 'Poppins', sans-serif;
   color: #000;
   background-color: #fff;
-  border: none;
-  border-radius: 45px;
-  box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.1);
+  border: 2px solid black;
   transition: all 0.3s ease 0s;
   cursor: pointer;
   outline: none;
+  margin: calc(5px + 2vmin);
 }
 
 button:hover {
@@ -137,6 +137,3 @@ a:hover {
   margin: 30px
 }
 
-hr {
-  margin: 50px;
-}

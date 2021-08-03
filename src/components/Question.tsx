@@ -12,10 +12,13 @@ interface ChoicesProps {
 
 function Choices({ choices, onSelect }: ChoicesProps): JSX.Element {
   return (
-    <div>
+    <div className="choicesContainer">
       {choices.map((x, i) => (
         <div key={`ch-${i}`} onClick={onSelect}>
+          <div>
+          <input type="checkbox"></input>
           {x}
+          </div>
         </div>
       ))}
     </div>

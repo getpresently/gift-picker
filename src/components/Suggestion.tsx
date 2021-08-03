@@ -9,7 +9,7 @@ interface SuggestionProps {
 
 function Suggestion ({title, brand, photo, link}: SuggestionProps): JSX.Element {
     return (
-        <div>
+        <div className="column">
             <b><p>{title}</p></b>
             <p>By {brand}</p>
             <img src={photo} alt="{photo}"/>
