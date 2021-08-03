@@ -32,6 +32,7 @@ function App(): JSX.Element {
       <div>
         <div>
           <Suggestions />
+          <button onClick={() => handleSceneChange(Scene.Home)}>Try Again</button>
         </div>
         <div className="footer">
         <hr></hr>

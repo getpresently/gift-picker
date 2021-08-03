@@ -68,7 +68,6 @@ export function useIdeas(): { data: Gift[]; loading: boolean } {
       }
     }
     temp.push(g);
-    // Clean and extract data here like in useQuestions
   }
 
   return {

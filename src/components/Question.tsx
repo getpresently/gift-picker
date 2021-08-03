@@ -12,12 +12,12 @@ interface ChoicesProps {
 
 function Choices({ choices, onSelect }: ChoicesProps): JSX.Element {
   return (
+    // eslint-disable-next-line react/style-prop-object
     <div className="choicesContainer">
       {choices.map((x, i) => (
         <div key={`ch-${i}`} onClick={onSelect}>
           <div>
-          <input type="checkbox"></input>
-          {x}
+          <button>{x}</button>
           </div>
         </div>
       ))}
