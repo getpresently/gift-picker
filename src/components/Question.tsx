@@ -29,12 +29,13 @@ function Question({ title, choices }: QuestionProps): JSX.Element {
   function handleSelectChoice() {}
 
   return (
-    <div>
+    <div className="questionContainer">
       <h2>{title}</h2>
 
       <div>
         <Choices choices={choices} onSelect={handleSelectChoice} />
       </div>
+      <br></br>
     </div>
   );
 }

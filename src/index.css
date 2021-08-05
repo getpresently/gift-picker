@@ -20,9 +20,8 @@ img {
 }
 
 button {
-  width: calc(100px + 2vw);
-  height: calc(50px + 2vh);
-  font-size: calc(5px + 2vmin);
+  width: calc(80px + 2vw);
+  height: calc(40px + 2vh);
   font-family: 'Poppins', sans-serif;
   color: #000;
   background-color: #fff;
@@ -31,7 +30,9 @@ button {
   transition: all 0.3s ease 0s;
   cursor: pointer;
   outline: none;
-  margin: calc(5px + 2vmin);
+  margin: 0;
+  border: none;
+  border-radius: 50px;
 }
 
 button:hover {

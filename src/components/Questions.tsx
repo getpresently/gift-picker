@@ -5,7 +5,7 @@ function Questions(): JSX.Element {
   const { data: questions } = useQuestions();
 
   return (
-    <div>
+    <div className="questionsContainer">
       {questions.map((x, i) => (
         <Question key={`que-${i}`} title={x.question} choices={x.answers} />
       ))}

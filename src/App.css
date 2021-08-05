@@ -1,7 +1,7 @@
 .App {
   text-align: center;
   font-family: 'Poppins', sans-serif;
-  font-size: calc(5px + 2vmin);
+  font-size: calc(2px + 2vmin);
 }
 
 .logo {
@@ -39,8 +39,24 @@
   flex-wrap:wrap;
   justify-content: center;
   gap: 15px;
-  max-width: 600px;
+  max-width: 500px;
   margin: auto;
+}
+
+
+
+.questionsContainer {
+  overflow-x: scroll;
+  max-width: 450px;
+  display: inline-flex;
+}
+
+.questionContainer {
+  float: left;
+  min-width: 450px;
+
+
+
 }
 
 .Question {
@@ -60,8 +76,12 @@
 .column {
   max-width: 300px;
   box-shadow: 0px 10px 15px rgba(0, 0, 0, 0.1);
+  background-color: white;
 }
 
+.footer {
+  background-color: whitesmoke;
+}
 .footer p {
   text-align: left;
   padding-left: 2em;

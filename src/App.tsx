@@ -87,15 +87,20 @@ function App(): JSX.Element {
 
           <div>
             <br></br>
-            <p>To get your personalized gift suggestions, simply answer these four quick questions:</p>
+            <h2 max-width="90vw">To get your personalized gift suggestions, simply answer these four quick questions:</h2>
             <br></br>
           </div>
 
-          <div>
-            <Questions />
-            <br></br>
-            <button onClick={() => handleSceneChange(Scene.Suggestions)}>Submit</button>
-          </div>
+            <div>
+              <div>
+              <Questions />
+              </div>
+              <br></br>
+              <button onClick={() => handleSceneChange(Scene.Suggestions)}>Submit</button>
+              <br></br>
+              <br></br>
+
+            </div>
 
           <div className="footer">
             <hr></hr>
