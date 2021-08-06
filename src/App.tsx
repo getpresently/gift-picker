@@ -85,9 +85,9 @@ function App(): JSX.Element {
             <img className="arrow" src="./arrow-down.png" alt=""></img>
           </header>
 
-          <div>
+          <div className="instructions">
             <br></br>
-            <h2 max-width="90vw">To get your personalized gift suggestions, simply answer these four quick questions:</h2>
+            <p>To get your personalized gift suggestions, simply answer these four quick questions:</p>
             <br></br>
           </div>
 

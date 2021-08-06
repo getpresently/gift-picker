@@ -54,9 +54,12 @@
 .questionContainer {
   float: left;
   min-width: 450px;
+}
 
-
-
+.instructions {
+  width: 400px;
+  justify-content: center;
+  margin: auto;
 }
 
 .Question {

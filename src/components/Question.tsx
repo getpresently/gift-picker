@@ -30,7 +30,7 @@ function Question({ title, choices }: QuestionProps): JSX.Element {
 
   return (
     <div className="questionContainer">
-      <h2>{title}</h2>
+      <p>{title}</p>
 
       <div>
         <Choices choices={choices} onSelect={handleSelectChoice} />
