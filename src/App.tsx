@@ -1,3 +1,4 @@
+import { string } from "prop-types";
 import { useState } from "react";
 import "./App.css";
 import Questions from "./components/Questions";
@@ -12,9 +13,23 @@ enum Scene {
 // Added any type to fix typescript errors
 function App(): JSX.Element {
   const [scene, setScene] = useState<Scene>(Scene.Home);
-
+  
   function handleSceneChange(sceneTo: Scene) {
     setScene(sceneTo);
+  }
+  
+  const [choices, setChoice] = useState<{
+    age: string;
+    type: string;
+    interest: string;
+    budget: string;
+  }>();
+
+  function handleSelectChoice(choiceType: string, choiceValue: string) {
+    setChoice((state) => ({
+      ...state,
+      [choiceType]: choiceValue,
+    }));
   }
 
   // Leaving this here incase we want button back later
@@ -87,13 +102,14 @@ function App(): JSX.Element {
 
           <div className="instructions">
             <br></br>
-            <p>To get your personalized gift suggestions, simply answer these four quick questions:</p>
+            <p>To get your personalized gift suggestions,</p>
+            <p>simply answer these four quick questions:</p>
             <br></br>
           </div>
 
             <div>
               <div>
-              <Questions />
+              <Questions handleSelectChoice={handleSelectChoice} />
               </div>
               <br></br>
               <button onClick={() => handleSceneChange(Scene.Suggestions)}>Submit</button>

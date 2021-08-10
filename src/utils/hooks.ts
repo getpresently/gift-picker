@@ -9,7 +9,7 @@ const QuestionsSource = "https://v1.nocodeapi.com/qlangstaff/google_sheets/WmiYF
 
 export function useFetch(url: string): { data: any; loading: boolean } {
   const [data, setData] = useState();
-  const [loading, setLoading] = useState<boolean>(true);
+  const [loading, setLoading] = useState<boolean>(true); // generic (<boolean>) stores structure shape of the state
 
   useEffect(() => {
     fetch(url)

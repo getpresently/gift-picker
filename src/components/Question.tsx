@@ -12,7 +12,6 @@ interface ChoicesProps {
 
 function Choices({ choices, onSelect }: ChoicesProps): JSX.Element {
   return (
-    // eslint-disable-next-line react/style-prop-object
     <div className="choicesContainer">
       {choices.map((x, i) => (
         <div key={`ch-${i}`} onClick={onSelect}>
@@ -25,8 +24,15 @@ function Choices({ choices, onSelect }: ChoicesProps): JSX.Element {
   );
 }
 
-function Question({ title, choices }: QuestionProps): JSX.Element {
-  function handleSelectChoice() {}
+function Question({ title, choices, handleSelectChoice }: QuestionProps): JSX.Element {
+  function onChoice() {
+    handleSelectChoice("age", "baby");
+  }
+  // empty function - fill this in
+  // useName is for hooks - can only be called from a component
+  // store data at App.tsx level
+  // at App.tsx, state i want to store there, store the choice that has been picked
+
 
   return (
     <div className="questionContainer">
