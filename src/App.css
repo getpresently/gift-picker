@@ -43,8 +43,6 @@
   margin: auto;
 }
 
-
-
 .questionsContainer {
   overflow-x: scroll;
   max-width: 450px;
@@ -86,15 +84,5 @@
   background-color: whitesmoke;
 }
 .footer p {
-  text-align: left;
-  padding-left: 2em;
-}
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+  text-align: center;
 }

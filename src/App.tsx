@@ -1,4 +1,3 @@
-import { string } from "prop-types";
 import { useState } from "react";
 import "./App.css";
 import Questions from "./components/Questions";
@@ -10,30 +9,14 @@ enum Scene {
   Suggestions,
 }
 
-// Added any type to fix typescript errors
 function App(): JSX.Element {
   const [scene, setScene] = useState<Scene>(Scene.Home);
   
   function handleSceneChange(sceneTo: Scene) {
     setScene(sceneTo);
   }
-  
-  const [choices, setChoice] = useState<{
-    age: string;
-    type: string;
-    interest: string;
-    budget: string;
-  }>();
 
-  function handleSelectChoice(choiceType: string, choiceValue: string) {
-    setChoice((state) => ({
-      ...state,
-      [choiceType]: choiceValue,
-    }));
-  }
-
-  // Leaving this here incase we want button back later
-
+  //Leaving this here incase we want button back later:
   //if (scene === Scene.Questions) {
     //return (
       //<div>
@@ -42,12 +25,16 @@ function App(): JSX.Element {
         //<button onClick={() => handleSceneChange(Scene.Suggestions)}>Submit</button>
       //</div>
     //);
+
   if (scene === Scene.Suggestions) {
     return (
       <div>
         <div>
           <Suggestions />
+          <br></br>
           <button onClick={() => handleSceneChange(Scene.Home)}>Try Again</button>
+          <br></br>
+          <br></br>
         </div>
         <div className="footer">
         <hr></hr>
@@ -74,9 +61,7 @@ function App(): JSX.Element {
     );
 
   } else {
-    // App title page and data should render below
-    // I want to move the rendered data to the very bottom of the page instead (below quiz structure)
-    // Quiz structure is in index.html but not sure if it should be moved to App.tsx
+
     return (
       <div>
         <div className="App">
@@ -109,7 +94,7 @@ function App(): JSX.Element {
 
             <div>
               <div>
-              <Questions handleSelectChoice={handleSelectChoice} />
+              <Questions />
               </div>
               <br></br>
               <button onClick={() => handleSceneChange(Scene.Suggestions)}>Submit</button>

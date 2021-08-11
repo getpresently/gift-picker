@@ -59,7 +59,7 @@ export function useIdeas(): { data: Gift[]; loading: boolean } {
         g.types.push(row[key]);
       } else if (key.slice(0, 1) === "Interests") {
         g.interests.push(row[key]);
-      } else if (key === "Budget") {
+      } else if (key === "Price") {
         g.budget = row[key];
       } else if (key === "PhotoAddress") {
         g.photo = row[key];

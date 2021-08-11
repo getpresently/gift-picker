@@ -112,22 +112,6 @@ a:hover {
   transform: translateY(-3px);
 }
 
-.results {
-  margin-top: 0;
-}
-
-.result1 {
-  padding-right: 60px;
-}
-
-.result2 {
-  padding: 0;
-}
-
-.result3 {
-  padding-left: 60px;
-}
-
 .flexcontainer {
   display: flex;
   align-items: center;
