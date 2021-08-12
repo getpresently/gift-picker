@@ -1,7 +1,7 @@
 import { useQuestions } from "../utils/hooks";
 import Question from "./Question";
 
-function Questions({ handleSelectChoice }): JSX.Element {
+function Questions(): JSX.Element {
   const { data: questions } = useQuestions();
 
   return (

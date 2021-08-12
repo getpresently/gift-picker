@@ -23,7 +23,8 @@ function App(): JSX.Element {
       ...state,
       [choiceType]: choiceValue,
     }));
-    const topThree = 
+
+    const topthree = Suggestions.find( ({ ? }) => ? === choiceValue)
   }
 
   //Leaving this here incase we want button back later:

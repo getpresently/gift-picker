@@ -91,7 +91,7 @@ export function useQuestions(): { data: QAndA[]; loading: boolean } {
     let qa: QAndA = {
       question: "",
       answers: [],
-      handleSelectChoice: ?,
+      handleSelectChoice: [],
     };
     for (const key of Object.keys(row)) {
       if (key === "Q") {
