@@ -2,22 +2,37 @@ import React from "react";
 
 interface QuestionProps {
   title: string;
+  questionKey: string;
   choices: string[];
-  handleSelectChoice: () => void;
+  handleSelectChoice: (k: string, v: string) => void;
 }
 
 interface ChoicesProps {
+  questionKey: string;
   choices: string[];
-  onSelect: () => void;
+  handleSelectChoice: (k: string, v: string) => void;
 }
 
-function Choices({ choices, onSelect }: ChoicesProps): JSX.Element {
+function Choices({
+  questionKey,
+  choices,
+  handleSelectChoice,
+}: ChoicesProps): JSX.Element {
+  function handleClick(answer: string) {
+    handleSelectChoice(questionKey, answer);
+  }
+
   return (
     <div className="choicesContainer">
       {choices.map((x, i) => (
-        <div key={`ch-${i}`} onClick={onSelect}>
+        <div
+          key={`ch-${i}`}
+          onClick={() => {
+            handleClick(x);
+          }}
+        >
           <div>
-          <button>{x}</button>
+            <button>{x}</button>
           </div>
         </div>
       ))}
@@ -25,20 +40,22 @@ function Choices({ choices, onSelect }: ChoicesProps): JSX.Element {
   );
 }
 
-function Question({ title, choices, handleSelectChoice }: QuestionProps): JSX.Element {
-  function onChoice() {
-    handleSelectChoice();
-  }
-
-  // need to fill in this empty function
-  // store data at App.tsx level
- 
+function Question({
+  title,
+  questionKey,
+  choices,
+  handleSelectChoice,
+}: QuestionProps): JSX.Element {
   return (
     <div className="questionContainer">
       <p>{title}</p>
 
       <div>
-        <Choices choices={choices} onSelect={onChoice} />
+        <Choices
+          questionKey={questionKey}
+          choices={choices}
+          handleSelectChoice={handleSelectChoice}
+        />
       </div>
       <br></br>
     </div>
@@ -46,4 +63,3 @@ function Question({ title, choices, handleSelectChoice }: QuestionProps): JSX.El
 }
 
 export default Question;
-

@@ -3,9 +3,11 @@ import fetch from "unfetch";
 
 import { QAndA, Gift } from "./types";
 
-const IdeasSource = "https://v1.nocodeapi.com/qlangstaff/google_sheets/WmiYFvgDSyDXhouR?tabId=Gifts";
+const IdeasSource =
+  "https://v1.nocodeapi.com/qlangstaff/google_sheets/WmiYFvgDSyDXhouR?tabId=Gifts";
 
-const QuestionsSource = "https://v1.nocodeapi.com/qlangstaff/google_sheets/WmiYFvgDSyDXhouR?tabId=QandA";
+const QuestionsSource =
+  "https://v1.nocodeapi.com/qlangstaff/google_sheets/WmiYFvgDSyDXhouR?tabId=QandA";
 
 export function useFetch(url: string): { data: any; loading: boolean } {
   const [data, setData] = useState();
@@ -41,10 +43,10 @@ export function useIdeas(): { data: Gift[]; loading: boolean } {
     let g: Gift = {
       gift: "",
       brand: "",
-      ages: [],
-      types: [],
-      interests: [],
-      budget: 0,
+      Age: [],
+      Type: [],
+      Interests: [],
+      Price: "0",
       photo: "",
       link: "",
     };
@@ -53,14 +55,14 @@ export function useIdeas(): { data: Gift[]; loading: boolean } {
         g.gift = row[key];
       } else if (key === "Brand") {
         g.brand = row[key];
-      } else if (key.slice(0, 1) === "Age") {
-        g.ages.push(row[key]);
-      } else if (key.slice(0, 1) === "Type") {
-        g.types.push(row[key]);
-      } else if (key.slice(0, 1) === "Interests") {
-        g.interests.push(row[key]);
+      } else if (key === "Age") {
+        g.Age = row[key].split(",").map((x: string) => x.trim());
+      } else if (key === "Type") {
+        g.Type = row[key].split(",").map((x: string) => x.trim());
+      } else if (key === "Interests") {
+        g.Interests = row[key].split(",").map((x: string) => x.trim());
       } else if (key === "Price") {
-        g.budget = row[key];
+        g.Price = row[key];
       } else if (key === "PhotoAddress") {
         g.photo = row[key];
       } else if (key === "Link") {
@@ -90,12 +92,14 @@ export function useQuestions(): { data: QAndA[]; loading: boolean } {
   for (const row of response.data) {
     let qa: QAndA = {
       question: "",
+      questionKey: "",
       answers: [],
-      handleSelectChoice: [],
     };
     for (const key of Object.keys(row)) {
-      if (key === "Q") {
+      if (key === "Question") {
         qa.question = row[key];
+      } else if (key === "QuestionKey") {
+        qa.questionKey = row[key];
       } else if (key.slice(0, 1) === "A") {
         qa.answers.push(row[key]);
       }

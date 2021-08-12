@@ -1,16 +1,16 @@
 export interface QAndA {
   question: string;
+  questionKey: string;
   answers: string[];
-  handleSelectChoice: () => void;
 }
 
 export interface Gift {
   gift: string;
   brand: string;
-  ages: string[];
-  types: string[];
-  interests: string[];
-  budget: number;
+  Age: string[];
+  Type: string[];
+  Interests: string[];
+  Price: string;
   photo: string;
   link: string;
 }
