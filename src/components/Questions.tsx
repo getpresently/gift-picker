@@ -7,7 +7,7 @@ function Questions(): JSX.Element {
   return (
     <div className="questionsContainer">
       {questions.map((x, i) => (
-        <Question key={`que-${i}`} title={x.question} choices={x.answers} />
+        <Question key={`que-${i}`} title={x.question} choices={x.answers} handleSelectChoice={x.handleSelectChoice}/>
       ))}
     </div>
   );

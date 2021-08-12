@@ -16,6 +16,17 @@ function App(): JSX.Element {
     setScene(sceneTo);
   }
 
+  const [choices, setChoice] = useState();
+
+  function handleSelectChoice(choiceType: string, choiceValue: string) {
+    return (
+      setChoice((state) => ({
+        ...state,
+        [choiceType]: choiceValue,
+      }))
+    );
+  }
+
   //Leaving this here incase we want button back later:
   //if (scene === Scene.Questions) {
     //return (
@@ -94,7 +105,7 @@ function App(): JSX.Element {
 
             <div>
               <div>
-              <Questions />
+              <Questions handleSelectChoice={handleSelectChoice} />
               </div>
               <br></br>
               <button onClick={() => handleSceneChange(Scene.Suggestions)}>Submit</button>

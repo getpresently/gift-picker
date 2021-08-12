@@ -1,6 +1,7 @@
 export interface QAndA {
   question: string;
   answers: string[];
+  handleSelectChoice: () => void;
 }
 
 export interface Gift {

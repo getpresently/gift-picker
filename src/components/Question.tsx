@@ -3,6 +3,7 @@ import React from "react";
 interface QuestionProps {
   title: string;
   choices: string[];
+  handleSelectChoice: () => void;
 }
 
 interface ChoicesProps {
@@ -24,8 +25,10 @@ function Choices({ choices, onSelect }: ChoicesProps): JSX.Element {
   );
 }
 
-function Question({ title, choices }: QuestionProps): JSX.Element {
-  function handleSelectChoice() {}
+function Question({ title, choices, handleSelectChoice }: QuestionProps): JSX.Element {
+  function onChoice() {
+    handleSelectChoice();
+  }
 
   // need to fill in this empty function
   // store data at App.tsx level
@@ -35,7 +38,7 @@ function Question({ title, choices }: QuestionProps): JSX.Element {
       <p>{title}</p>
 
       <div>
-        <Choices choices={choices} onSelect={handleSelectChoice} />
+        <Choices choices={choices} onSelect={onChoice} />
       </div>
       <br></br>
     </div>
@@ -43,3 +46,4 @@ function Question({ title, choices }: QuestionProps): JSX.Element {
 }
 
 export default Question;
+
