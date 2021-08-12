@@ -27,7 +27,7 @@ function Choices({ choices, onSelect }: ChoicesProps): JSX.Element {
 
 function Question({ title, choices, handleSelectChoice }: QuestionProps): JSX.Element {
   function onChoice() {
-    handleSelectChoice();
+    handleSelectChoice("age", "baby");
   }
 
   // need to fill in this empty function

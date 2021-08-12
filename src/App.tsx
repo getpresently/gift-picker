@@ -19,12 +19,11 @@ function App(): JSX.Element {
   const [choices, setChoice] = useState();
 
   function handleSelectChoice(choiceType: string, choiceValue: string) {
-    return (
-      setChoice((state) => ({
-        ...state,
-        [choiceType]: choiceValue,
-      }))
-    );
+    setChoice((state) => ({
+      ...state,
+      [choiceType]: choiceValue,
+    }));
+    const topThree = 
   }
 
   //Leaving this here incase we want button back later:
