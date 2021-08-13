@@ -43,21 +43,11 @@
   margin: auto;
 }
 
-.questionsContainer {
-  overflow-x: scroll;
-  max-width: 450px;
-  display: inline-flex;
-}
-
-.questionContainer {
-  float: left;
-  min-width: 450px;
-}
-
 .instructions {
-  width: 400px;
+  min-width: 400px;
   justify-content: center;
-  margin: auto;
+  margin-top: 2em;
+  margin-bottom: 4em;
 }
 
 .Question {
@@ -82,7 +72,13 @@
 
 .footer {
   background-color: whitesmoke;
+  margin: 2em;
 }
 .footer p {
   text-align: center;
+}
+
+.results {
+  min-height: 100vh;
+  width: 100vw;
 }

@@ -9,7 +9,7 @@ function Questions({ handleSelectChoice }: PropTypes): JSX.Element {
   const { data: questions } = useQuestions();
 
   return (
-    <div className="questionsContainer">
+    <div id="questionsContainer">
       {questions.map((x, i) => (
         <Question
           key={`que-${i}`}

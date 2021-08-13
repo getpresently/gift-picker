@@ -33,16 +33,21 @@ function Suggestions({ choices }: PropTypes): JSX.Element {
   }
 
   return (
-    <div className="columns">
-      {suggestions.filter(filterSuggestions).map((x, i) => (
-        <Suggestion
-          key={`que-${i}`}
-          title={x.gift}
-          brand={x.brand}
-          photo={x.photo}
-          link={x.link}
-        />
-      ))}
+    <div>
+      <div id="top">
+        <p>Top Gift Suggestions:</p>
+      </div>
+      <div className="columns">
+        {suggestions.filter(filterSuggestions).map((x, i) => (
+          <Suggestion
+            key={`que-${i}`}
+            title={x.gift}
+            brand={x.brand}
+            photo={x.photo}
+            link={x.link}
+          />
+        ))}
+      </div>
     </div>
   );
 }

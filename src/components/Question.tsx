@@ -47,7 +47,7 @@ function Question({
   handleSelectChoice,
 }: QuestionProps): JSX.Element {
   return (
-    <div className="questionContainer">
+    <div id="questionContainer">
       <p>{title}</p>
 
       <div>
@@ -57,7 +57,6 @@ function Question({
           handleSelectChoice={handleSelectChoice}
         />
       </div>
-      <br></br>
     </div>
   );
 }

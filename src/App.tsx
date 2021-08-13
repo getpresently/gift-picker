@@ -38,17 +38,16 @@ function App(): JSX.Element {
   if (scene === Scene.Suggestions) {
     return (
       <div>
-        <div>
+        <div className="results">
           <Suggestions choices={choices} />
-          <br></br>
+        </div>
+        <div id="tryagainButton">
           <button onClick={() => handleSceneChange(Scene.Home)}>
             Try Again
           </button>
-          <br></br>
-          <br></br>
         </div>
+        <hr></hr>
         <div className="footer">
-          <hr></hr>
           <p>
             <a
               href="mailto: qali@presently.fun"
@@ -91,26 +90,23 @@ function App(): JSX.Element {
           </header>
 
           <div className="instructions">
-            <br></br>
             <p>To get your personalized gift suggestions,</p>
             <p>simply answer these four quick questions:</p>
-            <br></br>
           </div>
 
           <div>
-            <div>
+            <div id="container">
               <Questions handleSelectChoice={handleSelectChoice} />
             </div>
-            <br></br>
-            <button onClick={() => handleSceneChange(Scene.Suggestions)}>
-              Submit
-            </button>
-            <br></br>
-            <br></br>
+            <div id="submitButton">
+              <button onClick={() => handleSceneChange(Scene.Suggestions)}>
+                Submit
+              </button>
+            </div>
+            <hr></hr>
           </div>
 
           <div className="footer">
-            <hr></hr>
             <p>
               <a
                 href="mailto: qali@presently.fun"
