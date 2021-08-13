@@ -35,7 +35,7 @@ function Suggestions({ choices }: PropTypes): JSX.Element {
   return (
     <div>
       <div id="top">
-        <p>Top Gift Suggestions:</p>
+        <p>The top gift suggestions based on your answers:</p>
       </div>
       <div className="columns">
         {suggestions.filter(filterSuggestions).map((x, i) => (
