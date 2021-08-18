@@ -5,6 +5,7 @@ body {
   font-family: 'Poppins', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  font-size: calc(5px + 2vmin);
 }
 
 code {
@@ -20,8 +21,8 @@ img {
 }
 
 button {
-  width: calc(80px + 2vw);
-  height: calc(40px + 2vh);
+  width: 100px;
+  height: 60px;
   font-family: 'Poppins', sans-serif;
   color: #000;
   background-color: #fff;
@@ -33,6 +34,7 @@ button {
   margin: 0;
   border: none;
   border-radius: 50px;
+  font-size: smaller;
 }
 
 button:hover {
@@ -43,15 +45,18 @@ button:hover {
 }
 
 #submitButton {
-  margin-bottom: 2em;
+  margin-bottom: 4em;
 }
 
-#tryagainButton {
-  margin-bottom: 2em;
+#backButton {
+  margin-bottom: 4em;
 }
 
 #top {
-  margin-top: 2em;
+  margin-top: 4em;
+  width: 350px;
+  align-items: center;
+  margin: auto;
 }
 
 .Presently-logo a:link {

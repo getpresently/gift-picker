@@ -1,18 +1,21 @@
 .App {
   text-align: center;
   font-family: 'Poppins', sans-serif;
-  font-size: calc(2px + 2vmin);
+  font-size: calc(5px + 2vmin);
 }
 
 .logo {
-  height: 50vmin;
+  height: 300px;
   background-color: transparent;
+  margin-top: 6em;
+  margin-bottom: 3em;
 }
 
 .arrow {
   height: 5vmin;
   width: 5vmin;
   background-color: transparent;
+  margin-top: 5em;
   margin-bottom: 2em;
 }
 
@@ -40,14 +43,13 @@
   flex-wrap:wrap;
   justify-content: center;
   gap: 15px;
-  max-width: 500px;
+  max-width: 350px;
   margin: auto;
 }
 
 .instructions {
-  min-width: 400px;
+  max-width: 400px;
   justify-content: center;
-  margin-top: 2em;
   margin-bottom: 4em;
 }
 
@@ -60,7 +62,8 @@
 .columns {
   display: inline-flex;
   flex-wrap: wrap;
-  margin: 2em;
+  margin-top: 2.5em;
+  margin-bottom: 4em;
   gap: 50px;
   justify-content: center;
 }
@@ -73,12 +76,13 @@
 
 .footer {
   background-color: whitesmoke;
-  margin: 2em;
 }
+
 .footer p {
   text-align: center;
 }
 
 .results {
   width: 100vw;
+  margin-top: 4em;
 }

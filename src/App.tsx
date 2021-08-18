@@ -41,9 +41,9 @@ function App(): JSX.Element {
         <div className="results">
           <Suggestions choices={choices} />
         </div>
-        <div id="tryagainButton">
+        <div id="backButton">
           <button onClick={() => handleSceneChange(Scene.Home)}>
-            Try Again
+            Back
           </button>
         </div>
         <hr></hr>
@@ -85,7 +85,6 @@ function App(): JSX.Element {
               <p>Helping you pick the perfect gift for any occasion</p>
             </div>
             <img className="logo" src="./gift-logo.png" alt=""></img>
-            <br></br>
             <img className="arrow" src="./arrow-down.png" alt=""></img>
           </header>
 
