@@ -7,15 +7,14 @@
 .logo {
   height: 300px;
   background-color: transparent;
-  margin-top: 6em;
-  margin-bottom: 3em;
+  margin-bottom: auto;
 }
 
 .arrow {
   height: 5vmin;
   width: 5vmin;
   background-color: transparent;
-  margin-top: 5em;
+  margin-top: 1em;
   margin-bottom: 2em;
 }
 
@@ -48,8 +47,7 @@
 }
 
 .instructions {
-  max-width: 400px;
-  justify-content: center;
+  margin-top: 2em;
   margin-bottom: 4em;
 }
 
