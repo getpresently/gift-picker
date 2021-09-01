@@ -46,7 +46,7 @@ export function useIdeas(): { data: Gift[]; loading: boolean } {
       Age: [],
       Type: [],
       Interests: [],
-      Price: "0",
+      Price: [],
       photo: "",
       link: "",
     };
@@ -62,7 +62,7 @@ export function useIdeas(): { data: Gift[]; loading: boolean } {
       } else if (key === "Interests") {
         g.Interests = row[key].split(",").map((x: string) => x.trim());
       } else if (key === "Price") {
-        g.Price = row[key];
+        g.Price = row[key].split(",").map((x: string) => x.trim());
       } else if (key === "PhotoAddress") {
         g.photo = row[key];
       } else if (key === "Link") {

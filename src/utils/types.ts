@@ -10,7 +10,7 @@ export interface Gift {
   Age: string[];
   Type: string[];
   Interests: string[];
-  Price: string;
+  Price: string[];
   photo: string;
   link: string;
 }
