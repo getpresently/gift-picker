@@ -2,6 +2,7 @@ import { useState } from "react";
 import "./App.css";
 import Questions from "./components/Questions";
 import Suggestions from "./components/Suggestions";
+import Footer from "./components/Footer";
 
 enum Scene {
   Home = 1,
@@ -26,15 +27,33 @@ function App(): JSX.Element {
   }
 
   //Leaving this here incase we want button back later:
-  //if (scene === Scene.Questions) {
-  //return (
-  //<div>
-  //<Questions />
-  //<br></br>
-  //<button onClick={() => handleSceneChange(Scene.Suggestions)}>Submit</button>
-  //</div>
-  //);
+  if (scene === Scene.Questions) {
+  return (
+    <div>
+    <div className="instructions">
+      <p>To get your personalized gift suggestions,</p>
+      <p>simply answer these four quick questions:</p>
+    </div>
 
+    <div className="line">
+      <hr></hr>
+    </div>
+
+    <div>
+      <div id="container">
+        <Questions handleSelectChoice={handleSelectChoice} />
+      </div>
+      <div id="submitButton">
+        <button onClick={() => handleSceneChange(Scene.Suggestions)}>
+          SUBMIT
+        </button>
+      </div>
+    </div>
+    <Footer />
+    </div>
+    );
+  } 
+  
   if (scene === Scene.Suggestions) {
     return (
       <div>
@@ -43,26 +62,10 @@ function App(): JSX.Element {
         </div>
         <div id="backButton">
           <button onClick={() => handleSceneChange(Scene.Home)}>
-            Back
+            HOME
           </button>
         </div>
-        <hr></hr>
-        <div className="footer">
-          <p>
-            <a
-              href="mailto: qali@presently.fun"
-              target="_blank"
-              rel="noreferrer"
-            >
-              qali@presently.fun
-            </a>
-          </p>
-          <p>
-            <a href="https://getpresently.com" target="_blank" rel="noreferrer">
-              getpresently.com
-            </a>
-          </p>
-        </div>
+        <Footer />
       </div>
     );
   } else {
@@ -70,9 +73,12 @@ function App(): JSX.Element {
       <div>
         <div className="App">
           <header className="App-header">
-            <h1 className="App-title">GIFT PICKER</h1>
-            <div className="Presently-logo">
-              <p>
+            <div className="titleContainer">
+              <div className="App-title">
+                <h1>GIFT PICKER</h1>
+              </div>
+              <div className="Presently-logo">
+                <p>
                 By{" "}
                 <a
                   href="https://getpresently.com"
@@ -81,54 +87,24 @@ function App(): JSX.Element {
                 >
                   Presently
                 </a>
-              </p>
-              <p>Helping you pick the perfect gift for any occasion</p>
+                </p>
+              </div>
+              <div className="brand-description">
+                <p>Helping you pick gifts for any recipient & occasion</p>
+              </div>
             </div>
             <img className="logo" src="./gift-logo.png" alt=""></img>
-            <img className="arrow" src="./arrow-down.png" alt=""></img>
-          </header>
-
-          <div className="instructions">
-            <p>To get your personalized gift suggestions,</p>
-            <p>simply answer these four quick questions:</p>
-          </div>
-
-          <div>
-            <div id="container">
-              <Questions handleSelectChoice={handleSelectChoice} />
-            </div>
-            <div id="submitButton">
-              <button onClick={() => handleSceneChange(Scene.Suggestions)}>
-                Submit
+            <div id="startButton">
+              <button onClick={() => handleSceneChange(Scene.Questions)}>
+                START QUIZ
               </button>
             </div>
-            <hr></hr>
-          </div>
-
-          <div className="footer">
-            <p>
-              <a
-                href="mailto: qali@presently.fun"
-                target="_blank"
-                rel="noreferrer"
-              >
-                qali@presently.fun
-              </a>
-            </p>
-            <p>
-              <a
-                href="https://getpresently.com"
-                target="_blank"
-                rel="noreferrer"
-              >
-                getpresently.com
-              </a>
-            </p>
-          </div>
-        </div>
+          </header>
+          <Footer />
+        </div>  
       </div>
     );
-  }
+  };
 }
 
 export default App;

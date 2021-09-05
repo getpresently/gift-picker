@@ -10,11 +10,11 @@ interface SuggestionProps {
 function Suggestion ({title, brand, photo, link}: SuggestionProps): JSX.Element {
     return (
         <div className="column">
+            <img src={photo} alt="{photo}"/>
             <b><p>{title}</p></b>
             <p>By {brand}</p>
-            <img src={photo} alt="{photo}"/>
             <p>
-            <a href={link} target="_blank" rel="noreferrer">More Details</a>
+            <a href={link} target="_blank" rel="noreferrer">Full Details</a>
             </p>
         </div>
     )

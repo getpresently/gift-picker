@@ -1,7 +1,7 @@
 body {
   margin: 0;
   text-align: center;
-  background: whitesmoke;
+  background: white;
   font-family: 'Poppins', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -14,7 +14,6 @@ code {
 }
 
 img {
-  background-color: white;
   height: 300px;
   width: 300px;
   object-fit: cover;
@@ -27,12 +26,12 @@ button {
   color: #000;
   background-color: #fff;
   border: 1.5px solid black;
-  box-shadow: 0px 10px 15px rgba(0, 0, 0, 0.1);
+  /*box-shadow: 0px 10px 15px rgba(0, 0, 0, 0.1);*/
   transition: all 0.3s ease 0s;
   cursor: pointer;
   outline: none;
   margin: 0;
-  border: none;
+  /*border: none;*/
   border-radius: 50px;
   font-size: calc(5px + 1vmin);
 }
@@ -44,17 +43,29 @@ button:hover {
   
 }
 
+#startButton {
+  margin-bottom: 2em;
+}
+
 #submitButton {
-  margin-bottom: 4em;
+  margin-bottom: 2em;
 }
 
 #backButton {
-  margin-bottom: 4em;
+  margin-bottom: 2em;
 }
 
 #top {
-  margin-top: 4em;
+  margin-top: 2em;
   align-items: center;
+}
+
+.Presently-logo {
+  margin: 2em;
+}
+
+.brand-description p {
+  margin: 0;
 }
 
 .Presently-logo a:link {
@@ -73,6 +84,22 @@ button:hover {
   color: #a160fb;
   text-decoration: none;
   font-family: 'Pacifico', cursive;
+  transition: all 0.3s ease 0s;
+}
+
+.footer a:link {
+  color: black;
+  text-decoration: none;
+}
+
+.footer a:visited {
+  color: black;
+  text-decoration: none;
+}
+
+.footer a:hover {
+  color: rgba(0, 0, 0, 0.5);
+  text-decoration: none;
   transition: all 0.3s ease 0s;
 }
 
