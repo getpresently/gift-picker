@@ -31,7 +31,7 @@ function Choices({
             handleClick(x);
           }}
         >
-          <div>
+          <div className="choiceButtons">
             <button>{x}</button>
           </div>
         </div>
