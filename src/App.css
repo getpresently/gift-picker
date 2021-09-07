@@ -35,7 +35,7 @@
   flex-wrap:wrap;
   justify-content: center;
   gap: 15px;
-  max-width: 350px;
+  max-width: 315px;
   margin: auto;
 }
 
@@ -125,26 +125,28 @@ img {
 */
 
 button {
-  width: calc(90px + 2vmin);
-  height: calc(45px + 2vmin);
+  /*width: calc(90px + 2vmin);
+  height: calc(45px + 2vmin);*/
+  width: auto;
+  height: auto;
   font-family: 'Poppins', sans-serif;
   color: #000;
-  background-color: #fff;
-  border: 1.5px solid black;
+  background-color: #a060fb60;
+  /*border: 1.5px solid black;*/
   /*box-shadow: 0px 10px 15px rgba(0, 0, 0, 0.1);*/
   transition: all 0.3s ease 0s;
   cursor: pointer;
-  outline: none;
+  border: 1px solid transparent;
   margin: 0;
-  /*border: none;*/
   border-radius: 50px;
   font-size: calc(5px + 1vmin);
+  padding: 5px 10px;
 }
 
 button:hover {
-  background-color: black;
-  box-shadow: 0px 15px 20px rgba(0, 0, 0, 0.1);
-  color: white;
+  background-color:#a160fb;
+  /*box-shadow: 0px 15px 20px rgba(0, 0, 0, 0.1);*/
+  color: black;
   
 }
 
@@ -158,6 +160,18 @@ button:hover {
 
 #backButton {
   margin-bottom: 2em;
+}
+
+#button_changeScene {
+  padding: 10px 20px;
+  background-color: white;
+  border: 1px solid black;
+  font-size: calc(5px + 2vmin);
+}
+
+#button_changeScene:hover {
+  background-color: #a160fb;
+  border: 1px solid #a160fb;
 }
 
 #top {
@@ -252,25 +266,30 @@ a:hover {
   outline: none;
 }
 
-/*#container {
-  width: 450px;
+/* HORIZONTAL SCROLL */
+
+/* #container {
+  width: 400px;
   overflow-x: scroll;
   justify-content: center;
   margin: auto;
-}*/
+}
 
 #questionsContainer {
-  /*display: inline-flex;*/
-  width: 350px;
+  display: inline-flex;
   justify-content: center;
   margin: auto;
-}
+} */
 
 #questionContainer {
   /*float: left;
-  min-width: 450px;*/
+  min-width: 400px;*/
   margin-bottom: 4em;
 }
+
+#questionContainer p {
+  margin-top: 0;
+} 
 
 #submit:hover {
   background-color: white;

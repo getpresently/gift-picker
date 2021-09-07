@@ -44,7 +44,7 @@ function App(): JSX.Element {
         <Questions handleSelectChoice={handleSelectChoice} />
       </div>
       <div id="submitButton">
-        <button onClick={() => handleSceneChange(Scene.Suggestions)}>
+        <button id="button_changeScene" onClick={() => handleSceneChange(Scene.Suggestions)}>
           SUBMIT
         </button>
       </div>
@@ -61,7 +61,7 @@ function App(): JSX.Element {
           <Suggestions choices={choices} />
         </div>
         <div id="backButton">
-          <button onClick={() => handleSceneChange(Scene.Home)}>
+          <button id="button_changeScene" onClick={() => handleSceneChange(Scene.Home)}>
             HOME
           </button>
         </div>
@@ -95,7 +95,7 @@ function App(): JSX.Element {
             </div>
             <img className="logo" src="./gift-logo.png" alt=""></img>
             <div id="startButton">
-              <button onClick={() => handleSceneChange(Scene.Questions)}>
+              <button id="button_changeScene" onClick={() => handleSceneChange(Scene.Questions)}>
                 START QUIZ
               </button>
             </div>
