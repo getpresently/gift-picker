@@ -268,7 +268,7 @@ a:hover {
 
 /* HORIZONTAL SCROLL */
 
-/* #container {
+#container {
   width: 400px;
   overflow-x: scroll;
   justify-content: center;
@@ -279,11 +279,11 @@ a:hover {
   display: inline-flex;
   justify-content: center;
   margin: auto;
-} */
+} 
 
 #questionContainer {
-  /*float: left;
-  min-width: 400px;*/
+  float: left; 
+  min-width: 400px;
   margin-bottom: 4em;
 }
 
