@@ -5,10 +5,20 @@
 }
 
 .logo {
-  height: 300px;
+  height: 250px;
+  width: 250px;
   background-color: transparent;
   margin: auto;
 }
+
+/*
+.App-toplogo {
+  width: 100vw;
+  height: auto;
+  margin-top: 2em;
+  margin-bottom: 0;
+}
+*/
 
 .App-title {
   font-family: 'Poppins', sans-serif;

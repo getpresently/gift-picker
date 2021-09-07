@@ -26,7 +26,6 @@ function App(): JSX.Element {
     }));
   }
 
-  //Leaving this here incase we want button back later:
   if (scene === Scene.Questions) {
   return (
     <div>
@@ -93,7 +92,7 @@ function App(): JSX.Element {
                 <p>Helping you pick gifts for any recipient & occasion</p>
               </div>
             </div>
-            <img className="logo" src="./gift-logo.png" alt=""></img>
+            <img className="logo" src="./App-logo.png" alt=""></img>
             <div id="startButton">
               <button id="button_changeScene" onClick={() => handleSceneChange(Scene.Questions)}>
                 START QUIZ
