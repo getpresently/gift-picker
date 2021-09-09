@@ -2,6 +2,7 @@ import { useState } from "react";
 import "./App.css";
 import Questions from "./components/Questions";
 import Suggestions from "./components/Suggestions";
+/*import Header from "./components/Header";*/
 import Footer from "./components/Footer";
 
 enum Scene {
@@ -29,6 +30,7 @@ function App(): JSX.Element {
   if (scene === Scene.Questions) {
   return (
     <div>
+      {/*<Header />*/}
     <div className="instructions">
       <p>To get your personalized gift suggestions,</p>
       <p>simply answer these four quick questions:</p>
@@ -56,6 +58,7 @@ function App(): JSX.Element {
   if (scene === Scene.Suggestions) {
     return (
       <div>
+        {/*<Header />*/}
         <div className="results">
           <Suggestions choices={choices} />
         </div>
@@ -72,21 +75,10 @@ function App(): JSX.Element {
       <div>
         <div className="App">
           <header className="App-header">
+            {/*<Header />*/}
             <div className="titleContainer">
               <div className="App-title">
                 <h1>GIFT PICKER</h1>
-              </div>
-              <div className="Presently-logo">
-                <p>
-                By{" "}
-                <a
-                  href="https://getpresently.com"
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  Presently
-                </a>
-                </p>
               </div>
               <div className="brand-description">
                 <p>Helping you pick gifts for any recipient & occasion</p>

@@ -1,3 +1,5 @@
+/* MAIN PAGE */
+
 .App {
   text-align: center;
   font-family: 'Poppins', sans-serif;
@@ -11,14 +13,19 @@
   margin: auto;
 }
 
-/*
 .App-toplogo {
-  width: 100vw;
-  height: auto;
-  margin-top: 2em;
-  margin-bottom: 0;
+  width: 100%;
+  height: 4em;
+  /*box-shadow: 0 0 3px rgb(0 0 0 / 30%);*/
+  display: flex;
+  justify-content: left;
+  margin-left: 2em;
 }
-*/
+
+.toplogo {
+  width: auto;
+  height: 100%;
+}
 
 .App-title {
   font-family: 'Poppins', sans-serif;
@@ -39,6 +46,8 @@
 .App-link {
   color:black;
 }
+
+/* QUZ PAGE */
 
 .choicesContainer {
   display:inline-flex;
@@ -84,27 +93,7 @@
   margin: 2em;
 }
 
-.footer {
-  background-color:whitesmoke;
-  position: absolute;
-  width: 100%;
-  font-size: calc(5px + 1vmin);
-}
-
-.footerText {
-  margin: 3em;
-}
-
-.footer p {
-  text-align: center;
-  color: black;
-}
-
-.instagram {
-  width: 16px;
-  height: 16px;
-  color: black;
-}
+/* RESULTS PAGE */
 
 .results {
   width: 100vw;
@@ -114,6 +103,68 @@ img {
   height: 300px;
   width: 300px;
   object-fit: cover;
+}
+
+/* ALL PAGES */
+
+#button_changeScene {
+  padding: 10px 20px;
+  background-color: #a160fb;
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-size: calc(5px + 2vmin);
+  margin: 2em;
+}
+
+/*#button_changeScene:hover {
+  background-color: #a160fb;
+}*/
+
+.footer {
+  background-color: black;
+  position: absolute;
+  width: 100%;
+  font-size: calc(5px + 1vmin);
+}
+
+.footer p {
+  text-align: left;
+  color: white;
+}
+
+.footerlogo {
+  height: 50px;
+  width: 50px;
+}
+
+.footer-logo {
+  display: flex;
+  justify-content: left;
+  margin: 3em;
+  margin-bottom: 0;
+}
+
+.footer-sections {
+  margin: 3em;
+  display: flex;
+  justify-content: space-between;
+}
+
+.footer-section {
+  margin: 0;
+}
+
+.footer-copyright {
+  margin: 3em;
+}
+
+.fab.fa-instagram {
+  color: transparent;
+  background: radial-gradient(circle at 30% 107%, #fdf497 0%, #fdf497 5%, #fd5949 45%, #d6249f 60%, #285AEB 90%);
+  background: -webkit-radial-gradient(circle at 30% 107%, #fdf497 0%, #fdf497 5%, #fd5949 45%, #d6249f 60%, #285AEB 90%);
+  background-clip: text;
+  -webkit-background-clip: text;
 }
 
 /* Button Class for Quiz Choices */
@@ -156,32 +207,7 @@ button {
 button:hover {
   background-color:#a160fb;
   /*box-shadow: 0px 15px 20px rgba(0, 0, 0, 0.1);*/
-  color: black;
-  
-}
-
-#startButton {
-  margin-bottom: 2em;
-}
-
-#submitButton {
-  margin-bottom: 2em;
-}
-
-#backButton {
-  margin-bottom: 2em;
-}
-
-#button_changeScene {
-  padding: 10px 20px;
-  background-color: white;
-  border: 1px solid black;
-  font-size: calc(5px + 2vmin);
-}
-
-#button_changeScene:hover {
-  background-color: #a160fb;
-  border: 1px solid #a160fb;
+  color: white;
 }
 
 #top {
@@ -217,17 +243,17 @@ button:hover {
 }
 
 .footer a:link {
-  color: black;
+  color: white;
   text-decoration: none;
 }
 
 .footer a:visited {
-  color: black;
+  color: white;
   text-decoration: none;
 }
 
 .footer a:hover {
-  color: rgba(0, 0, 0, 0.5);
+  color: rgba(255, 255, 255, 0.5);
   text-decoration: none;
   transition: all 0.3s ease 0s;
 }
@@ -278,7 +304,7 @@ a:hover {
 
 /* HORIZONTAL SCROLL */
 
-#container {
+/*#container {
   width: 400px;
   overflow-x: scroll;
   justify-content: center;
@@ -289,11 +315,11 @@ a:hover {
   display: inline-flex;
   justify-content: center;
   margin: auto;
-} 
+} */
 
 #questionContainer {
-  float: left; 
-  min-width: 400px;
+  /*float: left; 
+  min-width: 400px; */
   margin-bottom: 4em;
 }
 

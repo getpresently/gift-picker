@@ -1,4 +1,5 @@
 import React from "react";
+import { useState } from 'react';
 
 interface QuestionProps {
   title: string;
@@ -22,6 +23,9 @@ function Choices({
     handleSelectChoice(questionKey, answer);
   }
 
+  const [color, setColor] = useState("#a060fb60");
+  const [textColor, setTextColor] = useState("black");
+
   return (
     <div className="choicesContainer">
       {choices.map((x, i) => (
@@ -29,10 +33,12 @@ function Choices({
           key={`ch-${i}`}
           onClick={() => {
             handleClick(x);
+            setColor("#a160fb");
+            setTextColor("white");
           }}
         >
-          <div className="choiceButtons">
-            <button>{x}</button>
+          <div>
+            <button style={{background:color,color:textColor}}>{x}</button>
           </div>
         </div>
       ))}
