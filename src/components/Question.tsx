@@ -1,11 +1,37 @@
-import React from "react";
-import { useState } from 'react';
+import { useState } from "react";
 
 interface QuestionProps {
   title: string;
   questionKey: string;
   choices: string[];
   handleSelectChoice: (k: string, v: string) => void;
+}
+
+interface ChoiceProps {
+  questionKey: string;
+  answer: string;
+  handleSelectChoice: (k: string, v: string) => void;
+}
+
+function Choice({ questionKey, answer, handleSelectChoice }: ChoiceProps) {
+  const [color, setColor] = useState("#a060fb60");
+  const [textColor, setTextColor] = useState("black");
+
+  function handleClick() {
+    handleSelectChoice(questionKey, answer);
+    setColor("#a160fb");
+    setTextColor("white");
+  }
+
+  return (
+    <div onClick={handleClick}>
+      <div>
+        <button style={{ backgroundColor: color, color: textColor }}>
+          {answer}
+        </button>
+      </div>
+    </div>
+  );
 }
 
 interface ChoicesProps {
@@ -19,28 +45,15 @@ function Choices({
   choices,
   handleSelectChoice,
 }: ChoicesProps): JSX.Element {
-  function handleClick(answer: string) {
-    handleSelectChoice(questionKey, answer);
-  }
-
-  const [color, setColor] = useState("#a060fb60");
-  const [textColor, setTextColor] = useState("black");
-
   return (
     <div className="choicesContainer">
       {choices.map((x, i) => (
-        <div
+        <Choice
           key={`ch-${i}`}
-          onClick={() => {
-            handleClick(x);
-            setColor("#a160fb");
-            setTextColor("white");
-          }}
-        >
-          <div>
-            <button style={{background:color,color:textColor}}>{x}</button>
-          </div>
-        </div>
+          questionKey={questionKey}
+          answer={x}
+          handleSelectChoice={handleSelectChoice}
+        />
       ))}
     </div>
   );
