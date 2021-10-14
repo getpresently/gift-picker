@@ -1,3 +1,4 @@
+import React from "react";
 import { useIdeas } from "../utils/hooks";
 import { Gift } from "../utils/types";
 import Suggestion from "./Suggestion";
@@ -8,6 +9,7 @@ interface PropTypes {
 
 function Suggestions({ choices }: PropTypes): JSX.Element {
   const { data: suggestions } = useIdeas();
+  const [limit, setLimit] = React.useState(3)
   const questionKeys = ["Age", "Type", "Interests", "Price"];
 
   function filterSuggestions(row: Gift) {
@@ -41,7 +43,7 @@ function Suggestions({ choices }: PropTypes): JSX.Element {
         <hr></hr>
       </div>
       <div className="columns">
-        {suggestions.filter(filterSuggestions).map((x, i) => (
+        {suggestions.filter(filterSuggestions).slice(0,limit).map((x, i) => (
           <Suggestion
             photo={x.photo}
             key={`que-${i}`}
@@ -51,8 +53,19 @@ function Suggestions({ choices }: PropTypes): JSX.Element {
           />
         ))}
       </div>
+      <div id="more-button">
+        <button id="button_moreSuggestions" onClick={() => {setLimit(limit+1);}}>
+          More
+        </button>      
+      </div>
+      
     </div>
   );
+
+  function increaseLimit() {
+    setLimit(limit + 3);
+  }
+
 }
 
 export default Suggestions;
