@@ -1,4 +1,5 @@
 import { useState } from "react";
+import React from "react";
 
 interface QuestionProps {
   title: string;
@@ -10,11 +11,10 @@ interface QuestionProps {
 interface ChoiceProps {
   questionKey: string;
   answer: string;
-  isSelected: boolean;
   handleSelectChoice: (k: string, v: string) => void;
 }
 
-function Choice({ questionKey, answer, isSelected, handleSelectChoice }: ChoiceProps) {
+function Choice({ questionKey, answer, handleSelectChoice }: ChoiceProps) {
   const inactiveColor = "#a060fb60";
   const inactiveTextColor = "black"
 
@@ -24,15 +24,13 @@ function Choice({ questionKey, answer, isSelected, handleSelectChoice }: ChoiceP
   const [color, setColor] = useState(inactiveColor);
   const [textColor, setTextColor] = useState(inactiveTextColor);
 
-  const [active, setActive] = useState({isSelected});
+  const [active, setActive] = React.useState(true);
 
-  console.log("outside handleclick" + isSelected);
-
-  function handleClick() {
-    console.log(isSelected);
-    isSelected = !isSelected;
-    console.log(isSelected);
-    if (isSelected) {
+  function handleClick () {
+    console.log(active);
+    setActive(!active);
+    console.log(active);
+    if (active) {
       setColor(activeColor);
       setTextColor(activeTextColor);
     } else {
@@ -72,7 +70,6 @@ function Choices({
           key={`ch-${i}`}
           questionKey={questionKey}
           answer={x}
-          isSelected = {false}
           handleSelectChoice={handleSelectChoice}
         />
       ))}
