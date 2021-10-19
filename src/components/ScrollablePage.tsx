@@ -1,14 +1,14 @@
-import React, { Component } from 'react';
+import React, {FC} from 'react';
 
-
+//This component is made to hold other different types of components such as 
+//questions and suggestions in order to implement page navigation
 interface PropTypes {
     childComp?: React.ReactNode; 
 }
 
-const ScrollablePage: React.FC<PropTypes> = (props) => {
+const ScrollablePage: FC<PropTypes> = ({childComp}) => {
 
-    const {childComp} = props;
-
+    
     return (
         <div>
              {childComp}       
