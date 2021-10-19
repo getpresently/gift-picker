@@ -3,30 +3,50 @@ import { useState } from "react";
 interface QuestionProps {
   title: string;
   questionKey: string;
-  choices: string[];
+  choices: string[];  
   handleSelectChoice: (k: string, v: string) => void;
 }
 
 interface ChoiceProps {
   questionKey: string;
   answer: string;
+  isSelected: boolean;
   handleSelectChoice: (k: string, v: string) => void;
 }
 
-function Choice({ questionKey, answer, handleSelectChoice }: ChoiceProps) {
-  const [color, setColor] = useState("#a060fb60");
-  const [textColor, setTextColor] = useState("black");
+function Choice({ questionKey, answer, isSelected, handleSelectChoice }: ChoiceProps) {
+  const inactiveColor = "#a060fb60";
+  const inactiveTextColor = "black"
+
+  const activeColor = "#a160fb";
+  const activeTextColor = "white";
+  
+  const [color, setColor] = useState(inactiveColor);
+  const [textColor, setTextColor] = useState(inactiveTextColor);
+
+  const [active, setActive] = useState({isSelected});
+
+  console.log("outside handleclick" + isSelected);
 
   function handleClick() {
+    console.log(isSelected);
+    isSelected = !isSelected;
+    console.log(isSelected);
+    if (isSelected) {
+      setColor(activeColor);
+      setTextColor(activeTextColor);
+    } else {
+      setColor(inactiveColor);
+      setTextColor(inactiveTextColor);
+    }
     handleSelectChoice(questionKey, answer);
-    setColor("#a160fb");
-    setTextColor("white");
   }
 
   return (
     <div onClick={handleClick}>
       <div>
-        <button style={{ backgroundColor: color, color: textColor }}>
+        <button 
+        style = {{backgroundColor: color, color: textColor }}>
           {answer}
         </button>
       </div>
@@ -52,10 +72,12 @@ function Choices({
           key={`ch-${i}`}
           questionKey={questionKey}
           answer={x}
+          isSelected = {false}
           handleSelectChoice={handleSelectChoice}
         />
       ))}
     </div>
+    
   );
 }
 
@@ -65,6 +87,11 @@ function Question({
   choices,
   handleSelectChoice,
 }: QuestionProps): JSX.Element {
+
+  const [selected, setSelected] = useState([]);
+
+
+
   return (
     <div id="questionContainer">
       <p>{title}</p>
@@ -72,7 +99,7 @@ function Question({
       <div>
         <Choices
           questionKey={questionKey}
-          choices={choices}
+          choices={choices}   
           handleSelectChoice={handleSelectChoice}
         />
       </div>
