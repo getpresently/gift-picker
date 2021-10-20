@@ -19,6 +19,30 @@ function App(): JSX.Element {
   }
 
   const [choices, setChoice] = useState<{ [key: string]: string }>({});
+  const [currentPage, setcurrentPage] = useState<{ [key: int]: int }>({});
+
+  //current page and set page variables, call set state to change page to whatever you want with an 
+  //on click handler and set page to some number 
+  //change to int for page number
+
+  //make next and back button 
+  //set choice to some string
+
+  function handleNextPage(pageType : int, pageValue: int) {
+       setcurrentPage((state)  => ({
+      ...state,
+      [pageType]: pageValue + 1,
+    }));
+  }
+  
+  function handleLastPage(pageType : int, pageValue: int) {
+       setcurrentPage((state)  => ({
+      ...state,
+      [pageType]: pageValue - 1,
+    }));
+  }
+  
+
 
   function handleSelectChoice(choiceType: string, choiceValue: string) {
     setChoice((state) => ({
@@ -40,6 +64,7 @@ function App(): JSX.Element {
       <hr></hr>
     </div>
 
+     
     <div>
       <div id="container">
         <Questions handleSelectChoice={handleSelectChoice} />
@@ -49,7 +74,16 @@ function App(): JSX.Element {
           SUBMIT
         </button>
       </div>
-    </div>
+      <div id="previousButton">
+        <button id="button_changeScene" onClick={() => handleLastPage(currentPage)}>
+          Previous
+        </button>
+      </div>
+      <div id="nextButton">
+        <button id="button_changeScene" onClick={() => handleNextPage(currentPage)}>
+          Next
+        </button>
+      </div>
     <Footer />
     </div>
     );
