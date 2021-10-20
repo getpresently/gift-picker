@@ -3,7 +3,7 @@ import { Gift } from "../utils/types";
 import Suggestion from "./Suggestion";
 
 interface PropTypes {
-  choices: { [key: string]: string };
+  choices: { [key: string]: string[] };
 }
 
 function Suggestions({ choices }: PropTypes): JSX.Element {
@@ -17,9 +17,10 @@ function Suggestions({ choices }: PropTypes): JSX.Element {
         Array.isArray(row[questionKey as keyof Gift]) &&
         !!choices[questionKey]
       ) {
-        filter =
-          filter &&
-          row[questionKey as keyof Gift].includes(choices[questionKey]);
+        // commeneted out bc the data structure for "choices" in App.tsx is not different
+        //filter =
+        //  filter &&
+         // row[questionKey as keyof Gift].includes(choices[questionKey]);
       } else if (
         typeof row[questionKey as keyof Gift] === "string" &&
         !!choices[questionKey]

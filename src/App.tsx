@@ -4,6 +4,7 @@ import Questions from "./components/Questions";
 import Suggestions from "./components/Suggestions";
 /*import Header from "./components/Header";*/
 import Footer from "./components/Footer";
+import { getSystemErrorMap } from "util";
 
 enum Scene {
   Home = 1,
@@ -16,15 +17,44 @@ function App(): JSX.Element {
 
   function handleSceneChange(sceneTo: Scene) {
     setScene(sceneTo);
+    console.log("when changing scenes, state of choices is: ")
+    console.log(choices)
   }
 
-  const [choices, setChoice] = useState<{ [key: string]: string }>({});
+  // question: list of choices if Multi select
+  // question: list of 1 choice is single select
+  const [choices, setChoice] = useState<{ [key: string]:  Array<string> }>({});
 
-  function handleSelectChoice(choiceType: string, choiceValue: string) {
+  // changes state depending if the choice is to be added/deleted, and if the question is single/multi select
+  function handleSelectChoice(isToAdd : boolean, isSingleSelect : boolean, choiceType: string, choiceValue: string) {
+    console.log("choice type: " + choiceType);
+    console.log("choice val: " + choiceValue);
+    console.log("choicen ow: " + choices[choiceType]);
+
+    let newArr: Array<string> = new Array();
+    if (isToAdd) {
+      if (isSingleSelect) {
+        newArr.push(choiceValue);
+      } else if (!isSingleSelect && choices[choiceType] !== undefined) {
+        newArr =  choices[choiceType];
+        newArr.push(choiceValue);
+      } else {
+        newArr.push(choiceValue);
+      }
+  } else if (!isToAdd) {
+    if (!isSingleSelect) {
+      newArr = choices[choiceType].filter(a => a !== choiceValue)
+    }
+  }
+
     setChoice((state) => ({
       ...state,
-      [choiceType]: choiceValue,
+      [choiceType]: newArr,
     }));
+
+    console.log("bloc")
+    console.log(choices)
+
   }
 
   if (scene === Scene.Questions) {
