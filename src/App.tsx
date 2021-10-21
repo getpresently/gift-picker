@@ -1,6 +1,8 @@
 import { useState } from "react";
 import "./App.css";
+import Question from "./components/Question";
 import Questions from "./components/Questions";
+import ScrollablePage from "./components/ScrollablePage";
 import Suggestions from "./components/Suggestions";
 /*import Header from "./components/Header";*/
 import Footer from "./components/Footer";
@@ -12,6 +14,7 @@ enum Scene {
 }
 
 function App(): JSX.Element {
+  
   const [scene, setScene] = useState<Scene>(Scene.Home);
 
   function handleSceneChange(sceneTo: Scene) {
@@ -19,8 +22,8 @@ function App(): JSX.Element {
   }
 
   const [choices, setChoice] = useState<{ [key: string]: string }>({});
-  const [currentPage, setcurrentPage] = useState<{ [key: int]: int }>({});
-
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  
   //current page and set page variables, call set state to change page to whatever you want with an 
   //on click handler and set page to some number 
   //change to int for page number
@@ -28,20 +31,17 @@ function App(): JSX.Element {
   //make next and back button 
   //set choice to some string
 
-  function handleNextPage(pageType : int, pageValue: int) {
-       setcurrentPage((state)  => ({
-      ...state,
-      [pageType]: pageValue + 1,
-    }));
+  function handleNextPage(newVal : number) {
+    if (newVal < 4) {
+      setCurrentPage(newVal + 1);
+    }
   }
   
-  function handleLastPage(pageType : int, pageValue: int) {
-       setcurrentPage((state)  => ({
-      ...state,
-      [pageType]: pageValue - 1,
-    }));
+  function handleLastPage(newVal : number) {
+    if (newVal > 1) {
+      setCurrentPage(newVal - 1);
+    }
   }
-  
 
 
   function handleSelectChoice(choiceType: string, choiceValue: string) {
@@ -51,43 +51,70 @@ function App(): JSX.Element {
     }));
   }
 
-  if (scene === Scene.Questions) {
-  return (
-    <div>
-      {/*<Header />*/}
-    <div className="instructions">
-      <p>To get your personalized gift suggestions,</p>
-      <p>simply answer these four quick questions:</p>
-    </div>
+  // create array of questions
 
-    <div className="line">
-      <hr></hr>
-    </div>
-
-     
-    <div>
-      <div id="container">
-        <Questions handleSelectChoice={handleSelectChoice} />
-      </div>
-      <div id="submitButton">
-        <button id="button_changeScene" onClick={() => handleSceneChange(Scene.Suggestions)}>
-          SUBMIT
-        </button>
-      </div>
-      <div id="previousButton">
-        <button id="button_changeScene" onClick={() => handleLastPage(currentPage)}>
-          Previous
-        </button>
-      </div>
-      <div id="nextButton">
-        <button id="button_changeScene" onClick={() => handleNextPage(currentPage)}>
-          Next
-        </button>
-      </div>
-    <Footer />
-    </div>
-    );
+  var page;
+  if (currentPage === 1) {
+    var question1 = <Questions handleSelectChoice={handleSelectChoice} page={currentPage}/> 
+    page = (
+      <ScrollablePage childComp={question1}></ScrollablePage>
+    )
+  } else if (currentPage === 2) {
+    var question2 = <Questions handleSelectChoice={handleSelectChoice} page={currentPage}/> 
+    page = (
+      <ScrollablePage childComp={question2}></ScrollablePage>
+    )
   } 
+  else if (currentPage === 3) {
+    var question3 = <Questions handleSelectChoice={handleSelectChoice} page={currentPage}/> 
+    page = (
+      <ScrollablePage childComp={question3}></ScrollablePage>
+    )
+  } 
+  else if (currentPage === 4) {
+    var question4 = <Questions handleSelectChoice={handleSelectChoice} page={currentPage}/> 
+    page = (
+      <ScrollablePage childComp={question4}></ScrollablePage>
+    )
+  }
+
+  if (scene === Scene.Questions) {
+    return (
+      <div>
+        {/*<Header />*/}
+        <div className="instructions">
+          <p>To get your personalized gift suggestions,</p>
+          <p>simply answer these four quick questions:</p>
+        </div>
+
+        <div className="line">
+          <hr></hr>
+        </div>
+
+        
+        <div>
+          <div id="container">
+            {page}
+          </div>
+          <div id="submitButton">
+            <button id="button_changeScene" onClick={() => handleSceneChange(Scene.Suggestions)}>
+              SUBMIT
+            </button>
+          </div>
+          <div id="previousButton">
+            <button id="button_changeScene" onClick={() => handleLastPage(currentPage)}>
+              Previous
+            </button>
+          </div>
+          <div id="nextButton">
+            <button id="button_changeScene" onClick={() => handleNextPage(currentPage)}>
+              Next
+            </button>
+          </div>
+        <Footer />
+        </div>
+      </div>);
+  }
   
   if (scene === Scene.Suggestions) {
     return (
@@ -126,7 +153,7 @@ function App(): JSX.Element {
             </div>
           </header>
           <Footer />
-        </div>  
+        </div>
       </div>
     );
   };
