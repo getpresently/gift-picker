@@ -24,12 +24,6 @@ function App(): JSX.Element {
   const [choices, setChoice] = useState<{ [key: string]: string }>({});
   const [currentPage, setCurrentPage] = useState<number>(1);
   
-  //current page and set page variables, call set state to change page to whatever you want with an 
-  //on click handler and set page to some number 
-  //change to int for page number
-
-  //make next and back button 
-  //set choice to some string
 
   function handleNextPage(newVal : number) {
     if (newVal < 4) {
@@ -53,30 +47,48 @@ function App(): JSX.Element {
 
   // create array of questions
 
-  var page;
+  var question = <Questions handleSelectChoice={handleSelectChoice} page={currentPage}/> 
+  var page = (
+      <ScrollablePage childComp={question}></ScrollablePage>
+    )
+
+  var buttons;
   if (currentPage === 1) {
-    var question1 = <Questions handleSelectChoice={handleSelectChoice} page={currentPage}/> 
-    page = (
-      <ScrollablePage childComp={question1}></ScrollablePage>
-    )
-  } else if (currentPage === 2) {
-    var question2 = <Questions handleSelectChoice={handleSelectChoice} page={currentPage}/> 
-    page = (
-      <ScrollablePage childComp={question2}></ScrollablePage>
-    )
-  } 
-  else if (currentPage === 3) {
-    var question3 = <Questions handleSelectChoice={handleSelectChoice} page={currentPage}/> 
-    page = (
-      <ScrollablePage childComp={question3}></ScrollablePage>
-    )
-  } 
-  else if (currentPage === 4) {
-    var question4 = <Questions handleSelectChoice={handleSelectChoice} page={currentPage}/> 
-    page = (
-      <ScrollablePage childComp={question4}></ScrollablePage>
-    )
+      buttons = (<div id="nextButton">
+            <button id="button_changeScene" onClick={() => handleNextPage(currentPage)}>
+              Next
+            </button>
+          </div>)
+  } else if (currentPage === 4){
+       buttons = (<div>
+       <div id="previousButton">
+            <button id="button_changeScene" onClick={() => handleLastPage(currentPage)}>
+              Previous
+            </button>
+          </div>
+        <div id="submitButton">
+            <button id="button_changeScene" onClick={() => handleSceneChange(Scene.Suggestions)}>
+              SUBMIT
+            </button>
+          </div>
+          </div>
+          )
+  } else {
+  buttons = (<div>
+  <div id="previousButton">
+            <button id="button_changeScene" onClick={() => handleLastPage(currentPage)}>
+              Previous
+            </button>
+          </div>
+          <div id="nextButton">
+            <button id="button_changeScene" onClick={() => handleNextPage(currentPage)}>
+              Next
+            </button>
+          </div>
+          </div>
+          )
   }
+  
 
   if (scene === Scene.Questions) {
     return (
@@ -95,22 +107,8 @@ function App(): JSX.Element {
         <div>
           <div id="container">
             {page}
-          </div>
-          <div id="submitButton">
-            <button id="button_changeScene" onClick={() => handleSceneChange(Scene.Suggestions)}>
-              SUBMIT
-            </button>
-          </div>
-          <div id="previousButton">
-            <button id="button_changeScene" onClick={() => handleLastPage(currentPage)}>
-              Previous
-            </button>
-          </div>
-          <div id="nextButton">
-            <button id="button_changeScene" onClick={() => handleNextPage(currentPage)}>
-              Next
-            </button>
-          </div>
+            {buttons}
+            </div>
         <Footer />
         </div>
       </div>);
