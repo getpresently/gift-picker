@@ -7,10 +7,11 @@ interface PropTypes {
   choices: { [key: string]: string };
 }
 
+const STARTING_LIMIT = 3;
+
 function Suggestions({ choices }: PropTypes): JSX.Element {
   const { data: suggestions } = useIdeas();
-  const startingLimit = 3;
-  const [limit, setLimit] = React.useState(startingLimit);
+  const [limit, setLimit] = React.useState(STARTING_LIMIT);
   const questionKeys = ["Age", "Type", "Interests", "Price"];
 
   function filterSuggestions(row: Gift) {
@@ -35,7 +36,7 @@ function Suggestions({ choices }: PropTypes): JSX.Element {
   }
 
   const increaseLimit = () => {
-    setLimit(limit + 3);
+    setLimit(limit + STARTING_LIMIT);
   };
 
   return (
@@ -63,9 +64,7 @@ function Suggestions({ choices }: PropTypes): JSX.Element {
       <br />
       <button
         id="button_moreSuggestions"
-        onClick={() => {
-          increaseLimit();
-        }}
+        onClick={increaseLimit}
       >
         More
       </button>
