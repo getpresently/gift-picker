@@ -3,7 +3,7 @@ import { Gift } from "../utils/types";
 import Suggestion from "./Suggestion";
 
 interface PropTypes {
-  choices: { [key: string]: string[] };
+  choices: { [key: string]: Set<string> };
 }
 
 function Suggestions({ choices }: PropTypes): JSX.Element {
@@ -25,8 +25,9 @@ function Suggestions({ choices }: PropTypes): JSX.Element {
         typeof row[questionKey as keyof Gift] === "string" &&
         !!choices[questionKey]
       ) {
-        filter =
-          filter && row[questionKey as keyof Gift] === choices[questionKey];
+        // TODO
+        // filter =
+          // filter && row[questionKey as keyof Gift] === choices[questionKey];
       }
     }
 

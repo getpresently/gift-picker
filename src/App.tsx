@@ -5,6 +5,7 @@ import Suggestions from "./components/Suggestions";
 /*import Header from "./components/Header";*/
 import Footer from "./components/Footer";
 import { getSystemErrorMap } from "util";
+import { on } from "events";
 
 enum Scene {
   Home = 1,
@@ -17,75 +18,73 @@ function App(): JSX.Element {
 
   function handleSceneChange(sceneTo: Scene) {
     setScene(sceneTo);
-    console.log("when changing scenes, state of choices is: ")
-    console.log(choices)
   }
 
   // question: list of choices if Multi select
   // question: list of 1 choice is single select
-  const [choices, setChoice] = useState<{ [key: string]:  Array<string> }>({});
+  const [choices, setChoices] = useState<{ [key: string]: Set<string> }>({});
 
   // changes state depending if the choice is to be added/deleted, and if the question is single/multi select
-  function handleSelectChoice(isToAdd : boolean, isSingleSelect : boolean, choiceType: string, choiceValue: string) {
-    console.log("choice type: " + choiceType);
-    console.log("choice val: " + choiceValue);
-    console.log("choicen ow: " + choices[choiceType]);
-
-    let newArr: Array<string> = new Array();
-    if (isToAdd) {
-      if (isSingleSelect) {
-        newArr.push(choiceValue);
-      } else if (!isSingleSelect && choices[choiceType] !== undefined) {
-        newArr =  choices[choiceType];
-        newArr.push(choiceValue);
-      } else {
-        newArr.push(choiceValue);
-      }
-  } else if (!isToAdd) {
-    if (!isSingleSelect) {
-      newArr = choices[choiceType].filter(a => a !== choiceValue)
+  function handleSelectChoice(isSingleSelect: boolean, choiceType: string, choiceValue: string) {
+    let newChoices = choices[choiceType];
+    if (!newChoices) {
+      newChoices = new Set<string>();
     }
-  }
 
-    setChoice((state) => ({
-      ...state,
-      [choiceType]: newArr,
-    }));
+    if (isSingleSelect) {
+      if (newChoices.has(choiceValue)) {
+        newChoices = new Set<string>();
+      } else {
+        newChoices = new Set<string>();
+        newChoices.add(choiceValue);
+      }
+    } else {
+      if (newChoices?.has(choiceValue)) {
+        newChoices.delete(choiceValue);
+      } else {
+        newChoices.add(choiceValue);
+      }
+    }
 
-    console.log("bloc")
-    console.log(choices)
+    const newChoicesDict = {
+      ...choices,
+      [choiceType]: newChoices,
+    };
 
+    setChoices(newChoicesDict);
+    console.log(newChoicesDict);
   }
 
   if (scene === Scene.Questions) {
-  return (
-    <div>
-      {/*<Header />*/}
-    <div className="instructions">
-      <p>To get your personalized gift suggestions,</p>
-      <p>simply answer these four quick questions:</p>
-    </div>
+    return (
+      <div>
+        {/*<Header />*/}
+        <div className="instructions">
+          <p>To get your personalized gift suggestions,</p>
+          <p>simply answer these four quick questions:</p>
+        </div>
 
-    <div className="line">
-      <hr></hr>
-    </div>
+        <div className="line">
+          <hr></hr>
+        </div>
 
-    <div>
-      <div id="container">
-        <Questions handleSelectChoice={handleSelectChoice} />
+        <div>
+          <div id="container">
+            <Questions handleSelectChoice={handleSelectChoice} choices={choices} />
+          </div>
+          <div id="submitButton">
+            <button id="button_changeScene" onClick={() => handleSceneChange(Scene.Suggestions)}>
+              SUBMIT
+            </button>
+          </div>
+        </div>
+        <Footer />
       </div>
-      <div id="submitButton">
-        <button id="button_changeScene" onClick={() => handleSceneChange(Scene.Suggestions)}>
-          SUBMIT
-        </button>
-      </div>
-    </div>
-    <Footer />
-    </div>
     );
-  } 
-  
+  }
+
   if (scene === Scene.Suggestions) {
+    console.log(':::::::::::::' + JSON.stringify(choices));
     return (
       <div>
         {/*<Header />*/}
@@ -122,7 +121,7 @@ function App(): JSX.Element {
             </div>
           </header>
           <Footer />
-        </div>  
+        </div>
       </div>
     );
   };

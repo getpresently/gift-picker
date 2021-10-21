@@ -2,10 +2,11 @@ import { useQuestions } from "../utils/hooks";
 import Question from "./Question";
 
 interface PropTypes {
-  handleSelectChoice: (isToAdd : boolean, isSingleSelect : boolean, k: string, v: string) => void;
+  handleSelectChoice: (isSingleSelect: boolean, k: string, v: string) => void,
+  choices: { [key: string]: Set<string> },
 }
 
-function Questions({ handleSelectChoice }: PropTypes): JSX.Element {
+function Questions({ handleSelectChoice, choices }: PropTypes): JSX.Element {
   const { data: questions } = useQuestions();
 
   return (
@@ -16,8 +17,9 @@ function Questions({ handleSelectChoice }: PropTypes): JSX.Element {
           title={x.question}
           questionKey={x.questionKey}
           // where if a question is single select is set, should be added to gsheet
-          isSingleSelect = {true}
+          isSingleSelect={false}
           choices={x.answers}
+          selectedChoices={choices[x.questionKey]}
           handleSelectChoice={handleSelectChoice}
         />
       ))}
