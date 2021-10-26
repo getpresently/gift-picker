@@ -6,32 +6,74 @@ interface PropTypes {
   choices: { [key: string]: Set<string> };
 }
 
+
+
 function Suggestions({ choices }: PropTypes): JSX.Element {
   const { data: suggestions } = useIdeas();
-  const questionKeys = ["Age", "Type", "Interests", "Price"];
+  const mandatoryQuestionKeys = ["Age"];
+  const weightedQuestionKeys = ["Type", "Interests", "Price"];
+  const weightedQuestionValues = [1, 1, 1];
 
-  function filterSuggestions(row: Gift) {
-    let filter = true;
-    for (const questionKey of questionKeys) {
+
+  function calcGiftScore(curGift:Gift) {
+    let score = 0;
+    
+    // returns -1 if mandatory attributes are not met
+    for (const questionKey of mandatoryQuestionKeys) {
+      const giftAttributes = curGift[questionKey as keyof Gift];
+      let valid = false;
+
       if (
-        Array.isArray(row[questionKey as keyof Gift]) &&
-        !!choices[questionKey]
-      ) {
-        // commeneted out bc the data structure for "choices" in App.tsx is not different
-        //filter =
-        //  filter &&
-         // row[questionKey as keyof Gift].includes(choices[questionKey]);
-      } else if (
-        typeof row[questionKey as keyof Gift] === "string" &&
-        !!choices[questionKey]
-      ) {
-        // TODO
-        // filter =
-          // filter && row[questionKey as keyof Gift] === choices[questionKey];
-      }
-    }
+        Array.isArray(giftAttributes) &&
+        !!choices[questionKey]) {
 
-    return filter;
+          choices[questionKey].forEach(function(selection) {
+
+            if (giftAttributes.includes(selection)) {
+              valid = true;
+            }
+          })
+          if (!valid) {
+            return -1;
+          }
+        }
+      }
+
+    // calucates weighted score for if gift meets all mandatory attributes
+    for (const questionKey of weightedQuestionKeys) {
+      const giftAttributes = curGift[questionKey as keyof Gift];
+
+      if (
+        Array.isArray(giftAttributes) &&
+        !!choices[questionKey]) {
+          choices[questionKey].forEach(function(selection) {
+            if (giftAttributes.includes(selection)) {
+              score = score + (1 * weightedQuestionValues[weightedQuestionKeys.indexOf(questionKey)]);
+            }
+          })
+        }
+      }
+      return score;
+    }
+  
+  
+  
+
+  function filterSuggestions(row: Gift): [Gift, number] {
+    let score = calcGiftScore(row);
+    //console.log(score);
+
+    return [row, score];         
+  }
+
+  function sortedSuggestions(suggestions: Gift[]): Gift[] {
+    let giftAndScore = suggestions.map(gift => filterSuggestions(gift));
+    giftAndScore = giftAndScore.filter((gift) => gift[1] > 0);
+    giftAndScore = giftAndScore.sort((a, b) => b[1] - a[1]);
+    let onlyGifts = giftAndScore.map((row) => row[0]);
+    let onlyScores = giftAndScore.map((row) => row[1]);
+    console.log(onlyScores);
+    return onlyGifts;
   }
 
   return (
@@ -43,7 +85,7 @@ function Suggestions({ choices }: PropTypes): JSX.Element {
         <hr></hr>
       </div>
       <div className="columns">
-        {suggestions.filter(filterSuggestions).map((x, i) => (
+      {sortedSuggestions(suggestions).map((x, i) => (
           <Suggestion
             photo={x.photo}
             key={`que-${i}`}
@@ -56,5 +98,4 @@ function Suggestions({ choices }: PropTypes): JSX.Element {
     </div>
   );
 }
-
 export default Suggestions;
