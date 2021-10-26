@@ -41,7 +41,7 @@ function App(): JSX.Element {
   }
 
   var question = (
-    <Questions handleSelectChoice={handleSelectChoice} page={currentPage} />
+    <Questions handleSelectChoice={handleSelectChoice} page={currentPage} selected={choices}/>
   );
   var page = <ScrollablePage childComp={question}></ScrollablePage>;
 
