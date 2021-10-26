@@ -4,8 +4,8 @@ import Questions from "./components/Questions";
 import Suggestions from "./components/Suggestions";
 /*import Header from "./components/Header";*/
 import Footer from "./components/Footer";
-import { getSystemErrorMap } from "util";
-import { on } from "events";
+//import { getSystemErrorMap } from "util";
+//import { on } from "events";
 
 enum Scene {
   Home = 1,

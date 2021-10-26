@@ -1,24 +1,24 @@
 import { useEffect, useState } from "react";
-import React from "react";
+//import React from "react";
 
 interface QuestionProps {
   title: string;
   questionKey: string;
   choices: string[];
   isSingleSelect: boolean;
-  handleSelectChoice: (isSingleSelect: boolean, k: string, v: string) => void;
   selectedChoices: Set<string>;
+  handleSelectChoice: (isSingleSelect: boolean, k: string, v: string) => void;
 }
 
-interface ChoiceProps {
+interface ChoiceProps   {
   questionKey: string;
   answer: string;
   partOfSingleSelect: boolean;
-  handleSelectChoice: (isSingleSelect: boolean, k: string, v: string) => void;
   isActive: boolean;
+  handleSelectChoice: (isSingleSelect: boolean, k: string, v: string) => void;
 }
 
-function Choice({ questionKey, answer, partOfSingleSelect, handleSelectChoice, isActive }: ChoiceProps) {
+function Choice({ questionKey, answer, partOfSingleSelect, isActive, handleSelectChoice }: ChoiceProps) {
 
   // inactive color settings
   const inactiveColor = "#a060fb60";
@@ -32,11 +32,8 @@ function Choice({ questionKey, answer, partOfSingleSelect, handleSelectChoice, i
   const [color, setColor] = useState(inactiveColor);
   const [textColor, setTextColor] = useState(inactiveTextColor);
 
-  // active = true if selected
-  // const [active, setActive] = React.useState(true);
-
+  // changes color according to if is active
   useEffect(() => {
-    // changes color according to if is active
     if (isActive) {
       setColor(activeColor);
       setTextColor(activeTextColor);
@@ -59,7 +56,6 @@ function Choice({ questionKey, answer, partOfSingleSelect, handleSelectChoice, i
         </button>
       </div>
     </div>
-
   );
 }
 
@@ -81,6 +77,7 @@ function Choices({
 
   var cps: JSX.Element[];
 
+  // creates each choice is choices
   function buildCps(): JSX.Element[] {
     cps = choices.map((x, i) => (
       <Choice
@@ -90,13 +87,8 @@ function Choices({
         partOfSingleSelect={partOfSingleSelect}
         isActive={selectedChoices?.has(x)}
         handleSelectChoice={handleSelectChoice}></Choice>));
-
     return cps
   }
-
-  // should somehow access all choices and render them through cps?
-  //function handleClick() {}
-
   return <div> {buildCps()}</div>;
 }
 
@@ -108,8 +100,6 @@ function Question({
   selectedChoices,
   handleSelectChoice,
 }: QuestionProps): JSX.Element {
-
-  //function handleClick() {}
 
   return (
     <div id="questionContainer">

@@ -6,6 +6,7 @@ interface PropTypes {
   choices: { [key: string]: Set<string> },
 }
 
+// creates questions with attributes from google sheet
 function Questions({ handleSelectChoice, choices }: PropTypes): JSX.Element {
   const { data: questions } = useQuestions();
 
@@ -19,6 +20,7 @@ function Questions({ handleSelectChoice, choices }: PropTypes): JSX.Element {
           // where if a question is single select is set, should be added to gsheet
           isSingleSelect={false}
           choices={x.answers}
+          // set of selected choices
           selectedChoices={choices[x.questionKey]}
           handleSelectChoice={handleSelectChoice}
         />
