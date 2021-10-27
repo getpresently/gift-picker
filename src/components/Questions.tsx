@@ -18,7 +18,7 @@ function Questions({ handleSelectChoice, choices }: PropTypes): JSX.Element {
           title={x.question}
           questionKey={x.questionKey}
           // where if a question is single select is set, should be added to gsheet
-          isSingleSelect={false}
+          isSingleSelect={true}
           choices={x.answers}
           // set of selected choices
           selectedChoices={choices[x.questionKey]}

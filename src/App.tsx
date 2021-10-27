@@ -2,10 +2,7 @@ import { useState } from "react";
 import "./App.css";
 import Questions from "./components/Questions";
 import Suggestions from "./components/Suggestions";
-/*import Header from "./components/Header";*/
 import Footer from "./components/Footer";
-//import { getSystemErrorMap } from "util";
-//import { on } from "events";
 
 enum Scene {
   Home = 1,
@@ -20,11 +17,12 @@ function App(): JSX.Element {
     setScene(sceneTo);
   }
 
-  // question: list of choices if Multi select
-  // question: list of 1 choice is single select
+  // choices[question]: set of choices if key is multi select question identifier
+  // choices[question]: set of size 1 if key is single select question identifier
   const [choices, setChoices] = useState<{ [key: string]: Set<string> }>({});
 
-  // changes state depending if the choice is to be added/deleted, and if the question is single/multi select
+  // changes state depending on if the question is single/multi select
+  // removes from state if previously selected, adds to state if new
   function handleSelectChoice(isSingleSelect: boolean, choiceType: string, choiceValue: string) {
     let newChoices = choices[choiceType];
     if (!newChoices) {
@@ -58,7 +56,6 @@ function App(): JSX.Element {
   if (scene === Scene.Questions) {
     return (
       <div>
-        {/*<Header />*/}
         <div className="instructions">
           <p>To get your personalized gift suggestions,</p>
           <p>simply answer these four quick questions:</p>
@@ -84,10 +81,8 @@ function App(): JSX.Element {
   }
 
   if (scene === Scene.Suggestions) {
-    console.log(':::::::::::::' + JSON.stringify(choices));
     return (
       <div>
-        {/*<Header />*/}
         <div className="results">
           <Suggestions choices={choices} />
         </div>
@@ -104,7 +99,6 @@ function App(): JSX.Element {
       <div>
         <div className="App">
           <header className="App-header">
-            {/*<Header />*/}
             <div className="titleContainer">
               <div className="App-title">
                 <h1>GIFT PICKER</h1>

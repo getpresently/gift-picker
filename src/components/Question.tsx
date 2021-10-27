@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-//import React from "react";
 
 interface QuestionProps {
   title: string;
@@ -21,25 +20,25 @@ interface ChoiceProps   {
 function Choice({ questionKey, answer, partOfSingleSelect, isActive, handleSelectChoice }: ChoiceProps) {
 
   // inactive color settings
-  const inactiveColor = "#a060fb60";
-  const inactiveTextColor = "black"
+  const INACTIVE_COLOR = "#a060fb60";
+  const INACTIVE_TEXT_COLOR = "black"
 
   // active color 
-  const activeColor = "#a160fb";
-  const activeTextColor = "white";
+  const ACTIVE_COLOR = "#a160fb";
+  const ACTIVE_TEXT_COLOR = "white";
 
   // default to inactive color
-  const [color, setColor] = useState(inactiveColor);
-  const [textColor, setTextColor] = useState(inactiveTextColor);
+  const [color, setColor] = useState(INACTIVE_COLOR);
+  const [textColor, setTextColor] = useState(INACTIVE_TEXT_COLOR);
 
   // changes color according to if is active
   useEffect(() => {
     if (isActive) {
-      setColor(activeColor);
-      setTextColor(activeTextColor);
+      setColor(ACTIVE_COLOR);
+      setTextColor(ACTIVE_TEXT_COLOR);
     } else {
-      setColor(inactiveColor);
-      setTextColor(inactiveTextColor);
+      setColor(INACTIVE_COLOR);
+      setTextColor(INACTIVE_TEXT_COLOR);
     }
   }, [isActive]);
 
@@ -77,7 +76,7 @@ function Choices({
 
   var cps: JSX.Element[];
 
-  // creates each choice is choices
+  // creates each choice from choices
   function buildCps(): JSX.Element[] {
     cps = choices.map((x, i) => (
       <Choice
@@ -104,7 +103,6 @@ function Question({
   return (
     <div id="questionContainer">
       <p>{title}</p>
-
       <div >
         <Choices
           questionKey={questionKey}
