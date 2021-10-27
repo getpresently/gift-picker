@@ -10,7 +10,7 @@ interface PropTypes {
 const LIMIT_INCREMENT = 3;
 
 function Suggestions({ choices }: PropTypes): JSX.Element {
-  const { data: suggestions } = useIdeas();
+  const { data: suggestions, loading : isLoading} = useIdeas();
   const [limit, setLimit] = React.useState(LIMIT_INCREMENT);
   const questionKeys = ["Age", "Type", "Interests", "Price"];
 

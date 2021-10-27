@@ -16,10 +16,11 @@ function App(): JSX.Element {
 
   function handleSceneChange(sceneTo: Scene) {
     setScene(sceneTo);
-  }
+    }
 
   const [choices, setChoice] = useState<{ [key: string]: string }>({});
   const [currentPage, setCurrentPage] = useState<number>(1);
+  const [loading, setLoad] = useState<boolean>(false);
 
   function handleNextPage(newVal: number) {
     if (newVal < 4) {
@@ -71,7 +72,10 @@ function App(): JSX.Element {
         <div id="submitButton">
           <button
             id="button_changeScene"
-            onClick={() => handleSceneChange(Scene.Suggestions)}
+            onClick={() => {
+            handleSceneChange(Scene.Suggestions)
+            setLoad(true);
+            }}
           >
             SUBMIT
           </button>
