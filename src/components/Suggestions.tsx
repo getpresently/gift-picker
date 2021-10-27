@@ -10,7 +10,7 @@ interface PropTypes {
 const LIMIT_INCREMENT = 3;
 
 function Suggestions({ choices }: PropTypes): JSX.Element {
-  const { data: suggestions } = useIdeas();
+  const { data: suggestions, loading: isLoading } = useIdeas();
   const [limit, setLimit] = React.useState(LIMIT_INCREMENT);
   const questionKeys = ["Age", "Type", "Interests", "Price"];
 
@@ -39,19 +39,35 @@ function Suggestions({ choices }: PropTypes): JSX.Element {
     setLimit(limit + LIMIT_INCREMENT);
   };
 
-  return (
-    <div>
-      <div id="top">
-        <p>The top gift suggestions based on your answers:</p>
+  let filteredSuggestions = suggestions
+    .filter(filterSuggestions)
+    .slice(0, limit);
+
+  if (filteredSuggestions.length == 0 && !isLoading) {
+    return (
+      <div>
+        <div id="top">
+          <p>The top gift suggestions based on your answers:</p>
+        </div>
+        <div className="line">
+          <hr></hr>
+        </div>
+        <div>
+          <p> No suggestions could be found.</p>
+        </div>
       </div>
-      <div className="line">
-        <hr></hr>
-      </div>
-      <div className="columns">
-        {suggestions
-          .filter(filterSuggestions)
-          .slice(0, limit)
-          .map((x, i) => (
+    );
+  } else {
+    return (
+      <div>
+        <div id="top">
+          <p>The top gift suggestions based on your answers:</p>
+        </div>
+        <div className="line">
+          <hr></hr>
+        </div>
+        <div className="columns">
+          {filteredSuggestions.map((x, i) => (
             <Suggestion
               photo={x.photo}
               key={`que-${i}`}
@@ -60,16 +76,14 @@ function Suggestions({ choices }: PropTypes): JSX.Element {
               link={x.link}
             />
           ))}
+        </div>
+        <br />
+        <button id="button_moreSuggestions" onClick={increaseLimit}>
+          More
+        </button>
       </div>
-      <br />
-      <button
-        id="button_moreSuggestions"
-        onClick={increaseLimit}
-      >
-        More
-      </button>
-    </div>
-  );
+    );
+  }
 }
 
 export default Suggestions;
