@@ -67,8 +67,6 @@ function Suggestions({ choices }: PropTypes): JSX.Element {
     giftAndScore = giftAndScore.filter((gift) => gift[1] > 0);
     giftAndScore = giftAndScore.sort((a, b) => b[1] - a[1]);
     let onlyGifts = giftAndScore.map((row) => row[0]);
-    let onlyScores = giftAndScore.map((row) => row[1]);
-    console.log(onlyScores);
     return onlyGifts;
   }
 
