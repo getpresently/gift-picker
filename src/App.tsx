@@ -2,7 +2,6 @@ import { useState } from "react";
 import "./App.css";
 import Questions from "./components/Questions";
 import Suggestions from "./components/Suggestions";
-/*import Header from "./components/Header";*/
 import Footer from "./components/Footer";
 
 enum Scene {
@@ -18,47 +17,72 @@ function App(): JSX.Element {
     setScene(sceneTo);
   }
 
-  const [choices, setChoice] = useState<{ [key: string]: string }>({});
+  // choices[question]: set of choices if key is multi select question identifier
+  // choices[question]: set of size 1 if key is single select question identifier
+  const [choices, setChoices] = useState<{ [key: string]: Set<string> }>({});
 
-  function handleSelectChoice(choiceType: string, choiceValue: string) {
-    setChoice((state) => ({
-      ...state,
-      [choiceType]: choiceValue,
-    }));
+  // changes state depending on if the question is single/multi select
+  // removes from state if previously selected, adds to state if new
+  function handleSelectChoice(isSingleSelect: boolean, choiceType: string, choiceValue: string) {
+    let newChoices = choices[choiceType];
+    if (!newChoices) {
+      newChoices = new Set<string>();
+    }
+
+    if (isSingleSelect) {
+      if (newChoices.has(choiceValue)) {
+        newChoices = new Set<string>();
+      } else {
+        newChoices = new Set<string>();
+        newChoices.add(choiceValue);
+      }
+    } else {
+      if (newChoices?.has(choiceValue)) {
+        newChoices.delete(choiceValue);
+      } else {
+        newChoices.add(choiceValue);
+      }
+    }
+
+    const newChoicesDict = {
+      ...choices,
+      [choiceType]: newChoices,
+    };
+
+    setChoices(newChoicesDict);
+    console.log(newChoicesDict);
   }
 
   if (scene === Scene.Questions) {
-  return (
-    <div>
-      {/*<Header />*/}
-    <div className="instructions">
-      <p>To get your personalized gift suggestions,</p>
-      <p>simply answer these four quick questions:</p>
-    </div>
+    return (
+      <div>
+        <div className="instructions">
+          <p>To get your personalized gift suggestions,</p>
+          <p>simply answer these four quick questions:</p>
+        </div>
 
-    <div className="line">
-      <hr></hr>
-    </div>
+        <div className="line">
+          <hr></hr>
+        </div>
 
-    <div>
-      <div id="container">
-        <Questions handleSelectChoice={handleSelectChoice} />
+        <div>
+          <div id="container">
+            <Questions handleSelectChoice={handleSelectChoice} choices={choices} />
+          </div>
+          <div id="submitButton">
+            <button id="button_changeScene" onClick={() => handleSceneChange(Scene.Suggestions)}>
+              SUBMIT
+            </button>
+          </div>
+        </div>
+        <Footer />
       </div>
-      <div id="submitButton">
-        <button id="button_changeScene" onClick={() => handleSceneChange(Scene.Suggestions)}>
-          SUBMIT
-        </button>
-      </div>
-    </div>
-    <Footer />
-    </div>
     );
-  } 
-  
+  }
+
   if (scene === Scene.Suggestions) {
     return (
       <div>
-        {/*<Header />*/}
         <div className="results">
           <Suggestions choices={choices} />
         </div>
@@ -75,7 +99,6 @@ function App(): JSX.Element {
       <div>
         <div className="App">
           <header className="App-header">
-            {/*<Header />*/}
             <div className="titleContainer">
               <div className="App-title">
                 <h1>GIFT PICKER</h1>
@@ -92,7 +115,7 @@ function App(): JSX.Element {
             </div>
           </header>
           <Footer />
-        </div>  
+        </div>
       </div>
     );
   };
