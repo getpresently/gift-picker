@@ -9,7 +9,7 @@ interface QuestionProps {
   handleSelectChoice: (isSingleSelect: boolean, k: string, v: string) => void;
 }
 
-interface ChoiceProps   {
+interface ChoiceProps {
   questionKey: string;
   answer: string;
   partOfSingleSelect: boolean;
@@ -17,13 +17,18 @@ interface ChoiceProps   {
   handleSelectChoice: (isSingleSelect: boolean, k: string, v: string) => void;
 }
 
-function Choice({ questionKey, answer, partOfSingleSelect, isActive, handleSelectChoice }: ChoiceProps) {
-
+function Choice({
+  questionKey,
+  answer,
+  partOfSingleSelect,
+  isActive,
+  handleSelectChoice,
+}: ChoiceProps) {
   // inactive color settings
   const INACTIVE_COLOR = "#a060fb60";
-  const INACTIVE_TEXT_COLOR = "black"
+  const INACTIVE_TEXT_COLOR = "black";
 
-  // active color 
+  // active color
   const ACTIVE_COLOR = "#a160fb";
   const ACTIVE_TEXT_COLOR = "white";
 
@@ -47,10 +52,12 @@ function Choice({ questionKey, answer, partOfSingleSelect, isActive, handleSelec
   }
 
   return (
-    <div onClick={handleClick} >
+    <div onClick={handleClick}>
       <div>
-        <button id={answer}
-          style={{ backgroundColor: color, color: textColor }}>
+        <button
+          id={answer}
+          style={{ backgroundColor: color, color: textColor }}
+        >
           {answer}
         </button>
       </div>
@@ -73,7 +80,6 @@ function Choices({
   handleSelectChoice,
   selectedChoices,
 }: ChoicesProps): JSX.Element {
-
   var cps: JSX.Element[];
 
   // creates each choice from choices
@@ -85,8 +91,10 @@ function Choices({
         answer={x}
         partOfSingleSelect={partOfSingleSelect}
         isActive={selectedChoices?.has(x)}
-        handleSelectChoice={handleSelectChoice}></Choice>));
-    return cps
+        handleSelectChoice={handleSelectChoice}
+      ></Choice>
+    ));
+    return cps;
   }
   return <div> {buildCps()}</div>;
 }
@@ -99,11 +107,10 @@ function Question({
   selectedChoices,
   handleSelectChoice,
 }: QuestionProps): JSX.Element {
-
   return (
     <div id="questionContainer">
       <p>{title}</p>
-      <div >
+      <div>
         <Choices
           questionKey={questionKey}
           choices={choices}
