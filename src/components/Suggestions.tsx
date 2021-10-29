@@ -8,10 +8,12 @@ interface PropTypes {
 }
 
 const LIMIT_INCREMENT = 3;
+const MORE_BUTTON_DISABLED = false;
 
 function Suggestions({ choices }: PropTypes): JSX.Element {
   const { data: suggestions } = useIdeas();
   const [limit, setLimit] = React.useState(LIMIT_INCREMENT);
+  const [moreDisabled, setMoreDisabled] = React.useState(MORE_BUTTON_DISABLED);
   const questionKeys = ["Age", "Type", "Interests", "Price"];
 
   function filterSuggestions(row: Gift) {
@@ -64,7 +66,13 @@ function Suggestions({ choices }: PropTypes): JSX.Element {
       <br />
       <button
         id="button_moreSuggestions"
-        onClick={increaseLimit}
+        disabled = {moreDisabled}
+        onClick={() => {
+          increaseLimit()
+          if(limit+LIMIT_INCREMENT >= suggestions.filter(filterSuggestions).length) {
+            setMoreDisabled(true);
+          }
+        }}
       >
         More
       </button>
