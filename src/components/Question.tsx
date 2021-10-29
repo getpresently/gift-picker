@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-//import React from "react";
 
 interface QuestionProps {
   title: string;
@@ -10,7 +9,7 @@ interface QuestionProps {
   handleSelectChoice: (isSingleSelect: boolean, k: string, v: string) => void;
 }
 
-interface ChoiceProps   {
+interface ChoiceProps {
   questionKey: string;
   answer: string;
   partOfSingleSelect: boolean;
@@ -18,28 +17,33 @@ interface ChoiceProps   {
   handleSelectChoice: (isSingleSelect: boolean, k: string, v: string) => void;
 }
 
-function Choice({ questionKey, answer, partOfSingleSelect, isActive, handleSelectChoice }: ChoiceProps) {
-
+function Choice({
+  questionKey,
+  answer,
+  partOfSingleSelect,
+  isActive,
+  handleSelectChoice,
+}: ChoiceProps) {
   // inactive color settings
-  const inactiveColor = "#a060fb60";
-  const inactiveTextColor = "black"
+  const INACTIVE_COLOR = "#a060fb60";
+  const INACTIVE_TEXT_COLOR = "black";
 
-  // active color 
-  const activeColor = "#a160fb";
-  const activeTextColor = "white";
+  // active color
+  const ACTIVE_COLOR = "#a160fb";
+  const ACTIVE_TEXT_COLOR = "white";
 
   // default to inactive color
-  const [color, setColor] = useState(inactiveColor);
-  const [textColor, setTextColor] = useState(inactiveTextColor);
+  const [color, setColor] = useState(INACTIVE_COLOR);
+  const [textColor, setTextColor] = useState(INACTIVE_TEXT_COLOR);
 
   // changes color according to if is active
   useEffect(() => {
     if (isActive) {
-      setColor(activeColor);
-      setTextColor(activeTextColor);
+      setColor(ACTIVE_COLOR);
+      setTextColor(ACTIVE_TEXT_COLOR);
     } else {
-      setColor(inactiveColor);
-      setTextColor(inactiveTextColor);
+      setColor(INACTIVE_COLOR);
+      setTextColor(INACTIVE_TEXT_COLOR);
     }
   }, [isActive]);
 
@@ -48,10 +52,12 @@ function Choice({ questionKey, answer, partOfSingleSelect, isActive, handleSelec
   }
 
   return (
-    <div onClick={handleClick} >
+    <div onClick={handleClick}>
       <div>
-        <button id={answer}
-          style={{ backgroundColor: color, color: textColor }}>
+        <button
+          id={answer}
+          style={{ backgroundColor: color, color: textColor }}
+        >
           {answer}
         </button>
       </div>
@@ -74,10 +80,9 @@ function Choices({
   handleSelectChoice,
   selectedChoices,
 }: ChoicesProps): JSX.Element {
-
   var cps: JSX.Element[];
 
-  // creates each choice is choices
+  // creates each choice from choices
   function buildCps(): JSX.Element[] {
     cps = choices.map((x, i) => (
       <Choice
@@ -86,8 +91,10 @@ function Choices({
         answer={x}
         partOfSingleSelect={partOfSingleSelect}
         isActive={selectedChoices?.has(x)}
-        handleSelectChoice={handleSelectChoice}></Choice>));
-    return cps
+        handleSelectChoice={handleSelectChoice}
+      ></Choice>
+    ));
+    return cps;
   }
   return <div> {buildCps()}</div>;
 }
@@ -100,12 +107,10 @@ function Question({
   selectedChoices,
   handleSelectChoice,
 }: QuestionProps): JSX.Element {
-
   return (
     <div id="questionContainer">
       <p>{title}</p>
-
-      <div >
+      <div>
         <Choices
           questionKey={questionKey}
           choices={choices}
