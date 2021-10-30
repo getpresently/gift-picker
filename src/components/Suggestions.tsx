@@ -10,7 +10,7 @@ interface PropTypes {
 const LIMIT_INCREMENT = 3;
 
 function Suggestions({ choices }: PropTypes): JSX.Element {
-  const { data: suggestions, loading : isLoading} = useIdeas();
+  const { data: suggestions, loading: isLoading } = useIdeas();
   const [limit, setLimit] = React.useState(LIMIT_INCREMENT);
   const questionKeys = ["Age", "Type", "Interests", "Price"];
 
@@ -44,13 +44,11 @@ function Suggestions({ choices }: PropTypes): JSX.Element {
     .slice(0, limit);
 
   if (isLoading) {
-  console.log("load")
-  console.log(isLoading)
-  return (
-  <div>
-  hi
-  </div>
-);
+    console.log("load");
+    console.log(isLoading);
+    return (
+      <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-gray-900"></div>
+    );
   }
 
   if (filteredSuggestions.length == 0 && !isLoading) {
