@@ -4,11 +4,10 @@ import { Gift } from "../utils/types";
 import Suggestion from "./Suggestion";
 
 interface PropTypes {
-  choices: { [key: string]: string };
+  choices: { [key: string]: Set<string> };
 }
 
 const LIMIT_INCREMENT = 3;
-
 
 function Suggestions({ choices }: PropTypes): JSX.Element {
   const { data: suggestions } = useIdeas();
@@ -19,19 +18,14 @@ function Suggestions({ choices }: PropTypes): JSX.Element {
   function filterSuggestions(row: Gift) {
     let filter = true;
     for (const questionKey of questionKeys) {
-      if (
-        Array.isArray(row[questionKey as keyof Gift]) &&
-        !!choices[questionKey]
-      ) {
-        filter =
-          filter &&
-          row[questionKey as keyof Gift].includes(choices[questionKey]);
+      const choice = choices[questionKey].values().next().value;
+      if (Array.isArray(row[questionKey as keyof Gift]) && !!choice) {
+        filter = filter && row[questionKey as keyof Gift].includes(choice);
       } else if (
-        typeof row[questionKey as keyof Gift] === "string" &&
+        typeof row[questionKey as keyof Gift] === 'string' &&
         !!choices[questionKey]
       ) {
-        filter =
-          filter && row[questionKey as keyof Gift] === choices[questionKey];
+        filter = filter && row[questionKey as keyof Gift] === choice;
       }
     }
     return filter;
