@@ -1,4 +1,11 @@
-import { useEffect, useState } from "react";
+// constants
+// inactive color settings
+const INACTIVE_COLOR = "#a060fb60";
+const INACTIVE_TEXT_COLOR = "black";
+
+// active color
+const ACTIVE_COLOR = "#a160fb";
+const ACTIVE_TEXT_COLOR = "white";
 
 interface QuestionProps {
   title: string;
@@ -24,28 +31,20 @@ function Choice({
   isActive,
   handleSelectChoice,
 }: ChoiceProps) {
-  // inactive color settings
-  const INACTIVE_COLOR = "#a060fb60";
-  const INACTIVE_TEXT_COLOR = "black";
-
-  // active color
-  const ACTIVE_COLOR = "#a160fb";
-  const ACTIVE_TEXT_COLOR = "white";
-
   // default to inactive color
-  const [color, setColor] = useState(INACTIVE_COLOR);
-  const [textColor, setTextColor] = useState(INACTIVE_TEXT_COLOR);
+  let color;
+  let textColor;
 
-  // changes color according to if is active
-  useEffect(() => {
+  function pickColor() {
     if (isActive) {
-      setColor(ACTIVE_COLOR);
-      setTextColor(ACTIVE_TEXT_COLOR);
+      color = ACTIVE_COLOR;
+      textColor = ACTIVE_TEXT_COLOR;
     } else {
-      setColor(INACTIVE_COLOR);
-      setTextColor(INACTIVE_TEXT_COLOR);
+      color = INACTIVE_COLOR;
+      textColor = INACTIVE_TEXT_COLOR;
     }
-  }, [isActive]);
+    return [color, textColor];
+  }
 
   function handleClick() {
     handleSelectChoice(partOfSingleSelect, questionKey, answer);
@@ -56,7 +55,7 @@ function Choice({
       <div>
         <button
           id={answer}
-          style={{ backgroundColor: color, color: textColor }}
+          style={{ backgroundColor: pickColor()[0], color: pickColor()[1] }}
         >
           {answer}
         </button>
@@ -80,23 +79,21 @@ function Choices({
   handleSelectChoice,
   selectedChoices,
 }: ChoicesProps): JSX.Element {
-  var cps: JSX.Element[];
-
-  // creates each choice from choices
-  function buildCps(): JSX.Element[] {
-    cps = choices.map((x, i) => (
-      <Choice
-        key={`ch-${i}`}
-        questionKey={questionKey}
-        answer={x}
-        partOfSingleSelect={partOfSingleSelect}
-        isActive={selectedChoices?.has(x)}
-        handleSelectChoice={handleSelectChoice}
-      ></Choice>
-    ));
-    return cps;
-  }
-  return <div> {buildCps()}</div>;
+  return (
+    <div>
+      {" "}
+      {choices.map((answerText, questionId) => (
+        <Choice
+          key={`ch-${questionId}`}
+          questionKey={questionKey}
+          answer={answerText}
+          partOfSingleSelect={partOfSingleSelect}
+          isActive={selectedChoices?.has(answerText)}
+          handleSelectChoice={handleSelectChoice}
+        />
+      ))}
+    </div>
+  );
 }
 
 function Question({
