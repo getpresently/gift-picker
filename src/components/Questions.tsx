@@ -11,14 +11,14 @@ interface PropTypes {
 function Questions({ handleSelectChoice, choices, page }: PropTypes): JSX.Element {
   const { data: questions } = useQuestions();
 
-  let questionArr = questions.map((x, i) => (
-    <Question
-          key={`que-${i}`}
-          title={x.question}
-          questionKey={x.questionKey}
+  let questionArr = questions.map((answerTexts, questionId) => (
+        <Question
+          key={`que-${questionId}`}
+          title={answerTexts.question}
+          questionKey={answerTexts.questionKey}
           isSingleSelect={true}
-          choices={x.answers}
-          selectedChoices={choices[x.questionKey]}
+          choices={answerTexts.answers}
+          selectedChoices={choices[answerTexts.questionKey]}
           handleSelectChoice={handleSelectChoice}
     />
   ));

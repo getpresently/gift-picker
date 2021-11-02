@@ -38,17 +38,18 @@ function App(): JSX.Element {
 
   // changes state depending on if the question is single/multi select
   // removes from state if previously selected, adds to state if new
-  function handleSelectChoice(isSingleSelect: boolean, choiceType: string, choiceValue: string) {
-    let newChoices = choices[choiceType];
-    if (!newChoices) {
-      newChoices = new Set<string>();
-    }
+  function handleSelectChoice(
+    isSingleSelect: boolean,
+    choiceType: string,
+    choiceValue: string
+  ) {
+    let newChoices = choices[choiceType] || new Set<string>();
 
     if (isSingleSelect) {
       if (newChoices.has(choiceValue)) {
-        newChoices = new Set<string>();
+        newChoices.clear();
       } else {
-        newChoices = new Set<string>();
+        newChoices.clear();
         newChoices.add(choiceValue);
       }
     } else {
@@ -65,7 +66,6 @@ function App(): JSX.Element {
     };
 
     setChoices(newChoicesDict);
-    console.log(newChoicesDict);
   }
 
   var question = (
