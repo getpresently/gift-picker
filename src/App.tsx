@@ -22,9 +22,10 @@ function App(): JSX.Element {
   // choices[question]: set of size 1 if key is single select question identifier
   const [choices, setChoices] = useState<{ [key: string]: Set<string> }>({});
   const [currentPage, setCurrentPage] = useState<number>(1);
+  const numPages = 4;
 
   function handleNextPage(newVal: number) {
-    if (newVal < 4) {
+    if (newVal < numPages) {
       setCurrentPage(newVal + 1);
     }
   }
@@ -85,7 +86,7 @@ function App(): JSX.Element {
         </button>
       </div>
     );
-  } else if (currentPage === 4) {
+  } else if (currentPage === numPages) {
     buttons = (
       <div>
         <div id="previousButton">
