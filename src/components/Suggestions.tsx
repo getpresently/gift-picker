@@ -6,18 +6,19 @@ interface PropTypes {
   choices: { [key: string]: Set<string> };
 }
 
+const MANDATORY_QUESTION_KEYS = ["Age"];
+const WEIGHTED_QUESTION_KEYS = ["Type", "Interests", "Price"];
+const WEIGHTED_QUESTION_VALUES = [1, 1, 1];
+
 function Suggestions({ choices }: PropTypes): JSX.Element {
   const { data: suggestions } = useIdeas();
-  const mandatoryQuestionKeys = ["Age"];
-  const weightedQuestionKeys = ["Type", "Interests", "Price"];
-  const weightedQuestionValues = [1, 1, 1];
 
   // caculates the relevance score for a gift
-  function calcGiftScore(curGift: Gift) {
+  function calculateGiftScore(curGift: Gift) {
     let score = 0;
 
     // returns -1 if mandatory attributes are not met
-    for (const questionKey of mandatoryQuestionKeys) {
+    for (const questionKey of MANDATORY_QUESTION_KEYS) {
       const giftAttributes = curGift[questionKey as keyof Gift];
       let valid = false;
 
@@ -34,18 +35,16 @@ function Suggestions({ choices }: PropTypes): JSX.Element {
     }
 
     // calucates weighted score for if gift meets all mandatory attributes
-    for (const questionKey of weightedQuestionKeys) {
+    for (const questionKey of WEIGHTED_QUESTION_KEYS) {
       const giftAttributes = curGift[questionKey as keyof Gift];
 
       if (Array.isArray(giftAttributes) && !!choices[questionKey]) {
         choices[questionKey].forEach(function (selection) {
           if (giftAttributes.includes(selection)) {
-            score =
-              score +
-              1 *
-                weightedQuestionValues[
-                  weightedQuestionKeys.indexOf(questionKey)
-                ];
+            score +=
+              WEIGHTED_QUESTION_VALUES[
+                WEIGHTED_QUESTION_KEYS.indexOf(questionKey)
+              ];
           }
         });
       }
@@ -55,15 +54,15 @@ function Suggestions({ choices }: PropTypes): JSX.Element {
 
   // calculates the score for a given gift
   // returns tuple of the gift and its score
-  function filterSuggestions(row: Gift): [Gift, number] {
-    let score = calcGiftScore(row);
+  function getGiftScore(row: Gift): [Gift, number] {
+    let score = calculateGiftScore(row);
     return [row, score];
   }
 
   // filters out options that dont fit mandatory attributes
   // returns a list of gifts in decending order based on weighted scores (highest-> lowest)
-  function sortedSuggestions(suggestions: Gift[]): Gift[] {
-    let giftAndScore = suggestions.map((gift) => filterSuggestions(gift));
+  function sortGiftsByScore(suggestions: Gift[]): Gift[] {
+    let giftAndScore = suggestions.map((gift) => getGiftScore(gift));
     giftAndScore = giftAndScore.filter((gift) => gift[1] > 0);
     giftAndScore = giftAndScore.sort((a, b) => b[1] - a[1]);
     let onlyGifts = giftAndScore.map((row) => row[0]);
@@ -79,7 +78,7 @@ function Suggestions({ choices }: PropTypes): JSX.Element {
         <hr></hr>
       </div>
       <div className="columns">
-        {sortedSuggestions(suggestions).map((x, i) => (
+        {sortGiftsByScore(suggestions).map((x, i) => (
           <Suggestion
             photo={x.photo}
             key={`que-${i}`}
