@@ -1,41 +1,50 @@
-import { useState } from "react";
+// constants
+// inactive color settings
+const INACTIVE_COLOR = "#a060fb60";
+const INACTIVE_TEXT_COLOR = "black";
+
+// active color
+const ACTIVE_COLOR = "#a160fb";
+const ACTIVE_TEXT_COLOR = "white";
 
 interface QuestionProps {
   title: string;
   questionKey: string;
   choices: string[];
-  handleSelectChoice: (k: string, v: string) => void;
-  selected: { [key: string]: string };
+  isSingleSelect: boolean;
+  selectedChoices: Set<string>;
+  handleSelectChoice: (isSingleSelect: boolean, k: string, v: string) => void;
 }
 
 interface ChoiceProps {
   questionKey: string;
   answer: string;
-  handleSelectChoice: (k: string, v: string) => void;
-  selected: boolean;
+  partOfSingleSelect: boolean;
+  isActive: boolean;
+  handleSelectChoice: (isSingleSelect: boolean, k: string, v: string) => void;
 }
 
-function Choice({ questionKey, answer, handleSelectChoice, selected }: ChoiceProps) {
-  const [color, setColor] = useState("#a060fb60");
-  const [textColor, setTextColor] = useState("black");
-
+function Choice({
+  questionKey,
+  answer,
+  partOfSingleSelect,
+  isActive,
+  handleSelectChoice,
+}: ChoiceProps) {
   function handleClick() {
-    handleSelectChoice(questionKey, answer);
-    setColor("#a160fb");
-    setTextColor("white");
-  }
-
-  let backgroundClr = color;
-  let textClr = textColor;
-  if (selected) {
-    backgroundClr = "#a160fb";
-    textClr = "white";
+    handleSelectChoice(partOfSingleSelect, questionKey, answer);
   }
 
   return (
     <div onClick={handleClick}>
       <div>
-        <button style={{ backgroundColor: backgroundClr, color: textClr }}>
+        <button
+          id={answer}
+          style={{
+            backgroundColor: isActive ? ACTIVE_COLOR : INACTIVE_COLOR,
+            color: isActive ? ACTIVE_TEXT_COLOR : INACTIVE_TEXT_COLOR,
+          }}
+        >
           {answer}
         </button>
       </div>
@@ -46,37 +55,30 @@ function Choice({ questionKey, answer, handleSelectChoice, selected }: ChoicePro
 interface ChoicesProps {
   questionKey: string;
   choices: string[];
-  handleSelectChoice: (k: string, v: string) => void;
-  selected: { [key: string]: string };
+  partOfSingleSelect: boolean;
+  handleSelectChoice: (isSingleSelect: boolean, k: string, v: string) => void;
+  selectedChoices: Set<string>;
 }
 
 function Choices({
   questionKey,
   choices,
+  partOfSingleSelect,
   handleSelectChoice,
-  selected
+  selectedChoices,
 }: ChoicesProps): JSX.Element {
-  let isSelected = false;
   return (
-    <div className="choicesContainer">
-      {console.log(choices)}
-      {console.log(selected)}
-      
-      {choices.map((x, i) => {
-        if (Object.values(selected).includes(x)) {
-          isSelected = true;
-        } else {
-          isSelected = false;
-        }
-        console.log(isSelected);
-        return (<Choice
-          key={`ch-${i}`}
+    <div>
+      {choices.map((answerText, questionId) => (
+        <Choice
+          key={`ch-${questionId}`}
           questionKey={questionKey}
-          answer={x}
+          answer={answerText}
+          partOfSingleSelect={partOfSingleSelect}
+          isActive={selectedChoices?.has(answerText)}
           handleSelectChoice={handleSelectChoice}
-          selected={isSelected}
-        />)
-      })}
+        />
+      ))}
     </div>
   );
 }
@@ -85,8 +87,9 @@ function Question({
   title,
   questionKey,
   choices,
+  isSingleSelect,
+  selectedChoices,
   handleSelectChoice,
-  selected
 }: QuestionProps): JSX.Element {
   return (
     <div id="questionContainer">
@@ -95,8 +98,9 @@ function Question({
         <Choices
           questionKey={questionKey}
           choices={choices}
+          partOfSingleSelect={isSingleSelect}
+          selectedChoices={selectedChoices}
           handleSelectChoice={handleSelectChoice}
-          selected={selected}
         />
       </div>
     </div>
