@@ -18,7 +18,9 @@ function App(): JSX.Element {
     setScene(sceneTo);
   }
 
-  const [choices, setChoice] = useState<{ [key: string]: string }>({});
+  // choices[question]: set of choices if key is multi select question identifier
+  // choices[question]: set of size 1 if key is single select question identifier
+  const [choices, setChoices] = useState<{ [key: string]: Set<string> }>({});
   const [currentPage, setCurrentPage] = useState<number>(1);
 
   function handleNextPage(newVal: number) {
@@ -32,16 +34,42 @@ function App(): JSX.Element {
       setCurrentPage(newVal - 1);
     }
   }
+  
 
-  function handleSelectChoice(choiceType: string, choiceValue: string) {
-    setChoice((state) => ({
-      ...state,
-      [choiceType]: choiceValue,
-    }));
+  // changes state depending on if the question is single/multi select
+  // removes from state if previously selected, adds to state if new
+  function handleSelectChoice(isSingleSelect: boolean, choiceType: string, choiceValue: string) {
+    let newChoices = choices[choiceType];
+    if (!newChoices) {
+      newChoices = new Set<string>();
+    }
+
+    if (isSingleSelect) {
+      if (newChoices.has(choiceValue)) {
+        newChoices = new Set<string>();
+      } else {
+        newChoices = new Set<string>();
+        newChoices.add(choiceValue);
+      }
+    } else {
+      if (newChoices?.has(choiceValue)) {
+        newChoices.delete(choiceValue);
+      } else {
+        newChoices.add(choiceValue);
+      }
+    }
+
+    const newChoicesDict = {
+      ...choices,
+      [choiceType]: newChoices,
+    };
+
+    setChoices(newChoicesDict);
+    console.log(newChoicesDict);
   }
 
   var question = (
-    <Questions handleSelectChoice={handleSelectChoice} page={currentPage} selected={choices}/>
+    <Questions handleSelectChoice={handleSelectChoice} page={currentPage} choices={choices}/>
   );
   var page = <ScrollablePage childComp={question}></ScrollablePage>;
 
