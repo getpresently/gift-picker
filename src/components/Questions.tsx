@@ -12,14 +12,14 @@ function Questions({ handleSelectChoice, choices }: PropTypes): JSX.Element {
 
   return (
     <div id="questionsContainer">
-      {questions.map((x, i) => (
+      {questions.map((answerTexts, questionId) => (
         <Question
-          key={`que-${i}`}
-          title={x.question}
-          questionKey={x.questionKey}
+          key={`que-${questionId}`}
+          title={answerTexts.question}
+          questionKey={answerTexts.questionKey}
           isSingleSelect={true}
-          choices={x.answers}
-          selectedChoices={choices[x.questionKey]}
+          choices={answerTexts.answers}
+          selectedChoices={choices[answerTexts.questionKey]}
           handleSelectChoice={handleSelectChoice}
         />
       ))}
