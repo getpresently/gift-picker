@@ -1,6 +1,5 @@
 import { useState } from "react";
 import "./App.css";
-
 import Questions from "./components/Questions";
 import Suggestions from "./components/Suggestions";
 import Footer from "./components/Footer";
