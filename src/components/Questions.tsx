@@ -20,7 +20,7 @@ function Questions({
       key={`que-${questionId}`}
       title={answerTexts.question}
       questionKey={answerTexts.questionKey}
-      isSingleSelect={true}
+      isSingleSelect={answerTexts.isSingleSelect}
       choices={answerTexts.answers}
       selectedChoices={choices[answerTexts.questionKey]}
       handleSelectChoice={handleSelectChoice}
