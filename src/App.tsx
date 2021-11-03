@@ -34,7 +34,7 @@ function App(): JSX.Element {
       setCurrentPage(currentPage - 1);
     }
   }
-  
+
   // changes state depending on if the question is single/multi select
   // removes from state if previously selected, adds to state if new
   function handleSelectChoice(
@@ -68,10 +68,13 @@ function App(): JSX.Element {
   }
 
   const question = (
-    <Questions handleSelectChoice={handleSelectChoice} page={currentPage} choices={choices}/>
+    <Questions
+      handleSelectChoice={handleSelectChoice}
+      page={currentPage}
+      choices={choices}
+    />
   );
   const page = <ScrollablePage childComp={question}></ScrollablePage>;
-
 
   if (scene === Scene.Questions) {
     return (
@@ -88,7 +91,12 @@ function App(): JSX.Element {
         <div>
           <div id="container">
             {page}
-            <Buttons handlePageChange={handlePageChange} handleSubmit={() => handleSceneChange(Scene.Suggestions)} currentPage={currentPage} numPages={NUM_PAGES}></Buttons>
+            <Buttons
+              handlePageChange={handlePageChange}
+              handleSubmit={() => handleSceneChange(Scene.Suggestions)}
+              currentPage={currentPage}
+              numPages={NUM_PAGES}
+            ></Buttons>
           </div>
           <Footer />
         </div>

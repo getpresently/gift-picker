@@ -1,6 +1,7 @@
 export interface QAndA {
   question: string;
   questionKey: string;
+  isSingleSelect: boolean;
   answers: string[];
 }
 

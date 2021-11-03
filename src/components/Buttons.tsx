@@ -2,7 +2,7 @@ interface PropTypes {
   handlePageChange: (next: boolean) => void;
   handleSubmit: () => void;
   currentPage: number;
-  numPages: number
+  numPages: number;
 }
 
 // buttons for horizontal question navigation
@@ -10,16 +10,16 @@ function Buttons({ handlePageChange, handleSubmit, currentPage, numPages }: Prop
   return (
     <>
       {currentPage > 1 && (
-        <button id="button_changeScene" onClick={() => handlePageChange(false)}>
+        <button className="button_nav" onClick={() => handlePageChange(false)}>
           Previous
         </button>
       )}
       {currentPage < numPages ? (
-        <button id="button_changeScene" onClick={() => handlePageChange(true)}>
+        <button className="button_nav" onClick={() => handlePageChange(true)}>
           Next
         </button>
       ) : (
-        <button id="button_changeScene" onClick={handleSubmit}>
+        <button className="button_nav" onClick={handleSubmit}>
           SUBMIT
         </button>
       )}
