@@ -2,7 +2,7 @@
 
 .App {
   text-align: center;
-  font-family: 'Poppins', sans-serif;
+  font-family: "Poppins", sans-serif;
   font-size: calc(5px + 2vmin);
 }
 
@@ -28,7 +28,7 @@
 }
 
 .App-title {
-  font-family: 'Poppins', sans-serif;
+  font-family: "Poppins", sans-serif;
   letter-spacing: 2.5px;
   margin: 2em;
 }
@@ -40,18 +40,18 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  color:black;
+  color: black;
 }
 
 .App-link {
-  color:black;
+  color: black;
 }
 
 /* QUZ PAGE */
 
 .choicesContainer {
-  display:inline-flex;
-  flex-wrap:wrap;
+  display: inline-flex;
+  flex-wrap: wrap;
   justify-content: center;
   gap: 15px;
   max-width: 315px;
@@ -161,8 +161,22 @@ img {
 
 .fab.fa-instagram {
   color: transparent;
-  background: radial-gradient(circle at 30% 107%, #fdf497 0%, #fdf497 5%, #fd5949 45%, #d6249f 60%, #285AEB 90%);
-  background: -webkit-radial-gradient(circle at 30% 107%, #fdf497 0%, #fdf497 5%, #fd5949 45%, #d6249f 60%, #285AEB 90%);
+  background: radial-gradient(
+    circle at 30% 107%,
+    #fdf497 0%,
+    #fdf497 5%,
+    #fd5949 45%,
+    #d6249f 60%,
+    #285aeb 90%
+  );
+  background: -webkit-radial-gradient(
+    circle at 30% 107%,
+    #fdf497 0%,
+    #fdf497 5%,
+    #fd5949 45%,
+    #d6249f 60%,
+    #285aeb 90%
+  );
   background-clip: text;
   -webkit-background-clip: text;
 }
@@ -190,7 +204,7 @@ button {
   height: calc(45px + 2vmin);*/
   width: auto;
   height: auto;
-  font-family: 'Poppins', sans-serif;
+  font-family: "Poppins", sans-serif;
   color: #000;
   background-color: #a060fb60;
   /*border: 1.5px solid black;*/
@@ -205,7 +219,7 @@ button {
 }
 
 button:hover {
-  background-color:#a160fb;
+  background-color: #a160fb;
   /*box-shadow: 0px 15px 20px rgba(0, 0, 0, 0.1);*/
   color: white;
 }
@@ -226,19 +240,19 @@ button:hover {
 .Presently-logo a:link {
   color: black;
   text-decoration: none;
-  font-family: 'Pacifico', cursive;
+  font-family: "Pacifico", cursive;
 }
 
 .Presently-logo a:visited {
   color: black;
   text-decoration: none;
-  font-family: 'Pacifico', cursive;
+  font-family: "Pacifico", cursive;
 }
 
 .Presently-logo a:hover {
   color: #a160fb;
   text-decoration: none;
-  font-family: 'Pacifico', cursive;
+  font-family: "Pacifico", cursive;
   transition: all 0.3s ease 0s;
 }
 
@@ -325,7 +339,7 @@ a:hover {
 
 #questionContainer p {
   margin-top: 0;
-} 
+}
 
 #submit:hover {
   background-color: white;
@@ -342,5 +356,5 @@ a:hover {
   flex-wrap: wrap;
   flex-flow: row wrap;
   align-content: flex-end;
-  margin: 30px
+  margin: 30px;
 }

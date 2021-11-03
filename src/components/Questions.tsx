@@ -8,18 +8,22 @@ interface PropTypes {
 }
 
 // creates questions with attributes from google sheet
-function Questions({ handleSelectChoice, choices, page }: PropTypes): JSX.Element {
+function Questions({
+  handleSelectChoice,
+  choices,
+  page,
+}: PropTypes): JSX.Element {
   const { data: questions } = useQuestions();
 
   let questionArr = questions.map((answerTexts, questionId) => (
-        <Question
-          key={`que-${questionId}`}
-          title={answerTexts.question}
-          questionKey={answerTexts.questionKey}
-          isSingleSelect={true}
-          choices={answerTexts.answers}
-          selectedChoices={choices[answerTexts.questionKey]}
-          handleSelectChoice={handleSelectChoice}
+    <Question
+      key={`que-${questionId}`}
+      title={answerTexts.question}
+      questionKey={answerTexts.questionKey}
+      isSingleSelect={true}
+      choices={answerTexts.answers}
+      selectedChoices={choices[answerTexts.questionKey]}
+      handleSelectChoice={handleSelectChoice}
     />
   ));
 

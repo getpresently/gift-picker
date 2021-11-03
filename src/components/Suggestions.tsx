@@ -1,6 +1,6 @@
-import { useIdeas } from '../utils/hooks';
-import { Gift } from '../utils/types';
-import Suggestion from './Suggestion';
+import { useIdeas } from "../utils/hooks";
+import { Gift } from "../utils/types";
+import Suggestion from "./Suggestion";
 
 interface PropTypes {
   choices: { [key: string]: Set<string> };
