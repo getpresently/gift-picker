@@ -102,7 +102,7 @@ export function useQuestions(): { data: QAndA[]; loading: boolean } {
       } else if (key === "QuestionKey") {
         qa.questionKey = row[key];
       } else if (key === "SelectType") {
-        qa.isSingleSelect = (row[key] == "single");
+        qa.isSingleSelect = row[key] === "single";
       } else if (key.slice(0, 1) === "A") {
         qa.answers.push(row[key]);
       }
