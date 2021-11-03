@@ -107,19 +107,20 @@ img {
 
 /* ALL PAGES */
 
-#button_changeScene {
+.button_nav {
   padding: 10px 20px;
   background-color: #a160fb;
   color: white;
   border: none;
   border-radius: 12px;
   font-size: calc(5px + 2vmin);
-  margin: 2em;
+  margin: 1em;
+  margin-bottom: 2em;
 }
 
-/*#button_changeScene:hover {
-  background-color: #a160fb;
-}*/
+.buttonContainer div{
+  float: left;
+}
 
 .footer {
   background-color: black;

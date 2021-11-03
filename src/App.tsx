@@ -104,7 +104,7 @@ function App(): JSX.Element {
         </div>
         <div id="backButton">
           <button
-            id="button_changeScene"
+            className="button_nav"
             onClick={() => handleSceneChange(Scene.Home)}
           >
             HOME
@@ -129,7 +129,7 @@ function App(): JSX.Element {
             <img className="logo" src="./App-logo.png" alt=""></img>
             <div id="startButton">
               <button
-                id="button_changeScene"
+                className="button_nav"
                 onClick={() => handleSceneChange(Scene.Questions)}
               >
                 START QUIZ

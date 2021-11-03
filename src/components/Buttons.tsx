@@ -9,54 +9,46 @@ interface PropTypes {
 function Buttons({ handlePageChange, handleSubmit, currentPage, numPages }: PropTypes): JSX.Element {
 
   const prev = (
-    <div id="previousButton">
-      <button
-        id="button_changeScene"
-        onClick={() => handlePageChange(false)}
-      >
-        Previous
-      </button>
-    </div>
+    <button
+      className="button_nav"
+      onClick={() => handlePageChange(false)}
+    >
+      Previous
+    </button>
   );
   const next = (
-    <div id="nextButton">
-      <button
-        id="button_changeScene"
-        onClick={() => handlePageChange(true)}
-      >
-        Next
-      </button>
-    </div>
+    <button
+      className="button_nav"
+      onClick={() => handlePageChange(true)}
+    >
+      Next
+    </button>
   );
   const submit = (
-    <div id="submitButton">
-      <button
-        id="button_changeScene"
-        onClick={() => handleSubmit()}
-      >
-        SUBMIT
-      </button>
-    </div>
+    <button
+      className="button_nav"
+      onClick={() => handleSubmit()}
+    >
+      SUBMIT
+    </button>
   )
 
   if (currentPage === 1) {
     return (
-      <div>
+      <div className="buttonContainer">
         {next}
       </div>
     );
   } else if (currentPage === numPages) {
     return (
-      <div>
-        {prev}
-        {submit}
+      <div className="buttonContainer">
+        {prev} {submit}
       </div>
     );
   } else {
     return (
-      <div>
-        {prev}
-        {next}
+      <div className="buttonContainer">
+        {prev} {next}
       </div>
     );
   }
