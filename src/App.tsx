@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import "./App.css";
 import Questions from "./components/Questions";
 import Suggestions from "./components/Suggestions";
@@ -12,6 +12,15 @@ enum Scene {
 
 function App(): JSX.Element {
   const [scene, setScene] = useState<Scene>(Scene.Home);
+  const [submitDisabled, setSubmitDisabled] = useState(true);
+
+  useEffect(() => {
+    setSubmitDisabled(!(
+      choices["Age"] !== undefined && choices["Age"].size > 0 && 
+      choices["Interests"] !== undefined && choices["Interests"].size > 0 && 
+      choices["Price"] !== undefined && choices["Price"].size > 0 &&
+      choices["Type"] !== undefined && choices["Type"].size > 0));
+  })
 
   function handleSceneChange(sceneTo: Scene) {
     setScene(sceneTo);
@@ -75,6 +84,7 @@ function App(): JSX.Element {
           <div id="submitButton">
             <button
               id="button_changeScene"
+              disabled={submitDisabled}
               onClick={() => handleSceneChange(Scene.Suggestions)}
             >
               SUBMIT
