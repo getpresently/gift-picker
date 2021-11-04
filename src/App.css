@@ -1,16 +1,19 @@
 /* MAIN PAGE */
-
+/*
 .App {
   text-align: center;
-  font-family: 'Poppins', sans-serif;
-  font-size: calc(5px + 2vmin);
-}
+  font-family: 'Glacial Indifference', sans-serif;
+  font-size: .8vw;
+
+}*/
+
+
 
 .logo {
   height: 250px;
   width: 250px;
   background-color: transparent;
-  margin: auto;
+  margin:0%;
 }
 
 .App-toplogo {
@@ -26,15 +29,17 @@
   width: auto;
   height: 100%;
 }
-
-.App-title {
-  font-family: 'Poppins', sans-serif;
+/*
+#App-title {
+font-family: 'Glacial Indifference', sans-serif;
   letter-spacing: 2.5px;
   margin: 2em;
-}
+  color: calc(black-50);
 
-.App-header {
-  background-color: white;
+}
+*/
+/*
+#App-header {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
@@ -42,6 +47,7 @@
   justify-content: center;
   color:black;
 }
+*/
 
 .App-link {
   color:black;
@@ -106,7 +112,7 @@ img {
 }
 
 /* ALL PAGES */
-
+/*
 #button_changeScene {
   padding: 10px 20px;
   background-color: #a160fb;
@@ -115,20 +121,13 @@ img {
   border-radius: 12px;
   font-size: calc(5px + 2vmin);
   margin: 2em;
-}
+}*/
 
 /*#button_changeScene:hover {
   background-color: #a160fb;
 }*/
 
-.footer {
-  background-color: black;
-  position: absolute;
-  width: 100%;
-  font-size: calc(5px + 1vmin);
-}
-
-.footer p {
+#Footer p {
   text-align: left;
   color: white;
 }
@@ -138,7 +137,7 @@ img {
   width: 50px;
 }
 
-.footer-logo {
+#FooterLogo {
   display: flex;
   justify-content: left;
   margin: 3em;
@@ -152,7 +151,7 @@ img {
 }
 
 .footer-section {
-  margin: 0;
+  margin: 0%;
 }
 
 .footer-copyright {
@@ -168,7 +167,7 @@ img {
 }
 
 /* Button Class for Quiz Choices */
-/*.choiceButtons button {
+.choiceButtons button {
   width: calc(90px + 2vmin);
   height: calc(45px + 2vmin);
   font-family: 'Poppins', sans-serif;
@@ -183,18 +182,15 @@ img {
   font-size: calc(5px + 1vmin);
   padding: 5px 10px;
 }
-*/
 
+/*
 button {
-  /*width: calc(90px + 2vmin);
-  height: calc(45px + 2vmin);*/
+ 
   width: auto;
   height: auto;
   font-family: 'Poppins', sans-serif;
   color: #000;
   background-color: #a060fb60;
-  /*border: 1.5px solid black;*/
-  /*box-shadow: 0px 10px 15px rgba(0, 0, 0, 0.1);*/
   transition: all 0.3s ease 0s;
   cursor: pointer;
   border: 1px solid transparent;
@@ -203,12 +199,13 @@ button {
   font-size: calc(5px + 1vmin);
   padding: 5px 10px;
 }
+*/
 
+/*
 button:hover {
   background-color:#a160fb;
-  /*box-shadow: 0px 15px 20px rgba(0, 0, 0, 0.1);*/
   color: white;
-}
+} */
 
 #top {
   margin-top: 2em;
@@ -304,7 +301,7 @@ a:hover {
 
 /* HORIZONTAL SCROLL */
 
-/*#container {
+#container {
   width: 400px;
   overflow-x: scroll;
   justify-content: center;

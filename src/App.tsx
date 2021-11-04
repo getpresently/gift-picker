@@ -1,8 +1,12 @@
 import { useState } from "react";
 import "./App.css";
+import "./App2.scss";
+import "./typingEffect.js"
+
 import Questions from "./components/Questions";
 import Suggestions from "./components/Suggestions";
 import Footer from "./components/Footer";
+import Header from "./components/Header";
 
 enum Scene {
   Home = 1,
@@ -23,7 +27,11 @@ function App(): JSX.Element {
 
   // changes state depending on if the question is single/multi select
   // removes from state if previously selected, adds to state if new
-  function handleSelectChoice(isSingleSelect: boolean, choiceType: string, choiceValue: string) {
+  function handleSelectChoice(
+    isSingleSelect: boolean,
+    choiceType: string,
+    choiceValue: string
+  ) {
     let newChoices = choices[choiceType];
     if (!newChoices) {
       newChoices = new Set<string>();
@@ -67,10 +75,16 @@ function App(): JSX.Element {
 
         <div>
           <div id="container">
-            <Questions handleSelectChoice={handleSelectChoice} choices={choices} />
+            <Questions
+              handleSelectChoice={handleSelectChoice}
+              choices={choices}
+            />
           </div>
           <div id="submitButton">
-            <button id="button_changeScene" onClick={() => handleSceneChange(Scene.Suggestions)}>
+            <button
+              id="button_changeScene"
+              onClick={() => handleSceneChange(Scene.Suggestions)}
+            >
               SUBMIT
             </button>
           </div>
@@ -87,7 +101,10 @@ function App(): JSX.Element {
           <Suggestions choices={choices} />
         </div>
         <div id="backButton">
-          <button id="button_changeScene" onClick={() => handleSceneChange(Scene.Home)}>
+          <button
+            id="button_changeScene"
+            onClick={() => handleSceneChange(Scene.Home)}
+          >
             HOME
           </button>
         </div>
@@ -96,29 +113,128 @@ function App(): JSX.Element {
     );
   } else {
     return (
-      <div>
-        <div className="App">
-          <header className="App-header">
-            <div className="titleContainer">
-              <div className="App-title">
-                <h1>GIFT PICKER</h1>
-              </div>
-              <div className="brand-description">
-                <p>Helping you pick gifts for any recipient & occasion</p>
+      <div id="HomePage">
+        <Header />
+        <header id="HomePageContents">
+          <div id="StartQuizSection">
+            <div className="title">
+              <h1>Need to find the perfect gift for your</h1>
+              <div id = "typingEffectContainer">
+	              <h1 id="text"></h1>  
+                <h1 id="cursor"></h1>
+                </div>
+                </div>
+                <script type="text/javascript"  src = "./typingEffect.js">
+        </script>
+
+              <div className="subtitle">
+              <p>
+                Don't worry, in just a few minutes, we can help you find the
+                perfect present.
+              </p>
+            </div>
+            <img id="HomepageLogo" src="./App-logo.png" alt=""></img>
+            <button
+              className="startQuizButton"
+              onClick={() => handleSceneChange(Scene.Questions)}
+            >
+              <span className="startButtonSpan">Get Started</span>
+            </button>
+          </div>
+          <div id="Partners">
+            <p className="heading1">
+              {" "}
+              Featuring 1000+ gifts from your favorite brands
+            </p>
+            <div id="PartnersLogosContainer">
+              <img
+                className="partnerImage"
+                src="./charcoalBlackRectangle.jpeg"
+                alt="partner logo"
+              ></img>
+              <img
+                className="partnerImage"
+                src="./charcoalBlackRectangle.jpeg"
+                alt="partner logo"
+              ></img>
+              <img
+                className="partnerImage"
+                src="./charcoalBlackRectangle.jpeg"
+                alt="partner logo"
+              ></img>
+              <img
+                className="partnerImage"
+                src="./charcoalBlackRectangle.jpeg"
+                alt="partner logo"
+              ></img>
+              <img
+                className="partnerImage"
+                src="./charcoalBlackRectangle.jpeg"
+                alt="partner logo"
+              ></img>
+              <img
+                className="partnerImage"
+                src="./charcoalBlackRectangle.jpeg"
+                alt="partner logo"
+              ></img>
+              <img
+                className="partnerImage"
+                src="./charcoalBlackRectangle.jpeg"
+                alt="partner logo"
+              ></img>
+            </div>
+          </div>
+          <div id="FAQ">
+            <p className= "heading1" >Frequently Asked Questions</p>
+            <div className="accordianContainer">
+              <div className="accordion">
+                <div className="accordionItem">
+                  <button
+                    className="accordionButton"
+                    id="accordionButton1"
+                    aria-expanded="false"
+                  >
+                    <span className="accordionTitle">
+                      Why is the moon sometimes out during the day?
+                    </span>
+                    <span className="icon" aria-hidden="true"></span>
+                  </button>
+                  <div className="accordionContent">
+                    <p>
+                      Lorem ipsum dolor sit amet, consectetur adipiscing elit,
+                      sed do eiusmod tempor incididunt ut labore et dolore magna
+                      aliqua. Elementum sagittis vitae et leo duis ut. Ut tortor
+                      pretium viverra suspendisse potenti.
+                    </p>
+                  </div>
+                </div>
+                <div className="accordionItem">
+                  <button
+                    className="accordionButton"
+                    id="accordionButton2"
+                    aria-expanded="false"
+                  >
+                    <span className="accordionTitle">Why is the sky blue?</span>
+                    <span className="icon" aria-hidden="true"></span>
+                  </button>
+                  <div className="accordionContent">
+                    <p>
+                      Lorem ipsum dolor sit amet, consectetur adipiscing elit,
+                      sed do eiusmod tempor incididunt ut labore et dolore magna
+                      aliqua. Elementum sagittis vitae et leo duis ut. Ut tortor
+                      pretium viverra suspendisse potenti.
+                    </p>
+                  </div>
+                </div>
               </div>
             </div>
-            <img className="logo" src="./App-logo.png" alt=""></img>
-            <div id="startButton">
-              <button id="button_changeScene" onClick={() => handleSceneChange(Scene.Questions)}>
-                START QUIZ
-              </button>
-            </div>
-          </header>
-          <Footer />
-        </div>
+          </div>
+        </header>
+        <Footer />
       </div>
+      
     );
-  };
+  }
 }
 
 export default App;
