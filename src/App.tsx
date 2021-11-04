@@ -105,6 +105,7 @@ function App(): JSX.Element {
               handleSubmit={() => handleSceneChange(Scene.Suggestions)}
               currentPage={currentPage}
               numPages={NUM_PAGES}
+              disabled={submitDisabled}
             ></Buttons>
           </div>
           <Footer />
