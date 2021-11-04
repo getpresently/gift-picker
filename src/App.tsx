@@ -16,15 +16,6 @@ const NUM_PAGES = 4;
 
 function App(): JSX.Element {
   const [scene, setScene] = useState<Scene>(Scene.Home);
-  const [submitDisabled, setSubmitDisabled] = useState(true);
-
-  useEffect(() => {
-    setSubmitDisabled(!(
-      choices["Age"] !== undefined && choices["Age"].size > 0 && 
-      choices["Interests"] !== undefined && choices["Interests"].size > 0 && 
-      choices["Price"] !== undefined && choices["Price"].size > 0 &&
-      choices["Type"] !== undefined && choices["Type"].size > 0));
-  })
 
   function handleSceneChange(sceneTo: Scene) {
     setScene(sceneTo);
@@ -105,7 +96,7 @@ function App(): JSX.Element {
               handleSubmit={() => handleSceneChange(Scene.Suggestions)}
               currentPage={currentPage}
               numPages={NUM_PAGES}
-              disabled={submitDisabled}
+              choices={choices}
             ></Buttons>
           </div>
           <Footer />

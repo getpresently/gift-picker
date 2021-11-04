@@ -1,9 +1,11 @@
+import React from "react";
+
 interface PropTypes {
   handlePageChange: (next: boolean) => void;
   handleSubmit: () => void;
   currentPage: number;
   numPages: number;
-  disabled: boolean;
+  choices: {[key: string]: Set<string>};
 }
 
 // buttons for horizontal question navigation
@@ -12,25 +14,43 @@ function Buttons({
   handleSubmit,
   currentPage,
   numPages,
-  disabled
+  choices
 }: PropTypes): JSX.Element {
+  const [nextDisable, setNextDisable] = React.useState(true);
+  
+  React.useEffect(() => {
+    if(currentPage === 1) {
+      setNextDisable(!(choices["Age"] !== undefined && choices["Age"].size > 0));
+    } else if(currentPage === 2) {
+      setNextDisable(!(choices["Type"] !== undefined && choices["Type"].size > 0));
+    }
+    else if(currentPage === 3) {
+      setNextDisable(!(choices["Interests"] !== undefined && choices["Interests"].size > 0));
+    }else if(currentPage === 4) {
+      setNextDisable(!(choices["Price"] !== undefined && choices["Price"].size > 0));
+    }
+  }, [choices])
+
   const prev = (
     <div id="previousButton">
-      <button id="button_changeScene" disabled={disabled} onClick={() => handlePageChange(false)}>
+      <button id="button_changeScene" onClick={() => handlePageChange(false)}>
         Previous
       </button>
     </div>
   );
   const next = (
     <div id="nextButton">
-      <button id="button_changeScene" disabled={disabled} onClick={() => handlePageChange(true)}>
+      <button id="button_changeScene" disabled={nextDisable} onClick={() => {
+        handlePageChange(true)
+        setNextDisable(true);
+      }}>
         Next
       </button>
     </div>
   );
   const submit = (
     <div id="submitButton">
-      <button id="button_changeScene" disabled={disabled} onClick={() => handleSubmit()}>
+      <button id="button_changeScene" disabled={nextDisable} onClick={() => handleSubmit()}>
         SUBMIT
       </button>
     </div>
