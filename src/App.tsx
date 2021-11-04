@@ -99,21 +99,6 @@ function App(): JSX.Element {
 
         <div>
           <div id="container">
-<<<<<<< HEAD
-            <Questions
-              handleSelectChoice={handleSelectChoice}
-              choices={choices}
-            />
-          </div>
-          <div id="submitButton">
-            <button
-              id="button_changeScene"
-              disabled={submitDisabled}
-              onClick={() => handleSceneChange(Scene.Suggestions)}
-            >
-              SUBMIT
-            </button>
-=======
             {page}
             <Buttons
               handlePageChange={handlePageChange}
@@ -121,7 +106,6 @@ function App(): JSX.Element {
               currentPage={currentPage}
               numPages={NUM_PAGES}
             ></Buttons>
->>>>>>> fdee968a22b507a70346dec7d57852071a70cbe2
           </div>
           <Footer />
         </div>
