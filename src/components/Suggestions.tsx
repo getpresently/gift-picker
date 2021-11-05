@@ -71,36 +71,36 @@ function Suggestions({ choices }: PropTypes): JSX.Element {
   }
 
   const filteredSuggestions = sortGiftsByScore(suggestions);
-  let results;
+  // let results;
 
-  if (isLoading) {
-    // page is not loaded yet
-    results = (
-      <Loading></Loading>
-    );
-  } else if (filteredSuggestions.length === 0) {
-    // page is not loading and we have no results
-    results = (
-      <div>
-        <p> No suggestions could be found.</p>
-      </div>
-    );
-  } else {
-    // page is not loading and we have results
-    results = (
-      <div className="columns">
-        {filteredSuggestions.map((x, i) => (
-          <Suggestion
-            photo={x.photo}
-            key={`que-${i}`}
-            title={x.gift}
-            brand={x.brand}
-            link={x.link}
-          />
-        ))}
-      </div>
-    );
-  }
+  // if (isLoading) {
+  //   // page is not loaded yet
+  //   results = (
+  //     <Loading></Loading>
+  //   );
+  // } else if (filteredSuggestions.length === 0) {
+  //   // page is not loading and we have no results
+  //   results = (
+  //     <div>
+  //       <p> No suggestions could be found.</p>
+  //     </div>
+  //   );
+  // } else {
+  //   // page is not loading and we have results
+  //   results = (
+  //     <div className="columns">
+  //       {filteredSuggestions.map((x, i) => (
+  //         <Suggestion
+  //           photo={x.photo}
+  //           key={`que-${i}`}
+  //           title={x.gift}
+  //           brand={x.brand}
+  //           link={x.link}
+  //         />
+  //       ))}
+  //     </div>
+  //   );
+  // }
 
   return (
     <div>
@@ -110,7 +110,19 @@ function Suggestions({ choices }: PropTypes): JSX.Element {
       <div className="line">
         <hr></hr>
       </div>
-      {results}
+      {isLoading ? <Loading></Loading>
+        : (filteredSuggestions.length === 0 ? <p> No suggestions could be found.</p>
+          : <div className="columns">
+            {filteredSuggestions.map((x, i) => (
+              <Suggestion
+                photo={x.photo}
+                key={`que-${i}`}
+                title={x.gift}
+                brand={x.brand}
+                link={x.link}
+              />
+            ))}
+          </div>)}
     </div>
   )
 }
