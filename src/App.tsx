@@ -4,12 +4,15 @@ import Questions from "./components/Questions";
 import ScrollablePage from "./components/ScrollablePage";
 import Suggestions from "./components/Suggestions";
 import Footer from "./components/Footer";
+import Buttons from "./components/Buttons";
 
 enum Scene {
   Home = 1,
   Questions,
   Suggestions,
 }
+
+const NUM_PAGES = 4;
 
 function App(): JSX.Element {
   const [scene, setScene] = useState<Scene>(Scene.Home);
@@ -22,20 +25,15 @@ function App(): JSX.Element {
   // choices[question]: set of size 1 if key is single select question identifier
   const [choices, setChoices] = useState<{ [key: string]: Set<string> }>({});
   const [currentPage, setCurrentPage] = useState<number>(1);
-  const numPages = 4;
 
-  function handleNextPage(newVal: number) {
-    if (newVal < numPages) {
-      setCurrentPage(newVal + 1);
+  // changes the question to either the next or previous page
+  function handlePageChange(next: boolean) {
+    if (next && currentPage < NUM_PAGES) {
+      setCurrentPage(currentPage + 1);
+    } else if (!next && currentPage > 1) {
+      setCurrentPage(currentPage - 1);
     }
   }
-
-  function handleLastPage(newVal: number) {
-    if (newVal > 1) {
-      setCurrentPage(newVal - 1);
-    }
-  }
-  
 
   // changes state depending on if the question is single/multi select
   // removes from state if previously selected, adds to state if new
@@ -69,66 +67,14 @@ function App(): JSX.Element {
     setChoices(newChoicesDict);
   }
 
-  var question = (
-    <Questions handleSelectChoice={handleSelectChoice} page={currentPage} choices={choices}/>
+  const question = (
+    <Questions
+      handleSelectChoice={handleSelectChoice}
+      page={currentPage}
+      choices={choices}
+    />
   );
-  var page = <ScrollablePage childComp={question}></ScrollablePage>;
-
-  var buttons;
-  if (currentPage === 1) {
-    buttons = (
-      <div id="nextButton">
-        <button
-          id="button_changeScene"
-          onClick={() => handleNextPage(currentPage)}
-        >
-          Next
-        </button>
-      </div>
-    );
-  } else if (currentPage === numPages) {
-    buttons = (
-      <div>
-        <div id="previousButton">
-          <button
-            id="button_changeScene"
-            onClick={() => handleLastPage(currentPage)}
-          >
-            Previous
-          </button>
-        </div>
-        <div id="submitButton">
-          <button
-            id="button_changeScene"
-            onClick={() => handleSceneChange(Scene.Suggestions)}
-          >
-            SUBMIT
-          </button>
-        </div>
-      </div>
-    );
-  } else {
-    buttons = (
-      <div>
-        <div id="previousButton">
-          <button
-            id="button_changeScene"
-            onClick={() => handleLastPage(currentPage)}
-          >
-            Previous
-          </button>
-        </div>
-        <div id="nextButton">
-          <button
-            id="button_changeScene"
-            onClick={() => handleNextPage(currentPage)}
-          >
-            Next
-          </button>
-        </div>
-      </div>
-    );
-  }
+  const page = <ScrollablePage childComp={question}></ScrollablePage>;
 
   if (scene === Scene.Questions) {
     return (
@@ -145,7 +91,12 @@ function App(): JSX.Element {
         <div>
           <div id="container">
             {page}
-            {buttons}
+            <Buttons
+              handlePageChange={handlePageChange}
+              handleSubmit={() => handleSceneChange(Scene.Suggestions)}
+              currentPage={currentPage}
+              numPages={NUM_PAGES}
+            ></Buttons>
           </div>
           <Footer />
         </div>

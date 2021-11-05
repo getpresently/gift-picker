@@ -1,4 +1,4 @@
-import React, { FC } from "react";
+import { FC } from "react";
 
 //This component is made to hold other different types of components such as
 //questions and suggestions in order to implement page navigation
