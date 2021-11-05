@@ -1,5 +1,6 @@
 import { useIdeas } from '../utils/hooks';
 import { Gift } from '../utils/types';
+import Loading from './Loading';
 import Suggestion from './Suggestion';
 
 interface PropTypes {
@@ -43,7 +44,7 @@ function Suggestions({ choices }: PropTypes): JSX.Element {
           if (giftAttributes.includes(selection)) {
             score +=
               WEIGHTED_QUESTION_VALUES[
-                WEIGHTED_QUESTION_KEYS.indexOf(questionKey)
+              WEIGHTED_QUESTION_KEYS.indexOf(questionKey)
               ];
           }
         });
@@ -75,11 +76,11 @@ function Suggestions({ choices }: PropTypes): JSX.Element {
   if (isLoading) {
     // page is not loaded yet
     results = (
-      <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-gray-900"></div>
+      <Loading></Loading>
     );
   } else if (filteredSuggestions.length === 0) {
     // page is not loading and we have no results
-    results =  (
+    results = (
       <div>
         <p> No suggestions could be found.</p>
       </div>

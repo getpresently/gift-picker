@@ -71,7 +71,12 @@ export function useIdeas(): { data: Gift[]; loading: boolean } {
     }
     temp.push(g);
   }
-
+  sleep();
+  async function sleep() {
+    console.log("sleep start");
+    await new Promise(resolve => setTimeout(resolve, 2000));
+    console.log("sleep done");
+  }
   return {
     data: temp,
     loading,

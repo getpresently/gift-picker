@@ -1,4 +1,5 @@
 import { useQuestions } from "../utils/hooks";
+import Loading from "./Loading";
 import Question from "./Question";
 
 interface PropTypes {
@@ -9,8 +10,8 @@ interface PropTypes {
 
 // creates questions with attributes from google sheet
 function Questions({ handleSelectChoice, page, choices }: PropTypes): JSX.Element {
-  const { data: questions } = useQuestions();
-
+  const { data: questions, loading: isLoading } = useQuestions();
+  console.log(isLoading);
   let questionArr = questions.map((answerTexts, questionId) => (
     <Question
       key={`que-${questionId}`}
@@ -23,7 +24,15 @@ function Questions({ handleSelectChoice, page, choices }: PropTypes): JSX.Elemen
     />
   ));
 
-  return <div id="questionsContainer">{questionArr[page - 1]}</div>;
+  return (
+    isLoading ?
+      <Loading></Loading>
+      :
+      <div id="questionsContainer">
+        {questionArr[page - 1]}
+      </div>
+
+  );
 }
 
 export default Questions;
