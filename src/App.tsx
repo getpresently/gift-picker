@@ -104,12 +104,11 @@ function App(): JSX.Element {
     );
   }
 
-  function resetSelections () {
+  function resetSelections() {
     setChoices({})
   }
 
   if (scene === Scene.Suggestions) {
-    //setCurrentPage(1);
     return (
       <div>
         <div className="results">
@@ -118,11 +117,12 @@ function App(): JSX.Element {
         <div id="backButton">
           <button
             id="button_changeScene"
-            onClick={ () => {
+            onClick={() => {
               handleSceneChange(Scene.Home)
               setCurrentPage(1)
-              resetSelections()}}
-              >
+              resetSelections()
+            }}
+          >
             HOME
           </button>
         </div>
