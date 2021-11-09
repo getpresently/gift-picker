@@ -1,6 +1,7 @@
-import { useIdeas } from "../utils/hooks";
-import { Gift } from "../utils/types";
-import Suggestion from "./Suggestion";
+import { useIdeas } from '../utils/hooks';
+import { Gift } from '../utils/types';
+import Loading from './Loading';
+import Suggestion from './Suggestion';
 
 interface PropTypes {
   choices: { [key: string]: Set<string> };
@@ -11,7 +12,7 @@ const WEIGHTED_QUESTION_KEYS = ["Type", "Interests", "Price"];
 const WEIGHTED_QUESTION_VALUES = [1, 1, 1];
 
 function Suggestions({ choices }: PropTypes): JSX.Element {
-  const { data: suggestions } = useIdeas();
+  const { data: suggestions, loading: isLoading } = useIdeas();
 
   // caculates the relevance score for a gift
   function calculateGiftScore(curGift: Gift) {
@@ -43,7 +44,7 @@ function Suggestions({ choices }: PropTypes): JSX.Element {
           if (giftAttributes.includes(selection)) {
             score +=
               WEIGHTED_QUESTION_VALUES[
-                WEIGHTED_QUESTION_KEYS.indexOf(questionKey)
+              WEIGHTED_QUESTION_KEYS.indexOf(questionKey)
               ];
           }
         });
@@ -69,6 +70,8 @@ function Suggestions({ choices }: PropTypes): JSX.Element {
     return onlyGifts;
   }
 
+  const filteredSuggestions = sortGiftsByScore(suggestions);
+
   return (
     <div>
       <div id="top">
@@ -77,18 +80,20 @@ function Suggestions({ choices }: PropTypes): JSX.Element {
       <div className="line">
         <hr></hr>
       </div>
-      <div className="columns">
-        {sortGiftsByScore(suggestions).map((x, i) => (
-          <Suggestion
-            photo={x.photo}
-            key={`que-${i}`}
-            title={x.gift}
-            brand={x.brand}
-            link={x.link}
-          />
-        ))}
-      </div>
+      {isLoading ? <Loading></Loading>
+        : (filteredSuggestions.length === 0 ? <p> No suggestions could be found.</p>
+          : <div className="columns">
+            {filteredSuggestions.map((x, i) => (
+              <Suggestion
+                photo={x.photo}
+                key={`que-${i}`}
+                title={x.gift}
+                brand={x.brand}
+                link={x.link}
+              />
+            ))}
+          </div>)}
     </div>
-  );
+  )
 }
 export default Suggestions;

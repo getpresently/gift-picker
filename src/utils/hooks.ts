@@ -71,7 +71,7 @@ export function useIdeas(): { data: Gift[]; loading: boolean } {
     }
     temp.push(g);
   }
-
+  
   return {
     data: temp,
     loading,
