@@ -145,7 +145,7 @@ function App(): JSX.Element {
             <img className="logo" src="./App-logo.png" alt=""></img>
             <div id="startButton">
               <button
-                id="button_changeScene"
+                className="button_nav"
                 onClick={() => handleSceneChange(Scene.Questions)}
               >
                 START QUIZ

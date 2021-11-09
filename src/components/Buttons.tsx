@@ -6,51 +6,25 @@ interface PropTypes {
 }
 
 // buttons for horizontal question navigation
-function Buttons({
-  handlePageChange,
-  handleSubmit,
-  currentPage,
-  numPages,
-}: PropTypes): JSX.Element {
-  const prev = (
-    <div id="previousButton">
-      <button id="button_changeScene" onClick={() => handlePageChange(false)}>
-        Previous
-      </button>
-    </div>
+function Buttons({ handlePageChange, handleSubmit, currentPage, numPages }: PropTypes): JSX.Element {
+  return (
+    <>
+      {currentPage > 1 && (
+        <button className="button_nav" onClick={() => handlePageChange(false)}>
+          Previous
+        </button>
+      )}
+      {currentPage < numPages ? (
+        <button className="button_nav" onClick={() => handlePageChange(true)}>
+          Next
+        </button>
+      ) : (
+        <button className="button_nav" onClick={handleSubmit}>
+          SUBMIT
+        </button>
+      )}
+    </>
   );
-  const next = (
-    <div id="nextButton">
-      <button id="button_changeScene" onClick={() => handlePageChange(true)}>
-        Next
-      </button>
-    </div>
-  );
-  const submit = (
-    <div id="submitButton">
-      <button id="button_changeScene" onClick={() => handleSubmit()}>
-        SUBMIT
-      </button>
-    </div>
-  );
-
-  if (currentPage === 1) {
-    return <div>{next}</div>;
-  } else if (currentPage === numPages) {
-    return (
-      <div>
-        {prev}
-        {submit}
-      </div>
-    );
-  } else {
-    return (
-      <div>
-        {prev}
-        {next}
-      </div>
-    );
-  }
 }
 
 export default Buttons;
