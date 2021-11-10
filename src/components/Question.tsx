@@ -68,8 +68,9 @@ function Choices({
   selectedChoices,
 }: ChoicesProps): JSX.Element {
   return (
-    <div>
+    <div className="space-x-4 ...  max-w-md">
       {choices.map((answerText, questionId) => (
+      <div className="inline-block ..."> 
         <Choice
           key={`ch-${questionId}`}
           questionKey={questionKey}
@@ -78,6 +79,7 @@ function Choices({
           isActive={selectedChoices?.has(answerText)}
           handleSelectChoice={handleSelectChoice}
         />
+        </div>
       ))}
     </div>
   );
@@ -92,7 +94,7 @@ function Question({
   handleSelectChoice,
 }: QuestionProps): JSX.Element {
   return (
-    <div id="questionContainer">
+    <div id="questionContainer" >
       <p>{title}</p>
       <div>
         <Choices

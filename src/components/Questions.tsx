@@ -27,7 +27,7 @@ function Questions({ handleSelectChoice, page, choices }: PropTypes): JSX.Elemen
     isLoading ?
       <Loading></Loading>
       :
-      <div id="questionsContainer">
+      <div className="flex items-center" id="questionsContainer">
         {questionArr[page - 1]}
       </div>
 

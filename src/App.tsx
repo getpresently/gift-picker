@@ -78,7 +78,7 @@ function App(): JSX.Element {
 
   if (scene === Scene.Questions) {
     return (
-      <div>
+      <div >
         <div className="instructions">
           <p>To get your personalized gift suggestions,</p>
           <p>simply answer these four quick questions:</p>
