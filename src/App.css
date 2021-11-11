@@ -8,7 +8,7 @@
 }*/
 
 
-
+/*
 .logo {
   height: 250px;
   width: 250px;
@@ -19,16 +19,20 @@
 .App-toplogo {
   width: 100%;
   height: 4em;
-  /*box-shadow: 0 0 3px rgb(0 0 0 / 30%);*/
+  box-shadow: 0 0 3px rgb(0 0 0 / 30%);
   display: flex;
   justify-content: left;
   margin-left: 2em;
 }
+*/
+
+/*
 
 .toplogo {
   width: auto;
   height: 100%;
 }
+*/
 /*
 #App-title {
 font-family: 'Glacial Indifference', sans-serif;
