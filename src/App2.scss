@@ -3,18 +3,20 @@
 /* TEXT STYLES */
 .root {
   --titleFontSize : 2.1vw;
-  --titleLineHeight : line-height(2.1vw);
-  
-}
-* {
-  font-family: "Glacial Indifference";
-  margin: 0%;
+  --screenHeight : calc(100vh);
+  --screenWidth : calc(100vw);
+  --titleTextSize: calc(var(--screenHeight));
 
 }
+* {
+  font-family: 'Sofia Pro', sans-serif;
+  margin: 0%;
+}
+
 .title {
   margin: 5vh;
   text-align: center;
-  font-size: 2.1vw;
+  font-size: var(--titleTextSize);
 }
 
 .subtitle {

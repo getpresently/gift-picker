@@ -135,7 +135,6 @@ function App(): JSX.Element {
   } else {
     return (
       <div id="HomePage">
-        <Header />
         <header id="HomePageContents">
           <div id="StartQuizSection">
             <div className="title">
