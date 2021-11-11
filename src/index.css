@@ -1,8 +1,12 @@
-/*body {
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
   margin: 0;
   text-align: center;
   background: white;
-  font-family: 'Poppins', sans-serif;
+  font-family: "Poppins", sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   font-size: calc(5px + 2vmin);
@@ -27,7 +31,6 @@ body {
 }
 
 code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
 }
-

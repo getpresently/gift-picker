@@ -31,21 +31,6 @@ function Choice({
   isActive,
   handleSelectChoice,
 }: ChoiceProps) {
-  // default to inactive color
-  let color;
-  let textColor;
-
-  function pickColor() {
-    if (isActive) {
-      color = ACTIVE_COLOR;
-      textColor = ACTIVE_TEXT_COLOR;
-    } else {
-      color = INACTIVE_COLOR;
-      textColor = INACTIVE_TEXT_COLOR;
-    }
-    return [color, textColor];
-  }
-
   function handleClick() {
     handleSelectChoice(partOfSingleSelect, questionKey, answer);
   }
@@ -55,7 +40,10 @@ function Choice({
       <div>
         <button
           id={answer}
-          style={{ backgroundColor: pickColor()[0], color: pickColor()[1] }}
+          style={{
+            backgroundColor: isActive ? ACTIVE_COLOR : INACTIVE_COLOR,
+            color: isActive ? ACTIVE_TEXT_COLOR : INACTIVE_TEXT_COLOR,
+          }}
         >
           {answer}
         </button>
@@ -81,7 +69,6 @@ function Choices({
 }: ChoicesProps): JSX.Element {
   return (
     <div>
-      {" "}
       {choices.map((answerText, questionId) => (
         <Choice
           key={`ch-${questionId}`}
