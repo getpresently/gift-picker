@@ -1,7 +1,9 @@
-import { useIdeas } from '../utils/hooks';
-import { Gift } from '../utils/types';
-import Loading from './Loading';
-import Suggestion from './Suggestion';
+import { useIdeas } from "../utils/hooks";
+import { Gift } from "../utils/types";
+import Loading from "./Loading";
+import Suggestion from "./Suggestion";
+import Confetti from "react-confetti";
+import React from "react";
 
 interface PropTypes {
   choices: { [key: string]: Set<string> };
@@ -13,6 +15,10 @@ const WEIGHTED_QUESTION_VALUES = [1, 1, 1];
 
 function Suggestions({ choices }: PropTypes): JSX.Element {
   const { data: suggestions, loading: isLoading } = useIdeas();
+  //const { confettiWidth, confettiHeight } = useWindowSize();
+  // For some reason the above React hook is not working
+  const confettiWidth = window.innerWidth || 300;
+  const confettiHeight = window.innerWidth || 200;
 
   // caculates the relevance score for a gift
   function calculateGiftScore(curGift: Gift) {
@@ -44,7 +50,7 @@ function Suggestions({ choices }: PropTypes): JSX.Element {
           if (giftAttributes.includes(selection)) {
             score +=
               WEIGHTED_QUESTION_VALUES[
-              WEIGHTED_QUESTION_KEYS.indexOf(questionKey)
+                WEIGHTED_QUESTION_KEYS.indexOf(questionKey)
               ];
           }
         });
@@ -73,16 +79,27 @@ function Suggestions({ choices }: PropTypes): JSX.Element {
   const filteredSuggestions = sortGiftsByScore(suggestions);
 
   return (
-    <div>
-      <div id="top">
-        <p>The top gift suggestions based on your answers:</p>
-      </div>
-      <div className="line">
-        <hr></hr>
-      </div>
-      {isLoading ? <Loading></Loading>
-        : (filteredSuggestions.length === 0 ? <p> No suggestions could be found.</p>
-          : <div className="columns">
+    <React.Fragment>
+      <Confetti
+        width={confettiWidth}
+        height={confettiHeight}
+        recycle={false}
+        colors={["#F2529D", "#8A6DF2", "#BFBDF2", "#797FF2", "#0D0D0D"]}
+        // using the giftpicker branding colors, change if necessary. Check which is better
+      ></Confetti>
+      <div>
+        <div id="top">
+          <p>The top gift suggestions based on your answers:</p>
+        </div>
+        <div className="line">
+          <hr></hr>
+        </div>
+        {isLoading ? (
+          <Loading></Loading>
+        ) : filteredSuggestions.length === 0 ? (
+          <p> No suggestions could be found.</p>
+        ) : (
+          <div className="columns">
             {filteredSuggestions.map((x, i) => (
               <Suggestion
                 photo={x.photo}
@@ -92,8 +109,10 @@ function Suggestions({ choices }: PropTypes): JSX.Element {
                 link={x.link}
               />
             ))}
-          </div>)}
-    </div>
-  )
+          </div>
+        )}
+      </div>
+    </React.Fragment>
+  );
 }
 export default Suggestions;
