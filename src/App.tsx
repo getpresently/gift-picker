@@ -105,7 +105,7 @@ function App(): JSX.Element {
   }
 
   function resetSelections() {
-    setChoices({})
+    setChoices({});
   }
 
   if (scene === Scene.Suggestions) {
@@ -118,9 +118,9 @@ function App(): JSX.Element {
           <button
             id="button_changeScene"
             onClick={() => {
-              handleSceneChange(Scene.Home)
-              setCurrentPage(1)
-              resetSelections()
+              handleSceneChange(Scene.Home);
+              setCurrentPage(1);
+              resetSelections();
             }}
           >
             HOME
@@ -137,6 +137,7 @@ function App(): JSX.Element {
             <div className="titleContainer">
               <div className="App-title">
                 <h1>GIFT PICKER</h1>
+                <h2>Hello</h2>
               </div>
               <div className="brand-description">
                 <p>Helping you pick gifts for any recipient & occasion</p>
