@@ -79,26 +79,28 @@ function Suggestions({ choices }: PropTypes): JSX.Element {
   const filteredSuggestions = sortGiftsByScore(suggestions);
 
   return (
-    <React.Fragment>
-      <Confetti
-        width={confettiWidth}
-        height={confettiHeight}
-        recycle={false}
-        colors={["#F2529D", "#8A6DF2", "#BFBDF2", "#797FF2", "#0D0D0D"]}
-        // using the giftpicker branding colors, change if necessary. Check which is better
-      ></Confetti>
-      <div>
-        <div id="top">
-          <p>The top gift suggestions based on your answers:</p>
-        </div>
-        <div className="line">
-          <hr></hr>
-        </div>
-        {isLoading ? (
-          <Loading></Loading>
-        ) : filteredSuggestions.length === 0 ? (
-          <p> No suggestions could be found.</p>
-        ) : (
+    <div>
+      <div id="top">
+        <p>The top gift suggestions based on your answers:</p>
+      </div>
+      <div className="line">
+        <hr></hr>
+      </div>
+      {isLoading ? (
+        <Loading></Loading>
+      ) : filteredSuggestions.length === 0 ? (
+        <p> No suggestions could be found.</p>
+      ) : (
+        <React.Fragment>
+          <Confetti
+            width={confettiWidth}
+            height={confettiHeight}
+            recycle={false}
+            numberOfPieces={1250}
+            tweenDuration={20000}
+            // colors={["#F2529D", "#8A6DF2", "#BFBDF2", "#797FF2", "#0D0D0D"]}
+            // using the giftpicker branding colors, change if necessary. Check which is better
+          ></Confetti>
           <div className="columns">
             {filteredSuggestions.map((x, i) => (
               <Suggestion
@@ -110,9 +112,9 @@ function Suggestions({ choices }: PropTypes): JSX.Element {
               />
             ))}
           </div>
-        )}
-      </div>
-    </React.Fragment>
+        </React.Fragment>
+      )}
+    </div>
   );
 }
 export default Suggestions;
