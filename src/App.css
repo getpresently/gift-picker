@@ -124,6 +124,17 @@ img {
   height: 10vw;
 }
 
+#button_changeScene:disabled{
+  border: 1px solid #999999;
+  background-color: #cccccc;
+  color: #666666;
+}
+.button_nav:disabled{
+  border: 1px solid #999999;
+  background-color: #cccccc;
+  color: #666666;
+}
+
 /*#button_changeScene:hover {
   background-color: #a160fb;
 }*/
