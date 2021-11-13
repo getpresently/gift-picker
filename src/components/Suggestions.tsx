@@ -9,6 +9,7 @@ interface PropTypes {
 }
 
 const LIMIT_INCREMENT = 3;
+const LIMIT_STOP = 12;
 const MANDATORY_QUESTION_KEYS = ["Age"];
 const WEIGHTED_QUESTION_KEYS = ["Type", "Interests", "Price"];
 const WEIGHTED_QUESTION_VALUES = [1, 1, 1];
@@ -78,9 +79,11 @@ function Suggestions({ choices }: PropTypes): JSX.Element {
 
   const filteredSuggestions = sortGiftsByScore(suggestions);
 
+  //increases the number of suggestions displayed by the value of LIMIT_INCREMENT
+  //until LIMIT_STOP (12) suggestions are shown
   const increaseLimitAndDisableMore = () => {
     setLimit(limit + LIMIT_INCREMENT);
-    if(limit+LIMIT_INCREMENT >= filteredSuggestions.length) {
+    if(limit+LIMIT_INCREMENT >= LIMIT_STOP) {
       setMoreDisabled(true);
     }
   };
@@ -106,6 +109,14 @@ function Suggestions({ choices }: PropTypes): JSX.Element {
               />
             ))}
           </div>)}
+      <div>
+        <button 
+          id="button_moreSuggestions"
+          disabled = {moreDisabled}
+          onClick={() => increaseLimitAndDisableMore()}>
+          More
+        </button>
+      </div>
     </div>
   )
 }
