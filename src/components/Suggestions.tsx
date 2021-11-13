@@ -14,7 +14,6 @@ const MANDATORY_QUESTION_KEYS = ["Age"];
 const WEIGHTED_QUESTION_KEYS = ["Type", "Interests", "Price"];
 const WEIGHTED_QUESTION_VALUES = [1, 1, 1];
 
-
 function Suggestions({ choices }: PropTypes): JSX.Element {
   const [limit, setLimit] = React.useState(LIMIT_INCREMENT);
   const [moreDisabled, setMoreDisabled] = React.useState(false);
