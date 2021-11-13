@@ -55,7 +55,7 @@ function Choice({
   );
 }
 
-function Text() {
+function Text(props: any) {
   const [flip, set] = React.useState(false);
   const props = useSpring({
     to: { opacity: 1 },
@@ -67,7 +67,7 @@ function Text() {
     //onRest: () => set(!flip),
   });
 
-  return <animated.h1 style={props}>hello</animated.h1>;
+  return <animated.h1 style={props}>{props.el}</animated.h1>;
 }
 
 interface ChoicesProps {
@@ -111,7 +111,7 @@ function Question({
 }: QuestionProps): JSX.Element {
   return (
     <React.Fragment>
-      <Text />
+      <Text el="word" />
       <div
         id="questionContainer"
         className="transform transition-all duration-150 ease-out scale-100"
