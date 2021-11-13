@@ -1,3 +1,6 @@
+import { useSpring, animated, config } from "react-spring";
+import React from "react";
+
 // constants
 // inactive color settings
 const INACTIVE_COLOR = "#a060fb60";
@@ -52,6 +55,21 @@ function Choice({
   );
 }
 
+function Text() {
+  const [flip, set] = React.useState(false);
+  const props = useSpring({
+    to: { opacity: 1 },
+    from: { opacity: 0 },
+    reset: false,
+    reverse: flip,
+    delay: 200,
+    config: config.molasses,
+    //onRest: () => set(!flip),
+  });
+
+  return <animated.h1 style={props}>hello</animated.h1>;
+}
+
 interface ChoicesProps {
   questionKey: string;
   choices: string[];
@@ -92,18 +110,24 @@ function Question({
   handleSelectChoice,
 }: QuestionProps): JSX.Element {
   return (
-    <div id="questionContainer">
-      <p>{title}</p>
-      <div>
-        <Choices
-          questionKey={questionKey}
-          choices={choices}
-          partOfSingleSelect={isSingleSelect}
-          selectedChoices={selectedChoices}
-          handleSelectChoice={handleSelectChoice}
-        />
+    <React.Fragment>
+      <Text />
+      <div
+        id="questionContainer"
+        className="transform transition-all duration-150 ease-out scale-100"
+      >
+        <p className="">{title}</p>
+        <div>
+          <Choices
+            questionKey={questionKey}
+            choices={choices}
+            partOfSingleSelect={isSingleSelect}
+            selectedChoices={selectedChoices}
+            handleSelectChoice={handleSelectChoice}
+          />
+        </div>
       </div>
-    </div>
+    </React.Fragment>
   );
 }
 
