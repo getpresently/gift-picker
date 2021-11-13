@@ -70,6 +70,7 @@
 }
 
 .columns {
+  width: 80%;
   display: inline-flex;
   flex-wrap: wrap;
   margin-bottom: 2em;
