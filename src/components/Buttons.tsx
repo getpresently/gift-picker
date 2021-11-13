@@ -1,4 +1,4 @@
-import React from "react";
+import {useEffect, useState} from "react";
 
 interface PropTypes {
   handlePageChange: (next: boolean) => void;
@@ -10,9 +10,9 @@ interface PropTypes {
 
 // buttons for horizontal question navigation
 function Buttons({ handlePageChange, handleSubmit, currentPage, numPages, choices }: PropTypes): JSX.Element {
-  const [nextDisable, setNextDisable] = React.useState(true);
+  const [nextDisable, setNextDisable] = useState(true);
   
-  React.useEffect(() => {
+  useEffect(() => {
     if(currentPage === 1) {
       setNextDisable(!(choices["Age"] !== undefined && choices["Age"].size > 0));
     } else if(currentPage === 2) {
