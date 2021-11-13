@@ -71,7 +71,7 @@ export function useIdeas(): { data: Gift[]; loading: boolean } {
     }
     temp.push(g);
   }
-
+  
   return {
     data: temp,
     loading,
@@ -93,6 +93,7 @@ export function useQuestions(): { data: QAndA[]; loading: boolean } {
     let qa: QAndA = {
       question: "",
       questionKey: "",
+      isSingleSelect: false,
       answers: [],
     };
     for (const key of Object.keys(row)) {
@@ -100,6 +101,8 @@ export function useQuestions(): { data: QAndA[]; loading: boolean } {
         qa.question = row[key];
       } else if (key === "QuestionKey") {
         qa.questionKey = row[key];
+      } else if (key === "SelectType") {
+        qa.isSingleSelect = row[key] === "single";
       } else if (key.slice(0, 1) === "A") {
         qa.answers.push(row[key]);
       }

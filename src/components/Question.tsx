@@ -1,32 +1,50 @@
-import { useState } from "react";
+// constants
+// inactive color settings
+const INACTIVE_COLOR = "#a060fb60";
+const INACTIVE_TEXT_COLOR = "black";
+
+// active color
+const ACTIVE_COLOR = "#a160fb";
+const ACTIVE_TEXT_COLOR = "white";
 
 interface QuestionProps {
   title: string;
   questionKey: string;
   choices: string[];
-  handleSelectChoice: (k: string, v: string) => void;
+  isSingleSelect: boolean;
+  selectedChoices: Set<string>;
+  handleSelectChoice: (isSingleSelect: boolean, k: string, v: string) => void;
 }
 
 interface ChoiceProps {
   questionKey: string;
   answer: string;
-  handleSelectChoice: (k: string, v: string) => void;
+  partOfSingleSelect: boolean;
+  isActive: boolean;
+  handleSelectChoice: (isSingleSelect: boolean, k: string, v: string) => void;
 }
 
-function Choice({ questionKey, answer, handleSelectChoice }: ChoiceProps) {
-  const [color, setColor] = useState("#a060fb60");
-  const [textColor, setTextColor] = useState("black");
-
+function Choice({
+  questionKey,
+  answer,
+  partOfSingleSelect,
+  isActive,
+  handleSelectChoice,
+}: ChoiceProps) {
   function handleClick() {
-    handleSelectChoice(questionKey, answer);
-    setColor("#a160fb");
-    setTextColor("white");
+    handleSelectChoice(partOfSingleSelect, questionKey, answer);
   }
 
   return (
     <div onClick={handleClick}>
       <div>
-        <button style={{ backgroundColor: color, color: textColor }}>
+        <button
+          id={answer}
+          style={{
+            backgroundColor: isActive ? ACTIVE_COLOR : INACTIVE_COLOR,
+            color: isActive ? ACTIVE_TEXT_COLOR : INACTIVE_TEXT_COLOR,
+          }}
+        >
           {answer}
         </button>
       </div>
@@ -37,21 +55,27 @@ function Choice({ questionKey, answer, handleSelectChoice }: ChoiceProps) {
 interface ChoicesProps {
   questionKey: string;
   choices: string[];
-  handleSelectChoice: (k: string, v: string) => void;
+  partOfSingleSelect: boolean;
+  handleSelectChoice: (isSingleSelect: boolean, k: string, v: string) => void;
+  selectedChoices: Set<string>;
 }
 
 function Choices({
   questionKey,
   choices,
+  partOfSingleSelect,
   handleSelectChoice,
+  selectedChoices,
 }: ChoicesProps): JSX.Element {
   return (
-    <div className="choicesContainer">
-      {choices.map((x, i) => (
+    <div>
+      {choices.map((answerText, questionId) => (
         <Choice
-          key={`ch-${i}`}
+          key={`ch-${questionId}`}
           questionKey={questionKey}
-          answer={x}
+          answer={answerText}
+          partOfSingleSelect={partOfSingleSelect}
+          isActive={selectedChoices?.has(answerText)}
           handleSelectChoice={handleSelectChoice}
         />
       ))}
@@ -63,16 +87,19 @@ function Question({
   title,
   questionKey,
   choices,
+  isSingleSelect,
+  selectedChoices,
   handleSelectChoice,
 }: QuestionProps): JSX.Element {
   return (
     <div id="questionContainer">
       <p>{title}</p>
-
       <div>
         <Choices
           questionKey={questionKey}
           choices={choices}
+          partOfSingleSelect={isSingleSelect}
+          selectedChoices={selectedChoices}
           handleSelectChoice={handleSelectChoice}
         />
       </div>
