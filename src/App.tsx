@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState} from "react";
 import "./App.css";
 import Questions from "./components/Questions";
 import ScrollablePage from "./components/ScrollablePage";
