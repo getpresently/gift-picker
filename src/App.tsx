@@ -105,6 +105,10 @@ function App(): JSX.Element {
     );
   }
 
+  function resetSelections() {
+    setChoices({})
+  }
+
   if (scene === Scene.Suggestions) {
     return (
       <div>
@@ -114,7 +118,11 @@ function App(): JSX.Element {
         <div id="backButton">
           <button
             id="button_changeScene"
-            onClick={() => handleSceneChange(Scene.Home)}
+            onClick={() => {
+              handleSceneChange(Scene.Home)
+              setCurrentPage(1)
+              resetSelections()
+            }}
           >
             HOME
           </button>
@@ -138,7 +146,7 @@ function App(): JSX.Element {
             <img className="logo" src="./App-logo.png" alt=""></img>
             <div id="startButton">
               <button
-                id="button_changeScene"
+                className="button_nav"
                 onClick={() => handleSceneChange(Scene.Questions)}
               >
                 START QUIZ

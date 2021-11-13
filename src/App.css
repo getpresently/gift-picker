@@ -107,17 +107,29 @@ img {
 
 /* ALL PAGES */
 
-#button_changeScene {
+.button_nav {
   padding: 10px 20px;
   background-color: #a160fb;
   color: white;
   border: none;
   border-radius: 12px;
   font-size: calc(5px + 2vmin);
-  margin: 2em;
+  margin: 1em;
+  margin-bottom: 2em;
+}
+
+#loadingResults {
+  margin: auto;
+  width: 10vw;
+  height: 10vw;
 }
 
 #button_changeScene:disabled{
+  border: 1px solid #999999;
+  background-color: #cccccc;
+  color: #666666;
+}
+.button_nav:disabled{
   border: 1px solid #999999;
   background-color: #cccccc;
   color: #666666;
