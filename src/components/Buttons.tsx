@@ -13,7 +13,6 @@ function Buttons({ handlePageChange, handleSubmit, currentPage, numPages, choice
   const [nextDisable, setNextDisable] = React.useState(true);
   
   React.useEffect(() => {
-    console.log(nextDisable);
     if(currentPage === 1) {
       setNextDisable(!(choices["Age"] !== undefined && choices["Age"].size > 0));
     } else if(currentPage === 2) {
