@@ -117,7 +117,7 @@ function App(): JSX.Element {
         </div>
         <div id="backButton">
           <button
-            id="button_changeScene"
+            className="button_nav"
             onClick={() => {
               handleSceneChange(Scene.Home)
               setCurrentPage(1)
