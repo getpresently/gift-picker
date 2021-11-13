@@ -112,7 +112,7 @@ function Suggestions({ choices }: PropTypes): JSX.Element {
         <button 
           id="button_moreSuggestions"
           disabled = {moreDisabled}
-          onClick={() => increaseLimitAndDisableMore()}>
+          onClick={() => increaseLimitAndDisableMore}>
           More
         </button>
       </div>
