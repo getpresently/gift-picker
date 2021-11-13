@@ -37,7 +37,6 @@ function Buttons({ handlePageChange, handleSubmit, currentPage, numPages, choice
         <button className="button_nav" disabled={nextDisable} 
           onClick={() => {
             handlePageChange(true)
-            setNextDisable(true)
           }}>
           Next
         </button>
