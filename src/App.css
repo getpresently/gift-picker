@@ -209,27 +209,27 @@ img {
 button {
   /*width: calc(90px + 2vmin);
   height: calc(45px + 2vmin);*/
-  width: auto;
-  height: auto;
-  font-family: "Sofia Pro", sans-serif;
-  color: #000;
-  background-color: #a060fb60;
+  /* width: auto;
+  height: auto; */
+  /* font-family: "Sofia Pro", sans-serif; */
+  /* color: #000;
+  background-color: #a060fb60; */
   /*border: 1.5px solid black;*/
   /*box-shadow: 0px 10px 15px rgba(0, 0, 0, 0.1);*/
-  transition: all 0.3s ease 0s;
+  /* transition: all 0.3s ease 0s;
   cursor: pointer;
   border: 1px solid transparent;
   margin: 0;
   border-radius: 50px;
   font-size: calc(5px + 2vmin);
-  padding: 5px 10px;
-}
+  padding: 5px 10px; */
+} 
 
-button:hover {
+/* button:hover {
   background-color: #a160fb;
-  /*box-shadow: 0px 15px 20px rgba(0, 0, 0, 0.1);*/
+  box-shadow: 0px 15px 20px rgba(0, 0, 0, 0.1);
   color: white;
-}
+} */
 
 #top {
   margin-top: 2em;

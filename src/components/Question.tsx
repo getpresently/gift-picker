@@ -38,15 +38,14 @@ function Choice({
   return (
     <div onClick={handleClick}>
       <div>
-        <button
-          id={answer}
-          style={{
-            backgroundColor: isActive ? ACTIVE_COLOR : INACTIVE_COLOR,
-            color: isActive ? ACTIVE_TEXT_COLOR : INACTIVE_TEXT_COLOR,
-          }}
+        {isActive ? <button className="w-40 h-12 bg-selected text-gray-600 font-bold py-2 px-4 rounded-full"
         >
           {answer}
-        </button>
+        </button> :
+          <button className="w-40 h-12 bg-unselected hover:text-selected text-gray-600 font-bold py-2 px-4 rounded-full"
+          >
+            {answer}
+          </button>}
       </div>
     </div>
   );
