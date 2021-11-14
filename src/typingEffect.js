@@ -1,6 +1,7 @@
 // List of sentences
-window.onload = function run() {
-  var _CONTENT = ["friend?", "sister?", "coworker?", "partner?"];
+function startTyping() {
+
+ var _CONTENT = ["friend?", "sister?", "coworker?", "partner?"];
 
   // Current sentence being processed
   var _PART = 0;
@@ -65,4 +66,24 @@ window.onload = function run() {
 
   // Start the typing effect on load
   _INTERVAL_VAL = setInterval(Type, 100);
-};
+
+}
+
+waitForElementToDisplay("#text",function(){startTyping()},1000,9000);
+
+function waitForElementToDisplay(selector, callback, checkFrequencyInMs, timeoutInMs) {
+  var startTimeInMs = Date.now();
+  (function loopSearch() {
+    if (document.querySelector(selector) != null) {
+      callback();
+      return;
+    }
+    else {
+      setTimeout(function () {
+        if (timeoutInMs && Date.now() - startTimeInMs > timeoutInMs)
+          return;
+        loopSearch();
+      }, checkFrequencyInMs);
+    }
+  })();
+}

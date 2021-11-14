@@ -1,7 +1,9 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "./App.css";
 import "./App2.scss";
-import "./typingEffect.js"
+import "./homepage.scss";
+
+import "./typingEffect.js";
 
 import Questions from "./components/Questions";
 import ScrollablePage from "./components/ScrollablePage";
@@ -20,6 +22,7 @@ const NUM_PAGES = 4;
 function App(): JSX.Element {
   const [scene, setScene] = useState<Scene>(Scene.Home);
 
+  useEffect(() => {}, [scene]);
   function handleSceneChange(sceneTo: Scene) {
     setScene(sceneTo);
   }
@@ -108,7 +111,7 @@ function App(): JSX.Element {
   }
 
   function resetSelections() {
-    setChoices({})
+    setChoices({});
   }
 
   if (scene === Scene.Suggestions) {
@@ -121,9 +124,9 @@ function App(): JSX.Element {
           <button
             id="button_changeScene"
             onClick={() => {
-              handleSceneChange(Scene.Home)
-              setCurrentPage(1)
-              resetSelections()
+              handleSceneChange(Scene.Home);
+              setCurrentPage(1);
+              resetSelections();
             }}
           >
             HOME
@@ -137,17 +140,16 @@ function App(): JSX.Element {
       <div id="HomePage">
         <header id="HomePageContents">
           <div id="StartQuizSection">
-            <div className="title">
+            <div className="typingEffectContainer">
               <h1>Need to find the perfect gift for your</h1>
-              <div id = "typingEffectContainer">
-	              <h1 id="text"></h1>  
+              <div>
+                <h1 id="text"></h1>
                 <h1 id="cursor"></h1>
-                </div>
-                </div>
-                <script type="text/javascript"  src = "./typingEffect.js">
-        </script>
+              </div>
+            </div>
+            <script type="text/javascript" src="./typingEffect.js"></script>
 
-              <div className="subtitle">
+            <div className="subtitle">
               <p>
                 Don't worry, in just a few minutes, we can help you find the
                 perfect present.
@@ -161,89 +163,94 @@ function App(): JSX.Element {
               <span className="startButtonSpan">Get Started</span>
             </button>
           </div>
-          <div id="Partners">
-            <p className="heading1">
-              {" "}
-              Featuring 1000+ gifts from your favorite brands
-            </p>
-            <div id="PartnersLogosContainer">
-              <img
-                className="partnerImage"
-                src="./charcoalBlackRectangle.jpeg"
-                alt="partner logo"
-              ></img>
-              <img
-                className="partnerImage"
-                src="./charcoalBlackRectangle.jpeg"
-                alt="partner logo"
-              ></img>
-              <img
-                className="partnerImage"
-                src="./charcoalBlackRectangle.jpeg"
-                alt="partner logo"
-              ></img>
-              <img
-                className="partnerImage"
-                src="./charcoalBlackRectangle.jpeg"
-                alt="partner logo"
-              ></img>
-              <img
-                className="partnerImage"
-                src="./charcoalBlackRectangle.jpeg"
-                alt="partner logo"
-              ></img>
-              <img
-                className="partnerImage"
-                src="./charcoalBlackRectangle.jpeg"
-                alt="partner logo"
-              ></img>
-              <img
-                className="partnerImage"
-                src="./charcoalBlackRectangle.jpeg"
-                alt="partner logo"
-              ></img>
+          <div id="AboutGiftPickerSection">
+          <div id="MoreInfoSection"> </div>
+            <div id="Partners">
+              <p className="heading1">
+                {" "}
+                Featuring 1000+ gifts from your favorite brands
+              </p>
+              <div id="PartnersLogosContainer">
+                <img
+                  className="partnerImage"
+                  src="./charcoalBlackRectangle.jpeg"
+                  alt="partner logo"
+                ></img>
+                <img
+                  className="partnerImage"
+                  src="./charcoalBlackRectangle.jpeg"
+                  alt="partner logo"
+                ></img>
+                <img
+                  className="partnerImage"
+                  src="./charcoalBlackRectangle.jpeg"
+                  alt="partner logo"
+                ></img>
+                <img
+                  className="partnerImage"
+                  src="./charcoalBlackRectangle.jpeg"
+                  alt="partner logo"
+                ></img>
+                <img
+                  className="partnerImage"
+                  src="./charcoalBlackRectangle.jpeg"
+                  alt="partner logo"
+                ></img>
+                <img
+                  className="partnerImage"
+                  src="./charcoalBlackRectangle.jpeg"
+                  alt="partner logo"
+                ></img>
+                <img
+                  className="partnerImage"
+                  src="./charcoalBlackRectangle.jpeg"
+                  alt="partner logo"
+                ></img>
+              </div>
             </div>
-          </div>
-          <div id="FAQ">
-            <p className= "heading1" >Frequently Asked Questions</p>
-            <div className="accordianContainer">
-              <div className="accordion">
-                <div className="accordionItem">
-                  <button
-                    className="accordionButton"
-                    id="accordionButton1"
-                    aria-expanded="false"
-                  >
-                    <span className="accordionTitle">
-                      Why is the moon sometimes out during the day?
-                    </span>
-                    <span className="icon" aria-hidden="true"></span>
-                  </button>
-                  <div className="accordionContent">
-                    <p>
-                      Lorem ipsum dolor sit amet, consectetur adipiscing elit,
-                      sed do eiusmod tempor incididunt ut labore et dolore magna
-                      aliqua. Elementum sagittis vitae et leo duis ut. Ut tortor
-                      pretium viverra suspendisse potenti.
-                    </p>
+            <div id="FAQSection">
+              <p className="heading1">Frequently Asked Questions</p>
+              <div className="accordianContainer">
+                <div className="accordion">
+                  <div className="accordionItem">
+                    <button
+                      className="accordionButton"
+                      id="accordionButton1"
+                      aria-expanded="false"
+                    >
+                      <span className="accordionTitle">
+                        Why is the moon sometimes out during the day?
+                      </span>
+                      <span className="icon" aria-hidden="true"></span>
+                    </button>
+                    <div className="accordionContent">
+                      <p>
+                        Lorem ipsum dolor sit amet, consectetur adipiscing elit,
+                        sed do eiusmod tempor incididunt ut labore et dolore
+                        magna aliqua. Elementum sagittis vitae et leo duis ut.
+                        Ut tortor pretium viverra suspendisse potenti.
+                      </p>
+                    </div>
                   </div>
-                </div>
-                <div className="accordionItem">
-                  <button
-                    className="accordionButton"
-                    id="accordionButton2"
-                    aria-expanded="false"
-                  >
-                    <span className="accordionTitle">Why is the sky blue?</span>
-                    <span className="icon" aria-hidden="true"></span>
-                  </button>
-                  <div className="accordionContent">
-                    <p>
-                      Lorem ipsum dolor sit amet, consectetur adipiscing elit,
-                      sed do eiusmod tempor incididunt ut labore et dolore magna
-                      aliqua. Elementum sagittis vitae et leo duis ut. Ut tortor
-                      pretium viverra suspendisse potenti.
-                    </p>
+                  <div className="accordionItem">
+                    <button
+                      className="accordionButton"
+                      id="accordionButton2"
+                      aria-expanded="false"
+                    >
+                      <span className="accordionTitle">
+                        Why is the sky blue?
+                      </span>
+                      <span className="icon" aria-hidden="true"></span>
+                    </button>
+                    <div className="accordionContent">
+                      <p>
+                        Lorem ipsum dolor sit amet, consectetur adipiscing elit,
+                        sed do eiusmod tempor incididunt ut labore et dolore
+                        magna aliqua. Elementum sagittis vitae et leo duis ut.
+                        Ut tortor pretium viverra suspendisse potenti.
+                      </p>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -252,7 +259,6 @@ function App(): JSX.Element {
         </header>
         <Footer />
       </div>
-      
     );
   }
 }
