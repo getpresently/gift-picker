@@ -1,15 +1,12 @@
-import { useEffect, useState } from "react";
-import "./App.css";
-import "./App2.scss";
-import "./homepage.scss";
-
-import "./typingEffect.js";
-
-import Questions from "./components/Questions";
-import ScrollablePage from "./components/ScrollablePage";
-import Suggestions from "./components/Suggestions";
-import Footer from "./components/Footer";
-import Buttons from "./components/Buttons";
+import {useState} from 'react';
+import './App.css';
+import './App2.scss';
+import Questions from './components/Questions';
+import ScrollablePage from './components/ScrollablePage';
+import Suggestions from './components/Suggestions';
+import Footer from './components/Footer';
+import Buttons from './components/Buttons';
+import Typing from 'react-typing-animation';
 
 enum Scene {
   Home = 1,
@@ -22,7 +19,6 @@ const NUM_PAGES = 4;
 function App(): JSX.Element {
   const [scene, setScene] = useState<Scene>(Scene.Home);
 
-  useEffect(() => {}, [scene]);
   function handleSceneChange(sceneTo: Scene) {
     setScene(sceneTo);
   }
@@ -46,7 +42,7 @@ function App(): JSX.Element {
   function handleSelectChoice(
     isSingleSelect: boolean,
     choiceType: string,
-    choiceValue: string
+    choiceValue: string,
   ) {
     let newChoices = choices[choiceType] || new Set<string>();
 
@@ -104,7 +100,7 @@ function App(): JSX.Element {
               numPages={NUM_PAGES}
             ></Buttons>
           </div>
-          <Footer />
+          <Footer/>
         </div>
       </div>
     );
@@ -118,7 +114,7 @@ function App(): JSX.Element {
     return (
       <div>
         <div className="results">
-          <Suggestions choices={choices} />
+          <Suggestions choices={choices}/>
         </div>
         <div id="backButton">
           <button
@@ -132,22 +128,29 @@ function App(): JSX.Element {
             HOME
           </button>
         </div>
-        <Footer />
+        <Footer/>
       </div>
     );
   } else {
+    const giftPeople = ['friend?', 'sister?', 'coworker?', 'partner?'];
+
     return (
       <div id="HomePage">
         <header id="HomePageContents">
           <div id="StartQuizSection">
-            <div className="typingEffectContainer">
-              <h1>Need to find the perfect gift for your</h1>
-              <div>
-                <h1 id="text"></h1>
-                <h1 id="cursor"></h1>
-              </div>
+            <div className="title">
+              <h1>
+                Need to find the perfect gift for your...
+                <Typing loop={true}>
+                  {giftPeople.map(p => {
+                    return <>
+                      <span>{p}</span>
+                      <Typing.Backspace count={p.length + 1} delay={1000}/>
+                    </>;
+                  })}
+                </Typing>
+              </h1>
             </div>
-            <script type="text/javascript" src="./typingEffect.js"></script>
 
             <div className="subtitle">
               <p>
@@ -155,7 +158,7 @@ function App(): JSX.Element {
                 perfect present.
               </p>
             </div>
-            <img id="HomepageLogo" src="./App-logo.png" alt=""></img>
+            <img id="HomepageLogo" src="./App-logo.png" alt=""/>
             <button
               className="startQuizButton"
               onClick={() => handleSceneChange(Scene.Questions)}
@@ -257,7 +260,7 @@ function App(): JSX.Element {
             </div>
           </div>
         </header>
-        <Footer />
+        <Footer/>
       </div>
     );
   }
