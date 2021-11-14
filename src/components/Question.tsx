@@ -36,18 +36,18 @@ function Choice({
   }
 
   return (
+
     <div onClick={handleClick}>
-      <div>
-        {isActive ? <button className="w-40 h-12 bg-selected text-gray-600 font-bold py-2 px-4 rounded-full"
+      {isActive ? <button className="w-full bg-selected text-gray-600 font-bold py-2 px-4 rounded-full"
+      >
+        {answer}
+      </button> :
+        <button className="w-full bg-unselected hover:text-selected text-gray-600 font-bold py-2 px-4 rounded-full"
         >
           {answer}
-        </button> :
-          <button className="w-40 h-12 bg-unselected hover:text-selected text-gray-600 font-bold py-2 px-4 rounded-full"
-          >
-            {answer}
-          </button>}
-      </div>
+        </button>}
     </div>
+
   );
 }
 
@@ -95,7 +95,7 @@ function Question({
   return (
     <div id="questionContainer">
       <p>{title}</p>
-      <div>
+      <div id="choiceContainer">
         <Choices
           questionKey={questionKey}
           choices={choices}
