@@ -9,7 +9,11 @@ interface PropTypes {
 }
 
 // creates questions with attributes from google sheet
-function Questions({ handleSelectChoice, page, choices }: PropTypes): JSX.Element {
+function Questions({
+  handleSelectChoice,
+  page,
+  choices,
+}: PropTypes): JSX.Element {
   const { data: questions, loading: isLoading } = useQuestions();
   let questionArr = questions.map((answerTexts, questionId) => (
     <Question
@@ -23,14 +27,10 @@ function Questions({ handleSelectChoice, page, choices }: PropTypes): JSX.Elemen
     />
   ));
 
-  return (
-    isLoading ?
-      <Loading></Loading>
-      :
-      <div className="flex items-center" id="questionsContainer">
-        {questionArr[page - 1]}
-      </div>
-
+  return isLoading ? (
+    <Loading></Loading>
+  ) : (
+    <div id="questionsContainer">{questionArr[page - 1]}</div>
   );
 }
 

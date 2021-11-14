@@ -78,7 +78,7 @@ function App(): JSX.Element {
 
   if (scene === Scene.Questions) {
     return (
-      <div >
+      <div>
         <div className="instructions">
           <p>To get your personalized gift suggestions,</p>
           <p>simply answer these four quick questions:</p>
@@ -90,7 +90,7 @@ function App(): JSX.Element {
 
         <div>
           <div id="container">
-            {page}
+            <div className="container mx-auto">{page}</div>
             <Buttons
               handlePageChange={handlePageChange}
               handleSubmit={() => handleSceneChange(Scene.Suggestions)}
@@ -105,7 +105,7 @@ function App(): JSX.Element {
   }
 
   function resetSelections() {
-    setChoices({})
+    setChoices({});
   }
 
   if (scene === Scene.Suggestions) {
@@ -118,9 +118,9 @@ function App(): JSX.Element {
           <button
             id="button_changeScene"
             onClick={() => {
-              handleSceneChange(Scene.Home)
-              setCurrentPage(1)
-              resetSelections()
+              handleSceneChange(Scene.Home);
+              setCurrentPage(1);
+              resetSelections();
             }}
           >
             HOME

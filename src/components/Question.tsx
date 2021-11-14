@@ -68,17 +68,17 @@ function Choices({
   selectedChoices,
 }: ChoicesProps): JSX.Element {
   return (
-    <div className="space-x-4 ...  max-w-md">
+    <div className="inline-grid grid-cols-3 gap-x-4 gap-y-4">
       {choices.map((answerText, questionId) => (
-      <div className="inline-block ..."> 
-        <Choice
-          key={`ch-${questionId}`}
-          questionKey={questionKey}
-          answer={answerText}
-          partOfSingleSelect={partOfSingleSelect}
-          isActive={selectedChoices?.has(answerText)}
-          handleSelectChoice={handleSelectChoice}
-        />
+        <div>
+          <Choice
+            key={`ch-${questionId}`}
+            questionKey={questionKey}
+            answer={answerText}
+            partOfSingleSelect={partOfSingleSelect}
+            isActive={selectedChoices?.has(answerText)}
+            handleSelectChoice={handleSelectChoice}
+          />
         </div>
       ))}
     </div>
@@ -94,7 +94,7 @@ function Question({
   handleSelectChoice,
 }: QuestionProps): JSX.Element {
   return (
-    <div id="questionContainer" >
+    <div id="questionContainer">
       <p>{title}</p>
       <div>
         <Choices

@@ -2,7 +2,7 @@
 
 .App {
   text-align: center;
-  font-family: "Poppins", sans-serif;
+  font-family: "Sofia Pro", sans-serif;
   font-size: calc(5px + 2vmin);
 }
 
@@ -28,7 +28,7 @@
 }
 
 .App-title {
-  font-family: "Poppins", sans-serif;
+  font-family: "Sofia Pro", sans-serif;
   letter-spacing: 2.5px;
   margin: 2em;
 }
@@ -211,7 +211,7 @@ button {
   height: calc(45px + 2vmin);*/
   width: auto;
   height: auto;
-  font-family: "Poppins", sans-serif;
+  font-family: "Sofia Pro", sans-serif;
   color: #000;
   background-color: #a060fb60;
   /*border: 1.5px solid black;*/
@@ -221,7 +221,7 @@ button {
   border: 1px solid transparent;
   margin: 0;
   border-radius: 50px;
-  font-size: calc(5px + 1vmin);
+  font-size: calc(5px + 2vmin);
   padding: 5px 10px;
 }
 
