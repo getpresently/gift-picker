@@ -1,3 +1,4 @@
+import "./Suggestions.css"
 import { useIdeas } from '../utils/hooks';
 import { Gift } from '../utils/types';
 import Loading from './Loading';
@@ -90,7 +91,7 @@ function Suggestions({ choices }: PropTypes): JSX.Element {
   return (
     <div>
       <div id="top">
-        <p>The top gift suggestions based on your answers:</p>
+        <p>Our gift picks 🎁</p>
       </div>
       <div className="line">
         <hr></hr>
@@ -98,22 +99,24 @@ function Suggestions({ choices }: PropTypes): JSX.Element {
       {isLoading ? <Loading></Loading>
         : (filteredSuggestions.length === 0 ? <p> No suggestions could be found.</p>
           : <div className="columns">
-            {filteredSuggestions.slice(0, limit).map((x, i) => (
-              <Suggestion
+            {filteredSuggestions.slice(0, limit).map((x, i) => {
+              console.log(x)
+              return <Suggestion
                 photo={x.photo}
                 key={`que-${i}`}
                 title={x.gift}
                 brand={x.brand}
+                price={x.Price[0]}
                 link={x.link}
               />
-            ))}
+          })}
           </div>)}
       <div>
         <button 
           id="button_moreSuggestions"
           disabled = {moreDisabled}
           onClick={increaseLimitAndDisableMore}>
-          More
+          Load more gifts
         </button>
       </div>
     </div>

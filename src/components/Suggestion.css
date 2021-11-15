@@ -1,0 +1,47 @@
+.column img {
+    border-top-right-radius: 10%;
+    border-top-left-radius: 10%;
+}
+
+.column .suggestion_MetaData {
+    color: white;
+    background-color: #363342;
+    border-bottom-right-radius: 10px;
+    border-bottom-left-radius: 10px;
+    padding: 10px 10px 10px;
+}
+
+.column .suggestion_MetaData a {
+    color: white;
+    text-decoration: none;
+}
+
+.column .suggestion_MetaData button {
+    margin-left: 5px;
+    margin-right:5px;
+    width: 45%;
+    background-color: #4DDDEA;
+}
+
+.column .suggestion_MetaData .row {
+    text-align:center;
+}
+
+.column .suggestion_MetaData p{
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+
+#suggestion_Brand {
+    color: #AEAFB7;
+}
+
+#suggestion_Title {
+    font-weight: bold;
+    color: #F9FBFF;
+}
+
+#suggestion_Price {
+    color: #AEAFB7;
+}
