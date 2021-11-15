@@ -7,7 +7,7 @@ body {
 
 .App {
   text-align: center;
-  font-family: "Sofia Pro", sans-serif;
+  /* font-family: "Sofia Pro", sans-serif; */
   font-size: calc(5px + 2vmin);
 }
 
@@ -33,7 +33,7 @@ body {
 }
 
 .App-title {
-  font-family: "Sofia Pro", sans-serif;
+  /* font-family: "Sofia Pro", sans-serif; */
   letter-spacing: 2.5px;
   margin: 2em;
 }
@@ -244,7 +244,7 @@ button {
 } */
 
 button:disabled,
-button[disabled]{
+button[disabled] {
   border: 1px solid #999999;
   background-color: #cccccc;
   color: #666666;
