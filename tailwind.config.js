@@ -6,6 +6,8 @@ module.exports = {
       colors: {
         selected: "#FF5D81",
         unselected: "#F9FBFF",
+        deepGrey: "#444253",
+        midGrey: "#AEAFB7",
       },
     },
   },

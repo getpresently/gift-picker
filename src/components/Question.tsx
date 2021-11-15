@@ -1,12 +1,3 @@
-// constants
-// inactive color settings
-const INACTIVE_COLOR = "#a060fb60";
-const INACTIVE_TEXT_COLOR = "black";
-
-// active color
-const ACTIVE_COLOR = "#a160fb";
-const ACTIVE_TEXT_COLOR = "white";
-
 interface QuestionProps {
   title: string;
   questionKey: string;

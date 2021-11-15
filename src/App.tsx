@@ -1,4 +1,4 @@
-import { useState} from "react";
+import { useState } from "react";
 import "./App.css";
 import Questions from "./components/Questions";
 import ScrollablePage from "./components/ScrollablePage";
@@ -78,30 +78,18 @@ function App(): JSX.Element {
 
   if (scene === Scene.Questions) {
     return (
-      <div>
-        <div className="instructions">
-          <p>To get your personalized gift suggestions,</p>
-          <p>simply answer these four quick questions:</p>
+      <>
+        <div id="questContainer" className="container p-8 mx-auto">{page}
+          <Buttons
+            handlePageChange={handlePageChange}
+            handleSubmit={() => handleSceneChange(Scene.Suggestions)}
+            currentPage={currentPage}
+            numPages={NUM_PAGES}
+            choices={choices}
+          ></Buttons>
         </div>
-
-        <div className="line">
-          <hr></hr>
-        </div>
-
-        <div>
-          <div id="container">
-            <div className="container mx-auto">{page}</div>
-            <Buttons
-              handlePageChange={handlePageChange}
-              handleSubmit={() => handleSceneChange(Scene.Suggestions)}
-              currentPage={currentPage}
-              numPages={NUM_PAGES}
-              choices={choices}
-            ></Buttons>
-          </div>
-          <Footer />
-        </div>
-      </div>
+        <Footer />
+      </>
     );
   }
 
