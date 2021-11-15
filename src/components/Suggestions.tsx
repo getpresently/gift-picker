@@ -2,16 +2,22 @@ import { useIdeas } from '../utils/hooks';
 import { Gift } from '../utils/types';
 import Loading from './Loading';
 import Suggestion from './Suggestion';
+import React from "react";
 
 interface PropTypes {
   choices: { [key: string]: Set<string> };
 }
 
+const LIMIT_INCREMENT = 3;
+const LIMIT_STOP = 12;
 const MANDATORY_QUESTION_KEYS = ["Age"];
 const WEIGHTED_QUESTION_KEYS = ["Type", "Interests", "Price"];
 const WEIGHTED_QUESTION_VALUES = [1, 1, 1];
 
 function Suggestions({ choices }: PropTypes): JSX.Element {
+  const [limit, setLimit] = React.useState(LIMIT_INCREMENT);
+  const [moreDisabled, setMoreDisabled] = React.useState(false);
+  const questionKeys = ["Age", "Type", "Interests", "Price"];
   const { data: suggestions, loading: isLoading } = useIdeas();
 
   // caculates the relevance score for a gift
@@ -72,6 +78,15 @@ function Suggestions({ choices }: PropTypes): JSX.Element {
 
   const filteredSuggestions = sortGiftsByScore(suggestions);
 
+  //increases the number of suggestions displayed by the value of LIMIT_INCREMENT
+  //until LIMIT_STOP (12) suggestions are shown
+  const increaseLimitAndDisableMore = () => {
+    setLimit(limit + LIMIT_INCREMENT);
+    if(limit+LIMIT_INCREMENT >= LIMIT_STOP) {
+      setMoreDisabled(true);
+    }
+  };
+
   return (
     <div>
       <div id="top">
@@ -83,7 +98,7 @@ function Suggestions({ choices }: PropTypes): JSX.Element {
       {isLoading ? <Loading></Loading>
         : (filteredSuggestions.length === 0 ? <p> No suggestions could be found.</p>
           : <div className="columns">
-            {filteredSuggestions.map((x, i) => (
+            {filteredSuggestions.slice(0, limit).map((x, i) => (
               <Suggestion
                 photo={x.photo}
                 key={`que-${i}`}
@@ -93,6 +108,14 @@ function Suggestions({ choices }: PropTypes): JSX.Element {
               />
             ))}
           </div>)}
+      <div>
+        <button 
+          id="button_moreSuggestions"
+          disabled = {moreDisabled}
+          onClick={increaseLimitAndDisableMore}>
+          More
+        </button>
+      </div>
     </div>
   )
 }
