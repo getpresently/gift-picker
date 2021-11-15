@@ -2,16 +2,18 @@
 
 /* TEXT STYLES */
 
-.title {
-  margin: 5vh;
-  text-align: center;
-  font-size: 2vw;
+h1 {
+  font-size: 2.8vw;
+  font-weight: bolder;
+  color: whitesmoke;
+
 }
 
-.subtitle {
-
-  text-align: center;
-  font-size: --paragraphSize;
+h2 {
+  color: whitesmoke;
+  text-align: left;
+  font-weight: normal;
+  font-size: 2.0vw;
 }
 
 .heading1 {
@@ -26,9 +28,11 @@
   font-size: 1.8vw;
 }
 
-.heading3 {
-  text-align: center;
-  font-size: 1.7vw;
+h3 {
+  color: whitesmoke;
+  font-size: 1.6vw;
+  font-weight: normal; 
+
 }
 
 .paragraphtext {
@@ -38,26 +42,11 @@
 
 /* HOMEPAGE */
 
-#StartQuizSection {
-  margin: 10vh;
-  display: flex;
-  flex-direction: column;
-  align-content: center;
-  justify-content: center;
-  align-items: center;
-}
 
-/* homepage logo */
-#HomepageLogo {
-  background: transparent;
-  height: 10vw;
-  width: 10vw;
-  margin-top: 3vw;
-  margin-bottom: 2vh;
-}
+
 
 /* typing animation */
-
+/*
 #text {
 	display: inline-block;
 	vertical-align: middle;
@@ -72,27 +61,14 @@
   min-height: 150px;
   flex-shrink: 0;
 }
-#cursor {
+.cursor {
 	display: inline-block;
 	vertical-align: middle;
-	width: 3px;
-  height: 50px;
-	background-color: black;
-	animation: blink .75s step-end infinite;
-  margin: 5vh;
-  font-size: --titleFontSize ;
+  color: white;
 }
-
-@keyframes blink {
-	from, to { 
-		background-color: transparent 
-	}
-	50% { 
-		background-color: black; 
-    
-	}
-}
+*/
 /* start quiz button*/
+/*
 *,
 *:after,
 *:before {
@@ -100,7 +76,9 @@
   -moz-box-sizing: border-box;
   box-sizing: border-box;
 }
+*/
 
+/*
 .startQuizButton {
   position: relative;
   margin: 0;
@@ -186,34 +164,6 @@
   transition-delay: 0s;
 }
 
-#Partners {
-  background: rgba(255, 255, 255, 0.5);
-  padding: 5%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-#PartnersLogosContainer {
-  margin-top: 3em;
-  margin-inline: 15vw;
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  margin-bottom: 1em;
-}
-
-.partnerImage {
-  width: 10vw;
-  height: 10vw;
-  border-radius: 50%;
-  background-color: blue;
-  margin: 2vw 2vw 1vw 1vw ;
-
-  flex-grow: 0;
-}
-
-/* FAQ */
 * {
   box-sizing: border-box;
   &::before, &::after {
@@ -221,22 +171,13 @@
   }
 }
 
-#FAQ {
-  background: rgba(255, 255, 255, 0.8);
-  margin-bottom: 0;
-  padding: 5%;
-  color: black;
-  font-weight: bold;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-}
+*/
 
 
 .accordionContainer {
   padding: 4rem;
   width: 48rem;
+  background-color: red;
 }
 
 .accordion {
@@ -330,40 +271,26 @@
       }
     }
   }
+  
 /* HEADER */
 
-#Header {
-  display: flex;
-  justify-content: space-between;
-  background-color: rgba(255, 255, 255, 0.5);
-  width: 100%;
-  height: 10vh;
-  top: 0%;
-  right: 0%;
-  padding: .5vw;
 
-  position: sticky;
-}
+
 
 .transparentButton {
   background: transparent;
   align-items: center;
   border: none;
-  border-radius: 50%;
-  height: 4vw;
-  width: 4vw;
+  height: 4rem;
+  width: 10rem;
+
 }
 
 .transparentButton:hover {
   background: rgb(255, 255, 255);
 }
 
-#headerLogoButton {
-  height: 3vw;
-  width: 3vw;
-  margin: 0%;
-}
-
+/*
 #headerHelpButton {
   height: 3vw;
   width: 3vw;
@@ -371,6 +298,7 @@
   margin: 0%;
 
 }
+*/
 
 /* FOOTER */
 

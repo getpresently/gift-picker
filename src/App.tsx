@@ -1,12 +1,14 @@
-import {useState} from 'react';
-import './App.css';
-import './App2.scss';
-import Questions from './components/Questions';
-import ScrollablePage from './components/ScrollablePage';
-import Suggestions from './components/Suggestions';
-import Footer from './components/Footer';
-import Buttons from './components/Buttons';
-import Typing from 'react-typing-animation';
+import { useState } from "react";
+import "./App.css";
+import "./homepage.scss";
+import "./App2.scss";
+import Questions from "./components/Questions";
+import ScrollablePage from "./components/ScrollablePage";
+import Suggestions from "./components/Suggestions";
+import Footer from "./components/Footer";
+import Buttons from "./components/Buttons";
+import Typing from "react-typing-animation";
+import Header from "./components/Header";
 
 enum Scene {
   Home = 1,
@@ -42,7 +44,7 @@ function App(): JSX.Element {
   function handleSelectChoice(
     isSingleSelect: boolean,
     choiceType: string,
-    choiceValue: string,
+    choiceValue: string
   ) {
     let newChoices = choices[choiceType] || new Set<string>();
 
@@ -100,7 +102,7 @@ function App(): JSX.Element {
               numPages={NUM_PAGES}
             ></Buttons>
           </div>
-          <Footer/>
+          <Footer />
         </div>
       </div>
     );
@@ -114,7 +116,7 @@ function App(): JSX.Element {
     return (
       <div>
         <div className="results">
-          <Suggestions choices={choices}/>
+          <Suggestions choices={choices} />
         </div>
         <div id="backButton">
           <button
@@ -128,51 +130,82 @@ function App(): JSX.Element {
             HOME
           </button>
         </div>
-        <Footer/>
+        <Footer />
       </div>
     );
   } else {
-    const giftPeople = ['friend?', 'sister?', 'coworker?', 'partner?'];
+    const giftPeople = [
+      "friend.",
+      "sister.",
+      "coworker.",
+      "partner.",
+      "brother.",
+      "girlfriend.",
+      "mom.",
+      "dad.",
+      "husband.",
+      "boyfriend.",
+      "boss.",
+      "wife.",
+    ];
 
     return (
       <div id="HomePage">
+        <Header />
+
         <header id="HomePageContents">
           <div id="StartQuizSection">
-            <div className="title">
+            <div id="homepageTitle">
               <h1>
-                Need to find the perfect gift for your...
-                <Typing loop={true}>
-                  {giftPeople.map(p => {
-                    return <>
-                      <span>{p}</span>
-                      <Typing.Backspace count={p.length + 1} delay={1000}/>
-                    </>;
+                don't buy that gift for your{" "}
+                <Typing loop={true} cursorClassName="cursor">
+                  {giftPeople.map((p) => {
+                    return (
+                      <>
+                        {<span id="typingEffect">{p}</span>}
+                        <Typing.Backspace count={p.length + 1} delay={1000} />
+                      </>
+                    );
                   })}
                 </Typing>
               </h1>
             </div>
 
-            <div className="subtitle">
-              <p>
-                Don't worry, in just a few minutes, we can help you find the
-                perfect present.
-              </p>
+            <div>
+              <h2 className="subtitle">
+                leave it to the experts (that’s us). introducing GiftPicker, the
+                only way you should be picking holidays gifts.
+              </h2>
             </div>
-            <img id="HomepageLogo" src="./App-logo.png" alt=""/>
             <button
-              className="startQuizButton"
+              type="button"
+              id="startQuizButton"
               onClick={() => handleSceneChange(Scene.Questions)}
             >
-              <span className="startButtonSpan">Get Started</span>
+              {" "}
+              Take our gift quiz
             </button>
+            <a href="#" className="scroll-down"></a>
           </div>
           <div id="AboutGiftPickerSection">
-          <div id="MoreInfoSection"> </div>
+            <div id="MoreInfoSection">
+              <div id="aboutText">
+                <h3>
+                  How do we put this nicely... <br />
+                  if your holiday gift usually <br />
+                  ends up in the closet, leave <br />
+                  the gifting to us.
+                  <br />
+                  we’ve made a quiz so <br />
+                  simple you’re bound to ...
+                </h3>{" "}
+              </div>
+              <div id="aboutImg">
+                <img src="./AboutGPImg.png" alt="gift picker on phone" />
+              </div>
+            </div>
             <div id="Partners">
-              <p className="heading1">
-                {" "}
-                Featuring 1000+ gifts from your favorite brands
-              </p>
+              <h2> over 1,000 gifts from your favorite brands</h2>
               <div id="PartnersLogosContainer">
                 <img
                   className="partnerImage"
@@ -211,48 +244,32 @@ function App(): JSX.Element {
                 ></img>
               </div>
             </div>
-            <div id="FAQSection">
-              <p className="heading1">Frequently Asked Questions</p>
-              <div className="accordianContainer">
-                <div className="accordion">
-                  <div className="accordionItem">
-                    <button
-                      className="accordionButton"
-                      id="accordionButton1"
-                      aria-expanded="false"
-                    >
-                      <span className="accordionTitle">
-                        Why is the moon sometimes out during the day?
-                      </span>
-                      <span className="icon" aria-hidden="true"></span>
-                    </button>
-                    <div className="accordionContent">
-                      <p>
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit,
-                        sed do eiusmod tempor incididunt ut labore et dolore
-                        magna aliqua. Elementum sagittis vitae et leo duis ut.
-                        Ut tortor pretium viverra suspendisse potenti.
-                      </p>
+          </div>
+          <div id="FAQSection">
+            <h2>FAQs About Gifting</h2>
+            <div id="FAQBubble">
+              <div className="row">
+                <div className="col">
+                  <div className="tabs">
+                    <div className="tab">
+                      <input type="checkbox" id="rd1" name="rd" />
+                      <label className="tab-label" htmlFor="rd1">
+                        Item 1
+                      </label>
+                      <div className="tab-content">
+                        Lorem, ipsum dolor sit amet consectetur adipisicing
+                        elit. Eos, facilis.
+                      </div>
                     </div>
-                  </div>
-                  <div className="accordionItem">
-                    <button
-                      className="accordionButton"
-                      id="accordionButton2"
-                      aria-expanded="false"
-                    >
-                      <span className="accordionTitle">
-                        Why is the sky blue?
-                      </span>
-                      <span className="icon" aria-hidden="true"></span>
-                    </button>
-                    <div className="accordionContent">
-                      <p>
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit,
-                        sed do eiusmod tempor incididunt ut labore et dolore
-                        magna aliqua. Elementum sagittis vitae et leo duis ut.
-                        Ut tortor pretium viverra suspendisse potenti.
-                      </p>
+                    <div className="tab">
+                      <input type="checkbox" id="rd2" name="rd" />
+                      <label className="tab-label" htmlFor="rd2">
+                        Item 2
+                      </label>
+                      <div className="tab-content">
+                        Lorem ipsum dolor, sit amet consectetur adipisicing
+                        elit. Nihil, aut.
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -260,7 +277,7 @@ function App(): JSX.Element {
             </div>
           </div>
         </header>
-        <Footer/>
+        <Footer />
       </div>
     );
   }

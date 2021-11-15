@@ -1,12 +1,10 @@
 function Header() {
   return (
     <div id="Header">
-      <button className = "transparentButton">
-        <img  id="headerLogoButton" src="./App-logo.png" alt="logo buttom"></img>
-      </button>
-      <button className = "transparentButton">
-        <img  id="headerHelpButton" src="./question mark.png" alt="help button"></img>
-      </button>
+      <a href = "http://giftpicker.io">
+      <button type = "button" >
+        <img id="headerLogoButton" src="./headerLogo.png" alt="logo buttom"></img>
+      </button></a>
     </div>
   );
 }
