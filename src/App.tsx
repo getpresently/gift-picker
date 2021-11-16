@@ -79,7 +79,8 @@ function App(): JSX.Element {
   if (scene === Scene.Questions) {
     return (
       <>
-        <div id="questContainer" className="container p-8 mx-auto">{page}
+        <div id="questContainer" className="container p-8 mx-auto">   
+        {page}
           <Buttons
             handlePageChange={handlePageChange}
             handleSubmit={() => handleSceneChange(Scene.Suggestions)}

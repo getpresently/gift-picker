@@ -31,6 +31,7 @@ function Questions({
       choices={answerTexts.answers}
       selectedChoices={choices[answerTexts.questionKey]}
       handleSelectChoice={handleSelectChoice}
+      currentPage={page}
     />
   ));
 
