@@ -1,9 +1,9 @@
 function Header() {
   return (
     <div id="Header">
-      <a href = "http://giftpicker.io">
+      <a href = "HomePage">
       <button type = "button" >
-        <img id="headerLogoButton" src="./headerLogo.png" alt="logo buttom"></img>
+        <img id="HeaderLogoButton" src="./headerLogo.svg" alt="logo button"></img>
       </button></a>
     </div>
   );

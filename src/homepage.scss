@@ -304,18 +304,19 @@
   position: sticky;
   min-width: auto;
   flex-basis: auto;
-  background-color: rgba(255,255, 255, 0.5);
+  background-color: transparent;
 
 }
 
-#headerLogoButton {
+#HeaderLogoButton {
   height: 4vw;
-  width: 30vh;
+  width: 55rem;
   margin: 0%;
   object-fit: contain;
   align-self: right;
-  margin-right: 5vw;;
-
+  margin-right: 5vw;
+  margin-left: 10vw;
+  margin-top: 2vw;
 }
 
 /** accordian **/
