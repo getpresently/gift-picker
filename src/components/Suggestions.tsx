@@ -3,6 +3,7 @@ import { Gift } from '../utils/types';
 import Loading from './Loading';
 import Suggestion from './Suggestion';
 import React from "react";
+import { useTimer } from 'react-timer-hook';
 
 interface PropTypes {
   choices: { [key: string]: Set<string> };
@@ -19,6 +20,10 @@ function Suggestions({ choices }: PropTypes): JSX.Element {
   const [moreDisabled, setMoreDisabled] = React.useState(false);
   const questionKeys = ["Age", "Type", "Interests", "Price"];
   const { data: suggestions, loading: isLoading } = useIdeas();
+
+  const time = new Date();
+  time.setSeconds(time.getSeconds() + 3); // 3 seconds for gif to fully display load
+  const { isRunning } = useTimer({ expiryTimestamp: time, onExpire: () => console.warn('onExpire called') });
 
   // caculates the relevance score for a gift
   function calculateGiftScore(curGift: Gift) {
@@ -82,7 +87,7 @@ function Suggestions({ choices }: PropTypes): JSX.Element {
   //until LIMIT_STOP (12) suggestions are shown
   const increaseLimitAndDisableMore = () => {
     setLimit(limit + LIMIT_INCREMENT);
-    if(limit+LIMIT_INCREMENT >= LIMIT_STOP) {
+    if (limit + LIMIT_INCREMENT >= LIMIT_STOP) {
       setMoreDisabled(true);
     }
   };
@@ -95,7 +100,7 @@ function Suggestions({ choices }: PropTypes): JSX.Element {
       <div className="line">
         <hr></hr>
       </div>
-      {isLoading ? <Loading></Loading>
+      {isLoading || isRunning ? <Loading></Loading>
         : (filteredSuggestions.length === 0 ? <p> No suggestions could be found.</p>
           : <div className="columns">
             {filteredSuggestions.slice(0, limit).map((x, i) => (
@@ -109,9 +114,9 @@ function Suggestions({ choices }: PropTypes): JSX.Element {
             ))}
           </div>)}
       <div>
-        <button 
+        <button
           id="button_moreSuggestions"
-          disabled = {moreDisabled}
+          disabled={moreDisabled}
           onClick={increaseLimitAndDisableMore}>
           More
         </button>

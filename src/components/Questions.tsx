@@ -1,4 +1,6 @@
+import { useEffect } from "react";
 import { useQuestions } from "../utils/hooks";
+import { useTimer } from 'react-timer-hook';
 import Loading from "./Loading";
 import Question from "./Question";
 
@@ -14,6 +16,11 @@ function Questions({
   page,
   choices,
 }: PropTypes): JSX.Element {
+  // start the timer when component mounts
+  const time = new Date();
+  time.setSeconds(time.getSeconds() + 3); // 3 seconds for gif to fully display load
+  const { isRunning } = useTimer({ expiryTimestamp: time, onExpire: () => console.warn('onExpire called') });
+
   const { data: questions, loading: isLoading } = useQuestions();
   let questionArr = questions.map((answerTexts, questionId) => (
     <Question
@@ -27,7 +34,7 @@ function Questions({
     />
   ));
 
-  return isLoading ? (
+  return isLoading || isRunning ? (
     <Loading></Loading>
   ) : (
     <div id="questionsContainer">{questionArr[page - 1]}</div>
