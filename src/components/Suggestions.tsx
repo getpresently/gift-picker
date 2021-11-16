@@ -16,7 +16,7 @@ const WEIGHTED_QUESTION_VALUES = [1, 1, 1];
 
 function Suggestions({ choices }: PropTypes): JSX.Element {
   const [limit, setLimit] = React.useState(LIMIT_INCREMENT);
-  const [moreDisabled, setMoreDisabled] = React.useState(false);
+  const [moreShowing, setMoreShowing] = React.useState(false);
   const questionKeys = ["Age", "Type", "Interests", "Price"];
   const { data: suggestions, loading: isLoading } = useIdeas();
 
@@ -83,7 +83,7 @@ function Suggestions({ choices }: PropTypes): JSX.Element {
   const increaseLimitAndDisableMore = () => {
     setLimit(limit + LIMIT_INCREMENT);
     if(limit+LIMIT_INCREMENT >= LIMIT_STOP) {
-      setMoreDisabled(true);
+      setMoreShowing(true);
     }
   };
 
@@ -111,7 +111,7 @@ function Suggestions({ choices }: PropTypes): JSX.Element {
       <div>
         <button 
           id="button_moreSuggestions"
-          disabled = {moreDisabled}
+          hidden = {moreShowing}
           onClick={increaseLimitAndDisableMore}>
           More
         </button>
