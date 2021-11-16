@@ -4,6 +4,7 @@ interface QuestionProps {
   choices: string[];
   isSingleSelect: boolean;
   selectedChoices: Set<string>;
+  currentPage: number;
   handleSelectChoice: (isSingleSelect: boolean, k: string, v: string) => void;
 }
 
@@ -82,10 +83,12 @@ function Question({
   isSingleSelect,
   selectedChoices,
   handleSelectChoice,
+  currentPage,
 }: QuestionProps): JSX.Element {
   return (
     <div id="questionContainer">
-      <p>{title}</p>
+    <h2 className= "text-base ... text-gray-300"> Questions {currentPage} of 4 </h2>
+    <p className="text-lg ... text-gray-100">{title}</p>
       <div id="choiceContainer">
         <Choices
           questionKey={questionKey}
