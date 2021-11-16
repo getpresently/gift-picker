@@ -27,14 +27,14 @@ function Buttons({ handlePageChange, handleSubmit, currentPage, numPages, choice
         </button>
       )}
       {currentPage < numPages ? (
-        <button className="bg-deepGrey hover:bg-black text-white font-bold py-2 px-4 h-1/4 rounded button_nav " disabled={nextDisable}
+        <button className="bg-deepGrey hover:bg-black text-white py-2 px-4 h-1/4 rounded button_nav " disabled={nextDisable}
           onClick={() => {
             handlePageChange(true)
           }}>
           Next
         </button>
       ) : (
-        <button className="bg-deepGrey hover:bg-black text-white font-bold py-2 px-4 rounded button_nav" disabled={nextDisable} onClick={handleSubmit}>
+        <button className="bg-deepGrey hover:bg-black text-white py-2 px-4 rounded button_nav" disabled={nextDisable} onClick={handleSubmit}>
           Done
         </button>
       )}

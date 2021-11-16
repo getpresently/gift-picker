@@ -3,7 +3,6 @@
 body {
   background-image: url("GP_Gradient_3\ 1.svg");
   background-color: #cccccc;
-  min-height: 75%;
 }
 
 .App {
@@ -143,10 +142,7 @@ img {
 
 .footer {
   background-color: black;
-  /* position: absolute; */
-  position: fixed;
-  left: 0;
-  bottom: 0;
+  position: absolute;
   width: 100%;
   font-size: calc(5px + 1vmin);
 }

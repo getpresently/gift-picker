@@ -30,11 +30,11 @@ function Choice({
   return (
 
     <div onClick={handleClick}>
-      {isActive ? <button className="w-full bg-selected text-gray-600 font-bold py-2 px-4 rounded-full"
+      {isActive ? <button className="w-full bg-selected text-white py-2 px-4 rounded-full"
       >
         {answer}
       </button> :
-        <button className="w-full bg-unselected hover:text-selected text-gray-600 font-bold py-2 px-4 rounded-full"
+        <button className="w-full bg-unselected hover:text-selected text-gray-500 py-2 px-4 rounded-full"
         >
           {answer}
         </button>}
@@ -87,8 +87,8 @@ function Question({
 }: QuestionProps): JSX.Element {
   return (
     <div id="questionContainer">
-    <h2 className= "text-base ... text-gray-300"> Questions {currentPage} of 4 </h2>
-    <p className="text-lg ... text-gray-100">{title}</p>
+      <h2 className="text-xs ... text-gray-400 pb-2"> QUESTION {currentPage} OF 4 </h2>
+      <p className="text-xl ... text-gray-100 font-normal">{title}</p>
       <div id="choiceContainer">
         <Choices
           questionKey={questionKey}
