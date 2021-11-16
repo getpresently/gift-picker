@@ -1,7 +1,7 @@
-import { useIdeas } from '../utils/hooks';
-import { Gift } from '../utils/types';
-import Loading from './Loading';
-import Suggestion from './Suggestion';
+import { useIdeas } from "../utils/hooks";
+import { Gift } from "../utils/types";
+import Loading from "./Loading";
+import Suggestion from "./Suggestion";
 
 interface PropTypes {
   choices: { [key: string]: Set<string> };
@@ -44,7 +44,7 @@ function Suggestions({ choices }: PropTypes): JSX.Element {
           if (giftAttributes.includes(selection)) {
             score +=
               WEIGHTED_QUESTION_VALUES[
-              WEIGHTED_QUESTION_KEYS.indexOf(questionKey)
+                WEIGHTED_QUESTION_KEYS.indexOf(questionKey)
               ];
           }
         });
@@ -80,20 +80,24 @@ function Suggestions({ choices }: PropTypes): JSX.Element {
       <div className="line">
         <hr></hr>
       </div>
-      {isLoading ? <Loading></Loading>
-        : (filteredSuggestions.length === 0 ? <p> No suggestions could be found.</p>
-          : <div className="columns">
-            {filteredSuggestions.map((x, i) => (
-              <Suggestion
-                photo={x.photo}
-                key={`que-${i}`}
-                title={x.gift}
-                brand={x.brand}
-                link={x.link}
-              />
-            ))}
-          </div>)}
+      {isLoading ? (
+        <Loading></Loading>
+      ) : filteredSuggestions.length === 0 ? (
+        <p> No suggestions could be found.</p>
+      ) : (
+        <div className="columns">
+          {filteredSuggestions.map((x, i) => (
+            <Suggestion
+              photo={x.photo}
+              key={`que-${i}`}
+              title={x.gift}
+              brand={x.brand}
+              link={x.link}
+            />
+          ))}
+        </div>
+      )}
     </div>
-  )
+  );
 }
 export default Suggestions;

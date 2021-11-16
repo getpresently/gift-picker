@@ -7,7 +7,6 @@
 
 }*/
 
-
 /*
 .logo {
   height: 250px;
@@ -195,7 +194,7 @@ img {
 .choiceButtons button {
   width: calc(90px + 2vmin);
   height: calc(45px + 2vmin);
-  font-family: 'Poppins', sans-serif;
+  font-family: "Poppins", sans-serif;
   color: #000;
   background-color: #fff;
   border: 1.5px solid black;
@@ -282,12 +281,11 @@ button:hover {
 }
 
 a:link {
-  color: black;
-  text-decoration: underline;
+  color: white;
 }
 
 a:visited {
-  color: black;
+  color: white;
   text-decoration: underline;
 }
 
@@ -338,9 +336,8 @@ a:hover {
   display: inline-flex;
   justify-content: center;
   margin: auto;
-} */
-
-#questionContainer {
+}
+*/ #questionContainer {
   /*float: left; 
   min-width: 400px; */
   margin-bottom: 4em;

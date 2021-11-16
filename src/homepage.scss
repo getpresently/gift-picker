@@ -1,4 +1,3 @@
-
 :root {
   --titleFontSize: 2.1vw;
   --screenHeight: calc(100vh);
@@ -47,8 +46,6 @@
   display: flex;
   flex-direction: column;
   background-image: url("./background2.svg");
-
-
 }
 
 #HomePageContents {
@@ -57,8 +54,6 @@
   justify-content: center;
   flex-direction: column;
   padding: 0vw;
-
-  
 }
 
 #StartQuizSection {
@@ -85,7 +80,6 @@
 }
 
 .subtitle {
-
   padding-right: 15vw;
   font-weight: normal;
   padding-left: 15vw;
@@ -97,8 +91,6 @@
   margin-top: 3vw;
   margin-bottom: 2vh;
 }
-
-
 
 #startQuizButton {
   margin-top: 15vh;
@@ -118,15 +110,13 @@
 
 #startQuizButton:hover {
   background-color: #0098a6;
-  color:#c2faff;
+  color: #c2faff;
   box-shadow: 0 5px 15px #272833;
-
-  
 }
 .scroll-down {
   opacity: 1;
-  -webkit-transition: all .5s ease-in 3s;
-  transition: all .5s ease-in 3s;
+  -webkit-transition: all 0.5s ease-in 3s;
+  transition: all 0.5s ease-in 3s;
 }
 
 .scroll-down {
@@ -136,27 +126,27 @@
   display: block;
   width: 2vw;
   height: 2vw;
-  border: 2px solid #FFF;
+  border: 2px solid #fff;
   background-size: 14px auto;
   border-radius: 50%;
   z-index: 2;
   -webkit-animation: bounce 2s infinite 2s;
   animation: bounce 2s infinite 2s;
-  -webkit-transition: all .2s ease-in;
-  transition: all .2s ease-in;
+  -webkit-transition: all 0.2s ease-in;
+  transition: all 0.2s ease-in;
 }
 
 .scroll-down:before {
-    position: absolute;
-    top: calc(50% - 8px);
-    left: calc(50% - 6px);
-    transform: rotate(-45deg);
-    display: block;
-    width: 12px;
-    height: 12px;
-    content: "";
-    border: 2px solid white;
-    border-width: 0px 0 2px 2px;
+  position: absolute;
+  top: calc(50% - 8px);
+  left: calc(50% - 6px);
+  transform: rotate(-45deg);
+  display: block;
+  width: 12px;
+  height: 12px;
+  content: "";
+  border: 2px solid white;
+  border-width: 0px 0 2px 2px;
 }
 
 @keyframes bounce {
@@ -181,11 +171,9 @@
   }
 }
 
-
 #AboutGiftPickerSection {
   display: flex;
   flex-direction: column;
-  
 }
 
 #MoreInfoSection {
@@ -201,10 +189,10 @@
 
 #aboutText {
   width: 25vw;
-  align-self:flex-start;
+  align-self: flex-start;
   margin-top: 10vh;
   h3 {
-    font-weight: normal; 
+    font-weight: normal;
     text-justify: left;
     text-align: left;
   }
@@ -212,17 +200,16 @@
 
 #aboutImg {
   align-self: flex-end;
-  width: 40% ;
+  width: 40%;
   img {
-    height: fit-content ;
+    height: fit-content;
     width: fit-content;
   }
-
 }
 
 #Partners {
   padding-top: 10vh;
-  padding-bottom: 10vh;;
+  padding-bottom: 10vh;
   h2 {
     text-align: center;
     font-weight: bold;
@@ -238,14 +225,12 @@
 }
 
 #PartnersLogosContainer {
-  
   margin-top: 3em;
   margin-inline: 15vw;
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
   margin-bottom: 1em;
-  
 }
 
 .partnerImage {
@@ -258,26 +243,23 @@
 }
 .partnerImage:hover {
   color: rgba(255, 255, 255, 1);
-  box-shadow: 0 5px 15px rgba(145, 92, 182, .4);
+  box-shadow: 0 5px 15px rgba(145, 92, 182, 0.4);
 }
 
 /* FAQ */
 
-
-
-#FAQSection{
-  
+#FAQSection {
   padding-top: 2vh;
-  padding-bottom: 10vh;;
+  padding-bottom: 10vh;
   display: flex;
   flex-direction: column;
-  
+
   h2 {
     padding-bottom: 2vh;
     text-align: center;
     font-weight: bold;
   }
-  background-color: #111113;  
+  background-color: #111113;
 }
 
 #FAQBubble {
@@ -305,7 +287,35 @@
   min-width: auto;
   flex-basis: auto;
   background-color: transparent;
+}
 
+#Header2 {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  min-height: 10vh;
+  top: 0%;
+  right: 0%;
+  position: sticky;
+  min-width: auto;
+  flex-basis: auto;
+  background-color: transparent;
+  -webkit-backdrop-filter: blur(50px);
+  backdrop-filter: blur(50px);
+}
+
+p {
+  display: flex;
+  width: 100%;
+  min-height: 4vh;
+  justify-content: center;
+  top: 0%;
+  right: 0%;
+  position: static;
+  min-width: auto;
+  flex-basis: auto;
+  background-color: #ff5d81;
+  color: white;
 }
 
 #HeaderLogoButton {
@@ -327,10 +337,10 @@ input {
 }
 // Layout
 .row {
-  display:flex;
+  display: flex;
 
   .col {
-    flex:1;
+    flex: 1;
     &:last-child {
       margin-left: 1em;
     }
@@ -354,21 +364,21 @@ input {
     cursor: pointer;
     /* Icon */
     &:hover {
-      color :rgba(0,0, 0, 0.5);
+      color: rgba(0, 0, 0, 0.5);
     }
     &::after {
       content: "\276F";
       width: 1em;
       height: 1em;
       text-align: center;
-      transition: all .35s;
+      transition: all 0.35s;
     }
   }
   &-content {
     max-height: 0;
     padding: 0 1em;
     color: white;
-    transition: all .35s;
+    transition: all 0.35s;
   }
   &-close {
     display: flex;
@@ -378,8 +388,7 @@ input {
     background: transparent;
     cursor: pointer;
     &:hover {
-      color:rgba(0,0, 0, 0.1);
-
+      color: rgba(0, 0, 0, 0.1);
     }
   }
 }
@@ -387,7 +396,7 @@ input {
 // :checked
 input:checked {
   + .tab-label {
-    color:whitesmoke;
+    color: whitesmoke;
     &::after {
       transform: rotate(90deg);
     }

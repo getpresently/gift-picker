@@ -9,6 +9,7 @@ import Footer from "./components/Footer";
 import Buttons from "./components/Buttons";
 import Typing from "react-typing-animation";
 import Header from "./components/Header";
+import Banner from "./components/Banner";
 
 enum Scene {
   Home = 1,
@@ -151,8 +152,8 @@ function App(): JSX.Element {
 
     return (
       <div id="HomePage">
-        <Header />
-
+        <Banner/>
+        <Header/>
         <header id="HomePageContents">
           <div id="StartQuizSection">
             <div id="homepageTitle">
