@@ -304,9 +304,10 @@
   backdrop-filter: blur(50px);
 }
 
-p {
+#bannerText{
   display: flex;
   width: 100%;
+  padding: 2vh;
   min-height: 4vh;
   justify-content: center;
   top: 0%;
