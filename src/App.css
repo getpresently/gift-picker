@@ -79,6 +79,7 @@ font-family: 'Glacial Indifference', sans-serif;
 }
 
 .columns {
+  width: 80%;
   display: inline-flex;
   flex-wrap: wrap;
   margin-bottom: 2em;
@@ -131,6 +132,17 @@ img {
   margin: auto;
   width: 10vw;
   height: 10vw;
+}
+
+#button_changeScene:disabled{
+  border: 1px solid #999999;
+  background-color: #cccccc;
+  color: #666666;
+}
+.button_nav:disabled{
+  border: 1px solid #999999;
+  background-color: #cccccc;
+  color: #666666;
 }
 
 /*#button_changeScene:hover {
@@ -231,6 +243,13 @@ button:hover {
   box-shadow: 0px 15px 20px rgba(0, 0, 0, 0.1);
   color: white;
 }*/
+
+button:disabled,
+button[disabled]{
+  border: 1px solid #999999;
+  background-color: #cccccc;
+  color: #666666;
+}
 
 #top {
   margin-top: 2em;

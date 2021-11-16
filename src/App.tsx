@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState} from "react";
 import "./App.css";
 import "./homepage.scss";
 import "./App2.scss";
@@ -101,6 +101,7 @@ function App(): JSX.Element {
               handleSubmit={() => handleSceneChange(Scene.Suggestions)}
               currentPage={currentPage}
               numPages={NUM_PAGES}
+              choices={choices}
             ></Buttons>
           </div>
           <Footer />
@@ -121,7 +122,7 @@ function App(): JSX.Element {
         </div>
         <div id="backButton">
           <button
-            id="button_changeScene"
+            className="button_nav"
             onClick={() => {
               handleSceneChange(Scene.Home);
               setCurrentPage(1);
