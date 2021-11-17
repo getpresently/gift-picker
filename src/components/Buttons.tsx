@@ -22,20 +22,20 @@ function Buttons({ handlePageChange, handleSubmit, currentPage, numPages, choice
   return (
     <>
       {currentPage > 1 && (
-        <button className="bg-transparent text-midGrey border border-midGrey py-2 px-4 rounded button_nav" onClick={() => handlePageChange(false)}>
-          Previous
+        <button className="bg-transparent text-midGrey border border-midGrey py-2 px-4 button_nav" onClick={() => handlePageChange(false)}>
+          Back
         </button>
       )}
       {currentPage < numPages ? (
-        <button className="bg-deepGrey hover:bg-black text-white py-2 px-4 rounded button_nav " disabled={nextDisable}
+        <button className="bg-deepBlack hover:bg-black text-white py-2 px-4 button_nav" disabled={nextDisable}
           onClick={() => {
             handlePageChange(true)
           }}>
           Next
         </button>
       ) : (
-        <button className="bg-deepGrey hover:bg-black text-white py-2 px-4 rounded button_nav" disabled={nextDisable} onClick={handleSubmit}>
-          Done
+        <button className="bg-deepBlack hover:bg-black text-white py-2 px-4 rounded-full button_nav" disabled={nextDisable} onClick={handleSubmit}>
+          Done 🎁
         </button>
       )}
     </>

@@ -8,7 +8,7 @@ module.exports = {
         unselected: "#F9FBFF",
         deepGrey: "#444253",
         midGrey: "#AEAFB7",
-        footer: "#272833",
+        deepBlack: "#272833",
       },
     },
   },

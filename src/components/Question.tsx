@@ -5,6 +5,7 @@ interface QuestionProps {
   isSingleSelect: boolean;
   selectedChoices: Set<string>;
   currentPage: number;
+  pageCount: number;
   handleSelectChoice: (isSingleSelect: boolean, k: string, v: string) => void;
 }
 
@@ -30,11 +31,11 @@ function Choice({
   return (
 
     <div onClick={handleClick}>
-      {isActive ? <button className="w-full bg-selected text-white py-2 px-4 rounded-full"
+      {isActive ? <button className="choiceButtons w-full bg-selected text-white py-2 px-4 rounded-full"
       >
         {answer}
       </button> :
-        <button className="w-full bg-unselected hover:text-selected text-gray-500 py-2 px-4 rounded-full"
+        <button className="choiceButtons bg-unselected hover:text-selected text-gray-500 py-2 px-4 rounded-full"
         >
           {answer}
         </button>}
@@ -58,10 +59,11 @@ function Choices({
   handleSelectChoice,
   selectedChoices,
 }: ChoicesProps): JSX.Element {
+  console.log(choices);
   return (
-    <div className={`inline-grid ${questionKey === "Type" ? 'grid-cols-1' : (questionKey === "Interests" ? 'grid-cols-3' : 'grid-cols-2')} gap-x-4 gap-y-4`}>
+    <div className={`inline-grid ${questionKey === "Type" ? 'grid-cols-1' : (questionKey === "Interests" ? 'grid-cols-3' : 'grid-cols-4')} gap-x-4 gap-y-4`}>
       {choices.map((answerText, questionId) => (
-        <div>
+        <div className={`${questionKey === "Interests" ? "col-span-1" : "col-span-2"} ${questionKey === "Price" && answerText === "Any budget" && "col-start-2"}`}>
           <Choice
             key={`ch-${questionId}`}
             questionKey={questionKey}
@@ -84,10 +86,11 @@ function Question({
   selectedChoices,
   handleSelectChoice,
   currentPage,
+  pageCount
 }: QuestionProps): JSX.Element {
   return (
     <div id="questionContainer">
-      <h2 className="text-xs ... text-gray-400 pb-2"> QUESTION {currentPage} OF 4 </h2>
+      <h2 className="text-xs ... text-gray-400 pb-2"> QUESTION {currentPage} OF {pageCount} </h2>
       <p className="text-2xl ... text-gray-100 font-normal">{title}</p>
       <div id="choiceContainer">
         <Choices

@@ -5,6 +5,7 @@ function Loading(): JSX.Element {
   return (
     <div>
       <img className="footerlogo" id="loadingResults" src={gif} alt=""></img>
+      <p className="text-gray-400 text-sm pt-6">LOADING...</p>
     </div>
   )
 }

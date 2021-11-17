@@ -23,7 +23,7 @@ function Footer() {
 
   return (
     <footer className="text-gray-600 w-screen body-font">
-      <div className={`bg-footer grid ${isMobile ? 'grid-cols-1 gap-y-2' : 'grid-cols-3'}`}>
+      <div className={`bg-deepBlack grid ${isMobile ? 'grid-cols-1 gap-y-2' : 'grid-cols-3'}`}>
         {isMobile ?
           <>
             <div className="flex">

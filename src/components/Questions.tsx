@@ -7,6 +7,7 @@ import Question from "./Question";
 interface PropTypes {
   handleSelectChoice: (isSingleSelect: boolean, k: string, v: string) => void;
   page: number;
+  pageCount: number;
   choices: { [key: string]: Set<string> };
 }
 
@@ -14,6 +15,7 @@ interface PropTypes {
 function Questions({
   handleSelectChoice,
   page,
+  pageCount,
   choices,
 }: PropTypes): JSX.Element {
   // start the timer when component mounts
@@ -32,14 +34,18 @@ function Questions({
       selectedChoices={choices[answerTexts.questionKey]}
       handleSelectChoice={handleSelectChoice}
       currentPage={page}
+      pageCount={pageCount}
     />
   ));
 
   return isLoading || isRunning ? (
     <Loading></Loading>
   ) : (
-    <div id="questionsContainer">{questionArr[page - 1]}</div>
-  );
+    <div id="questionsContainer">
+      {questionArr[page - 1]}
+      {!questions[page - 1].isSingleSelect && <p className="text-xs text-gray-400">Select multiple</p>}
+    </div>
+  )
 }
 
 export default Questions;
