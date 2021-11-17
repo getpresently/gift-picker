@@ -1,3 +1,6 @@
+.column {
+    border: 1px solid red;
+}
 .column img {
     border-top-right-radius: 12px;
     border-top-left-radius: 12px;
@@ -38,18 +41,17 @@
 }
 
 #suggestion_Brand {
-    font-size: 18px;
+    font-size: 16px;
     color: #AEAFB7;
     
 }
 
 #suggestion_Title {
-    font-size: 22px;
-    font-weight: bold;
+    font-size: 18px;
     color: #F9FBFF;
 }
 
 #suggestion_Price {
-    font-size: 16px;
+    font-size: 14px;
     color: #AEAFB7;
 }
