@@ -10,11 +10,14 @@ import Buttons from "./components/Buttons";
 import Typing from "react-typing-animation";
 import Header from "./components/Header";
 import Banner from "./components/Banner";
+<<<<<<< HEAD
 import { BrowserRouter as Router, Route } from 'react-router-dom';
 import { Routes} from 'react-router-dom';
 import { Link } from 'react-router-dom';
 
 
+=======
+>>>>>>> 4d186b2afb85d0508ceb0a3392509293b6e9b4b0
 
 enum Scene {
   Home = 1,
@@ -177,8 +180,8 @@ function App(): JSX.Element {
                 </Typing>
               </h1>
               <h2 className="subtitle">
-                leave it to the experts (that’s us). introducing GiftPicker, the
-                only way you should be picking holidays gifts.
+                Leave it to the pros. Introducing GiftPicker, the
+                better way to find the perfect gift.
               </h2>
               <Link to="/quiz">
               <button
@@ -206,8 +209,13 @@ function App(): JSX.Element {
                 ></img>
                 <img
                   className="partnerImage"
-                  src="./williamsSonomaVector.svg"
-                  alt="williams sonoma logo"
+                  src="./airbnb-logo-2020.svg"
+                  alt="airbnb logo"
+                ></img>
+                <img
+                  className="partnerImage"
+                  src="./potteryBarnLogo.svg"
+                  alt="pottery barn logo"
                 ></img>
                 <img
                   className="partnerImage"
@@ -216,33 +224,8 @@ function App(): JSX.Element {
                 ></img>
                 <img
                   className="partnerImage"
-                  src="./potteryBarnLogo.svg"
-                  alt="pottern barn logo"
-                ></img>
-                <img
-                  className="partnerImage"
                   src="./pelotonLogo.svg"
                   alt="peloton logo"
-                ></img>
-                <img
-                  className="partnerImage"
-                  src="./LLBeanLogo.svg"
-                  alt="LLBean logo"
-                ></img>
-                <img
-                  className="partnerImage"
-                  src="./charcoalBlackRectangle.jpeg"
-                  alt="partner logo"
-                ></img>
-                 <img
-                  className="partnerImage"
-                  src="./charcoalBlackRectangle.jpeg"
-                  alt="partner logo"
-                ></img>
-                 <img
-                  className="partnerImage"
-                  src="./charcoalBlackRectangle.jpeg"
-                  alt="partner logo"
                 ></img>
               </div>
               <Link to="/quiz">

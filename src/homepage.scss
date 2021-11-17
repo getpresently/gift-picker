@@ -78,8 +78,13 @@
   align-self: flex-end;
   justify-self:baseline;
   width: 40%;
+<<<<<<< HEAD
   padding-top: 5vh;
   margin: 0px;
+=======
+  padding-bottom: 0vh;
+  padding-top: 8vh;
+>>>>>>> 4d186b2afb85d0508ceb0a3392509293b6e9b4b0
   img {
     height: fit-content;
     width: fit-content;
@@ -176,8 +181,6 @@
   border-radius: 50%;
   margin: 2vw 2vw 1vw 1vw;
   background-color: whitesmoke;
-
-  flex-grow: 0;
 }
 .partnerImage:hover {
   color: rgba(255, 255, 255, 1);
