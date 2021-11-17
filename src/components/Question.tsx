@@ -59,7 +59,7 @@ function Choices({
   selectedChoices,
 }: ChoicesProps): JSX.Element {
   return (
-    <div className="inline-grid grid-cols-3 gap-x-4 gap-y-4">
+    <div className={`inline-grid ${questionKey === "Type" ? 'grid-cols-1' : (questionKey === "Interests" ? 'grid-cols-3' : 'grid-cols-2')} gap-x-4 gap-y-4`}>
       {choices.map((answerText, questionId) => (
         <div>
           <Choice
@@ -88,7 +88,7 @@ function Question({
   return (
     <div id="questionContainer">
       <h2 className="text-xs ... text-gray-400 pb-2"> QUESTION {currentPage} OF 4 </h2>
-      <p className="text-xl ... text-gray-100 font-normal">{title}</p>
+      <p className="text-2xl ... text-gray-100 font-normal">{title}</p>
       <div id="choiceContainer">
         <Choices
           questionKey={questionKey}
