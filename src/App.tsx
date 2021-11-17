@@ -12,7 +12,7 @@ enum Scene {
   Suggestions,
 }
 
-const NUM_PAGES = 4;
+const NUM_PAGES = 5;
 
 function App(): JSX.Element {
   const [scene, setScene] = useState<Scene>(Scene.Home);
@@ -80,7 +80,7 @@ function App(): JSX.Element {
   if (scene === Scene.Questions) {
     return (
       <>
-        <div id="questContainer" className="container p-8 mx-auto">
+        <div id="questContainer" className="container p-8 mx-auto content_container">
           {page}
           <Buttons
             handlePageChange={handlePageChange}
@@ -102,7 +102,7 @@ function App(): JSX.Element {
   if (scene === Scene.Suggestions) {
     return (
       <div>
-        <div className="results">
+        <div className="results content_container">
           <Suggestions choices={choices} />
         </div>
         <div id="backButton">
@@ -124,7 +124,7 @@ function App(): JSX.Element {
     return (
       <div>
         <div className="App">
-          <header className="App-header">
+          <header className="App-header content_container">
             <div className="titleContainer">
               <div className="App-title">
                 <h1>GIFT PICKER</h1>

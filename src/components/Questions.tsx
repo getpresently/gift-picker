@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import { useQuestions } from "../utils/hooks";
 import { useTimer } from 'react-timer-hook';
 import Loading from "./Loading";

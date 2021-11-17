@@ -63,7 +63,7 @@ function Choices({
   return (
     <div className={`inline-grid ${questionKey === "Type" ? 'grid-cols-1' : (questionKey === "Interests" ? 'grid-cols-3' : 'grid-cols-4')} gap-x-4 gap-y-4`}>
       {choices.map((answerText, questionId) => (
-        <div className={`${questionKey === "Interests" ? "col-span-1" : "col-span-2"} ${questionKey === "Price" && answerText === "Any budget" && "col-start-2"}`}>
+        <div className={`${questionKey === "Interests" ? "col-span-1" : "col-span-2"} ${(questionKey === "Price" || questionKey === "Relation") && (answerText === "Any budget" || answerText === "Mentor/Teacher") && "col-start-2"}`}>
           <Choice
             key={`ch-${questionId}`}
             questionKey={questionKey}

@@ -90,6 +90,10 @@ body {
   font-size: calc(5px + 1vmin);
 }
 
+.content_container {
+  min-height: 82vh;
+}
+
 /* RESULTS PAGE */
 
 .results {
@@ -153,42 +157,11 @@ img {
   margin-top: 2em;
 }
 
-.footer {
+#footer {
+  bottom: 0;
   background-color: black;
-  position: absolute;
   width: 100%;
   font-size: calc(5px + 1vmin);
-}
-
-.footer p {
-  text-align: left;
-  color: white;
-}
-
-.footerlogo {
-  height: 50px;
-  width: 50px;
-}
-
-.footer-logo {
-  display: flex;
-  justify-content: left;
-  margin: 3em;
-  margin-bottom: 0;
-}
-
-.footer-sections {
-  margin: 3em;
-  display: flex;
-  justify-content: space-between;
-}
-
-.footer-section {
-  margin: 0;
-}
-
-.footer-copyright {
-  margin: 3em;
 }
 
 .fab.fa-instagram {

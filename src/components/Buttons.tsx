@@ -8,7 +8,7 @@ interface PropTypes {
   choices: { [key: string]: Set<string> };
 }
 
-const QUESTION_KEYS = ["Age", "Type", "Interests", "Price"]
+const QUESTION_KEYS = ["Age", "Relation", "Type", "Interests", "Price"]
 
 // buttons for horizontal question navigation
 function Buttons({ handlePageChange, handleSubmit, currentPage, numPages, choices }: PropTypes): JSX.Element {

@@ -12,13 +12,12 @@ interface PropTypes {
 const LIMIT_INCREMENT = 3;
 const LIMIT_STOP = 12;
 const MANDATORY_QUESTION_KEYS = ["Age"];
-const WEIGHTED_QUESTION_KEYS = ["Type", "Interests", "Price"];
+const WEIGHTED_QUESTION_KEYS = ["Relation", "Type", "Interests", "Price"];
 const WEIGHTED_QUESTION_VALUES = [1, 1, 1];
 
 function Suggestions({ choices }: PropTypes): JSX.Element {
   const [limit, setLimit] = React.useState(LIMIT_INCREMENT);
   const [moreShowing, setMoreShowing] = React.useState(false);
-  const questionKeys = ["Age", "Type", "Interests", "Price"];
   const { data: suggestions, loading: isLoading } = useIdeas();
 
   const time = new Date();
