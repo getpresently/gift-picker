@@ -100,7 +100,6 @@ function Suggestions({ choices }: PropTypes): JSX.Element {
         : (filteredSuggestions.length === 0 ? <p> No suggestions could be found.</p>
           : <div className="columns">
             {filteredSuggestions.slice(0, limit).map((x, i) => {
-              console.log(x)
               return <Suggestion
                 photo={x.photo}
                 key={`que-${i}`}
@@ -108,6 +107,7 @@ function Suggestions({ choices }: PropTypes): JSX.Element {
                 brand={x.brand}
                 price={x.Price[0]}
                 link={x.link}
+                groupLink={x.groupLink}
               />
           })}
           </div>)}

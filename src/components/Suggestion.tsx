@@ -5,6 +5,7 @@ interface SuggestionProps {
   photo: string;
   price: string;
   link: string;
+  groupLink: string;
 }
 
 function Suggestion({
@@ -13,6 +14,7 @@ function Suggestion({
   photo,
   price,
   link,
+  groupLink,
 }: SuggestionProps): JSX.Element {
   return (
     <div className="column">
@@ -28,7 +30,7 @@ function Suggestion({
             </a>
           </button>
           <button>
-            <a href={link} target="_blank" rel="noreferrer">
+            <a href={groupLink} target="_blank" rel="noreferrer">
               Split Cost
             </a>
           </button> 
