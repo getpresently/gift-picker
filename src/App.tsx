@@ -89,7 +89,6 @@ function App(): JSX.Element {
 
   if (scene === Scene.Questions) {
     return (
-      <Router>
       <div>
         
         <div className="instructions">
@@ -322,7 +321,6 @@ Second, starting Dec 1, you’ll also be able to send links to your personalized
           </div>
         </header>
       </div>
-      </Router>
     );
   }
 }

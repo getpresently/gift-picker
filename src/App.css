@@ -301,6 +301,7 @@ button[disabled]{
 
 a:link {
   color: white;
+  text-decoration: underline;
 }
 
 a:visited {
