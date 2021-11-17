@@ -1,13 +1,13 @@
 .column img {
-    border-top-right-radius: 10%;
-    border-top-left-radius: 10%;
+    border-top-right-radius: 12px;
+    border-top-left-radius: 12px;
 }
 
 .column .suggestion_MetaData {
     color: white;
     background-color: #363342;
-    border-bottom-right-radius: 10px;
-    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 12px;
+    border-bottom-left-radius: 12px;
     padding: 10px 10px 10px;
 }
 
