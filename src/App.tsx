@@ -117,14 +117,14 @@ function App(): JSX.Element {
         </div>
         <div id="backButton">
           <button
-            className="button_nav"
+            className="button_startOver"
             onClick={() => {
               handleSceneChange(Scene.Home)
               setCurrentPage(1)
               resetSelections()
             }}
           >
-            HOME
+            Start over
           </button>
         </div>
         <Footer />

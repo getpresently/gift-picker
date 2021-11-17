@@ -93,9 +93,6 @@ function Suggestions({ choices }: PropTypes): JSX.Element {
       <div id="top">
         <p>Our gift picks 🎁</p>
       </div>
-      <div className="line">
-        <hr></hr>
-      </div>
       {isLoading ? <Loading></Loading>
         : (filteredSuggestions.length === 0 ? <p> No suggestions could be found.</p>
           : <div className="columns">

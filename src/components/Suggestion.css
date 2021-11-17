@@ -4,15 +4,16 @@
 }
 
 .column .suggestion_MetaData {
-    color: white;
+    color: #F9FBFF;
     background-color: #363342;
     border-bottom-right-radius: 12px;
     border-bottom-left-radius: 12px;
-    padding: 10px 10px 10px;
+    padding: 5px 10px 10px;
 }
 
 .column .suggestion_MetaData a {
-    color: white;
+    color: #000000;
+    font-size: 18px;
     text-decoration: none;
 }
 
@@ -21,6 +22,7 @@
     margin-right:5px;
     width: 45%;
     background-color: #4DDDEA;
+    border-radius: 12px;
 }
 
 .column .suggestion_MetaData .row {
@@ -31,17 +33,23 @@
     white-space: nowrap;
     text-overflow: ellipsis;
     overflow: hidden;
+    margin-bottom: 5px;
+    margin-left: 10px;
 }
 
 #suggestion_Brand {
+    font-size: 18px;
     color: #AEAFB7;
+    
 }
 
 #suggestion_Title {
+    font-size: 22px;
     font-weight: bold;
     color: #F9FBFF;
 }
 
 #suggestion_Price {
+    font-size: 16px;
     color: #AEAFB7;
 }
