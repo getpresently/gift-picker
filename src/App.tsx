@@ -10,12 +10,11 @@ import Buttons from "./components/Buttons";
 import Typing from "react-typing-animation";
 import Header from "./components/Header";
 import Banner from "./components/Banner";
-import {
-  BrowserRouter as Router,
-  Routes,
-  Route,
-  Link
-} from "react-router-dom";
+import { BrowserRouter as Router, Route } from 'react-router-dom';
+import { Routes} from 'react-router-dom';
+import { Link } from 'react-router-dom';
+
+
 
 enum Scene {
   Home = 1,
@@ -87,19 +86,16 @@ function App(): JSX.Element {
   );
   const page = <ScrollablePage childComp={question}></ScrollablePage>;
 
-  if (scene === Scene.Questions) {
-    return (
+
+  const QuestionsPageComponent = () => (
       <div>
-        
         <div className="instructions">
           <p>To get your personalized gift suggestions,</p>
           <p>simply answer these four quick questions:</p>
         </div>
-
         <div className="line">
           <hr></hr>
         </div>
-
         <div>
           <div id="container">
             {page}
@@ -114,21 +110,20 @@ function App(): JSX.Element {
           <Footer />
         </div>
       </div>
-    );
-  }
-
+  );
   function resetSelections() {
     setChoices({});
   }
+  
 
-  if (scene === Scene.Suggestions) {
-    return (
+  const SuggestionsComponent = () => (
       <div>
-        
         <div className="results">
           <Suggestions choices={choices} />
         </div>
         <div id="backButton">
+        <Link to="/home">
+
           <button
             className="button_nav"
             onClick={() => {
@@ -139,12 +134,14 @@ function App(): JSX.Element {
           >
             HOME
           </button>
+          </Link>
+
         </div>
         <Footer />
       </div>
     );
-  } else {
-    const giftPeople = [
+
+  const giftPeople = [
       "friend.",
       "sister.",
       "coworker.",
@@ -159,10 +156,8 @@ function App(): JSX.Element {
       "wife.",
     ];
 
-    return (
+    const HomepageComponent = () => (
       <div id="HomePage">
-  
-
         <Banner />
         <Header />
         <header id="HomePageContents">
@@ -185,6 +180,7 @@ function App(): JSX.Element {
                 leave it to the experts (that’s us). introducing GiftPicker, the
                 only way you should be picking holidays gifts.
               </h2>
+              <Link to="/quiz">
               <button
                 type="button"
                 id="startQuizButton"
@@ -192,6 +188,7 @@ function App(): JSX.Element {
               >
                 Take our gift quiz
               </button>
+              </Link>
             </div>
             <div id="aboutImg">
               <img src="./iphoneDiagram.svg" alt="gift picker on phone" />
@@ -248,6 +245,7 @@ function App(): JSX.Element {
                   alt="partner logo"
                 ></img>
               </div>
+              <Link to="/quiz">
               <button
                 type="button"
                 id="startQuizButton"
@@ -255,6 +253,7 @@ function App(): JSX.Element {
               >
                 Take our gift quiz
               </button>
+              </Link>
             </div>
           </div>
           <div id="FAQSection">
@@ -311,7 +310,6 @@ Second, starting Dec 1, you’ll also be able to send links to your personalized
                       </label>
                       <div className="tab-content">
                       We’d love to hear from you! Direct message us on instagram @giftpicker.io
-
                       </div>
                     </div>
                   </div>
@@ -322,7 +320,26 @@ Second, starting Dec 1, you’ll also be able to send links to your personalized
         </header>
       </div>
     );
-  }
+
+
+
+return (
+  <div className='App'>
+    <Router>
+    <Routes>
+      <Route path='/' element={<HomepageComponent/>} />
+      <Route path='/home' element={<HomepageComponent/>} />
+      <Route path='/quiz' element={<QuestionsPageComponent/>} />
+      <Route path='/results' element={<SuggestionsComponent/>} />
+      </Routes>
+    </Router>
+  </div>
+);
 }
+
+  
+
+  
+
 
 export default App;

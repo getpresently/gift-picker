@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import React, { useState, useEffect } from "react";
 function Header() {
   const [header, setHeader] = useState("Header");
@@ -16,6 +17,8 @@ function Header() {
   return (
     <div id={header}>
       <a href="HomePage">
+      <Link to="/home">
+
         <button type="button">
           <img
             id="HeaderLogoButton"
@@ -23,6 +26,7 @@ function Header() {
             alt="logo button"
           ></img>
         </button>
+        </Link>
       </a>
     </div>
   );
