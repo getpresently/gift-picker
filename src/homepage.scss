@@ -75,10 +75,10 @@
 }
 
 #aboutImg {
-
   align-self: flex-end;
   width: 40%;
   padding-bottom: 0vh;
+  padding-top: 8vh;
   img {
     height: fit-content;
     width: fit-content;
@@ -237,8 +237,6 @@
   border-radius: 50%;
   margin: 2vw 2vw 1vw 1vw;
   background-color: whitesmoke;
-
-  flex-grow: 0;
 }
 .partnerImage:hover {
   color: rgba(255, 255, 255, 1);
