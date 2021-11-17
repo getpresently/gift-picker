@@ -45,7 +45,7 @@
 #HomePage {
   display: flex;
   flex-direction: column;
-  background-image: url("./background9.svg");
+  background-image: url("./backgroundImage.svg");
   background-repeat: no-repeat;
   background-size: 100%;
 }
@@ -60,6 +60,8 @@
 
 #StartQuizSection {
   display: flex;
+  margin-bottom: 0%;
+  bottom: 0;
 }
 
 #startSectionText {
@@ -75,13 +77,17 @@
 }
 
 #aboutImg {
+  display: flex;
   align-self: flex-end;
+  overflow: hidden;
   width: 40%;
-  padding-top: 5vh;
-  margin: 0px;
+  padding-top: 4vh;
   img {
     height: fit-content;
     width: fit-content;
+    align-self: flex-end;
+    justify-self: baseline;
+    margin-bottom: -2vh;
   }
 }
 
@@ -107,7 +113,6 @@
   padding-right: 3vw;
   padding-left: 3vw;
   padding-top: 1vh;
-  padding-bottom: 1vh;
   font-family: "Sofia Pro", sans-serif;
 }
 
@@ -196,7 +201,7 @@
 }
 
 #FAQBubble {
-  background-image: url("./background9.svg") ;
+  background-image: url("./backgroundImage.svg") ;
 
   background-size: cover;
   display: flex;

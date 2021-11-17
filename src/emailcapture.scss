@@ -1,0 +1,26 @@
+#emailCaptureContainer {
+    display: flex;
+    margin-top: 10vh;
+
+    flex-direction: column;
+    h2 {
+    
+    font-size: 2.2vw;
+    text-align: center;
+    }
+
+
+}
+
+#submitButton {
+    background-color: #363342;
+    color: whitesmoke;
+    min-width: 10vw;
+    min-height: 5vw;
+    text-align: center;
+    padding-right: 3vw;
+    padding-left: 3vw;
+    padding-top: 1vh;
+    border-radius: 10px;
+    font-size: var(--paragraphFontSize);
+}
