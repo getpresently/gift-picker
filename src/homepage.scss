@@ -75,10 +75,11 @@
 }
 
 #aboutImg {
-
   align-self: flex-end;
+  justify-self:baseline;
   width: 40%;
-  padding-bottom: 0vh;
+  padding-top: 5vh;
+  margin: 0px;
   img {
     height: fit-content;
     width: fit-content;
@@ -88,12 +89,10 @@
 #homepageTitle {
   display: inline-block;
   margin-bottom: 5vh;
-
 }
 
 #typingEffect {
   color: #4dddea;
-  align-self: ri;
 }
 
 
@@ -108,8 +107,8 @@
   font-size: var(--paragraphFontSize);
   padding-right: 3vw;
   padding-left: 3vw;
-  padding-top: 1vw;
-  padding-bottom: 1vw;
+  padding-top: 1vh;
+  padding-bottom: 1vh;
   font-family: "Sofia Pro", sans-serif;
 }
 
@@ -118,67 +117,7 @@
   color: #c2faff;
   box-shadow: 0 5px 15px #272833;
 }
-.scroll-down {
-  align-self: bottom;
-  justify-self: flex-end;
-  scroll-behavior: smooth;
 
-  opacity: 1;
-  -webkit-transition: all 0.5s ease-in 3s;
-  transition: all 0.5s ease-in 3s;
-}
-
-.scroll-down {
-  margin-top: 15vh;
-  left: 50%;
-  margin-left: 1vw;
-  display: block;
-  width: 2vw;
-  height: 2vw;
-  border: 2px solid #fff;
-  background-size: 14px auto;
-  border-radius: 50%;
-  z-index: 2;
-  -webkit-animation: bounce 2s infinite 2s;
-  animation: bounce 2s infinite 2s;
-  -webkit-transition: all 0.2s ease-in;
-  transition: all 0.2s ease-in;
-}
-
-.scroll-down:before {
-  position: absolute;
-  top: calc(50% - 8px);
-  left: calc(50% - 6px);
-  transform: rotate(-45deg);
-  display: block;
-  width: 12px;
-  height: 12px;
-  content: "";
-  border: 2px solid white;
-  border-width: 0px 0 2px 2px;
-}
-
-@keyframes bounce {
-  0%,
-  100%,
-  20%,
-  50%,
-  80% {
-    -webkit-transform: translateY(0);
-    -ms-transform: translateY(0);
-    transform: translateY(0);
-  }
-  40% {
-    -webkit-transform: translateY(-10px);
-    -ms-transform: translateY(-10px);
-    transform: translateY(-10px);
-  }
-  60% {
-    -webkit-transform: translateY(-5px);
-    -ms-transform: translateY(-5px);
-    transform: translateY(-5px);
-  }
-}
 
 #AboutGiftPickerSection {
   display: flex;

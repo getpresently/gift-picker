@@ -191,7 +191,7 @@ function App(): JSX.Element {
               </Link>
             </div>
             <div id="aboutImg">
-              <img src="./iphoneDiagram.svg" alt="gift picker on phone" />
+              <img src="./giftpickerImages.svg" alt="gift picker on phone" />
             </div>
           </div>
           <div id="AboutGiftPickerSection">
