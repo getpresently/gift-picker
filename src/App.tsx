@@ -207,7 +207,7 @@ function App(): JSX.Element {
               </div>
             </div>
             <div id="Partners">
-              <h2> over 1,000 gifts from your favorite brands</h2>
+              <h2> Over 1,000 gifts from your favorite brands</h2>
               <div id="PartnersLogosContainer">
                 <img
                   className="partnerImage"
