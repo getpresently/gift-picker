@@ -1,4 +1,4 @@
-import { useState} from "react";
+import { useState } from "react";
 import "./App.css";
 import "./homepage.scss";
 import "./App2.scss";
@@ -10,6 +10,12 @@ import Buttons from "./components/Buttons";
 import Typing from "react-typing-animation";
 import Header from "./components/Header";
 import Banner from "./components/Banner";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Link
+} from "react-router-dom";
 
 enum Scene {
   Home = 1,
@@ -83,7 +89,9 @@ function App(): JSX.Element {
 
   if (scene === Scene.Questions) {
     return (
+      <Router>
       <div>
+        
         <div className="instructions">
           <p>To get your personalized gift suggestions,</p>
           <p>simply answer these four quick questions:</p>
@@ -117,6 +125,7 @@ function App(): JSX.Element {
   if (scene === Scene.Suggestions) {
     return (
       <div>
+        
         <div className="results">
           <Suggestions choices={choices} />
         </div>
@@ -153,13 +162,15 @@ function App(): JSX.Element {
 
     return (
       <div id="HomePage">
-        <Banner/>
-        <Header/>
+  
+
+        <Banner />
+        <Header />
         <header id="HomePageContents">
           <div id="StartQuizSection">
-            <div id="homepageTitle">
-              <h1>
-                don't buy that gift for your{" "}
+            <div id="startSectionText">
+              <h1 id="homepageTitle">
+                Don't buy that gift for your
                 <Typing loop={true} cursorClassName="cursor">
                   {giftPeople.map((p) => {
                     return (
@@ -171,106 +182,137 @@ function App(): JSX.Element {
                   })}
                 </Typing>
               </h1>
-            </div>
-
-            <div>
               <h2 className="subtitle">
                 leave it to the experts (that’s us). introducing GiftPicker, the
                 only way you should be picking holidays gifts.
               </h2>
+              <button
+                type="button"
+                id="startQuizButton"
+                onClick={() => handleSceneChange(Scene.Questions)}
+              >
+                Take our gift quiz
+              </button>
             </div>
-            <button
-              type="button"
-              id="startQuizButton"
-              onClick={() => handleSceneChange(Scene.Questions)}
-            >
-              {" "}
-              Take our gift quiz
-            </button>
-            <a href="#" className="scroll-down"></a>
+            <div id="aboutImg">
+              <img src="./iphoneDiagram.svg" alt="gift picker on phone" />
+            </div>
           </div>
           <div id="AboutGiftPickerSection">
-            <div id="MoreInfoSection">
-              <div id="aboutText">
-                <h3>
-                  How do we put this nicely... <br />
-                  if your holiday gift usually <br />
-                  ends up in the closet, leave <br />
-                  the gifting to us.
-                  <br />
-                  we’ve made a quiz so <br />
-                  simple you’re bound to ...
-                </h3>{" "}
-              </div>
-              <div id="aboutImg">
-                <img src="./AboutGPImg.png" alt="gift picker on phone" />
-              </div>
-            </div>
+            <div id="MoreInfoSection"></div>
             <div id="Partners">
               <h2> Over 1,000 gifts from your favorite brands</h2>
               <div id="PartnersLogosContainer">
                 <img
                   className="partnerImage"
-                  src="./charcoalBlackRectangle.jpeg"
-                  alt="partner logo"
+                  src="./appleLogo.svg"
+                  alt="apple logo"
+                ></img>
+                <img
+                  className="partnerImage"
+                  src="./williamsSonomaVector.svg"
+                  alt="williams sonoma logo"
+                ></img>
+                <img
+                  className="partnerImage"
+                  src="./anthropologieLogo.jpeg"
+                  alt="anthropolgie logo"
+                ></img>
+                <img
+                  className="partnerImage"
+                  src="./potteryBarnLogo.svg"
+                  alt="pottern barn logo"
+                ></img>
+                <img
+                  className="partnerImage"
+                  src="./pelotonLogo.svg"
+                  alt="peloton logo"
+                ></img>
+                <img
+                  className="partnerImage"
+                  src="./LLBeanLogo.svg"
+                  alt="LLBean logo"
                 ></img>
                 <img
                   className="partnerImage"
                   src="./charcoalBlackRectangle.jpeg"
                   alt="partner logo"
                 ></img>
-                <img
+                 <img
                   className="partnerImage"
                   src="./charcoalBlackRectangle.jpeg"
                   alt="partner logo"
                 ></img>
-                <img
-                  className="partnerImage"
-                  src="./charcoalBlackRectangle.jpeg"
-                  alt="partner logo"
-                ></img>
-                <img
-                  className="partnerImage"
-                  src="./charcoalBlackRectangle.jpeg"
-                  alt="partner logo"
-                ></img>
-                <img
-                  className="partnerImage"
-                  src="./charcoalBlackRectangle.jpeg"
-                  alt="partner logo"
-                ></img>
-                <img
+                 <img
                   className="partnerImage"
                   src="./charcoalBlackRectangle.jpeg"
                   alt="partner logo"
                 ></img>
               </div>
+              <button
+                type="button"
+                id="startQuizButton"
+                onClick={() => handleSceneChange(Scene.Questions)}
+              >
+                Take our gift quiz
+              </button>
             </div>
           </div>
           <div id="FAQSection">
-            <h2>FAQs About Gifting</h2>
             <div id="FAQBubble">
+              <h2>FAQs About Gifting</h2>
+
               <div className="row">
                 <div className="col">
                   <div className="tabs">
                     <div className="tab">
                       <input type="checkbox" id="rd1" name="rd" />
                       <label className="tab-label" htmlFor="rd1">
-                        Item 1
+                        What is GiftPicker?
                       </label>
                       <div className="tab-content">
-                        Lorem, ipsum dolor sit amet consectetur adipisicing
-                        elit. Eos, facilis.
+                        GiftPicker is a free online gifting quiz that helps you
+                        find personalized gift recommendations in just 30
+                        seconds. Answer five quick questions about the person
+                        you’re shopping for, and we’ll give you our best picks
+                        from a curated gift database.
                       </div>
                     </div>
                     <div className="tab">
                       <input type="checkbox" id="rd2" name="rd" />
                       <label className="tab-label" htmlFor="rd2">
-                        Item 2
+                        Who’s GiftPicker for?
                       </label>
                       <div className="tab-content">
-                        Lorem ipsum dolor, sit amet consectetur adipisicing
-                        elit. Nihil, aut.
+                        GiftPicker is for everyone, from the person who
+                        struggles to find gifts to the gifting genius who’s
+                        excited for some extra inspiration. And, we can cover
+                        everyone on your list: we have recommendations ranging
+                        from your work bff all the way to your grandparents.
+                      </div>
+                    </div>
+                    <div className="tab">
+                      <input type="checkbox" id="rd3" name="rd" />
+                      <label className="tab-label" htmlFor="rd3">
+                        Can I share my GiftPicker recommendations with others?
+                      </label>
+                      <div className="tab-content">
+                      Yes, you can share your favorite recommendations in two ways.<br/><br/>
+
+First, you can choose to split the cost of the gift with friends via our ‘Split Gift’ option, which will take you our partners at Presently to set up a group gift. A group gift is a joint gift that friends, family, or coworkers can pitch in on. <br/><br/>
+
+Second, starting Dec 1, you’ll also be able to send links to your personalized gift recommendations via email, text, and more. Perfect way to send a nudge!
+
+                      </div>
+                    </div>
+                    <div className="tab">
+                      <input type="checkbox" id="rd4" name="rd" />
+                      <label className="tab-label" htmlFor="rd4">
+                        Can I share my GiftPicker recommendations with others?
+                      </label>
+                      <div className="tab-content">
+                      We’d love to hear from you! Direct message us on instagram @giftpicker.io
+
                       </div>
                     </div>
                   </div>
@@ -279,8 +321,8 @@ function App(): JSX.Element {
             </div>
           </div>
         </header>
-        <Footer />
       </div>
+      </Router>
     );
   }
 }

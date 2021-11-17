@@ -45,33 +45,50 @@
 #HomePage {
   display: flex;
   flex-direction: column;
-  background-image: url("./background2.svg");
+  background-image: url("./background9.svg");
+  background-repeat: no-repeat;
+  background-size: 100%;
 }
+
 
 #HomePageContents {
   overflow: hidden;
   display: flex;
-  justify-content: center;
   flex-direction: column;
   padding: 0vw;
 }
 
 #StartQuizSection {
-  background-size: cover;
-  padding-left: 10vw;
-  padding-right: 10vw;
-  padding-top: 5vh;
-  padding-bottom: 10vh;
-  align-items: inherit;
   display: flex;
-  flex-direction: column;
-  align-items: center;
+}
+
+#startSectionText {
+  padding-left: 10vw;
+  width: 55vw;
+  padding-right: 10vw;
+  margin-top: 20vh;
+
+  justify-self: left;
+  text-align: left;
+  padding-bottom: 10vh;
+
+}
+
+#aboutImg {
+
+  align-self: flex-end;
+  width: 40%;
+  padding-bottom: 0vh;
+  img {
+    height: fit-content;
+    width: fit-content;
+  }
 }
 
 #homepageTitle {
-  margin-top: 15vh;
   display: inline-block;
   margin-bottom: 5vh;
+
 }
 
 #typingEffect {
@@ -79,21 +96,9 @@
   align-self: ri;
 }
 
-.subtitle {
-  padding-right: 15vw;
-  font-weight: normal;
-  padding-left: 15vw;
-}
-#HomepageLogo {
-  background: transparent;
-  height: 10vw;
-  width: 10vw;
-  margin-top: 3vw;
-  margin-bottom: 2vh;
-}
 
 #startQuizButton {
-  margin-top: 15vh;
+  margin-top: 10vh;
   position: relative;
   min-width: 18vw;
   min-height: 4vw;
@@ -114,6 +119,10 @@
   box-shadow: 0 5px 15px #272833;
 }
 .scroll-down {
+  align-self: bottom;
+  justify-self: flex-end;
+  scroll-behavior: smooth;
+
   opacity: 1;
   -webkit-transition: all 0.5s ease-in 3s;
   transition: all 0.5s ease-in 3s;
@@ -198,39 +207,28 @@
   }
 }
 
-#aboutImg {
-  align-self: flex-end;
-  width: 40%;
-  img {
-    height: fit-content;
-    width: fit-content;
-  }
-}
+
 
 #Partners {
-  padding-top: 10vh;
-  padding-bottom: 10vh;
+  padding-top: 20vh;
+  padding-bottom: 15vh;
   h2 {
     text-align: center;
-    font-weight: bold;
+    font-weight: normal;
+    font-size: 2.2vw;
   }
   background-color: #111113;
-  /*
-  background: rgba(255, 255, 255, 0.5);
-  padding: 5%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  */
+
 }
 
 #PartnersLogosContainer {
-  margin-top: 3em;
+  margin-top: 5vh;
+  padding-top: 5vh;
   margin-inline: 15vw;
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  margin-bottom: 1em;
+  margin-bottom: 5vh;
 }
 
 .partnerImage {
@@ -238,6 +236,7 @@
   height: 10vw;
   border-radius: 50%;
   margin: 2vw 2vw 1vw 1vw;
+  background-color: whitesmoke;
 
   flex-grow: 0;
 }
@@ -254,26 +253,35 @@
   display: flex;
   flex-direction: column;
 
-  h2 {
-    padding-bottom: 2vh;
-    text-align: center;
-    font-weight: bold;
-  }
+
   background-color: #111113;
 }
 
 #FAQBubble {
-  background-image: url("./background.svg");
+  background-image: url("./background9.svg") ;
+
   background-size: cover;
   display: flex;
   flex-direction: column;
   margin-left: 20vw;
   margin-right: 20vw;
-
+  padding-bottom: 5vh;
   border-radius: 30px;
   margin-bottom: 0;
   overflow: hidden;
   text-align: left;
+
+  h2 {
+    padding-top: 8vh;
+    padding-bottom: 5vh;
+    font-weight: normal;
+    text-align: center;
+    font-size: 2.2vw;
+
+  }
+  p {
+    font-weight: normal;
+  }
 }
 
 #Header {
@@ -338,18 +346,17 @@ input {
 }
 // Layout
 .row {
+  height: auto;
   display: flex;
 
   .col {
     flex: 1;
     &:last-child {
-      margin-left: 1em;
     }
   }
 }
 /* Accordion styles */
 .tabs {
-  border-radius: 8px;
   overflow: hidden;
 }
 .tab {
@@ -360,7 +367,6 @@ input {
     display: flex;
     justify-content: space-between;
     padding: 1em;
-    background: transparent;
     font-weight: bold;
     cursor: pointer;
     /* Icon */
@@ -398,6 +404,8 @@ input {
 input:checked {
   + .tab-label {
     color: whitesmoke;
+    background-color: rgba(0, 0, 0, 0.5);
+
     &::after {
       transform: rotate(90deg);
     }
