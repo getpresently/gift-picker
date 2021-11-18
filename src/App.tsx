@@ -204,6 +204,8 @@ function App(): JSX.Element {
               <button
                 type="button"
                 id="startQuizButton"
+
+                className="w-60 md:w-64"
                 onClick={() => handleSceneChange(Scene.Questions)}
               >
                 Take our gift quiz
