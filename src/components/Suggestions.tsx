@@ -12,7 +12,7 @@ interface PropTypes {
 const LIMIT_INCREMENT = 3;
 const LIMIT_STOP = 12;
 const MANDATORY_QUESTION_KEYS = ["Age"];
-const WEIGHTED_QUESTION_KEYS = ["Type", "Interests", "Price"];
+const WEIGHTED_QUESTION_KEYS = ["Relation", "Type", "Interests", "Price"];
 const WEIGHTED_QUESTION_VALUES = [1, 1, 1];
 
 function Suggestions({ choices }: PropTypes): JSX.Element {
@@ -21,7 +21,7 @@ function Suggestions({ choices }: PropTypes): JSX.Element {
   const { data: suggestions, loading: isLoading } = useIdeas();
 
   const time = new Date();
-  time.setSeconds(time.getSeconds() + 3); // 3 seconds for gif to fully display load
+  time.setSeconds(time.getSeconds() + 2.85); // 2.85 seconds for gif to fully display load
   const { isRunning } = useTimer({ expiryTimestamp: time, onExpire: () => console.warn('onExpire called') });
 
   // caculates the relevance score for a gift

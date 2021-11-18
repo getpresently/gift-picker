@@ -12,7 +12,7 @@ enum Scene {
   Suggestions,
 }
 
-const NUM_PAGES = 4;
+const NUM_PAGES = 5;
 
 function App(): JSX.Element {
   const [scene, setScene] = useState<Scene>(Scene.Home);

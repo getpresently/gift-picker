@@ -53,6 +53,10 @@ body {
   color: black;
 }
 
+.about {
+  margin-left: 10vw;
+}
+
 /* QUZ PAGE */
 
 .choicesContainer {

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import logo from '../footer_logo.png'
+import logo from '../footer_logo.svg'
 import signature from '../presently_word.png'
 
 function Footer() {
@@ -13,7 +13,7 @@ function Footer() {
   }, []);
 
   const about = (
-    <div className="text-white text-xs text-center sm:text-left flex px-4 md:p-10">
+    <div className="text-white text-xs text-center sm:text-left flex p-4 md:pl-20">
       <div className="m-auto">
         <p className="font-bold">About GiftPicker</p>
         <p>GiftPicker is a quick quiz that recommends amazing presents from our database of 1,000+ high-quality gifts!</p>
@@ -46,7 +46,7 @@ function Footer() {
             "
           >
             <a href="https://www.instagram.com/giftpicker.io/" className="text-gray-500 text-3xl">
-              <i className="fab fa-instagram" ></i>
+              <i className="fab fa-instagram" style={{ color: "white" }}></i>
             </a>
             <a href="https://twitter.com/giftpicker_io" className="text-3xl">
               <i className="fab fa-twitter" style={{ color: "white" }}></i>
