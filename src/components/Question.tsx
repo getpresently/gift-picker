@@ -1,18 +1,11 @@
-// constants
-// inactive color settings
-const INACTIVE_COLOR = "#a060fb60";
-const INACTIVE_TEXT_COLOR = "black";
-
-// active color
-const ACTIVE_COLOR = "#a160fb";
-const ACTIVE_TEXT_COLOR = "white";
-
 interface QuestionProps {
   title: string;
   questionKey: string;
   choices: string[];
   isSingleSelect: boolean;
   selectedChoices: Set<string>;
+  currentPage: number;
+  pageCount: number;
   handleSelectChoice: (isSingleSelect: boolean, k: string, v: string) => void;
 }
 
@@ -37,17 +30,14 @@ function Choice({
 
   return (
     <div onClick={handleClick}>
-      <div>
-        <button
-          id={answer}
-          style={{
-            backgroundColor: isActive ? ACTIVE_COLOR : INACTIVE_COLOR,
-            color: isActive ? ACTIVE_TEXT_COLOR : INACTIVE_TEXT_COLOR,
-          }}
+      {isActive ? <button className="choiceButtons w-52 md:w-64 bg-selected text-white py-2 px-4 rounded-full"
+      >
+        {answer}
+      </button> :
+        <button className="choiceButtons w-52 md:w-64 bg-unselected hover:text-selected text-gray-500 py-2 px-4 rounded-full"
         >
           {answer}
-        </button>
-      </div>
+        </button>}
     </div>
   );
 }
@@ -67,17 +57,20 @@ function Choices({
   handleSelectChoice,
   selectedChoices,
 }: ChoicesProps): JSX.Element {
+  console.log(choices);
   return (
-    <div>
+    <div className={`inline-grid ${questionKey === "Type" ? 'grid-cols-1' : (questionKey === "Interests" ? 'grid-cols-1 md:grid-cols-3' : 'grid-cols-1 md:grid-cols-4')} gap-x-4 gap-y-4`}>
       {choices.map((answerText, questionId) => (
-        <Choice
-          key={`ch-${questionId}`}
-          questionKey={questionKey}
-          answer={answerText}
-          partOfSingleSelect={partOfSingleSelect}
-          isActive={selectedChoices?.has(answerText)}
-          handleSelectChoice={handleSelectChoice}
-        />
+        <div className={`${questionKey === "Interests" ? "col-span-1" : "col-span-2"} ${(questionKey === "Price" || questionKey === "Relation") && (answerText === "Any budget" || answerText === "Mentor/Teacher") && "md:col-start-2"}`}>
+          <Choice
+            key={`ch-${questionId}`}
+            questionKey={questionKey}
+            answer={answerText}
+            partOfSingleSelect={partOfSingleSelect}
+            isActive={selectedChoices?.has(answerText)}
+            handleSelectChoice={handleSelectChoice}
+          />
+        </div>
       ))}
     </div>
   );
@@ -90,11 +83,14 @@ function Question({
   isSingleSelect,
   selectedChoices,
   handleSelectChoice,
+  currentPage,
+  pageCount
 }: QuestionProps): JSX.Element {
   return (
     <div id="questionContainer">
-      <p>{title}</p>
-      <div>
+      <h2 className="text-xs ... text-gray-400 pb-2"> QUESTION {currentPage} OF {pageCount} </h2>
+      <p className="text-2xl ... text-gray-100 font-normal">{title}</p>
+      <div id="choiceContainer">
         <Choices
           questionKey={questionKey}
           choices={choices}

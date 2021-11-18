@@ -1,8 +1,14 @@
 /* MAIN PAGE */
 
+body {
+  background-image: url("GP_Gradient_3\ 1.svg");
+  background-size: cover;
+  background-color: #cccccc;
+}
+
 .App {
   text-align: center;
-  font-family: "Poppins", sans-serif;
+  /* font-family: "Sofia Pro", sans-serif; */
   font-size: calc(5px + 2vmin);
 }
 
@@ -28,7 +34,7 @@
 }
 
 .App-title {
-  font-family: "Poppins", sans-serif;
+  /* font-family: "Sofia Pro", sans-serif; */
   letter-spacing: 2.5px;
   margin: 2em;
 }
@@ -47,6 +53,10 @@
   color: black;
 }
 
+.about {
+  margin-left: 10vw;
+}
+
 /* QUZ PAGE */
 
 .choicesContainer {
@@ -56,11 +66,6 @@
   gap: 15px;
   max-width: 315px;
   margin: auto;
-}
-
-.instructions {
-  margin-top: 2em;
-  margin-bottom: 2em;
 }
 
 .Question {
@@ -90,8 +95,8 @@
   font-size: calc(5px + 1vmin);
 }
 
-.line {
-  margin: 2em;
+.content_container {
+  min-height: 82vh;
 }
 
 /* RESULTS PAGE */
@@ -109,14 +114,25 @@ img {
 /* ALL PAGES */
 
 .button_nav {
-  padding: 10px 20px;
-  background-color: #a160fb;
-  color: white;
-  border: none;
-  border-radius: 12px;
-  font-size: calc(5px + 2vmin);
-  margin: 1em;
-  margin-bottom: 2em;
+  /* padding: 10px 20px; */
+  /* background-color: #a160fb; */
+  /* color: white; */
+  /* border: none;
+  border-radius: 12px; */
+  /* font-size: calc(5px + 2vmin); */
+  border-radius: 10px;
+  margin: 0.3em;
+  line-height: 55%;
+}
+
+.button_nav:disabled {
+  border: 1px solid #999999;
+  background-color: #cccccc;
+  color: #666666;
+}
+
+.button_nav:disabled:hover {
+  cursor: default;
 }
 
 #loadingResults {
@@ -125,12 +141,7 @@ img {
   height: 10vw;
 }
 
-#button_changeScene:disabled{
-  border: 1px solid #999999;
-  background-color: #cccccc;
-  color: #666666;
-}
-.button_nav:disabled{
+#button_changeScene:disabled {
   border: 1px solid #999999;
   background-color: #cccccc;
   color: #666666;
@@ -140,42 +151,15 @@ img {
   background-color: #a160fb;
 }*/
 
-.footer {
+#questContainer {
+  margin-top: 2em;
+}
+
+#footer {
+  bottom: 0;
   background-color: black;
-  position: absolute;
   width: 100%;
   font-size: calc(5px + 1vmin);
-}
-
-.footer p {
-  text-align: left;
-  color: white;
-}
-
-.footerlogo {
-  height: 50px;
-  width: 50px;
-}
-
-.footer-logo {
-  display: flex;
-  justify-content: left;
-  margin: 3em;
-  margin-bottom: 0;
-}
-
-.footer-sections {
-  margin: 3em;
-  display: flex;
-  justify-content: space-between;
-}
-
-.footer-section {
-  margin: 0;
-}
-
-.footer-copyright {
-  margin: 3em;
 }
 
 .fab.fa-instagram {
@@ -221,11 +205,11 @@ img {
 button {
   /*width: calc(90px + 2vmin);
   height: calc(45px + 2vmin);*/
-  width: auto;
-  height: auto;
-  font-family: "Poppins", sans-serif;
-  color: #000;
-  background-color: #a060fb60;
+  /* width: auto;
+  height: auto; */
+  /* font-family: "Sofia Pro", sans-serif; */
+  /* color: #000;
+  background-color: #a060fb60; */
   /*border: 1.5px solid black;*/
   /*box-shadow: 0px 10px 15px rgba(0, 0, 0, 0.1);*/
   transition: all 0.3s ease 0s;
@@ -233,18 +217,18 @@ button {
   border: 1px solid transparent;
   margin: 0;
   border-radius: 50px;
-  font-size: calc(5px + 1vmin);
+  font-size: 20px;
   padding: 5px 10px;
 }
 
-button:hover {
+/* button:hover {
   background-color: #a160fb;
-  /*box-shadow: 0px 15px 20px rgba(0, 0, 0, 0.1);*/
+  box-shadow: 0px 15px 20px rgba(0, 0, 0, 0.1);
   color: white;
-}
+} */
 
 button:disabled,
-button[disabled]{
+button[disabled] {
   border: 1px solid #999999;
   background-color: #cccccc;
   color: #666666;
@@ -360,7 +344,11 @@ a:hover {
 #questionContainer {
   /*float: left; 
   min-width: 400px; */
-  margin-bottom: 4em;
+  margin-bottom: 1em;
+}
+
+#choiceContainer {
+  margin-top: 2em;
 }
 
 #questionContainer p {

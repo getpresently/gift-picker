@@ -1,4 +1,4 @@
-import { useState} from "react";
+import { useState } from "react";
 import "./App.css";
 import Questions from "./components/Questions";
 import ScrollablePage from "./components/ScrollablePage";
@@ -12,10 +12,11 @@ enum Scene {
   Suggestions,
 }
 
-const NUM_PAGES = 4;
+const NUM_PAGES = 5;
 
 function App(): JSX.Element {
   const [scene, setScene] = useState<Scene>(Scene.Home);
+  const [loading, setLoading] = useState<boolean>(true);
 
   function handleSceneChange(sceneTo: Scene) {
     setScene(sceneTo);
@@ -71,57 +72,48 @@ function App(): JSX.Element {
     <Questions
       handleSelectChoice={handleSelectChoice}
       page={currentPage}
+      pageCount={NUM_PAGES}
       choices={choices}
+      setLoading={setLoading}
     />
   );
   const page = <ScrollablePage childComp={question}></ScrollablePage>;
 
   if (scene === Scene.Questions) {
     return (
-      <div>
-        <div className="instructions">
-          <p>To get your personalized gift suggestions,</p>
-          <p>simply answer these four quick questions:</p>
+      <>
+        <div id="questContainer" className="container p-8 mx-auto content_container">
+          {page}
+          {!loading && <Buttons
+            handlePageChange={handlePageChange}
+            handleSubmit={() => handleSceneChange(Scene.Suggestions)}
+            currentPage={currentPage}
+            numPages={NUM_PAGES}
+            choices={choices}
+          ></Buttons>}
         </div>
-
-        <div className="line">
-          <hr></hr>
-        </div>
-
-        <div>
-          <div id="container">
-            {page}
-            <Buttons
-              handlePageChange={handlePageChange}
-              handleSubmit={() => handleSceneChange(Scene.Suggestions)}
-              currentPage={currentPage}
-              numPages={NUM_PAGES}
-              choices={choices}
-            ></Buttons>
-          </div>
-          <Footer />
-        </div>
-      </div>
+        <Footer />
+      </>
     );
   }
 
   function resetSelections() {
-    setChoices({})
+    setChoices({});
   }
 
   if (scene === Scene.Suggestions) {
     return (
       <div>
-        <div className="results">
+        <div className="results content_container">
           <Suggestions choices={choices} />
         </div>
         <div id="backButton">
           <button
             className="button_nav"
             onClick={() => {
-              handleSceneChange(Scene.Home)
-              setCurrentPage(1)
-              resetSelections()
+              handleSceneChange(Scene.Home);
+              setCurrentPage(1);
+              resetSelections();
             }}
           >
             HOME
@@ -134,7 +126,7 @@ function App(): JSX.Element {
     return (
       <div>
         <div className="App">
-          <header className="App-header">
+          <header className="App-header content_container">
             <div className="titleContainer">
               <div className="App-title">
                 <h1>GIFT PICKER</h1>
