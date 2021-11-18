@@ -93,7 +93,7 @@
 
 #homepageTitle {
   display: inline-block;
-  margin-bottom: 5vh;
+  margin-bottom: 0vh;
 }
 
 #typingEffect {
@@ -213,6 +213,7 @@
   margin-bottom: 0;
   overflow: hidden;
   text-align: left;
+  justify-content: center;
 
   h2 {
     padding-top: 8vh;
@@ -291,6 +292,8 @@ input {
 .row {
   height: auto;
   display: flex;
+  padding-left: 5vw;
+  padding-right: 5vw;
 
   .col {
     flex: 1;

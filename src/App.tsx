@@ -234,7 +234,7 @@ function App(): JSX.Element {
               ></img>
               <img
                 className="partnerImage"
-                src="./airbnb-logo-2020.svg"
+                src="./airbnb-logo.svg"
                 alt="airbnb logo"
               ></img>
               <img
@@ -251,6 +251,31 @@ function App(): JSX.Element {
                 className="partnerImage"
                 src="./pelotonLogo.svg"
                 alt="peloton logo"
+              ></img>
+              <img
+                className="partnerImage"
+                src="./fujifilm.png"
+                alt="fujifilm logo"
+              ></img>
+              <img
+                className="partnerImage"
+                src="./jbl-logo.png"
+                alt="jbl logo"
+              ></img>
+              <img
+                className="partnerImage"
+                src="./lululemon.png"
+                alt="lululemon logo"
+              ></img>
+              <img
+                className="partnerImage"
+                src="./keurig-logo.svg"
+                alt="keurig logo"
+              ></img>
+              <img
+                className="partnerImage"
+                src="./anker-logo.jpeg"
+                alt="anker logo"
               ></img>
             </div>
             <Link to="/quiz">
