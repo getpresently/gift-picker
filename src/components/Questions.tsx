@@ -1,8 +1,7 @@
-import { useQuestions } from "../utils/hooks";
-import { useTimer } from 'react-timer-hook';
-import Loading from "./Loading";
-import Question from "./Question";
-import { useEffect } from "react";
+import {getQuestions} from '../utils/hooks';
+import Loading from './Loading';
+import Question from './Question';
+import {useEffect, useState} from 'react';
 
 interface PropTypes {
   handleSelectChoice: (isSingleSelect: boolean, k: string, v: string) => void;
@@ -18,18 +17,25 @@ function Questions({
   page,
   pageCount,
   choices,
-  setLoading
+  setLoading,
 }: PropTypes): JSX.Element {
   // start the timer when component mounts
-  const time = new Date();
-  time.setSeconds(time.getSeconds() + 2.85); // 2.85 seconds for gif to fully display load
-  const { isRunning } = useTimer({ expiryTimestamp: time, onExpire: () => console.warn('onExpire called') });
-  const { data: questions, loading: isLoading } = useQuestions();
+  // const time = new Date();
+  // time.setSeconds(time.getSeconds() + 2.85); // 2.85 seconds for gif to fully display load
+  // const { isRunning } = useTimer({ expiryTimestamp: time, onExpire: () => console.warn('onExpire called') });
+  const [questions, setQuestions] = useState<Array<any>>([]);
+  useEffect(() => {
+    getQuestions().then(questions => {
+      alert('refreshing');
+      setQuestions(questions)
+    });
+  }, []);
+  // const {data: questions, loading: isLoading} = useQuestions();
 
   // inform app that questions are loading
-  useEffect(() => {
-    setLoading(isLoading || isRunning);
-  })
+  // useEffect(() => {
+  //   setLoading(isLoading || isRunning);
+  // }, [isLoading, isRunning, setLoading])
 
   let questionArr = questions.map((answerTexts, questionId) => (
     <Question
@@ -45,14 +51,15 @@ function Questions({
     />
   ));
 
-  return isLoading || isRunning ? (
-    <Loading></Loading>
+  return questions.length === 0 ? (
+    // return isLoading || isRunning ? (
+    <Loading/>
   ) : (
     <div id="questionsContainer">
       {questionArr[page - 1]}
       {!questions[page - 1].isSingleSelect && <p className="text-xs text-gray-400">Select multiple</p>}
     </div>
-  )
+  );
 }
 
 export default Questions;
