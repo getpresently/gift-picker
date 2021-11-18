@@ -169,10 +169,6 @@ img {
   background-color: #a160fb;
 }*/
 
-#questContainer {
-  margin-top: 2em;
-}
-
 #footer {
   bottom: 0;
   background-color: black;
@@ -201,8 +197,7 @@ img {
   background-clip: text;
   -webkit-background-clip: text;
 }
-
-/* Button Class for Quiz Choices */
+/* 
 .choiceButtons button {
   width: calc(90px + 2vmin);
   height: calc(45px + 2vmin);
@@ -217,7 +212,7 @@ img {
   border-radius: 12px;
   font-size: calc(5px + 1vmin);
   padding: 5px 10px;
-}
+} */
 
 button {
   /*width: calc(90px + 2vmin);
@@ -244,13 +239,6 @@ button:hover {
   box-shadow: 0px 15px 20px rgba(0, 0, 0, 0.1);
   color: white;
 }*/
-
-button:disabled,
-button[disabled] {
-  border: 1px solid #999999;
-  background-color: #cccccc;
-  color: #666666;
-}
 
 #top {
   margin-top: 2em;

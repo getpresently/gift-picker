@@ -87,7 +87,7 @@ function Question({
 }: QuestionProps): JSX.Element {
   return (
     <div id="questionContainer">
-      <h2 className="text-xs ... text-gray-400 pb-2"> QUESTION {currentPage} OF {pageCount} </h2>
+      <h2 className="text-xs ... text-gray-400 pb-2 text-center"> QUESTION {currentPage} OF {pageCount} </h2>
       <p className="text-2xl ... text-gray-100 font-normal">{title}</p>
       <div id="choiceContainer">
         <Choices

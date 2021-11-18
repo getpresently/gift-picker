@@ -97,9 +97,10 @@ function App(): JSX.Element {
 
   const QuestionsPageComponent = () => (
     <>
-      <div id="questContainer" className="container p-8 mx-auto content_container">
+      <Header />
+      <div className="container p-8 mx-auto content_container">
         {page}
-        <div className="pt-5">
+        <div className="pt-8">
           <Buttons
             handlePageChange={handlePageChange}
             handleSubmit={() => handleSceneChange(Scene.Suggestions)}
@@ -118,22 +119,25 @@ function App(): JSX.Element {
 
   const SuggestionsComponent = () => (
     <div>
-      <div className="results">
-        <Suggestions choices={choices} />
-      </div>
-      <div id="backButton">
-        <Link to="/home">
-          <button
-            className="button_startOver"
-            onClick={() => {
-              handleSceneChange(Scene.Home);
-              setCurrentPage(1);
-              resetSelections();
-            }}
-          >
-            Start over
-          </button>
-        </Link>
+      <Header />
+      <div className="content_container">
+        <div className="results">
+          <Suggestions choices={choices} />
+        </div>
+        <div id="backButton">
+          <Link to="/home">
+            <button
+              className="button_startOver"
+              onClick={() => {
+                handleSceneChange(Scene.Home);
+                setCurrentPage(1);
+                resetSelections();
+              }}
+            >
+              Start over
+            </button>
+          </Link>
+        </div>
       </div>
       <Footer />
     </div>
@@ -186,7 +190,7 @@ function App(): JSX.Element {
     <div id="HomePage">
       <Banner />
       <Header />
-      <header id="HomePageContents">
+      <header id="HomePageContents" className="content_container">
         <div id="StartQuizSection">
           <div id="startSectionText">
             <h1 id="homepageTitle">
@@ -358,6 +362,7 @@ function App(): JSX.Element {
           </div>
         </div>
       </header>
+      <Footer></Footer>
     </div>
   );
 

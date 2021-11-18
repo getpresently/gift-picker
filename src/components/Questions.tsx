@@ -37,7 +37,7 @@ function Questions({
   ) : (
     <div id="questionsContainer">
       {questionArr[page - 1]}
-      {!questions[page - 1].isSingleSelect && <p className="text-s text-gray-400 pb-2">Select multiple</p>}
+      {!questions[page - 1].isSingleSelect && <p className="text-s text-gray-400 pb-2 pt-4">Select multiple</p>}
     </div>
   );
 }
