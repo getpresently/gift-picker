@@ -37,7 +37,7 @@ function Buttons({ handlePageChange, handleSubmit, currentPage, numPages, choice
       ) : (
         <Link to="/results">
           <button className="bg-deepBlack w-32 md:w-40 h-10 hover:bg-black text-white button_nav" disabled={nextDisable} onClick={handleSubmit}>
-            Done 🎁
+            Finish 🎁
           </button>
         </Link>
       )}
