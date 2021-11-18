@@ -79,7 +79,7 @@ body {
   display: inline-flex;
   flex-wrap: wrap;
   margin-bottom: 2em;
-  gap: 4em;
+  gap: 1.4em;
   justify-content: center;
 }
 
@@ -113,9 +113,8 @@ img {
 
 /* ALL PAGES */
 
-
 .button_startOver {
-  color: #AEAFB7;
+  color: #aeafb7;
   background-color: none;
   font-size: 16px;
 }

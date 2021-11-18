@@ -92,12 +92,12 @@ function Suggestions({ choices }: PropTypes): JSX.Element {
     }
   };
 
-  
+
 
   return (
     <div>
       <div id="top">
-        <p>Our gift picks 🎁</p>
+        <p className="text-white pb-12">Our gift picks 🎁</p>
       </div>
       {isLoading || isRunning ? <Loading></Loading>
         : (filteredSuggestions.length === 0 ? <p> No suggestions could be found.</p>
@@ -112,15 +112,15 @@ function Suggestions({ choices }: PropTypes): JSX.Element {
                 link={x.link}
                 groupLink={x.groupLink}
               />
-          })}
+            })}
           </div>)}
       <div>
-        <button
-          id="button_moreSuggestions"
+        {(!isLoading && !isRunning) && <button
+          className="bg-deepBlack w-52 h-11 hover:bg-black text-white button_nav"
           hidden={moreShowing}
           onClick={increaseLimitAndDisableMore}>
           Load more gifts
-        </button>
+        </button>}
       </div>
     </div>
   )
