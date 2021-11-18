@@ -50,6 +50,7 @@ export function useIdeas(): { data: Gift[]; loading: boolean } {
       photo: "",
       link: "",
       groupLink: "",
+      status: "",
     };
     for (const key of Object.keys(row)) {
       if (key === "Gift") {
@@ -62,12 +63,14 @@ export function useIdeas(): { data: Gift[]; loading: boolean } {
         g.Type = row[key].split(",").map((x: string) => x.trim());
       } else if (key === "Interests") {
         g.Interests = row[key].split(",").map((x: string) => x.trim());
-      } else if (key === "Price") {
+      } else if (key === "PriceActual") {
         g.Price = row[key].split(",").map((x: string) => x.trim());
       } else if (key === "PhotoAddress") {
         g.photo = row[key];
       } else if (key === "Link") {
         g.link = row[key];
+      } else if (key === "Status") {
+        g.status = row[key];
       }
     }
     g.groupLink = g.groupLink.concat(

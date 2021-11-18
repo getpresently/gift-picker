@@ -15,4 +15,5 @@ export interface Gift {
   photo: string;
   link: string;
   groupLink: string;
+  status: string;
 }
