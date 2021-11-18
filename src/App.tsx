@@ -259,7 +259,7 @@ function App(): JSX.Element {
                 id="startQuizButton"
                 onClick={() => handleSceneChange(Scene.Questions)}
               >
-                Get Started
+                Take our gift quiz
               </button>
             </Link>
           </div>

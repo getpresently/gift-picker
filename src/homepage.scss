@@ -314,7 +314,7 @@ input {
     cursor: pointer;
     /* Icon */
     &:hover {
-      color: rgba(0, 0, 0, 0.5);
+      color: var(--grey4)
     }
     &::after {
       content: "\276F";
