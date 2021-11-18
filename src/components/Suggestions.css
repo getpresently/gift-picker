@@ -1,0 +1,12 @@
+#button_moreSuggestions {
+    background-color: #363342;
+    color:#F9FBFF;
+    border-radius: 12px;
+    font-size: 18px;
+    padding-left: 30px;
+    padding-right:30px;
+}
+
+#top {
+    font-size: 36px;
+}

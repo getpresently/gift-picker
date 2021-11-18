@@ -1,0 +1,54 @@
+.column img {
+  border-top-right-radius: 12px;
+  border-top-left-radius: 12px;
+}
+
+.column .suggestion_MetaData {
+  color: #f9fbff;
+  background-color: #363342;
+  border-bottom-right-radius: 12px;
+  border-bottom-left-radius: 12px;
+  padding: 21px 20px 21px;
+}
+
+.column .suggestion_MetaData a {
+  color: #000000;
+  font-size: 18px;
+  text-decoration: none;
+}
+
+.column .suggestion_MetaData button {
+  margin-left: 5px;
+  margin-right: 5px;
+  width: 45%;
+  background-color: #4dddea;
+  border-radius: 12px;
+}
+
+.column .suggestion_MetaData .row {
+  text-align: center;
+}
+
+.column .suggestion_MetaData p {
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  margin-bottom: 10px;
+  margin-left: 10px;
+}
+
+#suggestion_Brand {
+  font-size: 18px;
+  color: #aeafb7;
+}
+
+#suggestion_Title {
+  font-size: 20px;
+  font-weight: bold;
+  color: #f9fbff;
+}
+
+#suggestion_Price {
+  font-size: 16px;
+  color: #aeafb7;
+}

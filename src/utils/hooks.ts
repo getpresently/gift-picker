@@ -49,6 +49,8 @@ export function useIdeas(): { data: Gift[]; loading: boolean } {
       Price: [],
       photo: "",
       link: "",
+      groupLink: "",
+      status: "",
     };
     for (const key of Object.keys(row)) {
       if (key === "Gift") {
@@ -61,14 +63,27 @@ export function useIdeas(): { data: Gift[]; loading: boolean } {
         g.Type = row[key].split(",").map((x: string) => x.trim());
       } else if (key === "Interests") {
         g.Interests = row[key].split(",").map((x: string) => x.trim());
-      } else if (key === "Price") {
+      } else if (key === "PriceActual") {
         g.Price = row[key].split(",").map((x: string) => x.trim());
       } else if (key === "PhotoAddress") {
         g.photo = row[key];
       } else if (key === "Link") {
         g.link = row[key];
+      } else if (key === "Status") {
+        g.status = row[key];
       }
     }
+    g.groupLink = g.groupLink.concat(
+      "https://getpresently.com/go/set-up-your-group-gift/?wpf3087_209=",
+      g.gift,
+      " by ", 
+      g.brand,
+      "&wpf3087_88=",
+      g.photo,
+      "&wpf3087_207=Add%20gift%20link&wpf3087_195=",
+      g.Price.toString(),
+      "&refsc=giftpicker"
+    )
     temp.push(g);
   }
   

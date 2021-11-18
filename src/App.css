@@ -79,12 +79,12 @@ body {
   display: inline-flex;
   flex-wrap: wrap;
   margin-bottom: 2em;
-  gap: 4em;
+  gap: 1.4em;
   justify-content: center;
 }
 
 .column {
-  max-width: 300px;
+  max-width: 350px;
   text-align: left;
 
   /*box-shadow: 0px 10px 15px rgba(0, 0, 0, 0.1);*/
@@ -106,12 +106,21 @@ body {
 }
 
 img {
-  height: 300px;
-  width: 300px;
+  height: 350px;
+  width: 350px;
   object-fit: cover;
 }
 
 /* ALL PAGES */
+
+.button_startOver {
+  color: #aeafb7;
+  background-color: none;
+  font-size: 16px;
+}
+.button_startOver:hover {
+  background-color: none;
+}
 
 .button_nav {
   /* padding: 10px 20px; */
