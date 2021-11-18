@@ -81,7 +81,7 @@ function Suggestions({ choices }: PropTypes): JSX.Element {
     return onlyGifts;
   }
 
-  const filteredSuggestions = sortGiftsByScore(suggestions);
+  const filteredSuggestions = sortGiftsByScore(suggestions).filter(g => g.status==="Live");
 
   //increases the number of suggestions displayed by the value of LIMIT_INCREMENT
   //until LIMIT_STOP (12) suggestions are shown
