@@ -47,7 +47,7 @@
   flex-direction: column;
   background-image: url("./backgroundImage.svg");
   background-repeat: no-repeat;
-  background-size: auto;
+  background-size: cover;
 }
 
 #HomePageContents {
@@ -68,7 +68,6 @@
   #StartQuizSection {
     flex-direction: column;
   }
-
 }
 
 #startSectionText {
@@ -91,7 +90,6 @@
   padding-top: 4vh;
   padding-right: 10vw;
   margin-left: auto;
-
   img {
     height: fit-content;
     width: fit-content;
@@ -100,18 +98,15 @@
     margin-bottom: -2vh;
   }
 }
-
 @media (max-width: 800px) {
   #startSectionText {
     width: 100%;
     padding: 4vh;
     margin-top: 3vh;
-
   }
   #aboutImg {
     width: 100%;
     padding: 4vh;
-
   }
 }
 
@@ -124,7 +119,6 @@
   line-height: 46px;
   padding-bottom: 10px;
 }
-
 
 .subtitle {
   display: inline-block;
@@ -140,7 +134,6 @@
   #homepageTitle {
     font-size: 32px;
     line-height: 36px;
-
   }
 
   .subtitle {
@@ -214,7 +207,6 @@
   width: 25vw;
   align-self: flex-start;
   margin-top: 10vh;
-
   h3 {
     font-weight: normal;
     text-justify: left;
@@ -225,13 +217,11 @@
 #Partners {
   padding-top: 20vh;
   padding-bottom: 15vh;
-
   h2 {
     text-align: center;
     font-weight: normal;
     font-size: 2.2vw;
   }
-
   background-color: #111113;
 }
 
@@ -250,11 +240,8 @@
 @media (max-width: 600px) {
   #PartnersLogosContainer {
     max-width: 300px;
-
   }
-
 }
-
 
 .partnerImage {
   width: 100px;
@@ -262,9 +249,7 @@
   border-radius: 50%;
   background-color: whitesmoke;
   flex-grow: 0;
-
 }
-
 .partnerImage:hover {
   color: rgba(255, 255, 255, 1);
   box-shadow: 0 5px 15px rgba(145, 92, 182, 0.4);
@@ -303,7 +288,6 @@
     text-align: center;
     font-size: 2.2vw;
   }
-
   p {
     font-weight: normal;
   }
@@ -353,11 +337,14 @@
 }
 
 #HeaderLogoButton {
-  height: 50px;
-  z-index: 10000;
-  max-width: 100%;
+  height: 20px;
+  max-width: 100px;
+  margin: 0%;
   object-fit: contain;
-  margin: 2vw 5vw 0 10vw;
+  align-self: right;
+  margin-right: 5vw;
+  margin-left: 10vw;
+  margin-top: 2vw;
 }
 
 /** accordian **/
@@ -366,7 +353,6 @@ input {
   opacity: 0;
   z-index: -1;
 }
-
 // Layout
 .row {
   height: auto;
@@ -376,22 +362,18 @@ input {
 
   .col {
     flex: 1;
-
     &:last-child {
     }
   }
 }
-
 /* Accordion styles */
 .tabs {
   overflow: hidden;
 }
-
 .tab {
   width: 100%;
   color: white;
   overflow: hidden;
-
   &-label {
     display: flex;
     justify-content: space-between;
@@ -402,7 +384,6 @@ input {
     &:hover {
       color: var(--grey4);
     }
-
     &::after {
       content: "\276F";
       width: 1em;
@@ -411,14 +392,12 @@ input {
       transition: all 0.35s;
     }
   }
-
   &-content {
     max-height: 0;
     padding: 0 1em;
     color: white;
     transition: all 0.35s;
   }
-
   &-close {
     display: flex;
     justify-content: flex-end;
@@ -426,7 +405,6 @@ input {
     font-size: 0.75em;
     background: transparent;
     cursor: pointer;
-
     &:hover {
       color: rgba(0, 0, 0, 0.1);
     }
@@ -443,7 +421,6 @@ input:checked {
       transform: rotate(90deg);
     }
   }
-
   ~ .tab-content {
     max-height: 100vh;
     padding: 1em;

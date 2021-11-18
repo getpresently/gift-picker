@@ -1,4 +1,4 @@
-import {useEffect, useState} from 'react';
+import { useEffect, useState } from 'react';
 import './App.css';
 import './homepage.scss';
 import './App2.scss';
@@ -11,9 +11,9 @@ import Buttons from './components/Buttons';
 import Typing from 'react-typing-animation';
 import Header from './components/Header';
 import Banner from './components/Banner';
-import {BrowserRouter as Router, Link, Route, Routes} from 'react-router-dom';
+import { BrowserRouter as Router, Link, Route, Routes } from 'react-router-dom';
 import EmailCaptureComponent from './components/EmailCaptureForm';
-import {getQuestions} from './utils/hooks';
+import { getQuestions } from './utils/hooks';
 
 enum Scene {
   Home = 1,
@@ -25,8 +25,8 @@ const NUM_PAGES = 5;
 
 function App(): JSX.Element {
   const [scene, setScene] = useState<Scene>(Scene.Home);
-  const [loading, setLoading] = useState<boolean>(true);
   const [questions, setQuestions] = useState<any[]>([]);
+  // load questions from google sheets
   useEffect(() => {
     getQuestions().then(questions => {
       setQuestions(questions);
@@ -89,7 +89,6 @@ function App(): JSX.Element {
       page={currentPage}
       pageCount={NUM_PAGES}
       choices={choices}
-      setLoading={setLoading}
       questions={questions}
     />
   );
@@ -98,16 +97,19 @@ function App(): JSX.Element {
 
   const QuestionsPageComponent = () => (
     <>
-      <div id="questContainer" className="container p-8 mx-auto content_container">
+      <Header />
+      <div className="container p-8 mx-auto content_container">
         {page}
-        <Buttons
-          handlePageChange={handlePageChange}
-          handleSubmit={() => handleSceneChange(Scene.Suggestions)}
-          currentPage={currentPage}
-          numPages={NUM_PAGES}
-          choices={choices}/>
+        <div className="pt-8">
+          <Buttons
+            handlePageChange={handlePageChange}
+            handleSubmit={() => handleSceneChange(Scene.Suggestions)}
+            currentPage={currentPage}
+            numPages={NUM_PAGES}
+            choices={choices} />
+        </div>
       </div>
-      <Footer/>
+      <Footer />
     </>
   );
 
@@ -117,24 +119,27 @@ function App(): JSX.Element {
 
   const SuggestionsComponent = () => (
     <div>
-      <div className="results">
-        <Suggestions choices={choices}/>
+      <Header />
+      <div className="content_container">
+        <div className="results">
+          <Suggestions choices={choices} />
+        </div>
+        <div id="backButton">
+          <Link to="/home">
+            <button
+              className="button_startOver"
+              onClick={() => {
+                handleSceneChange(Scene.Home);
+                setCurrentPage(1);
+                resetSelections();
+              }}
+            >
+              Start over
+            </button>
+          </Link>
+        </div>
       </div>
-      <div id="backButton">
-        <Link to="/home">
-          <button
-            className="button_startOver"
-            onClick={() => {
-              handleSceneChange(Scene.Home);
-              setCurrentPage(1);
-              resetSelections();
-            }}
-          >
-            Start over
-          </button>
-        </Link>
-      </div>
-      <Footer/>
+      <Footer />
     </div>
   );
 
@@ -183,19 +188,19 @@ function App(): JSX.Element {
 
   const HomepageComponent = () => (
     <div id="HomePage">
-      <Banner/>
-      <Header/>
-      <header id="HomePageContents">
+      <Banner />
+      <Header />
+      <header id="HomePageContents" className="content_container">
         <div id="StartQuizSection">
           <div id="startSectionText">
             <h1 id="homepageTitle">
-              Don't pick that gift for your&nbsp;
-              <Typing loop={true} cursorClassName="cursor"  className="inline">
+              Don't buy that gift for your
+              <Typing loop={true} cursorClassName="cursor">
                 {giftPeople.map((p) => {
                   return (
                     <>
                       {<span id="typingEffect">{p}</span>}
-                      <Typing.Backspace count={p.length + 1} delay={1000}/>
+                      <Typing.Backspace count={p.length + 1} delay={1000} />
                     </>
                   );
                 })}
@@ -209,8 +214,6 @@ function App(): JSX.Element {
               <button
                 type="button"
                 id="startQuizButton"
-
-                className="w-60 md:w-64"
                 onClick={() => handleSceneChange(Scene.Questions)}
               >
                 Take our gift quiz
@@ -218,63 +221,63 @@ function App(): JSX.Element {
             </Link>
           </div>
           <div id="aboutImg">
-            <img src="./giftpickerImages.svg" alt="gift picker on phone"/>
+            <img src="./giftpickerImages.svg" alt="gift picker on phone" />
           </div>
         </div>
         <div id="AboutGiftPickerSection">
           <div id="MoreInfoSection">
-            <EmailCaptureComponent/>
+            <EmailCaptureComponent />
           </div>
           <div id="Partners">
             <h2> Over 1,000 gifts from your favorite brands</h2>
             <div id="PartnersLogosContainer">
               <img
-                className="partnerImage m-3 md:m-4"
+                className="partnerImage"
                 src="./appleLogo.svg"
                 alt="apple logo"
               ></img>
               <img
-                className="partnerImage m-3 md:m-4"
+                className="partnerImage"
                 src="./airbnb-logo.svg"
                 alt="airbnb logo"
               ></img>
               <img
-                className="partnerImage m-3 md:m-4"
+                className="partnerImage"
                 src="./potteryBarnLogo.svg"
                 alt="pottery barn logo"
               ></img>
               <img
-                className="partnerImage m-3 md:m-4"
+                className="partnerImage"
                 src="./anthropologieLogo.jpeg"
                 alt="anthropolgie logo"
               ></img>
               <img
-                className="partnerImage m-3 md:m-4"
+                className="partnerImage"
                 src="./pelotonLogo.svg"
                 alt="peloton logo"
               ></img>
               <img
-                className="partnerImage m-3 md:m-4"
+                className="partnerImage"
                 src="./fujifilm.png"
                 alt="fujifilm logo"
               ></img>
               <img
-                className="partnerImage m-3 md:m-4"
+                className="partnerImage"
                 src="./jbl-logo.png"
                 alt="jbl logo"
               ></img>
               <img
-                className="partnerImage m-3 md:m-4"
+                className="partnerImage"
                 src="./lululemon.png"
                 alt="lululemon logo"
               ></img>
               <img
-                className="partnerImage m-3 md:m-4"
+                className="partnerImage"
                 src="./keurig-logo.svg"
                 alt="keurig logo"
               ></img>
               <img
-                className="partnerImage m-3 md:m-4"
+                className="partnerImage"
                 src="./anker-logo.jpeg"
                 alt="anker logo"
               ></img>
@@ -283,7 +286,6 @@ function App(): JSX.Element {
               <button
                 type="button"
                 id="startQuizButton"
-                className="w-60 md:w-64"
                 onClick={() => handleSceneChange(Scene.Questions)}
               >
                 Take our gift quiz
@@ -298,7 +300,7 @@ function App(): JSX.Element {
               <div className="col">
                 <div className="tabs">
                   <div className="tab">
-                    <input type="checkbox" id="rd1" name="rd"/>
+                    <input type="checkbox" id="rd1" name="rd" />
                     <label className="tab-label" htmlFor="rd1">
                       What is GiftPicker?
                     </label>
@@ -311,7 +313,7 @@ function App(): JSX.Element {
                     </div>
                   </div>
                   <div className="tab">
-                    <input type="checkbox" id="rd2" name="rd"/>
+                    <input type="checkbox" id="rd2" name="rd" />
                     <label className="tab-label" htmlFor="rd2">
                       Who’s GiftPicker for?
                     </label>
@@ -324,28 +326,28 @@ function App(): JSX.Element {
                     </div>
                   </div>
                   <div className="tab">
-                    <input type="checkbox" id="rd3" name="rd"/>
+                    <input type="checkbox" id="rd3" name="rd" />
                     <label className="tab-label" htmlFor="rd3">
                       Can I share my GiftPicker recommendations with others?
                     </label>
                     <div className="tab-content">
                       Yes, you can share your favorite recommendations in two
                       ways.
-                      <br/>
-                      <br/>
+                      <br />
+                      <br />
                       First, you can choose to split the cost of the gift with
                       friends via our ‘Split Gift’ option, which will take you
                       our partners at Presently to set up a group gift. A group
                       gift is a joint gift that friends, family, or coworkers
-                      can pitch in on. <br/>
-                      <br/>
+                      can pitch in on. <br />
+                      <br />
                       Second, starting Dec 1, you’ll also be able to send links
                       to your personalized gift recommendations via email, text,
                       and more. Perfect way to send a nudge!
                     </div>
                   </div>
                   <div className="tab">
-                    <input type="checkbox" id="rd4" name="rd"/>
+                    <input type="checkbox" id="rd4" name="rd" />
                     <label className="tab-label" htmlFor="rd4">
                       Can I share my GiftPicker recommendations with others?
                     </label>
@@ -360,6 +362,7 @@ function App(): JSX.Element {
           </div>
         </div>
       </header>
+      <Footer></Footer>
     </div>
   );
 
@@ -367,10 +370,10 @@ function App(): JSX.Element {
     <div className="App">
       <Router>
         <Routes>
-          <Route path="/" element={<HomepageComponent/>}/>
-          <Route path="/home" element={<HomepageComponent/>}/>
-          <Route path="/quiz" element={<QuestionsPageComponent/>}/>
-          <Route path="/results" element={<SuggestionsComponent/>}/>
+          <Route path="/" element={<HomepageComponent />} />
+          <Route path="/home" element={<HomepageComponent />} />
+          <Route path="/quiz" element={<QuestionsPageComponent />} />
+          <Route path="/results" element={<SuggestionsComponent />} />
         </Routes>
       </Router>
     </div>
