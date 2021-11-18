@@ -185,17 +185,27 @@
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  margin-bottom: 5vh;
+  margin:auto;
+  max-width:700px;
+  margin-bottom:2rem;
 }
 
-.partnerImage {
-  width: 10vw;
-  height: 10vw;
-  border-radius: 50%;
-  margin: 2vw 2vw 1vw 1vw;
-  background-color: whitesmoke;
+@media (max-width: 600px) { 
+  #PartnersLogosContainer {
+    max-width:300px;
 
+  }
+  
+ }
+
+
+.partnerImage {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  background-color: whitesmoke;
   flex-grow: 0;
+  
 }
 .partnerImage:hover {
   color: rgba(255, 255, 255, 1);

@@ -222,52 +222,52 @@ function App(): JSX.Element {
             <h2> Over 1,000 gifts from your favorite brands</h2>
             <div id="PartnersLogosContainer">
               <img
-                className="partnerImage"
+                className="partnerImage m-3 md:m-4"
                 src="./appleLogo.svg"
                 alt="apple logo"
               ></img>
               <img
-                className="partnerImage"
+                className="partnerImage m-3 md:m-4"
                 src="./airbnb-logo.svg"
                 alt="airbnb logo"
               ></img>
               <img
-                className="partnerImage"
+                className="partnerImage m-3 md:m-4"
                 src="./potteryBarnLogo.svg"
                 alt="pottery barn logo"
               ></img>
               <img
-                className="partnerImage"
+                className="partnerImage m-3 md:m-4"
                 src="./anthropologieLogo.jpeg"
                 alt="anthropolgie logo"
               ></img>
               <img
-                className="partnerImage"
+                className="partnerImage m-3 md:m-4"
                 src="./pelotonLogo.svg"
                 alt="peloton logo"
               ></img>
               <img
-                className="partnerImage"
+                className="partnerImage m-3 md:m-4"
                 src="./fujifilm.png"
                 alt="fujifilm logo"
               ></img>
               <img
-                className="partnerImage"
+                className="partnerImage m-3 md:m-4"
                 src="./jbl-logo.png"
                 alt="jbl logo"
               ></img>
               <img
-                className="partnerImage"
+                className="partnerImage m-3 md:m-4"
                 src="./lululemon.png"
                 alt="lululemon logo"
               ></img>
               <img
-                className="partnerImage"
+                className="partnerImage m-3 md:m-4"
                 src="./keurig-logo.svg"
                 alt="keurig logo"
               ></img>
               <img
-                className="partnerImage"
+                className="partnerImage m-3 md:m-4"
                 src="./anker-logo.jpeg"
                 alt="anker logo"
               ></img>
