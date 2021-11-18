@@ -30,11 +30,11 @@ function Choice({
 
   return (
     <div onClick={handleClick}>
-      {isActive ? <button className="choiceButtons w-52 md:w-64 bg-selected text-white py-2 px-4 rounded-full"
+      {isActive ? <button className="choiceButtons w-60 md:w-64 bg-selected text-white py-2 px-4 rounded-full"
       >
         {answer}
       </button> :
-        <button className="choiceButtons w-52 md:w-64 bg-unselected hover:text-selected text-gray-500 py-2 px-4 rounded-full"
+        <button className="choiceButtons w-60 md:w-64 bg-unselected hover:text-selected text-gray-500 py-2 px-4 rounded-full"
         >
           {answer}
         </button>}
