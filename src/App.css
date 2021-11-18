@@ -1,4 +1,11 @@
 /* MAIN PAGE */
+
+body {
+  background-image: url("GP_Gradient_3\ 1.svg");
+  background-size: cover;
+  background-color: #cccccc;
+}
+
 /*
 .App {
   text-align: center;

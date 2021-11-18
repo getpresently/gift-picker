@@ -57,7 +57,6 @@ function Choices({
   handleSelectChoice,
   selectedChoices,
 }: ChoicesProps): JSX.Element {
-  console.log(choices);
   return (
     <div className={`inline-grid ${questionKey === "Type" ? 'grid-cols-1' : (questionKey === "Interests" ? 'grid-cols-1 md:grid-cols-3' : 'grid-cols-1 md:grid-cols-4')} gap-x-4 gap-y-4`}>
       {choices.map((answerText, questionId) => (

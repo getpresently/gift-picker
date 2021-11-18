@@ -2,6 +2,7 @@ import { useQuestions } from "../utils/hooks";
 import { useTimer } from 'react-timer-hook';
 import Loading from "./Loading";
 import Question from "./Question";
+import { useEffect } from "react";
 
 interface PropTypes {
   handleSelectChoice: (isSingleSelect: boolean, k: string, v: string) => void;
@@ -26,7 +27,10 @@ function Questions({
   const { data: questions, loading: isLoading } = useQuestions();
 
   // inform app that questions are loading
-  setLoading(isLoading || isRunning);
+  useEffect(() => {
+    setLoading(isLoading || isRunning);
+  })
+
   let questionArr = questions.map((answerTexts, questionId) => (
     <Question
       key={`que-${questionId}`}
