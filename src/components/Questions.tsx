@@ -8,6 +8,7 @@ interface PropTypes {
   page: number;
   pageCount: number;
   choices: { [key: string]: Set<string> };
+  setLoading: (load: boolean) => void;
 }
 
 // creates questions with attributes from google sheet
@@ -16,13 +17,16 @@ function Questions({
   page,
   pageCount,
   choices,
+  setLoading
 }: PropTypes): JSX.Element {
   // start the timer when component mounts
   const time = new Date();
   time.setSeconds(time.getSeconds() + 3); // 3 seconds for gif to fully display load
   const { isRunning } = useTimer({ expiryTimestamp: time, onExpire: () => console.warn('onExpire called') });
-
   const { data: questions, loading: isLoading } = useQuestions();
+
+  // inform app that questions are loading
+  setLoading(isLoading || isRunning);
   let questionArr = questions.map((answerTexts, questionId) => (
     <Question
       key={`que-${questionId}`}

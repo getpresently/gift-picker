@@ -29,18 +29,16 @@ function Choice({
   }
 
   return (
-
     <div onClick={handleClick}>
-      {isActive ? <button className="choiceButtons w-full bg-selected text-white py-2 px-4 rounded-full"
+      {isActive ? <button className="choiceButtons w-52 md:w-64 bg-selected text-white py-2 px-4 rounded-full"
       >
         {answer}
       </button> :
-        <button className="choiceButtons bg-unselected hover:text-selected text-gray-500 py-2 px-4 rounded-full"
+        <button className="choiceButtons w-52 md:w-64 bg-unselected hover:text-selected text-gray-500 py-2 px-4 rounded-full"
         >
           {answer}
         </button>}
     </div>
-
   );
 }
 
@@ -61,9 +59,9 @@ function Choices({
 }: ChoicesProps): JSX.Element {
   console.log(choices);
   return (
-    <div className={`inline-grid ${questionKey === "Type" ? 'grid-cols-1' : (questionKey === "Interests" ? 'grid-cols-3' : 'grid-cols-4')} gap-x-4 gap-y-4`}>
+    <div className={`inline-grid ${questionKey === "Type" ? 'grid-cols-1' : (questionKey === "Interests" ? 'grid-cols-1 md:grid-cols-3' : 'grid-cols-1 md:grid-cols-4')} gap-x-4 gap-y-4`}>
       {choices.map((answerText, questionId) => (
-        <div className={`${questionKey === "Interests" ? "col-span-1" : "col-span-2"} ${(questionKey === "Price" || questionKey === "Relation") && (answerText === "Any budget" || answerText === "Mentor/Teacher") && "col-start-2"}`}>
+        <div className={`${questionKey === "Interests" ? "col-span-1" : "col-span-2"} ${(questionKey === "Price" || questionKey === "Relation") && (answerText === "Any budget" || answerText === "Mentor/Teacher") && "md:col-start-2"}`}>
           <Choice
             key={`ch-${questionId}`}
             questionKey={questionKey}

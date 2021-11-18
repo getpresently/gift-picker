@@ -8,7 +8,7 @@ interface PropTypes {
   choices: { [key: string]: Set<string> };
 }
 
-const QUESTION_KEYS = ["Age", "Relation", "Type", "Interests", "Price"]
+const QUESTION_KEYS = ["Age", "Type", "Interests", "Price"]
 
 // buttons for horizontal question navigation
 function Buttons({ handlePageChange, handleSubmit, currentPage, numPages, choices }: PropTypes): JSX.Element {
@@ -22,19 +22,19 @@ function Buttons({ handlePageChange, handleSubmit, currentPage, numPages, choice
   return (
     <>
       {currentPage > 1 && (
-        <button className="bg-transparent text-midGrey border border-midGrey py-2 px-4 button_nav" onClick={() => handlePageChange(false)}>
+        <button className="bg-transparent w-32 md:w-40 h-10 text-midGrey border border-midGrey button_nav" onClick={() => handlePageChange(false)}>
           Back
         </button>
       )}
       {currentPage < numPages ? (
-        <button className="bg-deepBlack hover:bg-black text-white py-2 px-4 button_nav" disabled={nextDisable}
+        <button className="bg-deepBlack w-32 md:w-40 h-10 hover:bg-black text-white button_nav" disabled={nextDisable}
           onClick={() => {
             handlePageChange(true)
           }}>
           Next
         </button>
       ) : (
-        <button className="bg-deepBlack hover:bg-black text-white py-2 px-4 rounded-full button_nav" disabled={nextDisable} onClick={handleSubmit}>
+        <button className="bg-deepBlack w-32 md:w-40 h-10 hover:bg-black text-white button_nav" disabled={nextDisable} onClick={handleSubmit}>
           Done 🎁
         </button>
       )}

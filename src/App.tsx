@@ -12,10 +12,11 @@ enum Scene {
   Suggestions,
 }
 
-const NUM_PAGES = 5;
+const NUM_PAGES = 4;
 
 function App(): JSX.Element {
   const [scene, setScene] = useState<Scene>(Scene.Home);
+  const [loading, setLoading] = useState<boolean>(true);
 
   function handleSceneChange(sceneTo: Scene) {
     setScene(sceneTo);
@@ -73,6 +74,7 @@ function App(): JSX.Element {
       page={currentPage}
       pageCount={NUM_PAGES}
       choices={choices}
+      setLoading={setLoading}
     />
   );
   const page = <ScrollablePage childComp={question}></ScrollablePage>;
@@ -82,13 +84,13 @@ function App(): JSX.Element {
       <>
         <div id="questContainer" className="container p-8 mx-auto content_container">
           {page}
-          <Buttons
+          {!loading && <Buttons
             handlePageChange={handlePageChange}
             handleSubmit={() => handleSceneChange(Scene.Suggestions)}
             currentPage={currentPage}
             numPages={NUM_PAGES}
             choices={choices}
-          ></Buttons>
+          ></Buttons>}
         </div>
         <Footer />
       </>
