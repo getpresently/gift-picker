@@ -1,6 +1,3 @@
-.column {
-    border: 1px solid red;
-}
 .column img {
     border-top-right-radius: 12px;
     border-top-left-radius: 12px;
@@ -11,7 +8,7 @@
     background-color: #363342;
     border-bottom-right-radius: 12px;
     border-bottom-left-radius: 12px;
-    padding: 5px 10px 10px;
+    padding: 21px 20px 21px;
 }
 
 .column .suggestion_MetaData a {
@@ -36,22 +33,23 @@
     white-space: nowrap;
     text-overflow: ellipsis;
     overflow: hidden;
-    margin-bottom: 5px;
+    margin-bottom: 10px;
     margin-left: 10px;
 }
 
 #suggestion_Brand {
-    font-size: 16px;
+    font-size: 18px;
     color: #AEAFB7;
     
 }
 
 #suggestion_Title {
-    font-size: 18px;
+    font-size: 20px;
+    font-weight: bold;
     color: #F9FBFF;
 }
 
 #suggestion_Price {
-    font-size: 14px;
+    font-size: 16px;
     color: #AEAFB7;
 }
