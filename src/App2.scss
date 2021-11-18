@@ -1,0 +1,336 @@
+/* COLORS */
+
+/* TEXT STYLES */
+
+h1 {
+  font-size: 2.8vw;
+  font-weight: bolder;
+  color: whitesmoke;
+
+}
+
+h2 {
+  color: whitesmoke;
+  text-align: left;
+  font-weight: normal;
+  font-size: 2.0vw;
+  
+}
+
+.heading1 {
+  text-align: center;
+  font-size: 2.5vw;
+  font-weight: bold;
+  margin-top: 6vw;
+}
+
+.heading2 {
+  text-align: center;
+  font-size: 1.8vw;
+}
+
+h3 {
+  color: whitesmoke;
+  font-size: 1.6vw;
+  font-weight: normal; 
+
+}
+
+.paragraphtext {
+  text-align: center;
+  font-size: 1.6vw;
+}
+
+/* HOMEPAGE */
+
+
+
+
+/* typing animation */
+/*
+#text {
+	display: inline-block;
+	vertical-align: middle;
+	color: black;
+	letter-spacing: 2px;
+  margin: 5vh;
+  font-size: --titleFontSize ;
+}
+
+#typingEffectContainer {
+  display: inline-block;
+  min-height: 150px;
+  flex-shrink: 0;
+}
+.cursor {
+	display: inline-block;
+	vertical-align: middle;
+  color: white;
+}
+*/
+/* start quiz button*/
+/*
+*,
+*:after,
+*:before {
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
+*/
+
+/*
+.startQuizButton {
+  position: relative;
+  margin: 0;
+  width: 20%;
+  height: 10%;
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 18px;
+  cursor: pointer;
+  margin: 20px 30px;
+  background: rgba(0, 0, 0, 0.09);
+  text-align: center;
+
+
+}
+.startButtonSpan {
+  display: block;
+  text-align: center;
+  display: inline-block;
+  line-height: 10vh;
+
+}
+.startQuizButton::before,
+.startQuizButton::after {
+  content: "";
+  width: 0;
+  height: 2px;
+  position: absolute;
+  transition: all 0.2s linear;
+  background: #fff;
+}
+
+.startButtonSpan::before,
+.startButtonSpan::after {
+  content: "";
+  width: 2px;
+  height: 0;
+  position: absolute;
+  transition: all 0.2s linear;
+  background: #fff;
+}
+
+.startQuizButton:hover::before,
+.startQuizButton:hover::after {
+  width: 100%;
+}
+.startQuizButton:hover .startButtonSpan::before,
+.startQuizButton:hover .startButtonSpan::after {
+  height: 100%;
+}
+
+.startQuizButton::before,
+.startQuizButton::after {
+  transition-delay: 0s;
+}
+.startQuizButton .startButtonSpan::before,
+.startQuizButton .startButtonSpan::after {
+  transition-delay: 0.2s;
+}
+.startQuizButton::before {
+  right: 0;
+  top: 0;
+}
+.startQuizButton::after {
+  left: 0;
+  bottom: 0;
+}
+.startQuizButton .startButtonSpan::before {
+  left: 0;
+  top: 0;
+}
+.startQuizButton .startButtonSpan::after {
+  right: 0;
+  bottom: 0;
+}
+.startQuizButton:hover::before,
+.startQuizButton:hover::after {
+  transition-delay: 0.2s;
+}
+.startQuizButton:hover .startButtonSpan::before,
+.startQuizButton:hover .startButtonSpan::after {
+  transition-delay: 0s;
+}
+
+* {
+  box-sizing: border-box;
+  &::before, &::after {
+    box-sizing: border-box;
+  }
+}
+
+*/
+
+
+.accordionContainer {
+  padding: 4rem;
+  width: 48rem;
+  background-color: red;
+}
+
+.accordion {
+  margin: 10vh auto;
+
+  .accordianItem {
+      border-bottom: 1px solid lightblue;
+      .accordionButton[aria-expanded='true'] {
+        border-bottom: 1px solid blue;
+      }
+    }
+    .accordionButton {
+      position: relative;
+      display: block;
+      text-align: left;
+      width: 100%;
+      padding: 1em 0;
+      color: black;
+      font-size: 1.15rem;
+      font-weight: 400;
+      border: none;
+      background: none;
+      outline: none;
+      &:hover, &:focus {
+        cursor: pointer;
+        color: grey;
+        &::after {
+          cursor: pointer;
+          color: grey;
+          border: 1px solid grey;
+        }
+      }
+      .accordionTitle {
+        padding: 1em 1.5em 1em 0;
+      }
+      .icon {
+        display: inline-block;
+        position: absolute;
+        top: 18px;
+        right: 0;
+        width: 22px;
+        height: 22px;
+        border: 1px solid;
+        border-radius: 22px;
+        &::before {
+          display: block;
+          position: absolute;
+          content: '';
+          top: 9px;
+          left: 5px;
+          width: 10px;
+          height: 2px;
+          background: currentColor;
+        }
+        &::after {
+          display: block;
+          position: absolute;
+          content: '';
+          top: 5px;
+          left: 9px;
+          width: 2px;
+          height: 10px;
+          background: currentColor;
+        }
+      }
+    }
+    button[aria-expanded='true'] {
+      color: grey;
+      .icon {
+        &::after {
+          width: 0;
+        }
+      }
+      + .accordionContent {
+        opacity: 1;
+        max-height: 9em;
+        transition: all 200ms linear;
+        will-change: opacity, max-height;
+      }
+    }
+    .accordionContent {
+      opacity: 0;
+      max-height: 0;
+      overflow: hidden;
+      transition: opacity 200ms linear, max-height 200ms linear;
+      will-change: opacity, max-height;
+      p {
+        font-size: 1rem;
+        font-weight: 300;
+        margin: 2em 0;
+      }
+    }
+  }
+  
+/* HEADER */
+
+
+
+
+.transparentButton {
+  background: transparent;
+  align-items: center;
+  border: none;
+  height: 4rem;
+  width: 10rem;
+
+}
+
+.transparentButton:hover {
+  background: rgb(255, 255, 255);
+}
+
+/*
+#headerHelpButton {
+  height: 3vw;
+  width: 3vw;
+  outline: none;
+  margin: 0%;
+
+}
+*/
+
+/* FOOTER */
+
+#Footer {
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  background-color: black;
+  width: 100%;
+  height: 20vh;
+  position: static;
+  bottom: 0%;
+  left: 0%;
+  padding: 2vw;
+  
+  p {
+    font-weight: bold;
+  }
+
+}
+
+#FooterColumns {
+  display: flex;
+  flex-direction: row;
+  margin-right: 2vw;
+  margin-left: 50vw;
+  justify-content: space-around;
+}
+
+#footerPresentlyCol {
+  p {
+
+  }
+}

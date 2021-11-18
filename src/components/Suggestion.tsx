@@ -9,7 +9,7 @@ interface SuggestionProps {
   link: string;
   groupLink: string;
 }
-function addDefaultSrc(ev:any){
+function addDefaultSrc(ev: any) {
   ev.target.src = placeHolder
 }
 function Suggestion({
@@ -27,19 +27,19 @@ function Suggestion({
         <p id="suggestion_Brand">By {brand}</p>
         <p id="suggestion_Title">{title}</p>
         <p id="suggestion_Price"> {price}</p>
-        <div className="row">
-          <button>
+        <div>
+          <button id="card_button">
             <a href={link} target="_blank" rel="noreferrer">
               View Gift
             </a>
           </button>
-          <button>
+          <button id="card_button">
             <a href={groupLink} target="_blank" rel="noreferrer">
               Split Cost
             </a>
-          </button> 
+          </button>
         </div>
-        
+
       </div>
     </div>
   );

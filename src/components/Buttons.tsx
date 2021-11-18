@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Link } from 'react-router-dom';
 
 interface PropTypes {
   handlePageChange: (next: boolean) => void;
@@ -34,9 +35,11 @@ function Buttons({ handlePageChange, handleSubmit, currentPage, numPages, choice
           Next
         </button>
       ) : (
-        <button className="bg-deepBlack w-32 md:w-40 h-10 hover:bg-black text-white button_nav" disabled={nextDisable} onClick={handleSubmit}>
-          Finish 🎁
-        </button>
+        <Link to="/results">
+          <button className="bg-deepBlack w-32 md:w-40 h-10 hover:bg-black text-white button_nav" disabled={nextDisable} onClick={handleSubmit}>
+            Finish 🎁
+          </button>
+        </Link>
       )}
     </>
   );
