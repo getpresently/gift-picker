@@ -1,20 +1,19 @@
-import { useState } from "react";
-import "./App.css";
-import "./homepage.scss";
-import "./App2.scss";
-import "./emailcapture.scss";
-import Questions from "./components/Questions";
-import ScrollablePage from "./components/ScrollablePage";
-import Suggestions from "./components/Suggestions";
-import Footer from "./components/Footer";
-import Buttons from "./components/Buttons";
-import Typing from "react-typing-animation";
-import Header from "./components/Header";
-import Banner from "./components/Banner";
-import { BrowserRouter as Router, Route } from "react-router-dom";
-import { Routes } from "react-router-dom";
-import { Link } from "react-router-dom";
-import EmailCaptureComponent from "./components/EmailCaptureForm";
+import {useEffect, useState} from 'react';
+import './App.css';
+import './homepage.scss';
+import './App2.scss';
+import './emailcapture.scss';
+import Questions from './components/Questions';
+import ScrollablePage from './components/ScrollablePage';
+import Suggestions from './components/Suggestions';
+import Footer from './components/Footer';
+import Buttons from './components/Buttons';
+import Typing from 'react-typing-animation';
+import Header from './components/Header';
+import Banner from './components/Banner';
+import {BrowserRouter as Router, Link, Route, Routes} from 'react-router-dom';
+import EmailCaptureComponent from './components/EmailCaptureForm';
+import {getQuestions} from './utils/hooks';
 
 enum Scene {
   Home = 1,
@@ -27,6 +26,12 @@ const NUM_PAGES = 5;
 function App(): JSX.Element {
   const [scene, setScene] = useState<Scene>(Scene.Home);
   const [loading, setLoading] = useState<boolean>(true);
+  const [questions, setQuestions] = useState<any[]>([]);
+  useEffect(() => {
+    getQuestions().then(questions => {
+      setQuestions(questions);
+    });
+  }, []);
 
   function handleSceneChange(sceneTo: Scene) {
     setScene(sceneTo);
@@ -51,7 +56,7 @@ function App(): JSX.Element {
   function handleSelectChoice(
     isSingleSelect: boolean,
     choiceType: string,
-    choiceValue: string
+    choiceValue: string,
   ) {
     let newChoices = choices[choiceType] || new Set<string>();
 
@@ -85,6 +90,7 @@ function App(): JSX.Element {
       pageCount={NUM_PAGES}
       choices={choices}
       setLoading={setLoading}
+      questions={questions}
     />
   );
 
@@ -94,15 +100,14 @@ function App(): JSX.Element {
     <>
       <div id="questContainer" className="container p-8 mx-auto content_container">
         {page}
-        {!loading && <Buttons
+        <Buttons
           handlePageChange={handlePageChange}
           handleSubmit={() => handleSceneChange(Scene.Suggestions)}
           currentPage={currentPage}
           numPages={NUM_PAGES}
-          choices={choices}
-        ></Buttons>}
+          choices={choices}/>
       </div>
-      <Footer />
+      <Footer/>
     </>
   );
 
@@ -113,7 +118,7 @@ function App(): JSX.Element {
   const SuggestionsComponent = () => (
     <div>
       <div className="results">
-        <Suggestions choices={choices} />
+        <Suggestions choices={choices}/>
       </div>
       <div id="backButton">
         <Link to="/home">
@@ -129,23 +134,23 @@ function App(): JSX.Element {
           </button>
         </Link>
       </div>
-      <Footer />
+      <Footer/>
     </div>
   );
 
   const giftPeople = [
-    "friend.",
-    "sister.",
-    "coworker.",
-    "partner.",
-    "brother.",
-    "girlfriend.",
-    "mom.",
-    "dad.",
-    "husband.",
-    "boyfriend.",
-    "boss.",
-    "wife.",
+    'friend.',
+    'sister.',
+    'coworker.',
+    'partner.',
+    'brother.',
+    'girlfriend.',
+    'mom.',
+    'dad.',
+    'husband.',
+    'boyfriend.',
+    'boss.',
+    'wife.',
   ];
 
   /*const EmailCaptureComponent = () => (
@@ -178,8 +183,8 @@ function App(): JSX.Element {
 
   const HomepageComponent = () => (
     <div id="HomePage">
-      <Banner />
-      <Header />
+      <Banner/>
+      <Header/>
       <header id="HomePageContents">
         <div id="StartQuizSection">
           <div id="startSectionText">
@@ -190,7 +195,7 @@ function App(): JSX.Element {
                   return (
                     <>
                       {<span id="typingEffect">{p}</span>}
-                      <Typing.Backspace count={p.length + 1} delay={1000} />
+                      <Typing.Backspace count={p.length + 1} delay={1000}/>
                     </>
                   );
                 })}
@@ -211,12 +216,12 @@ function App(): JSX.Element {
             </Link>
           </div>
           <div id="aboutImg">
-            <img src="./giftpickerImages.svg" alt="gift picker on phone" />
+            <img src="./giftpickerImages.svg" alt="gift picker on phone"/>
           </div>
         </div>
         <div id="AboutGiftPickerSection">
           <div id="MoreInfoSection">
-            <EmailCaptureComponent />
+            <EmailCaptureComponent/>
           </div>
           <div id="Partners">
             <h2> Over 1,000 gifts from your favorite brands</h2>
@@ -290,7 +295,7 @@ function App(): JSX.Element {
               <div className="col">
                 <div className="tabs">
                   <div className="tab">
-                    <input type="checkbox" id="rd1" name="rd" />
+                    <input type="checkbox" id="rd1" name="rd"/>
                     <label className="tab-label" htmlFor="rd1">
                       What is GiftPicker?
                     </label>
@@ -303,7 +308,7 @@ function App(): JSX.Element {
                     </div>
                   </div>
                   <div className="tab">
-                    <input type="checkbox" id="rd2" name="rd" />
+                    <input type="checkbox" id="rd2" name="rd"/>
                     <label className="tab-label" htmlFor="rd2">
                       Who’s GiftPicker for?
                     </label>
@@ -316,28 +321,28 @@ function App(): JSX.Element {
                     </div>
                   </div>
                   <div className="tab">
-                    <input type="checkbox" id="rd3" name="rd" />
+                    <input type="checkbox" id="rd3" name="rd"/>
                     <label className="tab-label" htmlFor="rd3">
                       Can I share my GiftPicker recommendations with others?
                     </label>
                     <div className="tab-content">
                       Yes, you can share your favorite recommendations in two
                       ways.
-                      <br />
-                      <br />
+                      <br/>
+                      <br/>
                       First, you can choose to split the cost of the gift with
                       friends via our ‘Split Gift’ option, which will take you
                       our partners at Presently to set up a group gift. A group
                       gift is a joint gift that friends, family, or coworkers
-                      can pitch in on. <br />
-                      <br />
+                      can pitch in on. <br/>
+                      <br/>
                       Second, starting Dec 1, you’ll also be able to send links
                       to your personalized gift recommendations via email, text,
                       and more. Perfect way to send a nudge!
                     </div>
                   </div>
                   <div className="tab">
-                    <input type="checkbox" id="rd4" name="rd" />
+                    <input type="checkbox" id="rd4" name="rd"/>
                     <label className="tab-label" htmlFor="rd4">
                       Can I share my GiftPicker recommendations with others?
                     </label>
@@ -359,10 +364,10 @@ function App(): JSX.Element {
     <div className="App">
       <Router>
         <Routes>
-          <Route path="/" element={<HomepageComponent />} />
-          <Route path="/home" element={<HomepageComponent />} />
-          <Route path="/quiz" element={<QuestionsPageComponent />} />
-          <Route path="/results" element={<SuggestionsComponent />} />
+          <Route path="/" element={<HomepageComponent/>}/>
+          <Route path="/home" element={<HomepageComponent/>}/>
+          <Route path="/quiz" element={<QuestionsPageComponent/>}/>
+          <Route path="/results" element={<SuggestionsComponent/>}/>
         </Routes>
       </Router>
     </div>

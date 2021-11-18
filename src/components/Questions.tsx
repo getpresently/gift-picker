@@ -9,6 +9,7 @@ interface PropTypes {
   pageCount: number;
   choices: { [key: string]: Set<string> };
   setLoading: (load: boolean) => void;
+  questions: any[];
 }
 
 // creates questions with attributes from google sheet
@@ -18,18 +19,20 @@ function Questions({
   pageCount,
   choices,
   setLoading,
+  questions
 }: PropTypes): JSX.Element {
   // start the timer when component mounts
   // const time = new Date();
   // time.setSeconds(time.getSeconds() + 2.85); // 2.85 seconds for gif to fully display load
   // const { isRunning } = useTimer({ expiryTimestamp: time, onExpire: () => console.warn('onExpire called') });
-  const [questions, setQuestions] = useState<Array<any>>([]);
-  useEffect(() => {
-    getQuestions().then(questions => {
-      alert('refreshing');
-      setQuestions(questions)
-    });
-  }, []);
+  // const [questions, setQuestions] = useState<Array<any>>([]);
+  // console.log('asdfadsfasdfadfads');
+  // useEffect(() => {
+  //   getQuestions().then(questions => {
+  //     alert('refreshing');
+  //     setQuestions(questions)
+  //   });
+  // }, []);
   // const {data: questions, loading: isLoading} = useQuestions();
 
   // inform app that questions are loading
