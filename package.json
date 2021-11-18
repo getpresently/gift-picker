@@ -22,6 +22,7 @@
     "react-typing-animation": "^1.6.2",
     "react-typist": "^2.0.5",
     "sass": "^1.43.4",
+    "react-timer-hook": "^3.0.5",
     "typescript": "^4.3.5",
     "unfetch": "^4.2.0",
     "web-vitals": "^1.1.2"

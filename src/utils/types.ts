@@ -14,4 +14,6 @@ export interface Gift {
   Price: string[];
   photo: string;
   link: string;
+  groupLink: string;
+  status: string;
 }

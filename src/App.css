@@ -31,10 +31,9 @@
   width: auto;
   height: 100%;
 }
-*/
-/*
-#App-title {
-font-family: 'Glacial Indifference', sans-serif;
+
+.App-title {
+  font-family: "Sofia Pro", sans-serif; 
   letter-spacing: 2.5px;
   margin: 2em;
   color: calc(black-50);
@@ -56,6 +55,10 @@ font-family: 'Glacial Indifference', sans-serif;
   color: black;
 }
 
+.about {
+  margin-left: 10vw;
+}
+
 /* QUZ PAGE */
 
 .choicesContainer {
@@ -65,11 +68,6 @@ font-family: 'Glacial Indifference', sans-serif;
   gap: 15px;
   max-width: 315px;
   margin: auto;
-}
-
-.instructions {
-  margin-top: 2em;
-  margin-bottom: 2em;
 }
 
 .Question {
@@ -83,12 +81,12 @@ font-family: 'Glacial Indifference', sans-serif;
   display: inline-flex;
   flex-wrap: wrap;
   margin-bottom: 2em;
-  gap: 4em;
+  gap: 1.4em;
   justify-content: center;
 }
 
 .column {
-  max-width: 300px;
+  max-width: 350px;
   text-align: left;
 
   /*box-shadow: 0px 10px 15px rgba(0, 0, 0, 0.1);*/
@@ -99,8 +97,8 @@ font-family: 'Glacial Indifference', sans-serif;
   font-size: calc(5px + 1vmin);
 }
 
-.line {
-  margin: 2em;
+.content_container {
+  min-height: 82vh;
 }
 
 /* RESULTS PAGE */
@@ -110,22 +108,42 @@ font-family: 'Glacial Indifference', sans-serif;
 }
 
 img {
-  height: 300px;
-  width: 300px;
+  height: 350px;
+  width: 350px;
   object-fit: cover;
 }
 
 /* ALL PAGES */
 
+.button_startOver {
+  color: #aeafb7;
+  background-color: none;
+  font-size: 16px;
+}
+.button_startOver:hover {
+  background-color: none;
+}
+
 .button_nav {
-  padding: 10px 20px;
-  background-color: #a160fb;
-  color: white;
-  border: none;
-  border-radius: 12px;
-  font-size: calc(5px + 2vmin);
-  margin: 1em;
-  margin-bottom: 2em;
+  /* padding: 10px 20px; */
+  /* background-color: #a160fb; */
+  /* color: white; */
+  /* border: none;
+  border-radius: 12px; */
+  /* font-size: calc(5px + 2vmin); */
+  border-radius: 10px;
+  margin: 0.3em;
+  line-height: 55%;
+}
+
+.button_nav:disabled {
+  border: 1px solid #999999;
+  background-color: #cccccc;
+  color: #666666;
+}
+
+.button_nav:disabled:hover {
+  cursor: default;
 }
 
 #loadingResults {
@@ -134,12 +152,7 @@ img {
   height: 10vw;
 }
 
-#button_changeScene:disabled{
-  border: 1px solid #999999;
-  background-color: #cccccc;
-  color: #666666;
-}
-.button_nav:disabled{
+#button_changeScene:disabled {
   border: 1px solid #999999;
   background-color: #cccccc;
   color: #666666;
@@ -149,35 +162,15 @@ img {
   background-color: #a160fb;
 }*/
 
-#Footer p {
-  text-align: left;
-  color: white;
+#questContainer {
+  margin-top: 2em;
 }
 
-.footerlogo {
-  height: 50px;
-  width: 50px;
-}
-
-#FooterLogo {
-  display: flex;
-  justify-content: left;
-  margin: 3em;
-  margin-bottom: 0;
-}
-
-.footer-sections {
-  margin: 3em;
-  display: flex;
-  justify-content: space-between;
-}
-
-.footer-section {
-  margin: 0%;
-}
-
-.footer-copyright {
-  margin: 3em;
+#footer {
+  bottom: 0;
+  background-color: black;
+  width: 100%;
+  font-size: calc(5px + 1vmin);
 }
 
 .fab.fa-instagram {
@@ -219,23 +212,24 @@ img {
   padding: 5px 10px;
 }
 
-/*
 button {
- 
-  width: auto;
-  height: auto;
-  font-family: "Poppins", sans-serif;
-  color: #000;
-  background-color: #a060fb60;
+  /*width: calc(90px + 2vmin);
+  height: calc(45px + 2vmin);*/
+  /* width: auto;
+  height: auto; */
+  /* font-family: "Sofia Pro", sans-serif; */
+  /* color: #000;
+  background-color: #a060fb60; */
+  /*border: 1.5px solid black;*/
+  /*box-shadow: 0px 10px 15px rgba(0, 0, 0, 0.1);*/
   transition: all 0.3s ease 0s;
   cursor: pointer;
   border: 1px solid transparent;
   margin: 0;
   border-radius: 50px;
-  font-size: calc(5px + 1vmin);
+  font-size: 20px;
   padding: 5px 10px;
 }
-*/
 
 /*
 button:hover {
@@ -245,7 +239,7 @@ button:hover {
 }*/
 
 button:disabled,
-button[disabled]{
+button[disabled] {
   border: 1px solid #999999;
   background-color: #cccccc;
   color: #666666;
@@ -360,7 +354,11 @@ a:hover {
 */ #questionContainer {
   /*float: left; 
   min-width: 400px; */
-  margin-bottom: 4em;
+  margin-bottom: 1em;
+}
+
+#choiceContainer {
+  margin-top: 2em;
 }
 
 #questionContainer p {

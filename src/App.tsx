@@ -22,10 +22,11 @@ enum Scene {
   Suggestions,
 }
 
-const NUM_PAGES = 4;
+const NUM_PAGES = 5;
 
 function App(): JSX.Element {
   const [scene, setScene] = useState<Scene>(Scene.Home);
+  const [loading, setLoading] = useState<boolean>(true);
 
   function handleSceneChange(sceneTo: Scene) {
     setScene(sceneTo);
@@ -81,35 +82,28 @@ function App(): JSX.Element {
     <Questions
       handleSelectChoice={handleSelectChoice}
       page={currentPage}
+      pageCount={NUM_PAGES}
       choices={choices}
+      setLoading={setLoading}
     />
   );
 
   const page = <ScrollablePage childComp={question}></ScrollablePage>;
 
   const QuestionsPageComponent = () => (
-    <div>
-      <div className="instructions">
-        <p>To get your personalized gift suggestions,</p>
-        <p>simply answer these four quick questions:</p>
+    <>
+      <div id="questContainer" className="container p-8 mx-auto content_container">
+        {page}
+        {!loading && <Buttons
+          handlePageChange={handlePageChange}
+          handleSubmit={() => handleSceneChange(Scene.Suggestions)}
+          currentPage={currentPage}
+          numPages={NUM_PAGES}
+          choices={choices}
+        ></Buttons>}
       </div>
-      <div className="line">
-        <hr></hr>
-      </div>
-      <div>
-        <div id="container">
-          {page}
-          <Buttons
-            handlePageChange={handlePageChange}
-            handleSubmit={() => handleSceneChange(Scene.Suggestions)}
-            currentPage={currentPage}
-            numPages={NUM_PAGES}
-            choices={choices}
-          ></Buttons>
-        </div>
-        <Footer />
-      </div>
-    </div>
+      <Footer />
+    </>
   );
 
   function resetSelections() {
@@ -124,14 +118,14 @@ function App(): JSX.Element {
       <div id="backButton">
         <Link to="/home">
           <button
-            className="button_nav"
+            className="button_startOver"
             onClick={() => {
               handleSceneChange(Scene.Home);
               setCurrentPage(1);
               resetSelections();
             }}
           >
-            HOME
+            Start over
           </button>
         </Link>
       </div>
@@ -222,7 +216,7 @@ function App(): JSX.Element {
         </div>
         <div id="AboutGiftPickerSection">
           <div id="MoreInfoSection">
-          <EmailCaptureComponent/>
+            <EmailCaptureComponent />
           </div>
           <div id="Partners">
             <h2> Over 1,000 gifts from your favorite brands</h2>

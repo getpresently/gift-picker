@@ -1,8 +1,10 @@
-import { useIdeas } from "../utils/hooks";
-import { Gift } from "../utils/types";
-import Loading from "./Loading";
-import Suggestion from "./Suggestion";
+import "./Suggestions.css"
+import { useIdeas } from '../utils/hooks';
+import { Gift } from '../utils/types';
+import Loading from './Loading';
+import Suggestion from './Suggestion';
 import React from "react";
+import { useTimer } from 'react-timer-hook';
 
 interface PropTypes {
   choices: { [key: string]: Set<string> };
@@ -11,14 +13,17 @@ interface PropTypes {
 const LIMIT_INCREMENT = 3;
 const LIMIT_STOP = 12;
 const MANDATORY_QUESTION_KEYS = ["Age"];
-const WEIGHTED_QUESTION_KEYS = ["Type", "Interests", "Price"];
+const WEIGHTED_QUESTION_KEYS = ["Relation", "Type", "Interests", "Price"];
 const WEIGHTED_QUESTION_VALUES = [1, 1, 1];
 
 function Suggestions({ choices }: PropTypes): JSX.Element {
   const [limit, setLimit] = React.useState(LIMIT_INCREMENT);
   const [moreShowing, setMoreShowing] = React.useState(false);
-  const questionKeys = ["Age", "Type", "Interests", "Price"];
   const { data: suggestions, loading: isLoading } = useIdeas();
+
+  const time = new Date();
+  time.setSeconds(time.getSeconds() + 2.85); // 2.85 seconds for gif to fully display load
+  const { isRunning } = useTimer({ expiryTimestamp: time, onExpire: () => console.warn('onExpire called') });
 
   // caculates the relevance score for a gift
   function calculateGiftScore(curGift: Gift) {
@@ -50,7 +55,7 @@ function Suggestions({ choices }: PropTypes): JSX.Element {
           if (giftAttributes.includes(selection)) {
             score +=
               WEIGHTED_QUESTION_VALUES[
-                WEIGHTED_QUESTION_KEYS.indexOf(questionKey)
+              WEIGHTED_QUESTION_KEYS.indexOf(questionKey)
               ];
           }
         });
@@ -76,7 +81,7 @@ function Suggestions({ choices }: PropTypes): JSX.Element {
     return onlyGifts;
   }
 
-  const filteredSuggestions = sortGiftsByScore(suggestions);
+  const filteredSuggestions = sortGiftsByScore(suggestions).filter(g => g.status === "Live");
 
   //increases the number of suggestions displayed by the value of LIMIT_INCREMENT
   //until LIMIT_STOP (12) suggestions are shown
@@ -87,39 +92,35 @@ function Suggestions({ choices }: PropTypes): JSX.Element {
     }
   };
 
+
+
   return (
     <div>
       <div id="top">
-        <p>The top gift suggestions based on your answers:</p>
+        <p className="text-white pb-12">Our gift picks 🎁</p>
       </div>
-      <div className="line">
-        <hr></hr>
-      </div>
-      {isLoading ? (
-        <Loading></Loading>
-      ) : filteredSuggestions.length === 0 ? (
-        <p> No suggestions could be found.</p>
-      ) : (
-        <div className="columns">
-          {filteredSuggestions.slice(0, limit).map((x, i) => (
-            <Suggestion
-              photo={x.photo}
-              key={`que-${i}`}
-              title={x.gift}
-              brand={x.brand}
-              link={x.link}
-            />
-          ))}
-        </div>
-      )}
+      {isLoading || isRunning ? <Loading></Loading>
+        : (filteredSuggestions.length === 0 ? <p> No suggestions could be found.</p>
+          : <div className="columns">
+            {filteredSuggestions.slice(0, limit).map((x, i) => {
+              return <Suggestion
+                photo={x.photo}
+                key={`que-${i}`}
+                title={x.gift}
+                brand={x.brand}
+                price={x.Price[0]}
+                link={x.link}
+                groupLink={x.groupLink}
+              />
+            })}
+          </div>)}
       <div>
-        <button
-          id="button_moreSuggestions"
+        {(!isLoading && !isRunning) && <button
+          className="bg-deepBlack w-52 h-11 hover:bg-black text-white button_nav"
           hidden={moreShowing}
-          onClick={increaseLimitAndDisableMore}
-        >
-          More
-        </button>
+          onClick={increaseLimitAndDisableMore}>
+          Load more gifts
+        </button>}
       </div>
     </div>
   );
