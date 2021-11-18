@@ -1,78 +1,66 @@
-function Footer() {
-  return (
-    <div className="footer">
-      <div className="footer-logo">
-        <img className="footerlogo" src="./App-logo.png" alt=""></img>
-      </div>
-      {/* contains all sections with headers and links */}
-      <div className="footer-sections">
-        {/* contains section for Presently info */}
-        <div className="footer-section">
-          <b>
-            <p>PRESENTLY</p>
-          </b>
-          <p>
-            <a href="https://getpresently.com" target="_blank" rel="noreferrer">
-              Home
-            </a>
-          </p>
-          <p>
-            <a
-              href="https://getpresently.com/about/"
-              target="_blank"
-              rel="noreferrer"
-            >
-              About
-            </a>
-          </p>
-          <p>
-            <a
-              href="https://getpresently.com/go/set-up-your-group-gift/"
-              target="_blank"
-              rel="noreferrer"
-            >
-              Group Gifting
-            </a>
-          </p>
-        </div>
-        {/* contains section for contact info */}
-        <div className="footer-section">
-          <b>
-            <p>CONTACT US</p>
-          </b>
-          <p>Qali Langstaff</p>
-          <p>
-            <a
-              href="mailto: qali@presently.fun"
-              target="_blank"
-              rel="noreferrer"
-            >
-              qali@presently.fun
-            </a>
-          </p>
-        </div>
-        {/* contains section for social media info */}
-        <div className="footer-section">
-          <b>
-            <p>FOLLOW US</p>
-          </b>
-          <p>
-            <a
-              href="https://www.instagram.com/giftpicker.io/?hl=en"
-              target="_blank"
-              rel="noreferrer"
-            >
-              <i className="fab fa-instagram fa-2x"></i>
-            </a>
-          </p>
-        </div>
-      </div>
+import { useEffect, useState } from 'react';
+import logo from '../footer_logo.svg'
+import signature from '../presently_word.png'
 
-      {/* contains section for copyright seperate from other sections */}
-      <div className="footer-copyright">
-        <p>Copyright © 2021 Presently</p>
+function Footer() {
+
+  const [isMobile, setMobile] = useState(false);
+
+  useEffect(() => {
+    if (window.innerWidth < 450) {
+      setMobile(true);
+    }
+  }, []);
+
+  const about = (
+    <div className="text-white text-xs text-center sm:text-left flex p-4 md:pl-20">
+      <div className="m-auto">
+        <p className="font-bold">About GiftPicker</p>
+        <p>GiftPicker is a quick quiz that recommends amazing presents from our database of 1,000+ high-quality gifts!</p>
       </div>
     </div>
+  )
+
+  return (
+    <footer className="text-gray-600 w-screen body-font" id="footer">
+      <div id="footer-content" className="bg-deepBlack grid grid-cols-1 gap-y-2 md:grid-cols-3">
+        {isMobile ?
+          <>
+            <div className="flex p-3">
+              <img className="m-auto w-20 h-20 object-scale-down" src={logo} alt="Footer_Logo"></img>
+            </div>
+            {about}
+          </> :
+          <>
+            {about}
+            <div className="flex">
+              <img className="m-auto w-20 h-20 object-scale-down" src={logo} alt="Footer_Logo"></img>
+            </div>
+          </>}
+        <div className="flex grid grid-cols-1 p-3 md:p-10">
+          <span
+            className="
+              inline-flex
+              gap-x-10
+              justify-center
+            "
+          >
+            <a href="https://www.instagram.com/giftpicker.io/" className="text-gray-500 text-3xl">
+              <i className="fab fa-instagram" style={{ color: "white" }}></i>
+            </a>
+            <a href="https://twitter.com/giftpicker_io" className="text-3xl">
+              <i className="fab fa-twitter" style={{ color: "white" }}></i>
+            </a>
+            <a href="https://www.tiktok.com/@thebestgifts?" className="text-3xl text-white">
+              <i className="fab fab fa-tiktok" style={{ color: "white" }}></i>
+            </a>
+          </span>
+          <p className="font-bold text-sm text-white flex flex-row gap-2 justify-center pt-2">Powered by <img alt="presently" src={signature} className="w-16 h-6 object-scale-down"></img>
+          </p>
+
+        </div>
+      </div >
+    </footer >
   );
 }
 

@@ -1,4 +1,6 @@
+import { TargetElement } from "@testing-library/user-event";
 import "./Suggestion.css"
+import placeHolder from "../placeholder.png"
 interface SuggestionProps {
   title: string;
   brand: string;
@@ -7,7 +9,9 @@ interface SuggestionProps {
   link: string;
   groupLink: string;
 }
-
+function addDefaultSrc(ev:any){
+  ev.target.src = placeHolder
+}
 function Suggestion({
   title,
   brand,
@@ -18,7 +22,7 @@ function Suggestion({
 }: SuggestionProps): JSX.Element {
   return (
     <div className="column">
-      <img src={photo} alt="{photo}" />
+      <img onError={addDefaultSrc} src={photo} alt="{photo}" />
       <div className="suggestion_MetaData">
         <p id="suggestion_Brand">By {brand}</p>
         <p id="suggestion_Title">{title}</p>
