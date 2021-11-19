@@ -47,7 +47,7 @@
   flex-direction: column;
   background-image: url("./backgroundImage.svg");
   background-repeat: no-repeat;
-  background-size: auto;
+  background-size: cover;
 }
 
 #HomePageContents {
@@ -151,6 +151,11 @@
   color: #4dddea;
 }
 
+#emailCaptureContainer {
+  min-width: max-content;
+  min-height: max-content;
+}
+
 #emailButton {
   margin-top: 3vh;
   position: relative;
@@ -202,10 +207,18 @@
   padding-left: 10vw;
   padding-right: 10vw;
   padding-top: 0vh;
-  height: 33vh;
+  padding-bottom: 10vh;
   display: flex;
   flex-direction: row;
   justify-content: space-around;
+  min-width: max-content;
+  min-height: max-content;
+}
+
+.emailCaptureForm {
+  padding-top: 5vh;
+  font-family: 'Sofia Pro',sans-serif;
+  
 }
 
 #aboutText {
@@ -257,7 +270,9 @@
   border-radius: 50%;
   background-color: whitesmoke;
   flex-grow: 0;
-  
+  margin-left: 1rem;
+  margin-right: 1rem;
+  margin-top: 1rem;
 }
 .partnerImage:hover {
   color: rgba(255, 255, 255, 1);
