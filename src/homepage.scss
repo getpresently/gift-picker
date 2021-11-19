@@ -353,15 +353,13 @@
 }
 
 #HeaderLogoButton {
-  height: 20px;
-  max-width: 100px;
-  margin: 0%;
+  height: 50px;
+  z-index: 10000;
+  max-width: 100%;
   object-fit: contain;
-  align-self: right;
-  margin-right: 5vw;
-  margin-left: 10vw;
-  margin-top: 2vw;
+  margin: 2vw 5vw 0 10vw;
 }
+
 
 /** accordian **/
 input {
