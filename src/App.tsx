@@ -191,8 +191,8 @@ function App(): JSX.Element {
         <div id="StartQuizSection">
           <div id="startSectionText">
             <h1 id="homepageTitle">
-              Don't pick that <br/> gift for your
-              <Typing loop={true} cursorClassName="cursor">
+              Don't pick that gift<br/>for your&nbsp;
+              <Typing loop={true} cursorClassName="cursor" className="inline">
                 {giftPeople.map((p) => {
                   return (
                     <>
@@ -211,6 +211,7 @@ function App(): JSX.Element {
               <button
                 type="button"
                 id="startQuizButton"
+                className="w-60 md:w-64"
                 onClick={() => handleSceneChange(Scene.Questions)}
               >
                 Take our gift quiz
@@ -283,6 +284,7 @@ function App(): JSX.Element {
               <button
                 type="button"
                 id="startQuizButton"
+                className="w-60 md:w-64"
                 onClick={() => handleSceneChange(Scene.Questions)}
               >
                 Take our gift quiz
@@ -346,7 +348,7 @@ function App(): JSX.Element {
                   <div className="tab">
                     <input type="checkbox" id="rd4" name="rd"/>
                     <label className="tab-label" htmlFor="rd4">
-                      Can I share my GiftPicker recommendations with others?
+                      I have some suggestions, how can I get in touch?
                     </label>
                     <div className="tab-content">
                       We’d love to hear from you! Direct message us on instagram

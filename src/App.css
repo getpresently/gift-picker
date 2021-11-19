@@ -137,7 +137,6 @@ img {
   /* color: white; */
   /* border: none;
   border-radius: 12px; */
-  /* font-size: calc(5px + 2vmin); */
   border-radius: 10px;
   margin: 0.3em;
   line-height: 55%;
@@ -312,7 +311,7 @@ a:hover {
 .answers {
   font-weight: lighter;
   margin-bottom: 50px;
-  font-size: calc(5px + 2vmin);
+  font-size: 16px;
 }
 
 #submit {

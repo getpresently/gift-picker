@@ -13,8 +13,17 @@ h2 {
   color: whitesmoke;
   text-align: left;
   font-weight: normal;
-  font-size: 2.0vw;
+  font-size: 36px;
+  line-height:40px;
   
+}
+
+@media (max-width: 600px) {
+  h2 {
+    font-size: 32px;
+    line-height:38px;
+    
+  }
 }
 
 .heading1 {
@@ -39,6 +48,14 @@ h3 {
 .paragraphtext {
   text-align: center;
   font-size: 1.6vw;
+}
+
+
+h4 {
+  color: whitesmoke;
+  font-size: 22px;
+  font-weight: normal; 
+
 }
 
 /* HOMEPAGE */
