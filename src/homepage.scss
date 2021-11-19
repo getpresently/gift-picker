@@ -59,22 +59,21 @@
 
 #StartQuizSection {
   display: flex;
-  flex-direction:row;
+  flex-direction: row;
   margin-bottom: 0%;
   bottom: 0;
 }
 
 @media (max-width: 800px) {
-  #StartQuizSection  {
+  #StartQuizSection {
     flex-direction: column;
   }
-  
 }
 
 #startSectionText {
   padding-left: 10vw;
   width: 55vw;
-  max-width:700px;
+  max-width: 700px;
   padding-right: 10vw;
   margin-top: 20vh;
   justify-self: left;
@@ -87,10 +86,10 @@
   align-self: flex-end;
   overflow: hidden;
   width: 50%;
-  max-width:700px;
+  max-width: 700px;
   padding-top: 4vh;
   padding-right: 10vw;
-  margin-left:auto;
+  margin-left: auto;
   img {
     height: fit-content;
     width: fit-content;
@@ -101,15 +100,13 @@
 }
 @media (max-width: 800px) {
   #startSectionText {
-    width:100%;
-    padding:4vh;
-    margin-top:3vh;
-    
+    width: 100%;
+    padding: 4vh;
+    margin-top: 3vh;
   }
   #aboutImg {
-    width:100%;
-    padding:4vh;
-    
+    width: 100%;
+    padding: 4vh;
   }
 }
 
@@ -119,10 +116,9 @@
   font-size: 42px;
   font-weight: bolder;
   color: whitesmoke;
-  line-height:46px;
-  padding-bottom:10px;
+  line-height: 46px;
+  padding-bottom: 10px;
 }
-
 
 .subtitle {
   display: inline-block;
@@ -130,22 +126,21 @@
   font-size: 24px;
   font-weight: lighter;
   color: whitesmoke;
-  line-height:30px;
-  padding-bottom:10px;
+  line-height: 30px;
+  padding-bottom: 10px;
 }
 
-@media (max-width: 800px) { 
+@media (max-width: 800px) {
   #homepageTitle {
-    font-size:32px;
-  line-height:36px;
-
+    font-size: 32px;
+    line-height: 36px;
   }
 
   .subtitle {
-  font-size: 22px;
-  line-height:28px;
-  }  
- }
+    font-size: 22px;
+    line-height: 28px;
+  }
+}
 
 #typingEffect {
   color: #4dddea;
@@ -250,19 +245,16 @@
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  margin:auto;
-  max-width:700px;
-  margin-bottom:2rem;
+  margin: auto;
+  max-width: 700px;
+  margin-bottom: 2rem;
 }
 
-@media (max-width: 600px) { 
+@media (max-width: 600px) {
   #PartnersLogosContainer {
-    max-width:300px;
-
+    max-width: 300px;
   }
-  
- }
-
+}
 
 .partnerImage {
   width: 100px;
@@ -270,9 +262,12 @@
   border-radius: 50%;
   background-color: whitesmoke;
   flex-grow: 0;
+<<<<<<< HEAD
   margin-left: 1rem;
   margin-right: 1rem;
   margin-top: 1rem;
+=======
+>>>>>>> 76cc310155b5282f0505ee225ab1b8e3b36e68dd
 }
 .partnerImage:hover {
   color: rgba(255, 255, 255, 1);
