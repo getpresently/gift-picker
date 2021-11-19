@@ -18,10 +18,10 @@ function Header() {
     <div>
       <div id={header}>
         <Link to="/home">
-          <embed
-            style={{pointerEvents: 'none'}}
+          <img
+            style={{pointerEvents: 'none' }}
             id="HeaderLogoButton"
-            src="../headerLogo.svg"/>
+            src="./headerLogo.svg"  alt={'logo'}/>
         </Link>
       </div>
     </div>

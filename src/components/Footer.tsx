@@ -36,7 +36,7 @@ function Footer() {
             {about}
             <Link to="/home" className={'mt-8'}>
               <div className="flex">
-                <embed className="m-auto w-20 h-20 object-scale-down" style={{pointerEvents: 'none'}} src={logo}/>
+                <img className="m-auto w-20 h-20 object-scale-down" style={{pointerEvents: 'none'}} src={logo} alt={'logo bottom'}/>
               </div>
             </Link>
           </>}

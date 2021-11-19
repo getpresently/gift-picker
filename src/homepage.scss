@@ -109,7 +109,7 @@
   #aboutImg {
     width: 80%;
     padding: 4vh;
-    margin:auto;
+    margin: auto;
   }
 }
 
@@ -156,8 +156,9 @@
 
 @media (max-width: 800px) {
 
-  #emailCaptureContainer h2
-  {max-width:300px;}
+  #emailCaptureContainer h2 {
+    max-width: 300px;
+  }
 
 }
 
@@ -222,8 +223,8 @@
 
 .emailCaptureForm {
   padding-top: 5vh;
-  font-family: 'Sofia Pro',sans-serif;
-  
+  font-family: 'Sofia Pro', sans-serif;
+
 }
 
 #aboutText {
@@ -374,24 +375,13 @@
   color: white;
 }
 
-//#HeaderLogoButton {
-//  height: 20px;
-//  max-width: 100px;
-//  margin: 0%;
-//  object-fit: contain;
-//  align-self: right;
-//  margin-right: 5vw;
-//  margin-left: 10vw;
-//  margin-top: 2vw;
-//}
 #HeaderLogoButton {
-  height: 50px;
-  z-index: 10000;
-  max-width: 100%;
-  object-fit: contain;
-  margin: 2vw 5vw 0 10vw;
+  height: 100px;
+  max-height: 10vh;
+  padding-left: 10vw;
+  padding-top: 4vh;
+  object-fit: fill;
 }
-
 
 /** accordian **/
 input {

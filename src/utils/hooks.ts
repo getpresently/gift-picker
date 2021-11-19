@@ -32,7 +32,6 @@ export function fetchURL(url: string): Promise<any> {
   return fetch(url)
     .then((response) => response.json())
     .then((response) => {
-      console.log(JSON.stringify(response));
       return response.data;
     });
 }
