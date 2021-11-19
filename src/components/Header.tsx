@@ -21,7 +21,7 @@ function Header() {
           <embed
             style={{pointerEvents: 'none'}}
             id="HeaderLogoButton"
-            src="./headerLogo.svg"/>
+            src="../headerLogo.svg"/>
         </Link>
       </div>
     </div>
