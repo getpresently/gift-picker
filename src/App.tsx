@@ -191,7 +191,7 @@ function App(): JSX.Element {
         <div id="StartQuizSection">
           <div id="startSectionText">
             <h1 id="homepageTitle">
-              Don't buy that gift for your
+              Don't pick that <br/> gift for your
               <Typing loop={true} cursorClassName="cursor">
                 {giftPeople.map((p) => {
                   return (
