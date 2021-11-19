@@ -60,7 +60,7 @@ function Footer() {
           </span>
           <p className="font-bold text-sm text-white flex flex-row gap-2 justify-center pt-2">Powered by
             <a href="https://getpresently.com/" target="_blank">
-              <embed style={{pointerEvents: 'none'}} src={signature} className="w-16 h-6 object-scale-down"/>
+              <img style={{pointerEvents: 'none'}} src={signature} className="w-16 h-6 object-scale-down" alt={'logo'}/>
             </a>
           </p>
         </div>
