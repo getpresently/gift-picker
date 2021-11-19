@@ -16,9 +16,8 @@ function Footer() {
   const about = (
     <div className="text-white text-xs text-center sm:text-left flex p-4 md:pl-20">
       <div className="m-auto">
-        <p className="font-bold">About GiftPicker</p>
-        <p>GiftPicker is a quick quiz that recommends amazing presents from our database of 1,000+ high-quality
-          gifts!</p>
+        <p className="font-bold"><b>About GiftPicker</b></p>
+        <p>GiftPicker is a quick quiz that recommends actually good gifts from a curated database of gifts</p>
       </div>
     </div>
   );
