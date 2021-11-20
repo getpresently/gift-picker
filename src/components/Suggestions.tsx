@@ -37,7 +37,6 @@ function Suggestions({choices}: PropTypes): JSX.Element {
       if (Array.isArray(giftAttributes) && !!choices[questionKey]) {
         choices[questionKey].forEach(function (selection) {
           if (selection === "Any budget") {
-            console.log("here");
             valid = true
           }
           else if (giftAttributes.includes(selection)) {
