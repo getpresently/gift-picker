@@ -31,12 +31,8 @@ function Suggestions({choices}: PropTypes): JSX.Element {
 
     // returns -1 if mandatory attributes are not met
     for (const questionKey of MANDATORY_QUESTION_KEYS) {
-      console.log(JSON.stringify(curGift));
       const giftAttributes = curGift[questionKey as keyof Gift];
       let valid = false;
-      if (questionKey === 'Price') {
-        // console.log(questionKey + ' => gift attributes: ' + giftAttributes);
-      }
       if (giftAttributes && !!choices[questionKey]) {
         choices[questionKey].forEach(function (selection) {
           if (giftAttributes.includes(selection)) {
@@ -44,7 +40,6 @@ function Suggestions({choices}: PropTypes): JSX.Element {
           }
         });
         if (!valid) {
-          console.log('returning not valid');
           return -1;
         }
       }
