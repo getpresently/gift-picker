@@ -1,10 +1,11 @@
-import './Suggestions.css';
-import {useIdeas} from '../utils/hooks';
-import {Gift} from '../utils/types';
-import Loading from './Loading';
-import Suggestion from './Suggestion';
-import React from 'react';
-import {useTimer} from 'react-timer-hook';
+import "./Suggestions.css";
+import { useIdeas } from "../utils/hooks";
+import { Gift } from "../utils/types";
+import Loading from "./Loading";
+import Suggestion from "./Suggestion";
+import React from "react";
+import { useTimer } from "react-timer-hook";
+import Confetti from "react-confetti";
 
 interface PropTypes {
   choices: { [key: string]: Set<string> };
@@ -12,18 +13,21 @@ interface PropTypes {
 
 const LIMIT_INCREMENT = 3;
 const LIMIT_STOP = 12;
-const MANDATORY_QUESTION_KEYS = ['Age', 'Price'];
-const WEIGHTED_QUESTION_KEYS = ['Relation', 'Type', 'Interests'];
+const MANDATORY_QUESTION_KEYS = ["Age", "Price"];
+const WEIGHTED_QUESTION_KEYS = ["Relation", "Type", "Interests"];
 const WEIGHTED_QUESTION_VALUES = [1, 1, 1];
 
-function Suggestions({choices}: PropTypes): JSX.Element {
+function Suggestions({ choices }: PropTypes): JSX.Element {
   const [limit, setLimit] = React.useState(LIMIT_INCREMENT);
   const [moreShowing, setMoreShowing] = React.useState(false);
-  const {data: suggestions, loading: isLoading} = useIdeas();
+  const { data: suggestions, loading: isLoading } = useIdeas();
 
   const time = new Date();
   time.setSeconds(time.getSeconds() + 2.85); // 2.85 seconds for gif to fully display load
-  const {isRunning} = useTimer({expiryTimestamp: time, onExpire: () => console.warn('onExpire called')});
+  const { isRunning } = useTimer({
+    expiryTimestamp: time,
+    onExpire: () => console.warn("onExpire called"),
+  });
 
   // caculates the relevance score for a gift
   function calculateGiftScore(curGift: Gift) {
@@ -55,7 +59,7 @@ function Suggestions({choices}: PropTypes): JSX.Element {
             score +=
               WEIGHTED_QUESTION_VALUES[
                 WEIGHTED_QUESTION_KEYS.indexOf(questionKey)
-                ];
+              ];
           }
         });
       }
@@ -80,7 +84,9 @@ function Suggestions({choices}: PropTypes): JSX.Element {
     return onlyGifts;
   }
 
-  const filteredSuggestions = sortGiftsByScore(suggestions).filter(g => g.status === 'Live');
+  const filteredSuggestions = sortGiftsByScore(suggestions).filter(
+    (g) => g.status === "Live"
+  );
 
   //increases the number of suggestions displayed by the value of LIMIT_INCREMENT
   //until LIMIT_STOP (12) suggestions are shown
@@ -91,34 +97,50 @@ function Suggestions({choices}: PropTypes): JSX.Element {
     }
   };
 
-
   return (
     <div>
       <div id="top">
         <p className="text-white pb-12">Our gift picks 🎁</p>
       </div>
-      {isLoading || isRunning ? <Loading></Loading>
-        : (filteredSuggestions.length === 0 ? <p> No suggestions could be found.</p>
-          : <div className="columns">
+      {isLoading || isRunning ? (
+        <Loading></Loading>
+      ) : filteredSuggestions.length === 0 ? (
+        <p> No suggestions could be found.</p>
+      ) : (
+        <React.Fragment>
+          <Confetti
+            recycle={false}
+            numberOfPieces={1250}
+            tweenDuration={20000}
+            colors={["#4DDDEA", "#FF5D81", "#FFBD89", "#8B30E1"]}
+          />
+          <div className="columns">
             {filteredSuggestions.slice(0, limit).map((x, i) => {
-              return <Suggestion
-                photo={x.photo}
-                key={`que-${i}`}
-                title={x.gift}
-                brand={x.brand}
-                price={x.PriceActual[0]}
-                link={x.link}
-                groupLink={x.groupLink}
-              />;
+              return (
+                <Suggestion
+                  photo={x.photo}
+                  key={`que-${i}`}
+                  title={x.gift}
+                  brand={x.brand}
+                  price={x.PriceActual[0]}
+                  link={x.link}
+                  groupLink={x.groupLink}
+                />
+              );
             })}
-          </div>)}
+          </div>
+        </React.Fragment>
+      )}
       <div>
-        {(!isLoading && !isRunning) && <button
-          className="bg-deepBlack w-52 h-11 hover:bg-black text-white button_nav"
-          hidden={moreShowing}
-          onClick={increaseLimitAndDisableMore}>
-          Load more gifts
-        </button>}
+        {!isLoading && !isRunning && (
+          <button
+            className="bg-deepBlack w-52 h-11 hover:bg-black text-white button_nav"
+            hidden={moreShowing}
+            onClick={increaseLimitAndDisableMore}
+          >
+            Load more gifts
+          </button>
+        )}
       </div>
     </div>
   );
