@@ -5,7 +5,8 @@ interface SuggestionProps {
   title: string;
   brand: string;
   photo: string;
-  price: string;
+  price: string[];
+  actualPrice: string;
   link: string;
   groupLink: string;
 }
@@ -17,6 +18,7 @@ function Suggestion({
   brand,
   photo,
   price,
+  actualPrice,
   link,
   groupLink,
 }: SuggestionProps): JSX.Element {
@@ -26,7 +28,7 @@ function Suggestion({
       <div className="suggestion_MetaData">
         <p id="suggestion_Brand">By {brand}</p>
         <p id="suggestion_Title">{title}</p>
-        <p id="suggestion_Price"> {price}</p>
+        <p id="suggestion_Price"> {actualPrice}</p>
         <div>
           <button id="card_button">
             <a href={link} target="_blank" rel="noreferrer">
