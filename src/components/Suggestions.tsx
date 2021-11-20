@@ -110,7 +110,7 @@ function Suggestions({choices}: PropTypes): JSX.Element {
                 title={x.gift}
                 brand={x.brand}
                 price={x.Price}
-                actualPrice={x.actualPrice[0]}
+                actualPrice={x.actualPrice}
                 link={x.link}
                 groupLink={x.groupLink}
               />;
