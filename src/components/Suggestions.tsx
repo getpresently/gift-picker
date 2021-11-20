@@ -12,8 +12,8 @@ interface PropTypes {
 
 const LIMIT_INCREMENT = 3;
 const LIMIT_STOP = 12;
-const MANDATORY_QUESTION_KEYS = ['Age'];
-const WEIGHTED_QUESTION_KEYS = ['Relation', 'Type', 'Interests', 'Price'];
+const MANDATORY_QUESTION_KEYS = ['Age', 'Price'];
+const WEIGHTED_QUESTION_KEYS = ['Relation', 'Type', 'Interests'];
 const WEIGHTED_QUESTION_VALUES = [1, 1, 1];
 
 function Suggestions({choices}: PropTypes): JSX.Element {
@@ -31,16 +31,20 @@ function Suggestions({choices}: PropTypes): JSX.Element {
 
     // returns -1 if mandatory attributes are not met
     for (const questionKey of MANDATORY_QUESTION_KEYS) {
+      console.log(JSON.stringify(curGift));
       const giftAttributes = curGift[questionKey as keyof Gift];
       let valid = false;
-
-      if (Array.isArray(giftAttributes) && !!choices[questionKey]) {
+      if (questionKey === 'Price') {
+        // console.log(questionKey + ' => gift attributes: ' + giftAttributes);
+      }
+      if (giftAttributes && !!choices[questionKey]) {
         choices[questionKey].forEach(function (selection) {
           if (giftAttributes.includes(selection)) {
             valid = true;
           }
         });
         if (!valid) {
+          console.log('returning not valid');
           return -1;
         }
       }
@@ -107,7 +111,7 @@ function Suggestions({choices}: PropTypes): JSX.Element {
                 key={`que-${i}`}
                 title={x.gift}
                 brand={x.brand}
-                price={x.Price[0]}
+                price={x.PriceActual[0]}
                 link={x.link}
                 groupLink={x.groupLink}
               />;

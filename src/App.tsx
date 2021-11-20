@@ -123,7 +123,7 @@ function App(): JSX.Element {
           <Suggestions choices={choices}/>
         </div>
         <div id="backButton">
-          <Link to="/home">
+          <Link to="/">
             <button
               className="button_startOver"
               onClick={() => {

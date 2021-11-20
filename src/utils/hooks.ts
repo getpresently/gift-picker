@@ -55,6 +55,7 @@ export function useIdeas(): { data: Gift[]; loading: boolean } {
       Type: [],
       Interests: [],
       Price: [],
+      PriceActual: [],
       photo: '',
       link: '',
       groupLink: '',
@@ -72,6 +73,8 @@ export function useIdeas(): { data: Gift[]; loading: boolean } {
       } else if (key === 'Interests') {
         g.Interests = row[key].split(',').map((x: string) => x.trim());
       } else if (key === 'PriceActual') {
+        g.PriceActual = row[key].split(',').map((x: string) => x.trim());
+      } else if (key === 'Price') {
         g.Price = row[key].split(',').map((x: string) => x.trim());
       } else if (key === 'PhotoAddress') {
         g.photo = row[key];

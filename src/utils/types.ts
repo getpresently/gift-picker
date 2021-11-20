@@ -12,6 +12,7 @@ export interface Gift {
   Type: string[];
   Interests: string[];
   Price: string[];
+  PriceActual: string[];
   photo: string;
   link: string;
   groupLink: string;

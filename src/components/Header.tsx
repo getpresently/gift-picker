@@ -17,7 +17,7 @@ function Header() {
   return (
     <div>
       <div id={header}>
-        <Link to="/home">
+        <Link to="/">
           <img
             style={{pointerEvents: 'none' }}
             id="HeaderLogoButton"
