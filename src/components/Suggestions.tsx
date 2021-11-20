@@ -14,7 +14,7 @@ const LIMIT_INCREMENT = 3;
 const LIMIT_STOP = 12;
 const MANDATORY_QUESTION_KEYS = ['Age', 'Price'];
 const WEIGHTED_QUESTION_KEYS = ['Relation', 'Type', 'Interests'];
-const WEIGHTED_QUESTION_VALUES = [1, 1, 1];
+const WEIGHTED_QUESTION_VALUES = [1, 2, 5];
 
 function Suggestions({choices}: PropTypes): JSX.Element {
   const [limit, setLimit] = React.useState(LIMIT_INCREMENT);
@@ -35,7 +35,10 @@ function Suggestions({choices}: PropTypes): JSX.Element {
       let valid = false;
       if (giftAttributes && !!choices[questionKey]) {
         choices[questionKey].forEach(function (selection) {
-          if (giftAttributes.includes(selection)) {
+          if (selection === "Any budget") {
+            valid = true
+          }
+          else if (giftAttributes.includes(selection)) {
             valid = true;
           }
         });
@@ -106,7 +109,8 @@ function Suggestions({choices}: PropTypes): JSX.Element {
                 key={`que-${i}`}
                 title={x.gift}
                 brand={x.brand}
-                price={x.PriceActual[0]}
+                price={x.Price}
+                actualPrice={x.actualPrice[0]}
                 link={x.link}
                 groupLink={x.groupLink}
               />;
