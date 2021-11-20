@@ -47,7 +47,7 @@
   flex-direction: column;
   background-image: url("./backgroundImage.svg");
   background-repeat: no-repeat;
-  background-size: auto;
+  background-size: cover;
 }
 
 #HomePageContents {
@@ -59,22 +59,21 @@
 
 #StartQuizSection {
   display: flex;
-  flex-direction:row;
+  flex-direction: row;
   margin-bottom: 0%;
   bottom: 0;
 }
 
 @media (max-width: 800px) {
-  #StartQuizSection  {
+  #StartQuizSection {
     flex-direction: column;
   }
-  
 }
 
 #startSectionText {
   padding-left: 10vw;
   width: 55vw;
-  max-width:700px;
+  max-width: 700px;
   padding-right: 10vw;
   margin-top: 20vh;
   justify-self: left;
@@ -87,29 +86,30 @@
   align-self: flex-end;
   overflow: hidden;
   width: 50%;
-  max-width:700px;
+  max-width: 700px;
   padding-top: 4vh;
   padding-right: 10vw;
-  margin-left:auto;
+  margin-left: auto;
+
   img {
-    height: fit-content;
-    width: fit-content;
+    height: auto;
+    width: auto;
     align-self: flex-end;
     justify-self: baseline;
     margin-bottom: -2vh;
   }
 }
+
 @media (max-width: 800px) {
   #startSectionText {
-    width:100%;
-    padding:4vh;
-    margin-top:3vh;
-    
+    width: 100%;
+    padding: 4vh;
+    margin-top: 3vh;
   }
   #aboutImg {
-    width:100%;
-    padding:4vh;
-    
+    width: 80%;
+    padding: 4vh;
+    margin: auto;
   }
 }
 
@@ -119,10 +119,9 @@
   font-size: 42px;
   font-weight: bolder;
   color: whitesmoke;
-  line-height:46px;
-  padding-bottom:10px;
+  line-height: 46px;
+  padding-bottom: 10px;
 }
-
 
 .subtitle {
   display: inline-block;
@@ -130,25 +129,37 @@
   font-size: 24px;
   font-weight: lighter;
   color: whitesmoke;
-  line-height:30px;
-  padding-bottom:10px;
+  line-height: 30px;
+  padding-bottom: 10px;
 }
 
-@media (max-width: 800px) { 
+@media (max-width: 1100px) {
   #homepageTitle {
-    font-size:32px;
-  line-height:36px;
-
+    font-size: 32px;
+    line-height: 36px;
   }
 
   .subtitle {
-  font-size: 22px;
-  line-height:28px;
-  }  
- }
+    font-size: 22px;
+    line-height: 28px;
+  }
+}
 
 #typingEffect {
   color: #4dddea;
+}
+
+#emailCaptureContainer {
+  min-width: max-content;
+  min-height: max-content;
+}
+
+@media (max-width: 800px) {
+
+  #emailCaptureContainer h2 {
+    max-width: 300px;
+  }
+
 }
 
 #emailButton {
@@ -202,16 +213,25 @@
   padding-left: 10vw;
   padding-right: 10vw;
   padding-top: 0vh;
-  height: 33vh;
+  padding-bottom: 10vh;
   display: flex;
   flex-direction: row;
   justify-content: space-around;
+  min-width: max-content;
+  min-height: max-content;
+}
+
+.emailCaptureForm {
+  padding-top: 5vh;
+  font-family: 'Sofia Pro', sans-serif;
+
 }
 
 #aboutText {
   width: 25vw;
   align-self: flex-start;
   margin-top: 10vh;
+
   h3 {
     font-weight: normal;
     text-justify: left;
@@ -222,11 +242,12 @@
 #Partners {
   padding-top: 20vh;
   padding-bottom: 15vh;
+
   h2 {
     text-align: center;
     font-weight: normal;
-    font-size: 2.2vw;
   }
+
   background-color: #111113;
 }
 
@@ -237,19 +258,16 @@
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  margin:auto;
-  max-width:700px;
-  margin-bottom:2rem;
+  margin: auto;
+  max-width: 700px;
+  margin-bottom: 2rem;
 }
 
-@media (max-width: 600px) { 
+@media (max-width: 600px) {
   #PartnersLogosContainer {
-    max-width:300px;
-
+    max-width: 300px;
   }
-  
- }
-
+}
 
 .partnerImage {
   width: 100px;
@@ -257,8 +275,11 @@
   border-radius: 50%;
   background-color: whitesmoke;
   flex-grow: 0;
-  
+  margin-left: 1rem;
+  margin-right: 1rem;
+  margin-top: 1rem;
 }
+
 .partnerImage:hover {
   color: rgba(255, 255, 255, 1);
   box-shadow: 0 5px 15px rgba(145, 92, 182, 0.4);
@@ -277,13 +298,12 @@
 
 #FAQBubble {
   background-image: url("./faqBackground.svg");
-
   background-size: cover;
   display: flex;
   flex-direction: column;
   margin-left: 20vw;
   margin-right: 20vw;
-  padding-bottom: 5vh;
+  padding: 4vh 2vh;
   border-radius: 30px;
   margin-bottom: 0;
   overflow: hidden;
@@ -291,14 +311,24 @@
   justify-content: center;
 
   h2 {
-    padding-top: 8vh;
-    padding-bottom: 5vh;
     font-weight: normal;
     text-align: center;
-    font-size: 2.2vw;
+    padding-bottom: 2vh;
   }
+
   p {
     font-weight: normal;
+  }
+}
+
+
+@media (max-width: 800px) {
+  #FAQBubble {
+
+    margin-left: 10vw;
+    margin-right: 10vw;
+    padding: 4vh 2vh;
+    border-radius: 20px;
   }
 }
 
@@ -346,14 +376,11 @@
 }
 
 #HeaderLogoButton {
-  height: 20px;
-  max-width: 100px;
-  margin: 0%;
-  object-fit: contain;
-  align-self: right;
-  margin-right: 5vw;
-  margin-left: 10vw;
-  margin-top: 2vw;
+  height: 100px;
+  max-height: 10vh;
+  padding-left: 10vw;
+  padding-top: 4vh;
+  object-fit: fill;
 }
 
 /** accordian **/
@@ -362,6 +389,7 @@ input {
   opacity: 0;
   z-index: -1;
 }
+
 // Layout
 .row {
   height: auto;
@@ -371,18 +399,22 @@ input {
 
   .col {
     flex: 1;
+
     &:last-child {
     }
   }
 }
+
 /* Accordion styles */
 .tabs {
   overflow: hidden;
 }
+
 .tab {
   width: 100%;
   color: white;
   overflow: hidden;
+
   &-label {
     display: flex;
     justify-content: space-between;
@@ -393,6 +425,7 @@ input {
     &:hover {
       color: var(--grey4);
     }
+
     &::after {
       content: "\276F";
       width: 1em;
@@ -401,12 +434,14 @@ input {
       transition: all 0.35s;
     }
   }
+
   &-content {
     max-height: 0;
     padding: 0 1em;
     color: white;
     transition: all 0.35s;
   }
+
   &-close {
     display: flex;
     justify-content: flex-end;
@@ -414,6 +449,7 @@ input {
     font-size: 0.75em;
     background: transparent;
     cursor: pointer;
+
     &:hover {
       color: rgba(0, 0, 0, 0.1);
     }
@@ -430,6 +466,7 @@ input:checked {
       transform: rotate(90deg);
     }
   }
+
   ~ .tab-content {
     max-height: 100vh;
     padding: 1em;

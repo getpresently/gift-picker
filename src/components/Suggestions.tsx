@@ -33,8 +33,7 @@ function Suggestions({choices}: PropTypes): JSX.Element {
     for (const questionKey of MANDATORY_QUESTION_KEYS) {
       const giftAttributes = curGift[questionKey as keyof Gift];
       let valid = false;
-
-      if (Array.isArray(giftAttributes) && !!choices[questionKey]) {
+      if (giftAttributes && !!choices[questionKey]) {
         choices[questionKey].forEach(function (selection) {
           if (selection === "Any budget") {
             valid = true
