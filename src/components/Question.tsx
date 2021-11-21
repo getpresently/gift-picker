@@ -137,7 +137,7 @@ function Question({
       </div>
     </div>
   ) : (
-    <FadeIn>
+    <FadeIn transitionDuration={1000}>
       <div id="questionContainer">
         <h2 className="text-xs ... text-gray-400 pb-2 text-center">
           {" "}
@@ -151,6 +151,7 @@ function Question({
             effect="solid"
             border
             borderColor="#F9FBFF"
+            clickable
           />
         </p>
         <div id="choiceContainer">
