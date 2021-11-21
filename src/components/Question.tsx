@@ -122,6 +122,7 @@ function Question({
             effect="solid"
             border
             borderColor="#F9FBFF"
+            clickable
           />
         </p>
         <div id="choiceContainer">
