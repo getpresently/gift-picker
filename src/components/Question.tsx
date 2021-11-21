@@ -1,3 +1,6 @@
+import ReactTooltip from "react-tooltip";
+import { BsFillInfoCircleFill } from "react-icons/bs";
+
 interface QuestionProps {
   title: string;
   questionKey: string;
@@ -30,14 +33,15 @@ function Choice({
 
   return (
     <div onClick={handleClick}>
-      {isActive ? <button className="choiceButtons w-60 md:w-64 bg-selected text-white py-2 px-4 rounded-full"
-      >
-        {answer}
-      </button> :
-        <button className="choiceButtons w-60 md:w-64 bg-unselected hover:text-selected text-gray-500 py-2 px-4 rounded-full"
-        >
+      {isActive ? (
+        <button className="choiceButtons w-60 md:w-64 bg-selected text-white py-2 px-4 rounded-full">
           {answer}
-        </button>}
+        </button>
+      ) : (
+        <button className="choiceButtons w-60 md:w-64 bg-unselected hover:text-selected text-gray-500 py-2 px-4 rounded-full">
+          {answer}
+        </button>
+      )}
     </div>
   );
 }
@@ -58,9 +62,25 @@ function Choices({
   selectedChoices,
 }: ChoicesProps): JSX.Element {
   return (
-    <div className={`inline-grid ${questionKey === "Type" ? 'grid-cols-1' : (questionKey === "Interests" ? 'grid-cols-1 md:grid-cols-3' : 'grid-cols-1 md:grid-cols-4')} gap-x-4 gap-y-4`}>
+    <div
+      className={`inline-grid ${
+        questionKey === "Type"
+          ? "grid-cols-1"
+          : questionKey === "Interests"
+          ? "grid-cols-1 md:grid-cols-3"
+          : "grid-cols-1 md:grid-cols-4"
+      } gap-x-4 gap-y-4`}
+    >
       {choices.map((answerText, questionId) => (
-        <div className={`${questionKey === "Interests" ? "col-span-1" : "col-span-2"} ${(questionKey === "Price" || questionKey === "Relation") && (answerText === "Any budget" || answerText === "Mentor/Teacher") && "md:col-start-2"}`}>
+        <div
+          className={`${
+            questionKey === "Interests" ? "col-span-1" : "col-span-2"
+          } ${
+            (questionKey === "Price" || questionKey === "Relation") &&
+            (answerText === "Any budget" || answerText === "Mentor/Teacher") &&
+            "md:col-start-2"
+          }`}
+        >
           <Choice
             key={`ch-${questionId}`}
             questionKey={questionKey}
@@ -83,12 +103,25 @@ function Question({
   selectedChoices,
   handleSelectChoice,
   currentPage,
-  pageCount
+  pageCount,
 }: QuestionProps): JSX.Element {
+  console.log("Question: ", title);
   return (
     <div id="questionContainer">
-      <h2 className="text-xs ... text-gray-400 pb-2 text-center"> QUESTION {currentPage} OF {pageCount} </h2>
-      <p className="text-2xl ... text-gray-100 font-normal">{title}</p>
+      <h2 className="text-xs ... text-gray-400 pb-2 text-center">
+        {" "}
+        QUESTION {currentPage} OF {pageCount}{" "}
+      </h2>
+      <p className="text-2xl ... text-gray-100 font-normal flex flex-row items-center justify-center gap-2">
+        {title} <BsFillInfoCircleFill data-tip={pickToolTip(title)} />
+        <ReactTooltip
+          place="right"
+          type="dark"
+          effect="solid"
+          border
+          borderColor="#F9FBFF"
+        />
+      </p>
       <div id="choiceContainer">
         <Choices
           questionKey={questionKey}
@@ -100,6 +133,27 @@ function Question({
       </div>
     </div>
   );
+}
+
+function pickToolTip(question: String) {
+  //
+  switch (question) {
+    case "Who's the gift for?":
+      return "Helps us choose gifts for a specific age range";
+      break;
+    case "How do you know them?":
+      return "Helps us choose an appropriate gift";
+      break;
+    case "What's the vibe?":
+      return "Helps us choose the purpose of the gift";
+      break;
+    case "What are they into?":
+      return "Helps us choose the gift category";
+      break;
+    case "What's your budget?":
+      return "Determines the price range of the gift";
+      break;
+  }
 }
 
 export default Question;
