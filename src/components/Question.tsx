@@ -108,7 +108,7 @@ function Question({
 }: QuestionProps): JSX.Element {
   console.log("Question: ", title);
   return (
-    <FadeIn>
+    <FadeIn transitionDuration={1000}>
       <div id="questionContainer">
         <h2 className="text-xs ... text-gray-400 pb-2 text-center">
           {" "}
