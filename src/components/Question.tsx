@@ -1,6 +1,7 @@
 import ReactTooltip from "react-tooltip";
 import { BsFillInfoCircleFill } from "react-icons/bs";
 import FadeIn from "react-fade-in";
+import { useState } from "react";
 
 interface QuestionProps {
   title: string;
@@ -107,7 +108,35 @@ function Question({
   pageCount,
 }: QuestionProps): JSX.Element {
   console.log("Question: ", title);
-  return (
+  console.log(selectedChoices);
+  //const [animated, setAnimated] = useState(false);
+  return selectedChoices ? (
+    <div id="questionContainer">
+      <h2 className="text-xs ... text-gray-400 pb-2 text-center">
+        {" "}
+        QUESTION {currentPage} OF {pageCount}{" "}
+      </h2>
+      <p className="text-2xl ... text-gray-100 font-normal flex flex-row items-center justify-center gap-2">
+        {title} <BsFillInfoCircleFill data-tip={pickToolTip(title)} />
+        <ReactTooltip
+          place="right"
+          type="dark"
+          effect="solid"
+          border
+          borderColor="#F9FBFF"
+        />
+      </p>
+      <div id="choiceContainer">
+        <Choices
+          questionKey={questionKey}
+          choices={choices}
+          partOfSingleSelect={isSingleSelect}
+          selectedChoices={selectedChoices}
+          handleSelectChoice={handleSelectChoice}
+        />
+      </div>
+    </div>
+  ) : (
     <FadeIn>
       <div id="questionContainer">
         <h2 className="text-xs ... text-gray-400 pb-2 text-center">
