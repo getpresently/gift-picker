@@ -49,6 +49,7 @@ export function useIdeas(): { data: Gift[]; loading: boolean } {
   const temp: Gift[] = [];
   for (const row of response.data) {
     let g: Gift = {
+      rowId: '',
       gift: '',
       brand: '',
       Age: [],
@@ -62,7 +63,9 @@ export function useIdeas(): { data: Gift[]; loading: boolean } {
       status: '',
     };
     for (const key of Object.keys(row)) {
-      if (key === 'Gift') {
+      if (key === 'row_id') {
+        g.rowId = row[key];
+      } else if (key === 'Gift') {
         g.gift = row[key];
       } else if (key === 'Brand') {
         g.brand = row[key];

@@ -14,6 +14,7 @@ import Banner from './components/Banner';
 import {BrowserRouter as Router, Link, Route, Routes} from 'react-router-dom';
 import EmailCaptureComponent from './components/EmailCaptureForm';
 import {getQuestions} from './utils/hooks';
+import ProductDetail from './components/ProductDetail';
 
 enum Scene {
   Home = 1,
@@ -373,6 +374,7 @@ function App(): JSX.Element {
           <Route path="/home" element={<div><Banner/><HomepageComponent/></div>}/>
           <Route path="/quiz" element={<div><Header/><QuestionsPageComponent/></div>}/>
           <Route path="/results" element={<div><Header/><SuggestionsComponent/></div>}/>
+          <Route  path="/id/:id" element={<div><Header/><ProductDetail /></div>}/>
         </Routes>
       </Router>
     </div>

@@ -1,7 +1,9 @@
 import { TargetElement } from "@testing-library/user-event";
+import {Link} from "react-router-dom";
 import "./Suggestion.css"
 import placeHolder from "../placeholder.png"
 interface SuggestionProps {
+  index: String;
   title: string;
   brand: string;
   photo: string;
@@ -14,6 +16,7 @@ function addDefaultSrc(ev: any) {
   ev.target.src = placeHolder
 }
 function Suggestion({
+  index,
   title,
   brand,
   photo,
@@ -23,6 +26,7 @@ function Suggestion({
   groupLink,
 }: SuggestionProps): JSX.Element {
   return (
+    <Link to={`/id/${index}`} >
     <div className="column">
       <img onError={addDefaultSrc} src={photo} alt="{photo}" />
       <div className="suggestion_MetaData">
@@ -44,6 +48,7 @@ function Suggestion({
 
       </div>
     </div>
+    </Link>
   );
 }
 

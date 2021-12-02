@@ -6,6 +6,7 @@ export interface QAndA {
 }
 
 export interface Gift {
+  rowId: String;
   gift: string;
   brand: string;
   Age: string[];
