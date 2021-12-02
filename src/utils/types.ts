@@ -2,7 +2,6 @@ export interface QAndA {
   question: string;
   questionKey: string;
   maxSelectable: number;
-  isSingleSelect: boolean;
   answers: string[];
 }
 

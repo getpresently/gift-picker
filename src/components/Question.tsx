@@ -2,7 +2,6 @@ interface QuestionProps {
   title: string;
   questionKey: string;
   choices: string[];
-  isSingleSelect: boolean;
   maxSelectable: number;
   selectedChoices: Set<string>;
   currentPage: number;
