@@ -120,6 +120,7 @@ export function useQuestions(): { data: QAndA[]; loading: boolean } {
       question: '',
       questionKey: '',
       isSingleSelect: false,
+      maxSelectable: 0,
       answers: [],
     };
     for (const key of Object.keys(row)) {
@@ -127,6 +128,8 @@ export function useQuestions(): { data: QAndA[]; loading: boolean } {
         qa.question = row[key];
       } else if (key === 'QuestionKey') {
         qa.questionKey = row[key];
+      } else if (key === "MaxSelectable") {
+        qa.maxSelectable = parseInt(row[key])
       } else if (key === 'SelectType') {
         qa.isSingleSelect = row[key] === 'single';
       } else if (key.slice(0, 1) === 'A') {
@@ -152,6 +155,7 @@ export async function getQuestions(): Promise<Array<any>> {
       question: '',
       questionKey: '',
       isSingleSelect: false,
+      maxSelectable: 0,
       answers: [],
     };
     for (const key of Object.keys(row)) {
@@ -159,6 +163,8 @@ export async function getQuestions(): Promise<Array<any>> {
         qa.question = row[key];
       } else if (key === 'QuestionKey') {
         qa.questionKey = row[key];
+      } else if (key === "MaxSelectable") {
+          qa.maxSelectable = parseInt(row[key])
       } else if (key === 'SelectType') {
         qa.isSingleSelect = row[key] === 'single';
       } else if (key.slice(0, 1) === 'A') {
