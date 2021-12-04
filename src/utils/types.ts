@@ -3,6 +3,7 @@ export interface QAndA {
   questionKey: string;
   isSingleSelect: boolean;
   answers: string[];
+  info: string;
 }
 
 export interface Gift {

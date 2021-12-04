@@ -12,6 +12,7 @@ interface QuestionProps {
   currentPage: number;
   pageCount: number;
   handleSelectChoice: (isSingleSelect: boolean, k: string, v: string) => void;
+  infoText: string;
 }
 
 interface ChoiceProps {
@@ -106,18 +107,18 @@ function Question({
   handleSelectChoice,
   currentPage,
   pageCount,
+  infoText,
 }: QuestionProps): JSX.Element {
   console.log("Question: ", title);
   console.log(selectedChoices);
-  //const [animated, setAnimated] = useState(false);
-  return selectedChoices ? (
+  const questionsCont = (
     <div id="questionContainer">
       <h2 className="text-xs ... text-gray-400 pb-2 text-center">
         {" "}
         QUESTION {currentPage} OF {pageCount}{" "}
       </h2>
       <p className="text-2xl ... text-gray-100 font-normal flex flex-row items-center justify-center gap-2">
-        {title} <BsFillInfoCircleFill data-tip={pickToolTip(title)} />
+        {title} <BsFillInfoCircleFill data-tip={infoText} />
         <ReactTooltip
           place="right"
           type="dark"
@@ -136,57 +137,13 @@ function Question({
         />
       </div>
     </div>
-  ) : (
-    <FadeIn transitionDuration={1000}>
-      <div id="questionContainer">
-        <h2 className="text-xs ... text-gray-400 pb-2 text-center">
-          {" "}
-          QUESTION {currentPage} OF {pageCount}{" "}
-        </h2>
-        <p className="text-2xl ... text-gray-100 font-normal flex flex-row items-center justify-center gap-2">
-          {title} <BsFillInfoCircleFill data-tip={pickToolTip(title)} />
-          <ReactTooltip
-            place="right"
-            type="dark"
-            effect="solid"
-            border
-            borderColor="#F9FBFF"
-            clickable
-          />
-        </p>
-        <div id="choiceContainer">
-          <Choices
-            questionKey={questionKey}
-            choices={choices}
-            partOfSingleSelect={isSingleSelect}
-            selectedChoices={selectedChoices}
-            handleSelectChoice={handleSelectChoice}
-          />
-        </div>
-      </div>
-    </FadeIn>
   );
-}
 
-function pickToolTip(question: String) {
-  //
-  switch (question) {
-    case "Who's the gift for?":
-      return "Helps us choose gifts for a specific age range";
-      break;
-    case "How do you know them?":
-      return "Helps us choose an appropriate gift";
-      break;
-    case "What's the vibe?":
-      return "Helps us choose the purpose of the gift";
-      break;
-    case "What are they into?":
-      return "Helps us choose the gift category";
-      break;
-    case "What's your budget?":
-      return "Determines the price range of the gift";
-      break;
-  }
+  return selectedChoices ? (
+    questionsCont
+  ) : (
+    <FadeIn transitionDuration={1000}>{questionsCont}</FadeIn>
+  );
 }
 
 export default Question;
