@@ -117,8 +117,13 @@ function Question({
         {" "}
         QUESTION {currentPage} OF {pageCount}{" "}
       </h2>
-      <p className="text-2xl ... text-gray-100 font-normal flex flex-row items-center justify-center gap-2">
-        {title} <BsFillInfoCircleFill data-tip={infoText} />
+      <p className="text-2xl ... text-gray-100 font-normal flex flex-row items-center justify-center align-middle gap-2">
+        {title}{" "}
+        <BsFillInfoCircleFill
+          data-tip={infoText}
+          color="#aeafb7"
+          size="0.70em"
+        />
         <ReactTooltip
           place="right"
           type="dark"
