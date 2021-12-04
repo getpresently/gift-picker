@@ -113,6 +113,7 @@ function Suggestions({ choices }: PropTypes): JSX.Element {
             numberOfPieces={1250}
             tweenDuration={20000}
             colors={["#4DDDEA", "#FF5D81", "#FFBD89", "#8B30E1"]}
+            width={window.innerWidth}
           />
           <div className="columns">
             {filteredSuggestions.slice(0, limit).map((x, i) => {
