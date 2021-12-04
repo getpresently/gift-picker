@@ -9,6 +9,7 @@ export interface Gift {
   rowId: String;
   gift: string;
   brand: string;
+  description: String;
   Age: string[];
   Type: string[];
   Interests: string[];

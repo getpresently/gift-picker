@@ -52,6 +52,7 @@ export function useIdeas(): { data: Gift[]; loading: boolean } {
       rowId: '',
       gift: '',
       brand: '',
+      description: '',
       Age: [],
       Type: [],
       Interests: [],
@@ -69,6 +70,8 @@ export function useIdeas(): { data: Gift[]; loading: boolean } {
         g.gift = row[key];
       } else if (key === 'Brand') {
         g.brand = row[key];
+      } else if (key === 'Description') {
+        g.description = row[key];
       } else if (key === 'Age') {
         g.Age = row[key].split(',').map((x: string) => x.trim());
       } else if (key === 'Type') {

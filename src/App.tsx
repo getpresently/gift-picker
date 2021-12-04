@@ -374,7 +374,7 @@ function App(): JSX.Element {
           <Route path="/home" element={<div><Banner/><HomepageComponent/></div>}/>
           <Route path="/quiz" element={<div><Header/><QuestionsPageComponent/></div>}/>
           <Route path="/results" element={<div><Header/><SuggestionsComponent/></div>}/>
-          <Route  path="/id/:id" element={<div><Header/><ProductDetail /></div>}/>
+          <Route  path="/id/:id" element={<ProductDetail />}/>
         </Routes>
       </Router>
     </div>

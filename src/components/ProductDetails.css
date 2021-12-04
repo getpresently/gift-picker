@@ -1,0 +1,92 @@
+#back-to-results-button {
+    color:white;
+}
+
+#product-details-container {
+    
+    margin: auto;
+    width: 75%;
+    background-color: #363342;
+    border-radius: 30px;
+    
+    border: 2px solid orange;
+    display: flex;
+    min-height: 250px;
+
+}
+
+#product-image {
+    order: 1;
+    border: 1px solid green;
+    float:left;
+    width: 50%;
+    height: auto;
+    margin: 5% 2.5% 5% 5%;
+    border-radius: 30px;
+}
+
+#product-details {
+    order: 2;
+    border: 1px solid red;
+    float: left;
+    width:inherit;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-height: auto;
+    padding: 5% 5% 5% 2.5%;
+}
+
+#product-detail-brand {
+    color: #AEAFB7;
+    text-align: left;
+}
+
+#product-detail-title {
+    color: white;
+    text-align: left;
+    font-family: Sofia Pro;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 24px;
+
+    height: 40px;
+    border: 1px solid blue;
+    overflow: hidden;
+
+}
+
+#product-detail-description {
+    height: 90px;
+    border: 1px solid yellow;
+    color: white;
+    text-align: left;
+    overflow: hidden;
+    font-size: 14px;
+}
+
+#product-detail-price {
+    color: white;
+    text-align: left;
+}
+#product-button-group {
+    border: 1px solid white;
+    width: 100%;
+    display: flex;
+    margin:auto;
+}
+
+#card_button_a {
+    border: 1px solid salmon;
+    background-color: #4DDDEA;
+    font-size: 3vw;
+    text-align: center;
+    margin: 4px;
+    border-radius: 12px;
+    
+}
+#card_button_a a{
+    margin:auto;
+    text-decoration: none;
+    
+    color:black;
+}
