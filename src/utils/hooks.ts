@@ -1,13 +1,35 @@
-import {useEffect, useState} from 'react';
-import fetch from 'unfetch';
+import { useEffect, useState } from "react";
+import fetch from "unfetch";
 
-import {Gift, QAndA} from './types';
+import { Gift, QAndA } from "./types";
 
 const IdeasSource =
-  'https://v1.nocodeapi.com/qlangstaff/google_sheets/WmiYFvgDSyDXhouR?tabId=Gifts';
+  "https://v1.nocodeapi.com/qlangstaff/google_sheets/WmiYFvgDSyDXhouR?tabId=Gifts";
 
 const QuestionsSource =
-  'https://v1.nocodeapi.com/qlangstaff/google_sheets/WmiYFvgDSyDXhouR?tabId=QandA';
+  "https://v1.nocodeapi.com/qlangstaff/google_sheets/WmiYFvgDSyDXhouR?tabId=QandA";
+
+const EmailsSource =
+  "https://v1.nocodeapi.com/qlangstaff/google_sheets/WmiYFvgDSyDXhouR?tabId=Emails";
+
+// handles email capture
+export function postEmail(email: string): void {
+  try {
+    fetch(EmailsSource, {
+      method: "POST",
+      headers: {
+        "Content-type": "application/json",
+      },
+      body: JSON.stringify([[email]]),
+    }).then((res) => {
+      if (!res.ok) {
+        Promise.reject();
+      }
+    });
+  } catch (error) {
+    console.log(error);
+  }
+}
 
 export function useFetch(url: string): { data: any; loading: boolean } {
   const [data, setData] = useState();
@@ -37,7 +59,7 @@ export function fetchURL(url: string): Promise<any> {
 }
 
 export function useIdeas(): { data: Gift[]; loading: boolean } {
-  const {data: response, loading} = useFetch(IdeasSource);
+  const { data: response, loading } = useFetch(IdeasSource);
 
   if (!response) {
     return {
@@ -49,51 +71,51 @@ export function useIdeas(): { data: Gift[]; loading: boolean } {
   const temp: Gift[] = [];
   for (const row of response.data) {
     let g: Gift = {
-      gift: '',
-      brand: '',
+      gift: "",
+      brand: "",
       Age: [],
       Type: [],
       Interests: [],
       Price: [],
-      actualPrice: '',
-      photo: '',
-      link: '',
-      groupLink: '',
-      status: '',
+      actualPrice: "",
+      photo: "",
+      link: "",
+      groupLink: "",
+      status: "",
     };
     for (const key of Object.keys(row)) {
-      if (key === 'Gift') {
+      if (key === "Gift") {
         g.gift = row[key];
-      } else if (key === 'Brand') {
+      } else if (key === "Brand") {
         g.brand = row[key];
-      } else if (key === 'Age') {
-        g.Age = row[key].split(',').map((x: string) => x.trim());
-      } else if (key === 'Type') {
-        g.Type = row[key].split(',').map((x: string) => x.trim());
-      } else if (key === 'Interests') {
-        g.Interests = row[key].split(',').map((x: string) => x.trim());
-      } else if (key === 'Price') {
-        g.Price = row[key].split(',').map((x: string) => x.trim());
-      } else if (key === 'PriceActual') {
+      } else if (key === "Age") {
+        g.Age = row[key].split(",").map((x: string) => x.trim());
+      } else if (key === "Type") {
+        g.Type = row[key].split(",").map((x: string) => x.trim());
+      } else if (key === "Interests") {
+        g.Interests = row[key].split(",").map((x: string) => x.trim());
+      } else if (key === "Price") {
+        g.Price = row[key].split(",").map((x: string) => x.trim());
+      } else if (key === "PriceActual") {
         g.actualPrice = row[key].toString();
-      } else if (key === 'PhotoAddress') {
+      } else if (key === "PhotoAddress") {
         g.photo = row[key];
-      } else if (key === 'Link') {
+      } else if (key === "Link") {
         g.link = row[key];
-      } else if (key === 'Status') {
+      } else if (key === "Status") {
         g.status = row[key];
       }
     }
     g.groupLink = g.groupLink.concat(
-      'https://getpresently.com/go/set-up-your-group-gift/?wpf3087_209=',
+      "https://getpresently.com/go/set-up-your-group-gift/?wpf3087_209=",
       g.gift,
-      ' by ',
+      " by ",
       g.brand,
-      '&wpf3087_88=',
+      "&wpf3087_88=",
       g.photo,
-      '&wpf3087_207=Add%20gift%20link&wpf3087_195=',
+      "&wpf3087_207=Add%20gift%20link&wpf3087_195=",
       g.Price.toString(),
-      '&refsc=giftpicker',
+      "&refsc=giftpicker"
     );
     temp.push(g);
   }
@@ -105,7 +127,7 @@ export function useIdeas(): { data: Gift[]; loading: boolean } {
 }
 
 export function useQuestions(): { data: QAndA[]; loading: boolean } {
-  const {data: response, loading} = useFetch(QuestionsSource);
+  const { data: response, loading } = useFetch(QuestionsSource);
 
   if (!response) {
     return {
@@ -117,19 +139,19 @@ export function useQuestions(): { data: QAndA[]; loading: boolean } {
   const temp: QAndA[] = [];
   for (const row of response.data) {
     let qa: QAndA = {
-      question: '',
-      questionKey: '',
+      question: "",
+      questionKey: "",
       isSingleSelect: false,
       answers: [],
     };
     for (const key of Object.keys(row)) {
-      if (key === 'Question') {
+      if (key === "Question") {
         qa.question = row[key];
-      } else if (key === 'QuestionKey') {
+      } else if (key === "QuestionKey") {
         qa.questionKey = row[key];
-      } else if (key === 'SelectType') {
-        qa.isSingleSelect = row[key] === 'single';
-      } else if (key.slice(0, 1) === 'A') {
+      } else if (key === "SelectType") {
+        qa.isSingleSelect = row[key] === "single";
+      } else if (key.slice(0, 1) === "A") {
         qa.answers.push(row[key]);
       }
     }
@@ -149,19 +171,19 @@ export async function getQuestions(): Promise<Array<any>> {
   const temp: QAndA[] = [];
   for (const row of data) {
     let qa: QAndA = {
-      question: '',
-      questionKey: '',
+      question: "",
+      questionKey: "",
       isSingleSelect: false,
       answers: [],
     };
     for (const key of Object.keys(row)) {
-      if (key === 'Question') {
+      if (key === "Question") {
         qa.question = row[key];
-      } else if (key === 'QuestionKey') {
+      } else if (key === "QuestionKey") {
         qa.questionKey = row[key];
-      } else if (key === 'SelectType') {
-        qa.isSingleSelect = row[key] === 'single';
-      } else if (key.slice(0, 1) === 'A') {
+      } else if (key === "SelectType") {
+        qa.isSingleSelect = row[key] === "single";
+      } else if (key.slice(0, 1) === "A") {
         qa.answers.push(row[key]);
       }
     }
