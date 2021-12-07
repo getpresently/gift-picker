@@ -29,7 +29,7 @@ function App(): JSX.Element {
   const [questions, setQuestions] = useState<any[]>([]);
   // load questions from google sheets
   useEffect(() => {
-    getQuestions().then(questions => {
+    getQuestions().then((questions) => {
       setQuestions(questions);
     });
   }, []);
@@ -52,16 +52,14 @@ function App(): JSX.Element {
     }
   }
 
-  // changes state depending on if the question is single/multi select
-  // removes from state if previously selected, adds to state if new
   function handleSelectChoice(
-    isSingleSelect: boolean,
+    maxSelectable: number,
     choiceType: string,
-    choiceValue: string,
+    choiceValue: string
   ) {
     let newChoices = choices[choiceType] || new Set<string>();
 
-    if (isSingleSelect) {
+    if (maxSelectable === 1) {
       if (newChoices.has(choiceValue)) {
         newChoices.clear();
       } else {
@@ -71,7 +69,7 @@ function App(): JSX.Element {
     } else {
       if (newChoices?.has(choiceValue)) {
         newChoices.delete(choiceValue);
-      } else {
+      } else if (newChoices.size < maxSelectable) {
         newChoices.add(choiceValue);
       }
     }
@@ -106,10 +104,11 @@ function App(): JSX.Element {
             handleSubmit={() => handleSceneChange(Scene.Suggestions)}
             currentPage={currentPage}
             numPages={NUM_PAGES}
-            choices={choices}/>
+            choices={choices}
+          />
         </div>
       </div>
-      <Footer/>
+      <Footer />
     </>
   );
 
@@ -121,7 +120,7 @@ function App(): JSX.Element {
     <div>
       <div className="content_container">
         <div className="results">
-          <Suggestions choices={choices}/>
+          <Suggestions choices={choices} />
         </div>
         <div id="backButton">
           <Link to="/">
@@ -138,23 +137,23 @@ function App(): JSX.Element {
           </Link>
         </div>
       </div>
-      <Footer/>
+      <Footer />
     </div>
   );
 
   const giftPeople = [
-    'friend.',
-    'sister.',
-    'coworker.',
-    'partner.',
-    'brother.',
-    'girlfriend.',
-    'mom.',
-    'dad.',
-    'husband.',
-    'boyfriend.',
-    'boss.',
-    'wife.',
+    "friend.",
+    "sister.",
+    "coworker.",
+    "partner.",
+    "brother.",
+    "girlfriend.",
+    "mom.",
+    "dad.",
+    "husband.",
+    "boyfriend.",
+    "boss.",
+    "wife.",
   ];
 
   /*const EmailCaptureComponent = () => (
@@ -187,18 +186,20 @@ function App(): JSX.Element {
 
   const HomepageComponent = () => (
     <div id="HomePage">
-      <Header/>
+      <Header />
       <header id="HomePageContents" className="content_container">
         <div id="StartQuizSection">
           <div id="startSectionText">
             <h1 id="homepageTitle">
-              Don't pick that gift<br/>for your&nbsp;
+              Don't pick that gift
+              <br />
+              for your&nbsp;
               <Typing loop={true} cursorClassName="cursor" className="inline">
                 {giftPeople.map((p) => {
                   return (
                     <>
                       {<span id="typingEffect">{p}</span>}
-                      <Typing.Backspace count={p.length + 1} delay={1000}/>
+                      <Typing.Backspace count={p.length + 1} delay={1000} />
                     </>
                   );
                 })}
@@ -220,12 +221,12 @@ function App(): JSX.Element {
             </Link>
           </div>
           <div id="aboutImg">
-            <img src="./giftpickerImages.svg" alt="gift picker on phone"/>
+            <img src="./giftpickerImages.svg" alt="gift picker on phone" />
           </div>
         </div>
         <div id="AboutGiftPickerSection">
           <div id="MoreInfoSection">
-            <EmailCaptureComponent/>
+            <EmailCaptureComponent />
           </div>
           <div id="Partners">
             <h2> Over 1,000 gifts from your favorite brands</h2>
@@ -300,7 +301,7 @@ function App(): JSX.Element {
               <div className="col">
                 <div className="tabs">
                   <div className="tab">
-                    <input type="checkbox" id="rd1" name="rd"/>
+                    <input type="checkbox" id="rd1" name="rd" />
                     <label className="tab-label" htmlFor="rd1">
                       What is GiftPicker?
                     </label>
@@ -313,7 +314,7 @@ function App(): JSX.Element {
                     </div>
                   </div>
                   <div className="tab">
-                    <input type="checkbox" id="rd2" name="rd"/>
+                    <input type="checkbox" id="rd2" name="rd" />
                     <label className="tab-label" htmlFor="rd2">
                       Who’s GiftPicker for?
                     </label>
@@ -326,28 +327,28 @@ function App(): JSX.Element {
                     </div>
                   </div>
                   <div className="tab">
-                    <input type="checkbox" id="rd3" name="rd"/>
+                    <input type="checkbox" id="rd3" name="rd" />
                     <label className="tab-label" htmlFor="rd3">
                       Can I share my GiftPicker recommendations with others?
                     </label>
                     <div className="tab-content">
                       Yes, you can share your favorite recommendations in two
                       ways.
-                      <br/>
-                      <br/>
+                      <br />
+                      <br />
                       First, you can choose to split the cost of the gift with
                       friends via our ‘Split Gift’ option, which will take you
                       our partners at Presently to set up a group gift. A group
                       gift is a joint gift that friends, family, or coworkers
-                      can pitch in on. <br/>
-                      <br/>
+                      can pitch in on. <br />
+                      <br />
                       Second, starting Dec 1, you’ll also be able to send links
                       to your personalized gift recommendations via email, text,
                       and more. Perfect way to send a nudge!
                     </div>
                   </div>
                   <div className="tab">
-                    <input type="checkbox" id="rd4" name="rd"/>
+                    <input type="checkbox" id="rd4" name="rd" />
                     <label className="tab-label" htmlFor="rd4">
                       I have some suggestions, how can I get in touch?
                     </label>

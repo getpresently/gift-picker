@@ -2,30 +2,30 @@ interface QuestionProps {
   title: string;
   questionKey: string;
   choices: string[];
-  isSingleSelect: boolean;
+  maxSelectable: number;
   selectedChoices: Set<string>;
   currentPage: number;
   pageCount: number;
-  handleSelectChoice: (isSingleSelect: boolean, k: string, v: string) => void;
+  handleSelectChoice: (maxSelectable: number, k: string, v: string) => void;
 }
 
 interface ChoiceProps {
   questionKey: string;
   answer: string;
-  partOfSingleSelect: boolean;
+  partOfMaxSelectable: number;
   isActive: boolean;
-  handleSelectChoice: (isSingleSelect: boolean, k: string, v: string) => void;
+  handleSelectChoice: (maxSelectable: number, k: string, v: string) => void;
 }
 
 function Choice({
   questionKey,
   answer,
-  partOfSingleSelect,
+  partOfMaxSelectable,
   isActive,
   handleSelectChoice,
 }: ChoiceProps) {
   function handleClick() {
-    handleSelectChoice(partOfSingleSelect, questionKey, answer);
+    handleSelectChoice(partOfMaxSelectable, questionKey, answer);
   }
 
   return (
@@ -45,15 +45,15 @@ function Choice({
 interface ChoicesProps {
   questionKey: string;
   choices: string[];
-  partOfSingleSelect: boolean;
-  handleSelectChoice: (isSingleSelect: boolean, k: string, v: string) => void;
+  partOfMaxSelectable: number;
+  handleSelectChoice: (maxSelectable: number, k: string, v: string) => void;
   selectedChoices: Set<string>;
 }
 
 function Choices({
   questionKey,
   choices,
-  partOfSingleSelect,
+  partOfMaxSelectable,
   handleSelectChoice,
   selectedChoices,
 }: ChoicesProps): JSX.Element {
@@ -65,7 +65,7 @@ function Choices({
             key={`ch-${questionId}`}
             questionKey={questionKey}
             answer={answerText}
-            partOfSingleSelect={partOfSingleSelect}
+            partOfMaxSelectable={partOfMaxSelectable}
             isActive={selectedChoices?.has(answerText)}
             handleSelectChoice={handleSelectChoice}
           />
@@ -79,7 +79,7 @@ function Question({
   title,
   questionKey,
   choices,
-  isSingleSelect,
+  maxSelectable,
   selectedChoices,
   handleSelectChoice,
   currentPage,
@@ -93,7 +93,7 @@ function Question({
         <Choices
           questionKey={questionKey}
           choices={choices}
-          partOfSingleSelect={isSingleSelect}
+          partOfMaxSelectable={maxSelectable}
           selectedChoices={selectedChoices}
           handleSelectChoice={handleSelectChoice}
         />

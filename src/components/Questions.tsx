@@ -1,8 +1,8 @@
-import Loading from './Loading';
-import Question from './Question';
+import Loading from "./Loading";
+import Question from "./Question";
 
 interface PropTypes {
-  handleSelectChoice: (isSingleSelect: boolean, k: string, v: string) => void;
+  handleSelectChoice: (maxSelectable: number, k: string, v: string) => void;
   page: number;
   pageCount: number;
   choices: { [key: string]: Set<string> };
@@ -15,15 +15,14 @@ function Questions({
   page,
   pageCount,
   choices,
-  questions
+  questions,
 }: PropTypes): JSX.Element {
-
   let questionArr = questions.map((answerTexts, questionId) => (
     <Question
       key={`que-${questionId}`}
       title={answerTexts.question}
       questionKey={answerTexts.questionKey}
-      isSingleSelect={answerTexts.isSingleSelect}
+      maxSelectable={answerTexts.maxSelectable}
       choices={answerTexts.answers}
       selectedChoices={choices[answerTexts.questionKey]}
       handleSelectChoice={handleSelectChoice}
@@ -37,7 +36,12 @@ function Questions({
   ) : (
     <div id="questionsContainer">
       {questionArr[page - 1]}
-      {!questions[page - 1].isSingleSelect && <p className="text-s text-gray-400 pb-2 pt-4">Select multiple</p>}
+      {!(questions[page - 1].maxSelectable === 1) && (
+        <p className="text-s text-gray-400 pb-2 pt-4">
+          Select up to&nbsp;
+          {questions[page - 1].maxSelectable} options
+        </p>
+      )}
     </div>
   );
 }
