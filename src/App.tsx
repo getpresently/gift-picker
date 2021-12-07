@@ -1,20 +1,20 @@
-import {useEffect, useState} from 'react';
-import './App.css';
-import './homepage.scss';
-import './App2.scss';
-import './emailcapture.scss';
-import Questions from './components/Questions';
-import ScrollablePage from './components/ScrollablePage';
-import Suggestions from './components/Suggestions';
-import Footer from './components/Footer';
-import Buttons from './components/Buttons';
-import Typing from 'react-typing-animation';
-import Header from './components/Header';
-import Banner from './components/Banner';
-import {BrowserRouter as Router, Link, Route, Routes} from 'react-router-dom';
-import EmailCaptureComponent from './components/EmailCaptureForm';
-import {getQuestions} from './utils/hooks';
-import ProductDetail from './components/ProductDetail';
+import { useEffect, useState } from "react";
+import "./App.css";
+import "./homepage.scss";
+import "./App2.scss";
+import "./emailcapture.scss";
+import Questions from "./components/Questions";
+import ScrollablePage from "./components/ScrollablePage";
+import Suggestions from "./components/Suggestions";
+import Footer from "./components/Footer";
+import Buttons from "./components/Buttons";
+import Typing from "react-typing-animation";
+import Header from "./components/Header";
+import Banner from "./components/Banner";
+import { BrowserRouter as Router, Link, Route, Routes } from "react-router-dom";
+import EmailCaptureComponent from "./components/EmailCaptureForm";
+import { getQuestions } from "./utils/hooks";
+import ProductDetail from "./components/ProductDetail";
 
 enum Scene {
   Home = 1,
@@ -371,11 +371,43 @@ function App(): JSX.Element {
     <div className="App">
       <Router>
         <Routes>
-          <Route path="/" element={<div><Banner/><HomepageComponent/></div>}/>
-          <Route path="/home" element={<div><Banner/><HomepageComponent/></div>}/>
-          <Route path="/quiz" element={<div><Header/><QuestionsPageComponent/></div>}/>
-          <Route path="/results" element={<div><Header/><SuggestionsComponent/></div>}/>
-          <Route  path="/id/:id" element={<ProductDetail />}/>
+          <Route
+            path="/"
+            element={
+              <div>
+                <Banner />
+                <HomepageComponent />
+              </div>
+            }
+          />
+          <Route
+            path="/home"
+            element={
+              <div>
+                <Banner />
+                <HomepageComponent />
+              </div>
+            }
+          />
+          <Route
+            path="/quiz"
+            element={
+              <div>
+                <Header />
+                <QuestionsPageComponent />
+              </div>
+            }
+          />
+          <Route
+            path="/results"
+            element={
+              <div>
+                <Header />
+                <SuggestionsComponent />
+              </div>
+            }
+          />
+          <Route path="/giftid/:id" element={<ProductDetail />} />
         </Routes>
       </Router>
     </div>

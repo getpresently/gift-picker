@@ -49,10 +49,10 @@ export function useIdeas(): { data: Gift[]; loading: boolean } {
   const temp: Gift[] = [];
   for (const row of response.data) {
     let g: Gift = {
-      rowId: '',
-      gift: '',
-      brand: '',
-      description: '',
+      rowId: "",
+      gift: "",
+      brand: "",
+      description: "",
       Age: [],
       Type: [],
       Interests: [],
@@ -64,23 +64,23 @@ export function useIdeas(): { data: Gift[]; loading: boolean } {
       status: "",
     };
     for (const key of Object.keys(row)) {
-      if (key === 'row_id') {
+      if (key === "row_id") {
         g.rowId = row[key];
-      } else if (key === 'Gift') {
+      } else if (key === "Gift") {
         g.gift = row[key];
       } else if (key === "Brand") {
         g.brand = row[key];
-      } else if (key === 'Description') {
+      } else if (key === "Description") {
         g.description = row[key];
-      } else if (key === 'Age') {
-        g.Age = row[key].split(',').map((x: string) => x.trim());
-      } else if (key === 'Type') {
-        g.Type = row[key].split(',').map((x: string) => x.trim());
-      } else if (key === 'Interests') {
-        g.Interests = row[key].split(',').map((x: string) => x.trim());
-      } else if (key === 'Price') {
-        g.Price = row[key].split(',').map((x: string) => x.trim());
-      } else if (key === 'PriceActual') {
+      } else if (key === "Age") {
+        g.Age = row[key].split(",").map((x: string) => x.trim());
+      } else if (key === "Type") {
+        g.Type = row[key].split(",").map((x: string) => x.trim());
+      } else if (key === "Interests") {
+        g.Interests = row[key].split(",").map((x: string) => x.trim());
+      } else if (key === "Price") {
+        g.Price = row[key].split(",").map((x: string) => x.trim());
+      } else if (key === "PriceActual") {
         g.actualPrice = row[key].toString();
       } else if (key === "PhotoAddress") {
         g.photo = row[key];
