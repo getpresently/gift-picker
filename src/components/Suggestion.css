@@ -2,6 +2,7 @@
   border-top-right-radius: 12px;
   border-top-left-radius: 12px;
   background-color: whitesmoke;
+  opacity: 1;
 }
 
 #popup {
@@ -78,4 +79,24 @@
 #suggestion_Price {
   font-size: 16px;
   color: #aeafb7;
+}
+
+#image_holder {
+  position: relative;
+}
+
+#feedback_button {
+  display: none;
+  position: absolute;
+  top: 3px;
+  right: 3px;
+  color: #aeafb7;
+}
+
+#image_holder:hover > #feedback_button {
+  display: inline;
+}
+
+#image_holder:hover > img {
+  opacity: .5;
 }
