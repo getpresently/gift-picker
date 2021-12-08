@@ -1,21 +1,19 @@
 #back-to-results-button {
-    color:white;
-    margin-right: 900px;
-    margin-bottom: 10px;
-    margin-top: 10px;
+  color: white;
+  margin-right: 900px;
+  margin-bottom: 10px;
+  margin-top: 10px;
 }
 
 #product-details-container {
-    
-    margin: auto;
-    width: 75%;
-    background-color: #363342;
-    border-radius: 30px;
-    
-    border: 2px solid orange;
-    display: flex;
-    min-height: 250px;
+  margin: auto;
+  width: 75%;
+  background-color: #363342;
+  border-radius: 30px;
 
+  border: 2px solid orange;
+  display: flex;
+  min-height: 250px;
 }
 
 #product-image {
@@ -26,83 +24,82 @@
 }
 
 #product-details {
-    order: 2;
-    border: 1px solid red;
-    float: left;
-    width:inherit;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    max-height: auto;
-    padding: 5% 5% 5% 5%;
+  order: 2;
+  border: 1px solid red;
+  float: left;
+  width: inherit;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-height: auto;
+  padding: 5% 5% 5% 5%;
 }
 
 #product-detail-brand {
-    color: #AEAFB7;
-    text-align: left;
-    display: inline-block;
-    vertical-align: left;
+  color: #aeafb7;
+  text-align: left;
+  display: inline-block;
+  vertical-align: left;
 }
 
 #product-detail-title {
-    color: white;
-    text-align: left;
-    font-family: Sofia Pro;
-    font-style: normal;
-    font-weight: bold;
-    font-size: 24px;
+  color: white;
+  text-align: left;
+  font-family: Sofia Pro;
+  font-style: normal;
+  font-weight: bold;
+  font-size: 24px;
 
-    height: 40px;
-    border: 1px solid blue;
-    overflow: hidden;
-
+  height: 40px;
+  border: 1px solid blue;
+  overflow: hidden;
 }
 
 #product-detail-description {
-    height: 90px;
-    border: 1px solid yellow;
-    color: white;
-    text-align: left;
-    overflow: hidden;
-    font-size: 14px;
+  height: 90px;
+  border: 1px solid yellow;
+  color: white;
+  text-align: left;
+  overflow: hidden;
+  font-size: 14px;
 }
 
 #product-detail-price {
-    color: white;
-    text-align: left;
+  color: white;
+  text-align: left;
 }
 #product-button-group {
-    border: 1px solid white;
-    width: 100%;
-    display: flex;
-    margin:auto;
+  border: 1px solid white;
+  width: 100%;
+  display: flex;
+  margin: auto;
 }
 
 #share-button {
-    text-align: center;
-    margin-left: 100px;
-    margin-right: 5px;
-    width: 25%;
-    color: white;
-    border: 1px solid white;
-    border-radius: 12px;
-    display: inline-block;
-    vertical-align: right;
+  text-align: center;
+  margin-left: 100px;
+  margin-right: 5px;
+  width: 25%;
+  color: white;
+  border: 1px solid white;
+  border-radius: 12px;
+  display: inline-block;
+  vertical-align: right;
 }
 #share-button a {
-    margin:auto;
-    text-decoration: none;
-    color:white;
+  margin: auto;
+  text-decoration: none;
+  color: white;
 }
 
 #card_button_a {
-    margin-left: 5px;
-    margin-right: 5px;
-    width: 45%;
-    background-color: #4dddea;
-    border-radius: 12px;
+  margin-left: 5px;
+  margin-right: 5px;
+  width: 45%;
+  background-color: #4dddea;
+  border-radius: 12px;
 }
-#card_button_a a{
-    margin:auto;
-    text-decoration: none;
-    color:black;
+#card_button_a a {
+  margin: auto;
+  text-decoration: none;
+  color: black;
 }
