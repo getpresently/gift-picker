@@ -1,6 +1,11 @@
 import { TargetElement } from "@testing-library/user-event";
 import "./Suggestion.css"
+import Suggestions from './Suggestions';
+import { useEffect, useState } from "react";
 import placeHolder from "../placeholder.png"
+import Popup from 'reactjs-popup';
+import Modal from "./Modal";
+
 interface SuggestionProps {
   title: string;
   brand: string;
@@ -23,17 +28,14 @@ function Suggestion({
   link,
   groupLink,
 }: SuggestionProps): JSX.Element {
+  
   return (
     <div className="column">
-      <div id="image_holder">
-        <button id="feedback_button">V</button>
-        {/* img src="feedback-icon64x64.png"/> */}
-          {/* <div>Icons made by 
-            <a href="https://www.flaticon.com/authors/kiranshastry" 
-               title="Kiranshastry">Kiranshastry</a> from 
-              <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a>
-          </div> */}
+      <div id="img_container">
         <img onError={addDefaultSrc} src={photo} alt="{photo}" />
+        <div id="help_button">
+          <Modal />
+        </div>
       </div>
       <div className="suggestion_MetaData">
         <p id="suggestion_Brand">By {brand}</p>

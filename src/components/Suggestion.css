@@ -5,6 +5,32 @@
   opacity: 1;
 }
 
+#popup {
+  position: relative;
+}
+
+#img_container {
+  position: relative;
+}
+
+#help_button {
+  display: none;
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  color:#363342;
+}
+
+#img_container:hover > #help_button {
+  display: inline;
+  font-size: 24px;
+}
+
+#img_container:hover > img {
+  opacity: .5;
+}
+
+
 .column .suggestion_MetaData {
   color: #f9fbff;
   background-color: #363342;
