@@ -407,7 +407,15 @@ function App(): JSX.Element {
               </div>
             }
           />
-          <Route path="/giftid/:id" element={<ProductDetail />} />
+          <Route
+            path="/giftid/:id"
+            element={
+              <div>
+                <Header />
+                <ProductDetail />
+              </div>
+            }
+          />
         </Routes>
       </Router>
     </div>
