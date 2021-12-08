@@ -19,25 +19,28 @@ function ProductDetail(): JSX.Element {
     return (
         <>
         <div id="back-to-results-button">
-            <p> {"< "} Back to quiz results</p>
+            <a href="/results"> {"< "} Back to quiz results</a>
         </div>
         
         <div id="product-details-container">
             <img id="product-image" src={g?.photo}></img>
             <div id="product-details"> 
                 <div id="product-detail-brand">{g?.brand}</div>
+                <div id="share-button">
+                    <a href=""> Share </a>
+                </div>
                 <div id="product-detail-title">{g?.gift}</div>
-                <div id="product-detail-description">{g?.description}</div>
                 <div id="product-detail-price">{g?.actualPrice}</div>
+                <div id="product-detail-description">{g?.description}</div>
                 <div id="product-button-group">
                     <button id="card_button_a">
                         <a href={g?.link} target="_blank" rel="noreferrer">
-                        View Gift
+                        Buy Now
                         </a>
                     </button>
                     <button id="card_button_a">
                         <a href={g?.groupLink} target="_blank" rel="noreferrer">
-                        Split Cost
+                        Group Gift
                         </a>
                     </button>
                 </div>
