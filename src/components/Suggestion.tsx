@@ -13,6 +13,7 @@ interface SuggestionProps {
 function addDefaultSrc(ev: any) {
   ev.target.src = placeHolder
 }
+
 function Suggestion({
   title,
   brand,
@@ -24,7 +25,16 @@ function Suggestion({
 }: SuggestionProps): JSX.Element {
   return (
     <div className="column">
-      <img onError={addDefaultSrc} src={photo} alt="{photo}" />
+      <div id="image_holder">
+        <button id="feedback_button">V</button>
+        {/* img src="feedback-icon64x64.png"/> */}
+          {/* <div>Icons made by 
+            <a href="https://www.flaticon.com/authors/kiranshastry" 
+               title="Kiranshastry">Kiranshastry</a> from 
+              <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a>
+          </div> */}
+        <img onError={addDefaultSrc} src={photo} alt="{photo}" />
+      </div>
       <div className="suggestion_MetaData">
         <p id="suggestion_Brand">By {brand}</p>
         <p id="suggestion_Title">{title}</p>
@@ -41,7 +51,6 @@ function Suggestion({
             </a>
           </button>
         </div>
-
       </div>
     </div>
   );
