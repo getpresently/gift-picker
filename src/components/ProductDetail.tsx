@@ -1,10 +1,9 @@
 import { useParams } from "react-router-dom";
 import {useIdeas} from '../utils/hooks';
 import "./ProductDetails.css";
-import "../homepage.scss"
-import Footer from "./Footer"
-import {Link} from "react-router-dom"
-
+import "../homepage.scss";
+import Footer from "./Footer";
+import {Link} from "react-router-dom";
 
 
 function ProductDetail(): JSX.Element {
@@ -21,24 +20,31 @@ function ProductDetail(): JSX.Element {
     
     const g = suggestions.at(index-2)
 
+    
+
     return (
         <div>
             <div id="total-container">
                 <div id="back-to-results-button">
                     <Link to="/results"> {"< "} Back to quiz results</Link>
                 </div>
-                
-                <div id="product-details-container" className="flex flex-col lg:flex-row bg-white shadow w-full rounded-lg">
-                    <img id="product-image"
-                        className="object-cover w-full h-48"
-                        src={g?.photo}
-                        alt="Flower and sky"
-                        />
+                <br />
+                <div id="product-details-container" className="flex flex-col lg:flex-row bg-white shadow rounded-lg">
+                    <div id="img-container">
+                        <img id="product-image"
+                            className="object-cover w-full h-48"
+                            src={g?.photo}
+                            alt="Gift img"
+                            />
+                    </div>
 
-                    <div className="relative p-4 lg:w-1/8">
-                            <div id="share-button">
-                                <a href=""> Share </a>
+                    <div className="relative p-4 lg:w-2/3">
+                            <div id="share-button" >
+                                <button> Share </button>
                             </div>
+
+                            
+
                             <div id="product-detail-brand">{g?.brand}</div>
                             <div id="product-detail-title">{g?.gift}</div>
                             <div id="product-detail-price">{g?.actualPrice}</div>
