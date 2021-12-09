@@ -26,7 +26,7 @@ function Suggestion({
   groupLink,
 }: SuggestionProps): JSX.Element {
   return (
-    <Link to={`/gift/${index}`} >
+    <Link style={{textDecoration: "none"}} to={`/gift/${index}`} >
     <div className="column">
       <img onError={addDefaultSrc} src={photo} alt="{photo}" />
       <div className="suggestion_MetaData">

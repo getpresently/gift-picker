@@ -112,6 +112,17 @@
   display: inline;
   float: right;
 }
+
+#share-text {
+  float:left;
+}
+
+#share-icon {
+  float:left;
+  margin-left:5px;
+}
+
+
 #share-button a {
   margin: auto;
   text-decoration: none;
