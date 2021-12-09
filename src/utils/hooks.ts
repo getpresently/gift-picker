@@ -89,17 +89,17 @@ export function useIdeas(): { data: Gift[]; loading: boolean } {
       } else if (key === "Link") {
         g.link = row[key];
       } else if (key === "Mailto") {
-        g.mailToLink = row[key].substring(0, row[key].length-2);   
+        g.mailToLink = row[key].substring(0, row[key].length-1);   
       } else if (key === "Sms") {
-        g.smsToLink = row[key].substring(0, row[key].length-2); 
+        g.smsToLink = row[key].substring(0, row[key].length-1); 
       } else if (key === "Status") {
         g.status = row[key];
       }
     }
 
     //edit mailToLink and smsToLink
-    g.mailToLink = g.mailToLink.concat('id/', g.rowId.toString());
-    g.smsToLink = g.smsToLink.concat('id/', g.rowId.toString());
+    g.mailToLink = g.mailToLink.concat(g.rowId.toString());
+    g.smsToLink = g.smsToLink.concat(g.rowId.toString());
 
     g.groupLink = g.groupLink.concat(
       "https://getpresently.com/go/set-up-your-group-gift/?wpf3087_209=",
