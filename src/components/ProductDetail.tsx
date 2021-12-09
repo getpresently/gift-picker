@@ -26,6 +26,7 @@ function ProductDetail(): JSX.Element {
           <Link to="/results"> {"< "} Back to quiz results</Link>
         </div>
         <br />
+        <br />
         <div
           id="product-details-container"
           className="flex flex-col lg:flex-row bg-white shadow rounded-lg"
@@ -40,9 +41,33 @@ function ProductDetail(): JSX.Element {
           </div>
 
           <div className="relative p-4 lg:w-2/3">
-            <div id="share-button">
-              <button> Share </button>
-            </div>
+                <Popup
+                trigger={
+                    <div id="share-button">
+                        <button >{" "}Share</button>
+                    </div>
+                }
+                position="top right"
+                >
+                <div style={{display:"flex"}}>
+                    <a href={g?.mailToLink}>
+                    <svg className="h-8 w-8 text-black"  width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">  
+                        <path stroke="none" d="M0 0h24v24H0z"/>
+                        <rect x="3" y="5" width="18" height="14" rx="2" />
+                        <polyline points="3 7 12 13 21 7" />
+                    </svg>
+                    </a>
+
+                    <a href={g?.smsToLink}>
+                    <svg className="h-8 w-8 text-black"  width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                        <path stroke="none" d="M0 0h24v24H0z"/>
+                        <path d="M4 21v-13a3 3 0 0 1 3 -3h10a3 3 0 0 1 3 3v6a3 3 0 0 1 -3 3h-9l-4 4" />
+                        <line x1="8" y1="9" x2="16" y2="9" />
+                        <line x1="8" y1="13" x2="14" y2="13" />
+                    </svg>
+                    </a>
+                </div>
+                </Popup>
 
             <div id="product-detail-brand">{g?.brand}</div>
             <div id="product-detail-title">{g?.gift}</div>
