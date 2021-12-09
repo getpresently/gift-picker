@@ -2,7 +2,9 @@
 #total-container {
   width:75%;
   margin: auto;
+  margin-bottom: 200px;
 }
+
 #back-to-results-button {
   color: white;
   float: left;

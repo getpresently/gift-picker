@@ -1,10 +1,9 @@
 import { useParams } from "react-router-dom";
 import {useIdeas} from '../utils/hooks';
 import "./ProductDetails.css";
-import "../homepage.scss"
-import Footer from "./Footer"
-import {Link} from "react-router-dom"
-
+import "../homepage.scss";
+import Footer from "./Footer";
+import {Link} from "react-router-dom";
 
 
 function ProductDetail(): JSX.Element {
@@ -21,6 +20,8 @@ function ProductDetail(): JSX.Element {
     
     const g = suggestions.at(index-2)
 
+    
+
     return (
         <div>
             <div id="total-container">
@@ -33,14 +34,17 @@ function ProductDetail(): JSX.Element {
                         <img id="product-image"
                             className="object-cover w-full h-48"
                             src={g?.photo}
-                            alt="Flower and sky"
+                            alt="Gift img"
                             />
                     </div>
 
                     <div className="relative p-4 lg:w-2/3">
-                            <div id="share-button">
-                                <a href=""> Share </a>
+                            <div id="share-button" >
+                                <button> Share </button>
                             </div>
+
+                            
+
                             <div id="product-detail-brand">{g?.brand}</div>
                             <div id="product-detail-title">{g?.gift}</div>
                             <div id="product-detail-price">{g?.actualPrice}</div>
