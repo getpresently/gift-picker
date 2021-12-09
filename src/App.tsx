@@ -408,7 +408,7 @@ function App(): JSX.Element {
             }
           />
           <Route
-            path="/giftid/:id"
+            path="/gift/:id"
             element={
               <div>
                 <Header />
