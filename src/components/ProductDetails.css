@@ -8,8 +8,7 @@
 #back-to-results-button {
   color: white;
   float: left;
-  padding-left:10px;
-  
+  padding-left: 10px;
 }
 
 #group-gift-info-link {
@@ -40,7 +39,6 @@
   background-color: #363342;
   border-radius: 30px;
   margin-bottom: 100px;
-  /* border: 2px solid orange; */
   display: flex;
   min-height: 250px;
   padding: 25px;
@@ -51,14 +49,13 @@
 }
 
 #product-image {
-  width: 350px;
+  width: 400px;
   height: 300px;
   border-radius: 12px;
 }
 
 #product-details {
   order: 2;
-  /* border: 1px solid red; */
   float: left;
   width: inherit;
   overflow: hidden;
@@ -81,14 +78,12 @@
   font-weight: bold;
   font-size: 24px;
   height: 40px;
-  /* border: 1px solid blue; */
   overflow: hidden;
   margin-left: 10px;
 }
 
 #product-detail-description {
   height: 90px;
-  /* border: 1px solid yellow; */
   color: white;
   text-align: left;
   overflow: hidden;
@@ -103,7 +98,6 @@
   margin-left: 10px;
 }
 #product-button-group {
-  /* border: 1px solid white; */
   width: 100%;
   display: flex;
   padding-bottom: 5px;
@@ -111,10 +105,6 @@
 }
 
 #share-button {
-  /* text-align: center;
-  margin-left: 100px;
-  margin-right: 5px;
-  width: 25%; */
   margin-right: 40px;
   color: white;
   border: 1px solid white;
