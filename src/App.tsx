@@ -412,7 +412,7 @@ function App(): JSX.Element {
             element={
               <div>
                 <Header />
-                <ProductDetail />
+                <ProductDetail/>
               </div>
             }
           />

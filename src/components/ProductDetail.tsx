@@ -3,6 +3,9 @@ import {useIdeas} from '../utils/hooks';
 import "./ProductDetails.css";
 import "../homepage.scss"
 import Footer from "./Footer"
+import {Link} from "react-router-dom"
+
+
 
 function ProductDetail(): JSX.Element {
     const {data: suggestions, loading: isLoading} = useIdeas();
@@ -21,8 +24,9 @@ function ProductDetail(): JSX.Element {
     return (
         <div>
         <div id="back-to-results-button">
-            <a href="/results"> {"< "} Back to quiz results</a>
+            <Link to="/results"> {"< "} Back to quiz results</Link>
         </div>
+        
         
         <div id="product-details-container">
             <img id="product-image" src={g?.photo}></img>
