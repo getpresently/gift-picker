@@ -119,21 +119,9 @@ function App(): JSX.Element {
     <div>
       <div className="content_container">
         <div className="results">
-          <Suggestions choices={choices} />
+          <Suggestions choices={choices} setCurrentPage={setCurrentPage} resetSelections={resetSelections} />
         </div>
         <div id="backButton">
-          <Link to="/">
-            <button
-              className="button_startOver"
-              onClick={() => {
-                handleSceneChange(Scene.Home);
-                setCurrentPage(1);
-                resetSelections();
-              }}
-            >
-              Start over
-            </button>
-          </Link>
         </div>
       </div>
       <Footer />

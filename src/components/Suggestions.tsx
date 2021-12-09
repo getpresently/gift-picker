@@ -5,9 +5,13 @@ import Loading from './Loading';
 import Suggestion from './Suggestion';
 import React from 'react';
 import {useTimer} from 'react-timer-hook';
+import { BrowserRouter as Router, Link, Route, Routes } from "react-router-dom";
+
 
 interface PropTypes {
   choices: { [key: string]: Set<string> };
+  setCurrentPage: (page: number) => void;
+  resetSelections: () => void;
 }
 
 const LIMIT_INCREMENT = 3;
@@ -16,7 +20,7 @@ const MANDATORY_QUESTION_KEYS = ['Age', 'Price'];
 const WEIGHTED_QUESTION_KEYS = ['Relation', 'Type', 'Interests'];
 const WEIGHTED_QUESTION_VALUES = [1, 2, 5];
 
-function Suggestions({choices}: PropTypes): JSX.Element {
+function Suggestions({choices, setCurrentPage, resetSelections}: PropTypes): JSX.Element {
   const [limit, setLimit] = React.useState(LIMIT_INCREMENT);
   const [moreShowing, setMoreShowing] = React.useState(false);
   const {data: suggestions, loading: isLoading} = useIdeas();
@@ -101,7 +105,21 @@ function Suggestions({choices}: PropTypes): JSX.Element {
         <p className="text-white pb-12">Our gift picks 🎁</p>
       </div>
       {isLoading || isRunning ? <Loading></Loading>
-        : (filteredSuggestions.length === 0 ? <p> No suggestions could be found.</p>
+        : (filteredSuggestions.length === 0 ? 
+        <>
+        <p> No suggestions could be found.</p>
+        <Link to="/">
+            <button
+              className="button_startOver"
+              onClick={() => {
+                setCurrentPage(1);
+                resetSelections();
+              }}
+            >
+              Start over
+            </button>
+            </Link>
+            </>
           : <div className="columns">
             {filteredSuggestions.slice(0, limit).map((x, i) => {
               return <Suggestion
@@ -115,6 +133,17 @@ function Suggestions({choices}: PropTypes): JSX.Element {
                 groupLink={x.groupLink}
               />;
             })}
+            <Link to="/">
+            <button
+              className="button_startOver"
+              onClick={() => {
+                setCurrentPage(1);
+                resetSelections();
+              }}
+            >
+              Start over
+            </button>
+            </Link>
           </div>)}
       <div>
         {(!isLoading && !isRunning) && <button
