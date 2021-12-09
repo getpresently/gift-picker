@@ -20,39 +20,45 @@ function ProductDetail(): JSX.Element {
 
     
     const g = suggestions.at(index-2)
-    console.log(g)
+
     return (
         <div>
-        <div id="back-to-results-button">
-            <Link to="/results"> {"< "} Back to quiz results</Link>
-        </div>
-        
-        
-        <div id="product-details-container">
-            <img id="product-image" src={g?.photo}></img>
-            <div id="product-details"> 
-                <div id="share-button">
-                    <a href=""> Share </a>
+            <div id="total-container">
+                <div id="back-to-results-button">
+                    <Link to="/results"> {"< "} Back to quiz results</Link>
                 </div>
-                <div id="product-detail-brand">{g?.brand}</div>
-                <div id="product-detail-title">{g?.gift}</div>
-                <div id="product-detail-price">{g?.actualPrice}</div>
-                <div id="product-detail-description">{g?.description}</div>
-                <div id="product-button-group">
-                    <button id="card_button_a">
-                        <a href={g?.link} target="_blank" rel="noreferrer">
-                        Buy Now
-                        </a>
-                    </button>
-                    <button id="card_button_a">
-                        <a href={g?.groupLink} target="_blank" rel="noreferrer">
-                        Group Gift
-                        </a>
-                    </button>
+                
+                <div id="product-details-container" className="flex flex-col lg:flex-row bg-white shadow w-full rounded-lg">
+                    <img id="product-image"
+                        className="object-cover w-full h-48"
+                        src={g?.photo}
+                        alt="Flower and sky"
+                        />
+
+                    <div className="relative p-4 lg:w-1/8">
+                            <div id="share-button">
+                                <a href=""> Share </a>
+                            </div>
+                            <div id="product-detail-brand">{g?.brand}</div>
+                            <div id="product-detail-title">{g?.gift}</div>
+                            <div id="product-detail-price">{g?.actualPrice}</div>
+                            <div id="product-detail-description">{g?.description}</div>
+                            <div id="product-button-group">
+                                <button id="card_button_a">
+                                    <a href={g?.link} target="_blank" rel="noreferrer">
+                                    Buy Now
+                                    </a>
+                                </button>
+                                <button id="card_button_a">
+                                    <a href={g?.groupLink} target="_blank" rel="noreferrer">
+                                    Group Gift
+                                    </a>
+                                </button>
+                            </div>
+                    </div>
                 </div>
             </div>
-        </div>
-        <Footer />
+            <Footer />
         </div>
     )
 }

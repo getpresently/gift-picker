@@ -60,6 +60,8 @@ export function useIdeas(): { data: Gift[]; loading: boolean } {
       actualPrice: "",
       photo: "",
       link: "",
+      mailToLink: "",
+      smsToLink: "",
       groupLink: "",
       status: "",
     };
@@ -86,6 +88,10 @@ export function useIdeas(): { data: Gift[]; loading: boolean } {
         g.photo = row[key];
       } else if (key === "Link") {
         g.link = row[key];
+      } else if (key === "Mailto") {
+        g.mailToLink = row[key];
+      } else if (key === "Sms") {
+        g.smsToLink = row[key];
       } else if (key === "Status") {
         g.status = row[key];
       }
