@@ -27,15 +27,17 @@ function ProductDetail(): JSX.Element {
                 <div id="back-to-results-button">
                     <Link to="/results"> {"< "} Back to quiz results</Link>
                 </div>
-                
-                <div id="product-details-container" className="flex flex-col lg:flex-row bg-white shadow w-full rounded-lg">
-                    <img id="product-image"
-                        className="object-cover w-full h-48"
-                        src={g?.photo}
-                        alt="Flower and sky"
-                        />
+                <br />
+                <div id="product-details-container" className="flex flex-col lg:flex-row bg-white shadow rounded-lg">
+                    <div id="img-container">
+                        <img id="product-image"
+                            className="object-cover w-full h-48"
+                            src={g?.photo}
+                            alt="Flower and sky"
+                            />
+                    </div>
 
-                    <div className="relative p-4 lg:w-1/8">
+                    <div className="relative p-4 lg:w-2/3">
                             <div id="share-button">
                                 <a href=""> Share </a>
                             </div>
