@@ -107,7 +107,7 @@ function Suggestions({ choices }: PropTypes): JSX.Element {
       ) : filteredSuggestions.length === 0 ? (
         <p> No suggestions could be found.</p>
       ) : (
-        <React.Fragment>
+        <>
           <Confetti
             recycle={false}
             numberOfPieces={1250}
@@ -130,7 +130,7 @@ function Suggestions({ choices }: PropTypes): JSX.Element {
               );
             })}
           </div>
-        </React.Fragment>
+        </>
       )}
       <div>
         {!isLoading && !isRunning && (

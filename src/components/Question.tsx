@@ -1,7 +1,6 @@
 import ReactTooltip from "react-tooltip";
 import { BsFillInfoCircleFill } from "react-icons/bs";
 import FadeIn from "react-fade-in";
-import { useState } from "react";
 
 interface QuestionProps {
   title: string;
@@ -109,16 +108,13 @@ function Question({
   pageCount,
   infoText,
 }: QuestionProps): JSX.Element {
-  console.log("Question: ", title);
-  console.log(selectedChoices);
   const questionsCont = (
     <div id="questionContainer">
       <h2 className="text-xs ... text-gray-400 pb-2 text-center">
-        {" "}
-        QUESTION {currentPage} OF {pageCount}{" "}
+        QUESTION {currentPage} OF {pageCount}
       </h2>
       <p className="text-2xl ... text-gray-100 font-normal flex flex-row items-center justify-center align-middle gap-2">
-        {title}{" "}
+        {title}
         <BsFillInfoCircleFill
           data-tip={infoText}
           color="#aeafb7"
