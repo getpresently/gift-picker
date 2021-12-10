@@ -9,6 +9,28 @@ const IdeasSource =
 const QuestionsSource =
   "https://v1.nocodeapi.com/qlangstaff/google_sheets/WmiYFvgDSyDXhouR?tabId=QandA";
 
+const EmailsSource =
+  "https://v1.nocodeapi.com/qlangstaff/google_sheets/WmiYFvgDSyDXhouR?tabId=Emails";
+
+// handles email capture
+export function postEmail(email: string): void {
+  try {
+    fetch(EmailsSource, {
+      method: "POST",
+      headers: {
+        "Content-type": "application/json",
+      },
+      body: JSON.stringify([[email]]),
+    }).then((res) => {
+      if (!res.ok) {
+        Promise.reject();
+      }
+    });
+  } catch (error) {
+    console.log(error);
+  }
+}
+
 export function useFetch(url: string): { data: any; loading: boolean } {
   const [data, setData] = useState();
   const [loading, setLoading] = useState<boolean>(true); // generic (<boolean>) stores structure shape of the state

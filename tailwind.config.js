@@ -11,6 +11,9 @@ module.exports = {
         deepBlack: "#272833",
       },
     },
+    maxWidth: {
+      "xxs": "16rem",
+    },
   },
   variants: {
     extend: {},
