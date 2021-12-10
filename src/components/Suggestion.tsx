@@ -36,7 +36,6 @@ function Suggestion({
         <div id="help_button">
           <Modal />
         </div>
-
       </div>
       <div className="suggestion_MetaData">
         <p id="suggestion_Brand">By {brand}</p>
@@ -54,7 +53,6 @@ function Suggestion({
             </a>
           </button>
         </div>
-
       </div>
     </div>
   );
