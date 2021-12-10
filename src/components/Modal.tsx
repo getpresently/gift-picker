@@ -3,28 +3,20 @@ import Popup from 'reactjs-popup';
 import "./Modal.css";
 import { useEffect, useState } from "react";
 import { Form, Button, Row, Col, FloatingLabel } from 'react-bootstrap';
+import gif from '../loading_gif.gif'
+
 
 function Modal() {
     return (
-        <Popup trigger={<button className="button"> 💬 </button>} modal>
-            <div id="container">
-
+        <Popup trigger={<button className="button"> 💬 </button>} lockScroll={false} modal>
+            <div id="load_form">
+                <img className="footerlogo" id="loadingResults" src={gif} alt=""></img>
+                <p className="text-gray-400 text-sm pt-6">LOADING...</p>
             </div>
-            <div id="content">
-                <p>Give Us Feedback!</p>
-                <FloatingLabel controlId="floatingSelect" label="Works with selects">
-                    <Form.Select aria-label="Floating label select example">
-                        <option>Open this select menu</option>
-                        <option value="1">One</option>
-                        <option value="2">Two</option>
-                        <option value="3">Three</option>
-                    </Form.Select>
-                </FloatingLabel>
-
-                <FloatingLabel controlId="floatingTextarea" label="Comments" className="mb-3">
-                    <Form.Control as="textarea" placeholder="Leave a comment here" />
-                </FloatingLabel>
-            </div>
+            <iframe className="airtable-embed-feedback"
+                src="https://airtable.com/embed/shreNMgLcVFokWDJC?backgroundColor=cyan"
+                frameBorder="0" width="100%" height="533"
+                style={{ background: "transparent", border: "1px" }}></iframe>
         </Popup>
     );
 }
