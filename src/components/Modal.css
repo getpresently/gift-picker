@@ -1,5 +1,5 @@
-#container {
-    position:fixed;
+.popup-overlay {
+  position:fixed;
     width:100%;
     height:100%;
     top:0px;
@@ -7,11 +7,10 @@
     background-color: rgba(68,66,83,.8);
     backdrop-filter: blur(5px);
     z-index:-1;
-    pointer-events: none;
 }
 
-#content {
-    position:relative;
+.popup-content{
+  position:relative;
     border-top-right-radius: 20px;
     border-top-left-radius: 20px;
     border-bottom-right-radius: 20px;
@@ -21,6 +20,19 @@
     background-color: #272833;
     height: 500px;
     width: 500px;
+}
+
+#load_form{
+  position: absolute; 
+  left: 0; 
+  right: 0; 
+  margin-left: auto; 
+  margin-right: auto; 
+  margin-top: 150px;
+}
+
+.airtable-embed-feedback{
+  position: absolute;
 }
 
 @keyframes anvil {
