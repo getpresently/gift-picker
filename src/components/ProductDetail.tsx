@@ -17,6 +17,7 @@ function ProductDetail(): JSX.Element {
     index = parseInt(id);
   }
 
+  //suggestions are offset by 2, initial gift's row_id in useIdeas() is 2
   const g = suggestions.at(index - 2);
 
   return (
