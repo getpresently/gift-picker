@@ -71,8 +71,10 @@ export function useIdeas(): { data: Gift[]; loading: boolean } {
   const temp: Gift[] = [];
   for (const row of response.data) {
     let g: Gift = {
+      rowId: "",
       gift: "",
       brand: "",
+      description: "",
       Age: [],
       Type: [],
       Interests: [],
@@ -80,14 +82,20 @@ export function useIdeas(): { data: Gift[]; loading: boolean } {
       actualPrice: "",
       photo: "",
       link: "",
+      mailToLink: "",
+      smsToLink: "",
       groupLink: "",
       status: "",
     };
     for (const key of Object.keys(row)) {
-      if (key === "Gift") {
+      if (key === "row_id") {
+        g.rowId = row[key];
+      } else if (key === "Gift") {
         g.gift = row[key];
       } else if (key === "Brand") {
         g.brand = row[key];
+      } else if (key === "Description") {
+        g.description = row[key];
       } else if (key === "Age") {
         g.Age = row[key].split(",").map((x: string) => x.trim());
       } else if (key === "Type") {
@@ -102,10 +110,19 @@ export function useIdeas(): { data: Gift[]; loading: boolean } {
         g.photo = row[key];
       } else if (key === "Link") {
         g.link = row[key];
+      } else if (key === "Mailto") {
+        g.mailToLink = row[key].substring(0, row[key].length-1);   
+      } else if (key === "Sms") {
+        g.smsToLink = row[key].substring(0, row[key].length-1); 
       } else if (key === "Status") {
         g.status = row[key];
       }
     }
+
+    //edit mailToLink and smsToLink
+    g.mailToLink = g.mailToLink.concat(g.rowId.toString());
+    g.smsToLink = g.smsToLink.concat(g.rowId.toString());
+
     g.groupLink = g.groupLink.concat(
       "https://getpresently.com/go/set-up-your-group-gift/?wpf3087_209=",
       g.gift,

@@ -105,6 +105,7 @@ function Suggestions({choices}: PropTypes): JSX.Element {
           : <div className="columns">
             {filteredSuggestions.slice(0, limit).map((x, i) => {
               return <Suggestion
+                index={x.rowId}
                 photo={x.photo}
                 key={`que-${i}`}
                 title={x.gift}

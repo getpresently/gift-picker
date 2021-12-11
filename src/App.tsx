@@ -14,6 +14,7 @@ import Banner from "./components/Banner";
 import { BrowserRouter as Router, Link, Route, Routes } from "react-router-dom";
 import EmailCaptureComponent from "./components/EmailCaptureForm";
 import { getQuestions } from "./utils/hooks";
+import ProductDetail from "./components/ProductDetail";
 
 enum Scene {
   Home = 1,
@@ -403,6 +404,15 @@ function App(): JSX.Element {
               <div>
                 <Header />
                 <SuggestionsComponent />
+              </div>
+            }
+          />
+          <Route
+            path="/gift/:id"
+            element={
+              <div>
+                <Header />
+                <ProductDetail/>
               </div>
             }
           />
