@@ -11,11 +11,8 @@ import Loading from "./Loading";
 function ProductDetail(): JSX.Element {
   const { data: suggestions, loading: isLoading } = useIdeas();
   const { id } = useParams();
-  const [invalid, setInvalid] = useState(true);
   const [index, setIndex] = useState(0);
-  const [g, setG]: any = useState();
-
-  //suggestions are offset by 2, initial gift's row_id in useIdeas() is 2
+  const [g, setG] = useState(suggestions);
 
   useEffect(() => {
     if (id === undefined) {
@@ -26,15 +23,12 @@ function ProductDetail(): JSX.Element {
     setG(suggestions.filter((i) => parseInt(i.rowId.toString()) === index));
   }, [id, suggestions]);
 
-    setG(suggestions.at(index - 2));
-    if (g !== undefined) {
-      setInvalid(false);
-    }
-  }, []);
-
-  if (invalid) {
-    return (
-      <div>
+  return (
+    <div>
+      {isLoading ? (
+        <Loading />
+      ) : g.length === 0 ? (
+        <div>
         <div id="no-gifts-container">
           <div id="back-to-results-button">
             <Link to="/results"> {"< "} Back to quiz results</Link>
@@ -43,17 +37,6 @@ function ProductDetail(): JSX.Element {
           <div id="card">This gift does not exist</div>
         </div>
         <Footer />
-      </div>
-    );
-  } else {
-    return (
-      <div>
-        <div id="total-container">
-          <div id="back-to-results-button">
-            <Link to="/results"> {"< "} Back to quiz results</Link>
-          </div>
-          <br />
-          <h4>This gift does not exist</h4>
         </div>
       ) : (
         <div>
