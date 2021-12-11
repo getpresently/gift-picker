@@ -1,4 +1,4 @@
-import {useState, useEffect} from "react";
+import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { useIdeas } from "../utils/hooks";
 import "./ProductDetails.css";
@@ -7,43 +7,41 @@ import Footer from "./Footer";
 import { Link } from "react-router-dom";
 import { Popup } from "reactjs-popup";
 
-
 function ProductDetail(): JSX.Element {
   const { data: suggestions, loading: isLoading } = useIdeas();
   const { id } = useParams();
-  const [invalid, setInvalid] = useState(true); 
+  const [invalid, setInvalid] = useState(true);
   const [index, setIndex] = useState(0);
-  const [g, setG] : any = useState();
-
-  
+  const [g, setG]: any = useState();
 
   //suggestions are offset by 2, initial gift's row_id in useIdeas() is 2
 
   useEffect(() => {
     if (id === undefined) {
-      console.log("hello")
-      setIndex(0)
+      setIndex(0);
     } else {
       setIndex(parseInt(id));
     }
 
     setG(suggestions.at(index - 2));
-    if(g !== undefined) {
+    if (g !== undefined) {
       setInvalid(false);
     }
-  }, [])
-  
+  }, []);
+
   if (invalid) {
     return (
-      <div id="total-container">
-      <div id="back-to-results-button">
-        <Link to="/results"> {"< "} Back to quiz results</Link>
+      <div>
+        <div id="no-gifts-container">
+          <div id="back-to-results-button">
+            <Link to="/results"> {"< "} Back to quiz results</Link>
+          </div>
+          <br />
+          <div id="card">This gift does not exist</div>
+        </div>
+        <Footer />
       </div>
-      <br />
-      <h4>This gift does not exist</h4>
-      </div>
-    
-    )
+    );
   } else {
     return (
       <div>
@@ -70,10 +68,21 @@ function ProductDetail(): JSX.Element {
               <Popup
                 trigger={
                   <div id="share-button">
-                    <button > 
-                      <p id="share-text" >Share</p>
-                      <svg id="share-icon" className="h-7 w-7 text-white"  width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">  
-                        <path stroke="none" d="M0 0h24v24H0z"/>  
+                    <button>
+                      <p id="share-text">Share</p>
+                      <svg
+                        id="share-icon"
+                        className="h-7 w-7 text-white"
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        stroke-width="2"
+                        stroke="currentColor"
+                        fill="none"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      >
+                        <path stroke="none" d="M0 0h24v24H0z" />
                         <path d="M15 10l-4 4l6 6l4 -16l-18 7l4 2l2 6l3 -4" />
                       </svg>
                     </button>
