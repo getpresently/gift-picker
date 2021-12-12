@@ -99,19 +99,16 @@ function Suggestions({ choices }: PropTypes): JSX.Element {
   };
 
   return (
-    <div>
+   <div>
       <div id="top">
         <p className="text-white pb-12">Our gift picks 🎁</p>
       </div>
-      {isLoading || isRunning ? (
-        <Loading></Loading>
-      ) : filteredSuggestions.length === 0 ? (
-        <p> No suggestions could be found.</p>
-      ) : (
-        <div className="columns">
-          {filteredSuggestions.slice(0, limit).map((x, i) => {
-            return (
-              <Suggestion
+      {isLoading || isRunning ? <Loading></Loading>
+        : (filteredSuggestions.length === 0 ? <p> No suggestions could be found.</p>
+          : <div className="columns">
+            {filteredSuggestions.slice(0, limit).map((x, i) => {
+              return <Suggestion
+                index={x.rowId}
                 photo={x.photo}
                 key={`que-${i}`}
                 title={x.gift}
@@ -120,13 +117,11 @@ function Suggestions({ choices }: PropTypes): JSX.Element {
                 actualPrice={x.actualPrice}
                 link={x.link}
                 groupLink={x.groupLink}
-              />
-            );
-          })}
-        </div>
-      )}
+              />;
+            })}
+          </div>)}
       <div>
-        {!isLoading && !isRunning && filteredSuggestions.length != 0 && (
+        {!isLoading && !isRunning && filteredSuggestions.length !== 0 && (
           <button
             className="bg-deepBlack w-52 h-11 hover:bg-black text-white button_nav"
             hidden={moreShowing}
