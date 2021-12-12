@@ -1,4 +1,5 @@
 import { TargetElement } from "@testing-library/user-event";
+import {Link} from "react-router-dom";
 import "./Suggestion.css"
 import Suggestions from './Suggestions';
 import { useEffect, useState } from "react";
@@ -7,6 +8,7 @@ import Popup from 'reactjs-popup';
 import Modal from "./Modal";
 
 interface SuggestionProps {
+  index: String;
   title: string;
   brand: string;
   photo: string;
@@ -20,6 +22,7 @@ function addDefaultSrc(ev: any) {
 }
 
 function Suggestion({
+  index,
   title,
   brand,
   photo,
@@ -30,6 +33,7 @@ function Suggestion({
 }: SuggestionProps): JSX.Element {
   
   return (
+    <Link style={{textDecoration: "none"}} to={`/gift/${index}`} >
     <div className="column">
       <div id="img_container">
         <img onError={addDefaultSrc} src={photo} alt="{photo}" />
@@ -55,6 +59,7 @@ function Suggestion({
         </div>
       </div>
     </div>
+    </Link>
   );
 }
 

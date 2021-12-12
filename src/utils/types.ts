@@ -6,8 +6,10 @@ export interface QAndA {
 }
 
 export interface Gift {
+  rowId: String;
   gift: string;
   brand: string;
+  description: String;
   Age: string[];
   Type: string[];
   Interests: string[];
@@ -15,6 +17,8 @@ export interface Gift {
   actualPrice: string;
   photo: string;
   link: string;
+  mailToLink: string;
+  smsToLink: string;
   groupLink: string;
   status: string;
 }

@@ -150,16 +150,14 @@
 }
 
 #emailCaptureContainer {
-  min-width: max-content;
+  // min-width: max-content;
   min-height: max-content;
 }
 
 @media (max-width: 800px) {
-
   #emailCaptureContainer h2 {
     max-width: 300px;
   }
-
 }
 
 #emailButton {
@@ -223,8 +221,7 @@
 
 .emailCaptureForm {
   padding-top: 5vh;
-  font-family: 'Sofia Pro', sans-serif;
-
+  font-family: "Sofia Pro", sans-serif;
 }
 
 #aboutText {
@@ -321,10 +318,8 @@
   }
 }
 
-
 @media (max-width: 800px) {
   #FAQBubble {
-
     margin-left: 10vw;
     margin-right: 10vw;
     padding: 4vh 2vh;
@@ -381,13 +376,6 @@
   padding-left: 10vw;
   padding-top: 4vh;
   object-fit: fill;
-}
-
-/** accordian **/
-input {
-  position: absolute;
-  opacity: 0;
-  z-index: -1;
 }
 
 // Layout

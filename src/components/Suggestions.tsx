@@ -1,10 +1,10 @@
-import './Suggestions.css';
-import {useIdeas} from '../utils/hooks';
-import {Gift} from '../utils/types';
-import Loading from './Loading';
-import Suggestion from './Suggestion';
-import React from 'react';
-import {useTimer} from 'react-timer-hook';
+import "./Suggestions.css";
+import { useIdeas } from "../utils/hooks";
+import { Gift } from "../utils/types";
+import Loading from "./Loading";
+import Suggestion from "./Suggestion";
+import React from "react";
+import { useTimer } from "react-timer-hook";
 
 interface PropTypes {
   choices: { [key: string]: Set<string> };
@@ -12,18 +12,21 @@ interface PropTypes {
 
 const LIMIT_INCREMENT = 3;
 const LIMIT_STOP = 12;
-const MANDATORY_QUESTION_KEYS = ['Age', 'Price'];
-const WEIGHTED_QUESTION_KEYS = ['Relation', 'Type', 'Interests'];
+const MANDATORY_QUESTION_KEYS = ["Age", "Price"];
+const WEIGHTED_QUESTION_KEYS = ["Relation", "Type", "Interests"];
 const WEIGHTED_QUESTION_VALUES = [1, 2, 5];
 
-function Suggestions({choices}: PropTypes): JSX.Element {
+function Suggestions({ choices }: PropTypes): JSX.Element {
   const [limit, setLimit] = React.useState(LIMIT_INCREMENT);
   const [moreShowing, setMoreShowing] = React.useState(false);
-  const {data: suggestions, loading: isLoading} = useIdeas();
+  const { data: suggestions, loading: isLoading } = useIdeas();
 
   const time = new Date();
   time.setSeconds(time.getSeconds() + 2.85); // 2.85 seconds for gif to fully display load
-  const {isRunning} = useTimer({expiryTimestamp: time, onExpire: () => console.warn('onExpire called')});
+  const { isRunning } = useTimer({
+    expiryTimestamp: time,
+    onExpire: () => console.warn("onExpire called"),
+  });
 
   // caculates the relevance score for a gift
   function calculateGiftScore(curGift: Gift) {
@@ -36,9 +39,8 @@ function Suggestions({choices}: PropTypes): JSX.Element {
       if (giftAttributes && !!choices[questionKey]) {
         choices[questionKey].forEach(function (selection) {
           if (selection === "Any budget") {
-            valid = true
-          }
-          else if (giftAttributes.includes(selection)) {
+            valid = true;
+          } else if (giftAttributes.includes(selection)) {
             valid = true;
           }
         });
@@ -58,7 +60,7 @@ function Suggestions({choices}: PropTypes): JSX.Element {
             score +=
               WEIGHTED_QUESTION_VALUES[
                 WEIGHTED_QUESTION_KEYS.indexOf(questionKey)
-                ];
+              ];
           }
         });
       }
@@ -83,7 +85,9 @@ function Suggestions({choices}: PropTypes): JSX.Element {
     return onlyGifts;
   }
 
-  const filteredSuggestions = sortGiftsByScore(suggestions).filter(g => g.status === 'Live');
+  const filteredSuggestions = sortGiftsByScore(suggestions).filter(
+    (g) => g.status === "Live"
+  );
 
   //increases the number of suggestions displayed by the value of LIMIT_INCREMENT
   //until LIMIT_STOP (12) suggestions are shown
@@ -94,9 +98,8 @@ function Suggestions({choices}: PropTypes): JSX.Element {
     }
   };
 
-
   return (
-    <div>
+   <div>
       <div id="top">
         <p className="text-white pb-12">Our gift picks 🎁</p>
       </div>
@@ -105,6 +108,7 @@ function Suggestions({choices}: PropTypes): JSX.Element {
           : <div className="columns">
             {filteredSuggestions.slice(0, limit).map((x, i) => {
               return <Suggestion
+                index={x.rowId}
                 photo={x.photo}
                 key={`que-${i}`}
                 title={x.gift}
@@ -117,12 +121,15 @@ function Suggestions({choices}: PropTypes): JSX.Element {
             })}
           </div>)}
       <div>
-        {(!isLoading && !isRunning) && <button
-          className="bg-deepBlack w-52 h-11 hover:bg-black text-white button_nav"
-          hidden={moreShowing}
-          onClick={increaseLimitAndDisableMore}>
-          Load more gifts
-        </button>}
+        {!isLoading && !isRunning && filteredSuggestions.length !== 0 && (
+          <button
+            className="bg-deepBlack w-52 h-11 hover:bg-black text-white button_nav"
+            hidden={moreShowing}
+            onClick={increaseLimitAndDisableMore}
+          >
+            Load more gifts
+          </button>
+        )}
       </div>
     </div>
   );
