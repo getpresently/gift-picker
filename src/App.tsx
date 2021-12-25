@@ -14,6 +14,7 @@ import Banner from "./components/Banner";
 import { BrowserRouter as Router, Link, Route, Routes } from "react-router-dom";
 import EmailCaptureComponent from "./components/EmailCaptureForm";
 import { getQuestions } from "./utils/hooks";
+import ProductDetail from "./components/ProductDetail";
 
 enum Scene {
   Home = 1,
@@ -288,7 +289,12 @@ function App(): JSX.Element {
               <div className="col">
                 <div className="tabs">
                   <div className="tab">
-                    <input type="checkbox" id="rd1" name="rd" />
+                    <input
+                      type="checkbox"
+                      className="hidden"
+                      id="rd1"
+                      name="rd"
+                    />
                     <label className="tab-label" htmlFor="rd1">
                       What is GiftPicker?
                     </label>
@@ -301,7 +307,12 @@ function App(): JSX.Element {
                     </div>
                   </div>
                   <div className="tab">
-                    <input type="checkbox" id="rd2" name="rd" />
+                    <input
+                      type="checkbox"
+                      className="hidden"
+                      id="rd2"
+                      name="rd"
+                    />
                     <label className="tab-label" htmlFor="rd2">
                       Who’s GiftPicker for?
                     </label>
@@ -314,7 +325,12 @@ function App(): JSX.Element {
                     </div>
                   </div>
                   <div className="tab">
-                    <input type="checkbox" id="rd3" name="rd" />
+                    <input
+                      type="checkbox"
+                      className="hidden"
+                      id="rd3"
+                      name="rd"
+                    />
                     <label className="tab-label" htmlFor="rd3">
                       Can I share my GiftPicker recommendations with others?
                     </label>
@@ -335,7 +351,12 @@ function App(): JSX.Element {
                     </div>
                   </div>
                   <div className="tab">
-                    <input type="checkbox" id="rd4" name="rd" />
+                    <input
+                      type="checkbox"
+                      className="hidden"
+                      id="rd4"
+                      name="rd"
+                    />
                     <label className="tab-label" htmlFor="rd4">
                       I have some suggestions, how can I get in touch?
                     </label>
@@ -391,6 +412,15 @@ function App(): JSX.Element {
               <div>
                 <Header />
                 <SuggestionsComponent />
+              </div>
+            }
+          />
+          <Route
+            path="/gift/:id"
+            element={
+              <div>
+                <Header />
+                <ProductDetail />
               </div>
             }
           />

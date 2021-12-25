@@ -1,12 +1,11 @@
 import './Suggestions.css';
-import { useIdeas } from '../utils/hooks';
-import { Gift } from '../utils/types';
+import {useIdeas} from '../utils/hooks';
+import {Gift} from '../utils/types';
 import Loading from './Loading';
 import Suggestion from './Suggestion';
 import React from 'react';
-import { useTimer } from 'react-timer-hook';
-import { BrowserRouter as Router, Link, Route, Routes } from "react-router-dom";
-
+import {useTimer} from 'react-timer-hook';
+import {Link} from 'react-router-dom';
 
 interface PropTypes {
   choices: { [key: string]: Set<string> };
@@ -20,14 +19,14 @@ const MANDATORY_QUESTION_KEYS = ['Age', 'Price'];
 const WEIGHTED_QUESTION_KEYS = ['Relation', 'Type', 'Interests'];
 const WEIGHTED_QUESTION_VALUES = [1, 2, 5];
 
-function Suggestions({ choices, setCurrentPage, resetSelections }: PropTypes): JSX.Element {
+function Suggestions({choices, setCurrentPage, resetSelections}: PropTypes): JSX.Element {
   const [limit, setLimit] = React.useState(LIMIT_INCREMENT);
   const [moreShowing, setMoreShowing] = React.useState(false);
-  const { data: suggestions, loading: isLoading } = useIdeas();
+  const {data: suggestions, loading: isLoading} = useIdeas();
 
   const time = new Date();
   time.setSeconds(time.getSeconds() + 2.85); // 2.85 seconds for gif to fully display load
-  const { isRunning } = useTimer({ expiryTimestamp: time, onExpire: () => console.warn('onExpire called') });
+  const {isRunning} = useTimer({expiryTimestamp: time, onExpire: () => console.warn('onExpire called')});
 
   // caculates the relevance score for a gift
   function calculateGiftScore(curGift: Gift) {
@@ -39,10 +38,9 @@ function Suggestions({ choices, setCurrentPage, resetSelections }: PropTypes): J
       let valid = false;
       if (giftAttributes && !!choices[questionKey]) {
         choices[questionKey].forEach(function (selection) {
-          if (selection === "Any budget") {
-            valid = true
-          }
-          else if (giftAttributes.includes(selection)) {
+          if (selection === 'Any budget') {
+            valid = true;
+          } else if (giftAttributes.includes(selection)) {
             valid = true;
           }
         });
@@ -61,8 +59,8 @@ function Suggestions({ choices, setCurrentPage, resetSelections }: PropTypes): J
           if (giftAttributes.includes(selection)) {
             score +=
               WEIGHTED_QUESTION_VALUES[
-              WEIGHTED_QUESTION_KEYS.indexOf(questionKey)
-              ];
+                WEIGHTED_QUESTION_KEYS.indexOf(questionKey)
+                ];
           }
         });
       }
@@ -87,7 +85,9 @@ function Suggestions({ choices, setCurrentPage, resetSelections }: PropTypes): J
     return onlyGifts;
   }
 
-  const filteredSuggestions = sortGiftsByScore(suggestions).filter(g => g.status === 'Live');
+  const filteredSuggestions = sortGiftsByScore(suggestions).filter(
+    (g) => g.status === 'Live',
+  );
 
   //increases the number of suggestions displayed by the value of LIMIT_INCREMENT
   //until LIMIT_STOP (12) suggestions are shown
@@ -98,18 +98,18 @@ function Suggestions({ choices, setCurrentPage, resetSelections }: PropTypes): J
     }
   };
 
-
   return (
     <div>
       <div id="top">
         <p className="text-white pb-12">Our gift picks 🎁</p>
       </div>
-      {isLoading || isRunning ? <Loading></Loading>
+      {isLoading || isRunning ? <Loading/>
         : (filteredSuggestions.length === 0 ?
           <p> No suggestions could be found.</p>
           : <div className="columns">
             {filteredSuggestions.slice(0, limit).map((x, i) => {
               return <Suggestion
+                index={x.rowId}
                 photo={x.photo}
                 key={`que-${i}`}
                 title={x.gift}
@@ -122,6 +122,7 @@ function Suggestions({ choices, setCurrentPage, resetSelections }: PropTypes): J
             })}
           </div>)}
       <div>
+        {/* && filteredSuggestions.length !== 0*/}
         {(!isLoading && !isRunning) &&
           <div className="flex flex-col items-center">
             <button
