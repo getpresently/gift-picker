@@ -1,18 +1,29 @@
-import { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
-import { useIdeas } from "../utils/hooks";
-import "./ProductDetails.css";
-import "../homepage.scss";
-import Footer from "./Footer";
-import { Link } from "react-router-dom";
-import { Popup } from "reactjs-popup";
-import Loading from "./Loading";
+import {useState, useEffect} from 'react';
+import {useParams} from 'react-router-dom';
+import {getIdeas} from '../utils/hooks';
+import './ProductDetails.css';
+import '../homepage.scss';
+import Footer from './Footer';
+import {Link} from 'react-router-dom';
+import {Popup} from 'reactjs-popup';
+import Loading from './Loading';
+import {Gift} from '../utils/types';
+import Header from './Header';
 
 function ProductDetail(): JSX.Element {
-  const { data: suggestions, loading: isLoading } = useIdeas();
-  const { id } = useParams();
+  const [suggestions, setSuggestions] = useState<Array<Gift>>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const {id} = useParams();
   const [index, setIndex] = useState(0);
   const [g, setG] = useState(suggestions);
+
+  useEffect(() => {
+    getIdeas().then(ideas => {
+      setSuggestions(ideas);
+      setLoading(false);
+    });
+  }, []);
+
 
   useEffect(() => {
     if (id === undefined) {
@@ -21,47 +32,45 @@ function ProductDetail(): JSX.Element {
       setIndex(parseInt(id));
     }
     setG(suggestions.filter((i) => parseInt(i.rowId.toString()) === index));
-  }, [id, suggestions]);
+  }, [id, index, suggestions]);
 
   return (
     <div>
-      {isLoading ? (
-        <Loading />
+      <Header/>
+
+      {loading ? (
+        <Loading/>
       ) : g.length === 0 ? (
         <div>
-        <div id="no-gifts-container">
-          <div id="back-to-results-button">
-            <Link to="/results"> {"< "} Back to quiz results</Link>
+          <div id="no-gifts-container">
+            <div id="back-to-results-button">
+              <Link to="/results"> {'< '} Back to quiz results</Link>
+            </div>
+            <br/>
+            <div id="card">Oops! This product link is no longer valid!</div>
           </div>
-          <br />
-          <div id="card">This gift does not exist</div>
-        </div>
-        <Footer />
+          <Footer/>
         </div>
       ) : (
         <div>
           <div id="total-container">
             <div id="back-to-results-button">
-              <Link to="/results"> {"< "} Back to quiz results</Link>
+              <Link to="/results"> {'< '} Back to quiz results</Link>
             </div>
-            <br />
-            <br />
-            <div
-              id="product-details-container"
-              className="flex flex-col lg:flex-row bg-white shadow rounded-lg"
-            >
+            <br/>
+            <br/>
+            <div id="product-details-container" className="flex flex-col lg:flex-row bg-white shadow rounded-lg">
               <div id="img-container">
                 <img
                   id="product-image"
                   className="object-cover w-full h-48"
                   src={g[0].photo}
-                  alt="Gift img"
-                />
+                  alt="Gift img"/>
               </div>
 
-              <div className="relative p-4 lg:w-2/3">
-                <Popup
-                  trigger={
+              <div className="p-4 lg:w-2/3">
+                <div style={{width: '100%'}}>
+                  <Popup position="top right" trigger={
                     <div id="share-button">
                       <button>
                         <p id="share-text">Share</p>
@@ -71,59 +80,58 @@ function ProductDetail(): JSX.Element {
                           width="24"
                           height="24"
                           viewBox="0 0 24 24"
-                          stroke-width="2"
+                          strokeWidth="2"
                           stroke="currentColor"
                           fill="none"
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
                         >
-                          <path stroke="none" d="M0 0h24v24H0z" />
-                          <path d="M15 10l-4 4l6 6l4 -16l-18 7l4 2l2 6l3 -4" />
+                          <path stroke="none" d="M0 0h24v24H0z"/>
+                          <path d="M15 10l-4 4l6 6l4 -16l-18 7l4 2l2 6l3 -4"/>
                         </svg>
                       </button>
-                    </div>
-                  }
-                  position="top right"
-                >
-                  <div style={{ display: "flex" }}>
-                    <a href={g[0].mailToLink}>
-                      <svg
-                        className="h-8 w-8 text-black"
-                        width="24"
-                        height="24"
-                        viewBox="0 0 24 24"
-                        stroke-width="2"
-                        stroke="currentColor"
-                        fill="none"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                      >
-                        <path stroke="none" d="M0 0h24v24H0z" />
-                        <rect x="3" y="5" width="18" height="14" rx="2" />
-                        <polyline points="3 7 12 13 21 7" />
-                      </svg>
-                    </a>
+                    </div>}
+                  >
+                    <div style={{display: 'flex'}}>
+                      <a href={g[0].mailToLink}>
+                        <svg
+                          className="h-8 w-8 text-black"
+                          width="24"
+                          height="24"
+                          viewBox="0 0 24 24"
+                          strokeWidth="2"
+                          stroke="currentColor"
+                          fill="none"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        >
+                          <path stroke="none" d="M0 0h24v24H0z"/>
+                          <rect x="3" y="5" width="18" height="14" rx="2"/>
+                          <polyline points="3 7 12 13 21 7"/>
+                        </svg>
+                      </a>
 
-                    <a href={g[0].smsToLink}>
-                      <svg
-                        className="h-8 w-8 text-black"
-                        width="24"
-                        height="24"
-                        viewBox="0 0 24 24"
-                        stroke-width="2"
-                        stroke="currentColor"
-                        fill="none"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                      >
-                        <path stroke="none" d="M0 0h24v24H0z" />
-                        <path d="M4 21v-13a3 3 0 0 1 3 -3h10a3 3 0 0 1 3 3v6a3 3 0 0 1 -3 3h-9l-4 4" />
-                        <line x1="8" y1="9" x2="16" y2="9" />
-                        <line x1="8" y1="13" x2="14" y2="13" />
-                      </svg>
-                    </a>
-                  </div>
-                </Popup>
+                      <a href={g[0].smsToLink}>
+                        <svg
+                          className="h-8 w-8 text-black"
+                          width="24"
+                          height="24"
+                          viewBox="0 0 24 24"
+                          strokeWidth="2"
+                          stroke="currentColor"
+                          fill="none"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        >
+                          <path stroke="none" d="M0 0h24v24H0z"/>
+                          <path d="M4 21v-13a3 3 0 0 1 3 -3h10a3 3 0 0 1 3 3v6a3 3 0 0 1 -3 3h-9l-4 4"/>
+                          <line x1="8" y1="9" x2="16" y2="9"/>
+                          <line x1="8" y1="13" x2="14" y2="13"/>
+                        </svg>
+                      </a>
+                    </div>
+                  </Popup>
+                </div>
 
                 <div id="product-detail-brand">{g[0].brand}</div>
                 <div id="product-detail-title">{g[0].gift}</div>

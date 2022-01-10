@@ -419,8 +419,7 @@ function App(): JSX.Element {
             path="/gift/:id"
             element={
               <div>
-                <Header />
-                <ProductDetail />
+                <ProductDetail/>
               </div>
             }
           />

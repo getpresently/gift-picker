@@ -1,13 +1,13 @@
-import { useEffect, useState } from "react";
-import fetch from "unfetch";
+import {useEffect, useState} from 'react';
+import fetch from 'unfetch';
 
-import { Gift, QAndA } from "./types";
+import {Gift, QAndA} from './types';
 
 const IdeasSource =
-  "https://v1.nocodeapi.com/qlangstaff/google_sheets/WmiYFvgDSyDXhouR?tabId=Gifts";
+  'https://v1.nocodeapi.com/qlangstaff/google_sheets/WmiYFvgDSyDXhouR?tabId=Gifts';
 
 const QuestionsSource =
-  "https://v1.nocodeapi.com/qlangstaff/google_sheets/WmiYFvgDSyDXhouR?tabId=QandA";
+  'https://v1.nocodeapi.com/qlangstaff/google_sheets/WmiYFvgDSyDXhouR?tabId=QandA';
 
 const EmailsSource =
   "https://v1.nocodeapi.com/qlangstaff/google_sheets/WmiYFvgDSyDXhouR?tabId=Emails";
@@ -58,34 +58,25 @@ export function fetchURL(url: string): Promise<any> {
     });
 }
 
-export function useIdeas(): { data: Gift[]; loading: boolean } {
-  const { data: response, loading } = useFetch(IdeasSource);
-
-  if (!response) {
-    return {
-      data: [],
-      loading: true,
-    };
-  }
-
-  const temp: Gift[] = [];
-  for (const row of response.data) {
+function instantiateGifts(data: any): Array<Gift> {
+  const gifts: Gift[] = [];
+  for (const row of data) {
     let g: Gift = {
-      rowId: "",
-      gift: "",
-      brand: "",
-      description: "",
+      rowId: '',
+      gift: '',
+      brand: '',
+      description: '',
       Age: [],
       Type: [],
       Interests: [],
       Price: [],
-      actualPrice: "",
-      photo: "",
-      link: "",
-      mailToLink: "",
-      smsToLink: "",
-      groupLink: "",
-      status: "",
+      actualPrice: '',
+      photo: '',
+      link: '',
+      mailToLink: '',
+      smsToLink: '',
+      groupLink: '',
+      status: '',
     };
     for (const key of Object.keys(row)) {
       if (key === "row_id") {
@@ -111,9 +102,9 @@ export function useIdeas(): { data: Gift[]; loading: boolean } {
       } else if (key === "Link") {
         g.link = row[key];
       } else if (key === "Mailto") {
-        g.mailToLink = row[key].substring(0, row[key].length-1);   
+        g.mailToLink = row[key].substring(0, row[key].length - 1);
       } else if (key === "Sms") {
-        g.smsToLink = row[key].substring(0, row[key].length-1); 
+        g.smsToLink = row[key].substring(0, row[key].length - 1);
       } else if (key === "Status") {
         g.status = row[key];
       }
@@ -124,27 +115,40 @@ export function useIdeas(): { data: Gift[]; loading: boolean } {
     g.smsToLink = g.smsToLink.concat(g.rowId.toString());
 
     g.groupLink = g.groupLink.concat(
-      "https://getpresently.com/go/set-up-your-group-gift/?wpf3087_209=",
+      'https://getpresently.com/go/set-up-your-group-gift/?wpf3087_209=',
       g.gift,
-      " by ",
+      ' by ',
       g.brand,
-      "&wpf3087_88=",
+      '&wpf3087_88=',
       g.photo,
-      "&wpf3087_207=Add%20gift%20link&wpf3087_195=",
+      '&wpf3087_207=Add%20gift%20link&wpf3087_195=',
       g.Price.toString(),
-      "&refsc=giftpicker"
+      '&refsc=giftpicker',
     );
-    temp.push(g);
+    gifts.push(g);
+  }
+
+  return gifts;
+}
+
+export function useIdeas(): { data: Gift[]; loading: boolean } {
+  const {data: response, loading} = useFetch(IdeasSource);
+
+  if (!response) {
+    return {
+      data: [],
+      loading: true,
+    };
   }
 
   return {
-    data: temp,
+    data: instantiateGifts(response.data),
     loading,
   };
 }
 
 export function useQuestions(): { data: QAndA[]; loading: boolean } {
-  const { data: response, loading } = useFetch(QuestionsSource);
+  const {data: response, loading} = useFetch(QuestionsSource);
 
   if (!response) {
     return {
@@ -198,9 +202,9 @@ export async function getQuestions(): Promise<Array<any>> {
         qa.question = row[key];
       } else if (key === "QuestionKey") {
         qa.questionKey = row[key];
-      } else if (key === "MaxSelectable") {
+      } else if (key === 'MaxSelectable') {
         qa.maxSelectable = parseInt(row[key]);
-      } else if (key.slice(0, 1) === "A") {
+      } else if (key.slice(0, 1) === 'A') {
         qa.answers.push(row[key]);
       }
     }
@@ -209,4 +213,9 @@ export async function getQuestions(): Promise<Array<any>> {
   }
 
   return temp;
+}
+
+export async function getIdeas(): Promise<Array<Gift>> {
+  const data = await fetchURL(IdeasSource);
+  return instantiateGifts(data);
 }

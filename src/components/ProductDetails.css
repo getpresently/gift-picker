@@ -61,16 +61,6 @@
   border-radius: 12px;
 }
 
-#product-details {
-  order: 2;
-  float: left;
-  width: inherit;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  max-height: auto;
-  padding: 5% 5% 5% 5%;
-}
-
 #product-detail-brand {
   color: #aeafb7;
   text-align: left;
@@ -90,13 +80,13 @@
 }
 
 #product-detail-description {
-  height: 90px;
   color: white;
   text-align: left;
-  overflow: hidden;
+  overflow: auto;
   font-size: 14px;
   margin-right: 40px;
   margin-left: 10px;
+  padding-bottom: 10px;
 }
 
 #product-detail-price {
