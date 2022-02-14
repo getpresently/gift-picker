@@ -106,6 +106,9 @@ body {
 
 .content_container {
   min-height: 82vh;
+  align-content: flex-start;
+  /* align-content: flex-end; */
+
 }
 
 /* RESULTS PAGE */

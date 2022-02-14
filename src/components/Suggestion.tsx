@@ -21,7 +21,7 @@ function Suggestion({
   groupLink,
 }: SuggestionProps): JSX.Element {
   return (
-    <div className="column">
+    <div className="column" style={{minWidth: "350px"}}>
       <img onError={addDefaultSrc} src={photo} alt="{photo}" />
       <div className="suggestion_MetaData">
         <p id="suggestion_Brand">By {brand}</p>
