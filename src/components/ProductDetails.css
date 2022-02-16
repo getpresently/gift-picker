@@ -106,8 +106,8 @@
 #product-button-group {
   width: 100%;
   display: flex;
+  justify-content: center;
   padding-bottom: 5px;
-  margin-left: 10px;
 }
 
 #share-button {
