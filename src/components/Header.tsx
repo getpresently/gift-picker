@@ -1,27 +1,29 @@
-import React, {useEffect, useState} from 'react';
-import { Link } from 'react-router-dom';
+import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 function Header() {
-  const [header, setHeader] = useState('Header');
+  const [header, setHeader] = useState("Header");
   const listenScrollEvent = () => {
     if (window.scrollY < 103) {
-      return setHeader('Header');
+      return setHeader("Header");
     } else if (window.scrollY > 100) {
-      return setHeader('Header2');
+      return setHeader("Header2");
     }
   };
   useEffect(() => {
-    window.addEventListener('scroll', listenScrollEvent);
+    window.addEventListener("scroll", listenScrollEvent);
 
-    return () => window.removeEventListener('scroll', listenScrollEvent);
+    return () => window.removeEventListener("scroll", listenScrollEvent);
   }, []);
   return (
     <div>
       <div id={header}>
         <Link to="/">
           <img
-            style={{pointerEvents: 'none' }}
+            style={{ pointerEvents: "none" }}
             id="HeaderLogoButton"
-            src="./headerLogo.svg"  alt={'logo'}/>
+            src="./headerLogo.svg"
+            alt={"logo"}
+          />
         </Link>
       </div>
     </div>

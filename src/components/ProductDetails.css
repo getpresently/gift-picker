@@ -20,8 +20,7 @@
 
 #group-gift-info-link {
   color: #4dddea;
-  float: right;
-  margin-right: 100px;
+  float: center;
   font-size: 16px;
   text-decoration: underline;
 }
@@ -121,14 +120,13 @@
 }
 
 #share-text {
-  float:left;
+  float: left;
 }
 
 #share-icon {
-  float:left;
-  margin-left:5px;
+  float: left;
+  margin-left: 5px;
 }
-
 
 #share-button a {
   margin: auto;

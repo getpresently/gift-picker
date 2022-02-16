@@ -29,14 +29,14 @@ function ProductDetail(): JSX.Element {
         <Loading />
       ) : g.length === 0 ? (
         <div>
-        <div id="no-gifts-container">
-          <div id="back-to-results-button">
-            <Link to="/results"> {"< "} Back to quiz results</Link>
+          <div id="no-gifts-container">
+            <div id="back-to-results-button">
+              <Link to="/results"> {"< "} Back to quiz results</Link>
+            </div>
+            <br />
+            <div id="card">This gift does not exist</div>
           </div>
-          <br />
-          <div id="card">This gift does not exist</div>
-        </div>
-        <Footer />
+          <Footer />
         </div>
       ) : (
         <div>
@@ -52,14 +52,15 @@ function ProductDetail(): JSX.Element {
             >
               <div id="img-container">
                 <img
-                  id="product-image"
-                  className="object-cover w-full h-48"
+                  // id="product-image"
+                  // className="object-cover w-full h-48 rounded-xl"
+                  className="object-cover w-full h-48 rounded-xl lg: h-72"
                   src={g[0].photo}
                   alt="Gift img"
                 />
               </div>
 
-              <div className="relative p-4 lg:w-2/3">
+              <div className="relative p-4 lg:w-full">
                 <Popup
                   trigger={
                     <div id="share-button">
