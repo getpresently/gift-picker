@@ -54,7 +54,7 @@ function ProductDetail(): JSX.Element {
                 <img
                   // id="product-image"
                   // className="object-cover w-full h-48 rounded-xl"
-                  className="object-cover w-full h-48 rounded-xl lg: h-72"
+                  className="object-cover w-full h-48 rounded-xl lg:h-80"
                   src={g[0].photo}
                   alt="Gift img"
                 />
@@ -63,7 +63,10 @@ function ProductDetail(): JSX.Element {
               <div className="relative p-4 lg:w-full">
                 <Popup
                   trigger={
-                    <div id="share-button" className="mr-10 mb-5">
+                    <div
+                      id="share-button"
+                      className="mr-10 mb-5 block sm:inline sm:float-right"
+                    >
                       <button>
                         <p id="share-text">Share</p>
                         <svg
@@ -125,11 +128,15 @@ function ProductDetail(): JSX.Element {
                     </a>
                   </div>
                 </Popup>
-
                 <div id="product-detail-brand">{g[0].brand}</div>
                 <div id="product-detail-title">{g[0].gift}</div>
                 <div id="product-detail-price">{g[0].actualPrice}</div>
-                <div id="product-detail-description">{g[0].description}</div>
+                <div
+                  id="product-detail-description"
+                  className="mb-10 h-full sm:h-20"
+                >
+                  {g[0].description}
+                </div>
                 <div id="product-button-group">
                   <button id="card_button_a">
                     <a href={g[0].link} target="_blank" rel="noreferrer">

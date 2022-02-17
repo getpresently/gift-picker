@@ -83,18 +83,15 @@
   font-style: normal;
   font-weight: bold;
   font-size: 24px;
-  height: 40px;
-  overflow: hidden;
   margin-left: 10px;
 }
 
 #product-detail-description {
-  height: 90px;
   color: white;
   text-align: left;
   overflow: hidden;
   font-size: 14px;
-  margin-right: 40px;
+  margin-right: 10px;
   margin-left: 10px;
 }
 
@@ -102,6 +99,7 @@
   color: white;
   text-align: left;
   margin-left: 10px;
+  margin-bottom: 10px;
 }
 #product-button-group {
   width: 100%;
@@ -115,8 +113,6 @@
   color: white;
   border: 1px solid white;
   border-radius: 12px;
-  display: inline;
-  float: right;
 }
 
 #share-text {
