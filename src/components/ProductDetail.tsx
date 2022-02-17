@@ -65,7 +65,7 @@ function ProductDetail(): JSX.Element {
                   trigger={
                     <div
                       id="share-button"
-                      className="mr-10 mb-5 block sm:inline sm:float-right"
+                      className="mr-2.5 mb-5 ml-2.5 block sm:inline sm:float-right"
                     >
                       <button>
                         <p id="share-text">Share</p>
