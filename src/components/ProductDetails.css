@@ -111,7 +111,7 @@
 }
 
 #share-button {
-  margin-right: 40px;
+  margin-right: 10px;
   color: white;
   border: 1px solid white;
   border-radius: 12px;
@@ -145,6 +145,7 @@
   margin: auto;
   text-decoration: none;
   color: black;
+  overflow-wrap: break-word;
 }
 
 #card {

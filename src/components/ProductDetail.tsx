@@ -63,7 +63,7 @@ function ProductDetail(): JSX.Element {
               <div className="relative p-4 lg:w-full">
                 <Popup
                   trigger={
-                    <div id="share-button">
+                    <div id="share-button" className="mr-10 mb-5">
                       <button>
                         <p id="share-text">Share</p>
                         <svg
