@@ -89,6 +89,9 @@ function Suggestions({choices, setCurrentPage, resetSelections}: PropTypes): JSX
     (g) => g.status === 'Live',
   );
 
+  // create a function that allows us to take the filteredSuggestions array and randomize the display of any
+  // items with the same score ()
+
   //increases the number of suggestions displayed by the value of LIMIT_INCREMENT
   //until LIMIT_STOP (12) suggestions are shown
   const increaseLimitAndDisableMore = () => {
@@ -99,7 +102,7 @@ function Suggestions({choices, setCurrentPage, resetSelections}: PropTypes): JSX
   };
 
   return (
-    <div>
+    <div id="suggestions-container">
       <div id="top">
         <p className="text-white pb-12">Our gift picks 🎁</p>
       </div>
