@@ -120,10 +120,13 @@ function App(): JSX.Element {
     <div>
       <div className="content_container">
         <div className="results">
-          <Suggestions choices={choices} setCurrentPage={setCurrentPage} resetSelections={resetSelections} />
+          <Suggestions
+            choices={choices}
+            setCurrentPage={setCurrentPage}
+            resetSelections={resetSelections}
+          />
         </div>
-        <div id="backButton">
-        </div>
+        <div id="backButton"></div>
       </div>
       <Footer />
     </div>
@@ -208,7 +211,7 @@ function App(): JSX.Element {
               </button>
             </Link>
           </div>
-          <div id="aboutImg">
+          <div id="aboutImg" className="-mb-20 md:-mb-3">
             <img src="./giftpickerImages.svg" alt="gift picker on phone" />
           </div>
         </div>
