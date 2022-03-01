@@ -1,11 +1,11 @@
-import './Suggestions.css';
-import {useIdeas} from '../utils/hooks';
-import {Gift} from '../utils/types';
-import Loading from './Loading';
-import Suggestion from './Suggestion';
-import React from 'react';
-import {useTimer} from 'react-timer-hook';
-import {Link} from 'react-router-dom';
+import "./Suggestions.css";
+import { useIdeas } from "../utils/hooks";
+import { Gift } from "../utils/types";
+import Loading from "./Loading";
+import Suggestion from "./Suggestion";
+import React from "react";
+import { useTimer } from "react-timer-hook";
+import { Link } from "react-router-dom";
 
 interface PropTypes {
   choices: { [key: string]: Set<string> };
@@ -15,18 +15,25 @@ interface PropTypes {
 
 const LIMIT_INCREMENT = 3;
 const LIMIT_STOP = 12;
-const MANDATORY_QUESTION_KEYS = ['Age', 'Price'];
-const WEIGHTED_QUESTION_KEYS = ['Relation', 'Type', 'Interests'];
+const MANDATORY_QUESTION_KEYS = ["Age", "Price"];
+const WEIGHTED_QUESTION_KEYS = ["Relation", "Type", "Interests"];
 const WEIGHTED_QUESTION_VALUES = [1, 2, 5];
 
-function Suggestions({choices, setCurrentPage, resetSelections}: PropTypes): JSX.Element {
+function Suggestions({
+  choices,
+  setCurrentPage,
+  resetSelections,
+}: PropTypes): JSX.Element {
   const [limit, setLimit] = React.useState(LIMIT_INCREMENT);
   const [moreShowing, setMoreShowing] = React.useState(false);
-  const {data: suggestions, loading: isLoading} = useIdeas();
+  const { data: suggestions, loading: isLoading } = useIdeas();
 
   const time = new Date();
   time.setSeconds(time.getSeconds() + 2.85); // 2.85 seconds for gif to fully display load
-  const {isRunning} = useTimer({expiryTimestamp: time, onExpire: () => console.warn('onExpire called')});
+  const { isRunning } = useTimer({
+    expiryTimestamp: time,
+    onExpire: () => console.warn("onExpire called"),
+  });
 
   // caculates the relevance score for a gift
   function calculateGiftScore(curGift: Gift) {
@@ -38,7 +45,7 @@ function Suggestions({choices, setCurrentPage, resetSelections}: PropTypes): JSX
       let valid = false;
       if (giftAttributes && !!choices[questionKey]) {
         choices[questionKey].forEach(function (selection) {
-          if (selection === 'Any budget') {
+          if (selection === "Any budget") {
             valid = true;
           } else if (giftAttributes.includes(selection)) {
             valid = true;
@@ -60,7 +67,7 @@ function Suggestions({choices, setCurrentPage, resetSelections}: PropTypes): JSX
             score +=
               WEIGHTED_QUESTION_VALUES[
                 WEIGHTED_QUESTION_KEYS.indexOf(questionKey)
-                ];
+              ];
           }
         });
       }
@@ -86,7 +93,7 @@ function Suggestions({choices, setCurrentPage, resetSelections}: PropTypes): JSX
   }
 
   const filteredSuggestions = sortGiftsByScore(suggestions).filter(
-    (g) => g.status === 'Live',
+    (g) => g.status === "Live"
   );
 
   //increases the number of suggestions displayed by the value of LIMIT_INCREMENT
@@ -103,12 +110,15 @@ function Suggestions({choices, setCurrentPage, resetSelections}: PropTypes): JSX
       <div id="top">
         <p className="text-white pb-12">Our gift picks 🎁</p>
       </div>
-      {isLoading || isRunning ? <Loading/>
-        : (filteredSuggestions.length === 0 ?
-          <p> No suggestions could be found.</p>
-          : <div className="columns">
-            {filteredSuggestions.slice(0, limit).map((x, i) => {
-              return <Suggestion
+      {isLoading || isRunning ? (
+        <Loading />
+      ) : filteredSuggestions.length === 0 ? (
+        <p> No suggestions could be found.</p>
+      ) : (
+        <div className="columns">
+          {filteredSuggestions.slice(0, limit).map((x, i) => {
+            return (
+              <Suggestion
                 index={x.rowId}
                 photo={x.photo}
                 key={`que-${i}`}
@@ -118,17 +128,19 @@ function Suggestions({choices, setCurrentPage, resetSelections}: PropTypes): JSX
                 actualPrice={x.actualPrice}
                 link={x.link}
                 groupLink={x.groupLink}
-              />;
-            })}
-          </div>)}
+              />
+            );
+          })}
+        </div>
+      )}
       <div>
-        {/* && filteredSuggestions.length !== 0*/}
-        {(!isLoading && !isRunning) &&
+        {!isLoading && !isRunning && filteredSuggestions.length !== 0 && (
           <div className="flex flex-col items-center">
             <button
               className="bg-deepBlack w-52 h-11 hover:bg-black text-white button_nav"
               hidden={moreShowing}
-              onClick={increaseLimitAndDisableMore}>
+              onClick={increaseLimitAndDisableMore}
+            >
               Load more gifts
             </button>
             <Link to="/">
@@ -142,7 +154,8 @@ function Suggestions({choices, setCurrentPage, resetSelections}: PropTypes): JSX
                 Start over
               </button>
             </Link>
-          </div>}
+          </div>
+        )}
       </div>
     </div>
   );
