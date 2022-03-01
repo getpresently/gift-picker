@@ -211,7 +211,7 @@ function App(): JSX.Element {
               </button>
             </Link>
           </div>
-          <div id="aboutImg" className="-mb-20 md:-mb-3">
+          <div id="aboutImg">
             <img src="./giftpickerImages.svg" alt="gift picker on phone" />
           </div>
         </div>
