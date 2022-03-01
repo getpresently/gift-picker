@@ -89,8 +89,7 @@ function Suggestions({choices, setCurrentPage, resetSelections}: PropTypes): JSX
     (g) => g.status === 'Live',
   );
 
-  // create a function that allows us to take the filteredSuggestions array and randomize the display of any
-  // items with the same score ()
+  
 
   //increases the number of suggestions displayed by the value of LIMIT_INCREMENT
   //until LIMIT_STOP (12) suggestions are shown
