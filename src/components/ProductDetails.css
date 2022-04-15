@@ -20,8 +20,7 @@
 
 #group-gift-info-link {
   color: #4dddea;
-  float: right;
-  margin-right: 100px;
+  float: center;
   font-size: 16px;
   text-decoration: underline;
 }
@@ -84,18 +83,15 @@
   font-style: normal;
   font-weight: bold;
   font-size: 24px;
-  height: 40px;
-  overflow: hidden;
   margin-left: 10px;
 }
 
 #product-detail-description {
-  height: 90px;
   color: white;
   text-align: left;
   overflow: hidden;
   font-size: 14px;
-  margin-right: 40px;
+  margin-right: 10px;
   margin-left: 10px;
 }
 
@@ -103,32 +99,30 @@
   color: white;
   text-align: left;
   margin-left: 10px;
+  margin-bottom: 10px;
 }
 #product-button-group {
   width: 100%;
   display: flex;
+  justify-content: center;
   padding-bottom: 5px;
-  margin-left: 10px;
 }
 
 #share-button {
-  margin-right: 40px;
+  margin-right: 10px;
   color: white;
   border: 1px solid white;
   border-radius: 12px;
-  display: inline;
-  float: right;
 }
 
 #share-text {
-  float:left;
+  float: left;
 }
 
 #share-icon {
-  float:left;
-  margin-left:5px;
+  float: left;
+  margin-left: 5px;
 }
-
 
 #share-button a {
   margin: auto;
@@ -147,6 +141,7 @@
   margin: auto;
   text-decoration: none;
   color: black;
+  overflow-wrap: break-word;
 }
 
 #card {
