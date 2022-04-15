@@ -74,7 +74,7 @@
   width: 55vw;
   max-width: 700px;
   padding-right: 10vw;
-  margin-top: 20vh;
+  // margin-top: 20vh;
   justify-self: left;
   text-align: left;
   padding-bottom: 10vh;
@@ -375,11 +375,13 @@
 }
 
 #HeaderLogoButton {
-  height: 100px;
-  max-height: 10vh;
-  padding-left: 10vw;
+  // height: 100px;
+  // max-height: 100%;
+  // padding-left: 10vw;
+  // margin-bottom: 175px;
   padding-top: 4vh;
-  object-fit: fill;
+  margin-left: -8px;
+  // object-fit: fill;
 }
 
 // Layout

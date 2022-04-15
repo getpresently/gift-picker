@@ -21,6 +21,7 @@ function Header() {
           <img
             style={{ pointerEvents: "none" }}
             id="HeaderLogoButton"
+            className="h-24 max-h-full mb-20 lg:mb-28 xl:mb-40 object-fill"
             src="./headerLogo.svg"
             alt={"logo"}
           />

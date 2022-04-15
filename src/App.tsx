@@ -177,10 +177,10 @@ function App(): JSX.Element {
 
   const HomepageComponent = () => (
     <div id="HomePage">
-      <Header />
       <header id="HomePageContents" className="content_container">
         <div id="StartQuizSection">
           <div id="startSectionText">
+            <Header />
             <h1 id="homepageTitle">
               Don't pick that gift
               <br />
