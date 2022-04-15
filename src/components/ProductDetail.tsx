@@ -50,7 +50,7 @@ function ProductDetail(): JSX.Element {
               id="product-details-container"
               className="flex flex-col lg:flex-row bg-white shadow rounded-lg"
             >
-              <div id="img-container">
+              <div className="w-1/3" id="img-container">
                 <img
                   // id="product-image"
                   // className="object-cover w-full h-48 rounded-xl"

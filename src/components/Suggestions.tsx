@@ -130,8 +130,9 @@ function Suggestions({
 
   const filteredSuggestions = randomSwap(filterSuggestionsByLive).map(
     (row) => row[0]
-//   const filteredSuggestions = sortGiftsByScore(suggestions).filter(
-//     (g) => g.status === "Live"
+  );
+  // const filteredSuggestions = sortGiftsByScore(suggestions).filter(
+  //   (g) => g.status === "Live"
 
   
 
