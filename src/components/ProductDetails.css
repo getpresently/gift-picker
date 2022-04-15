@@ -3,6 +3,14 @@
   margin: auto;
   margin-bottom: 200px;
   margin-top: 100px;
+  max-width:1200px;
+}
+
+@media screen and (max-width: 792px) {
+  total-container { 
+    width:90%;
+    margin: 20px auto; }
+
 }
 
 #no-gifts-container {
