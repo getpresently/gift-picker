@@ -45,7 +45,6 @@
 #HomePage {
   display: flex;
   flex-direction: column;
-  background-image: url("./backgroundImage.svg");
   background-repeat: no-repeat;
   background-size: cover;
 }
@@ -279,7 +278,8 @@
 
 .partnerImage:hover {
   color: rgba(255, 255, 255, 1);
-  box-shadow: 0 5px 15px rgba(145, 92, 182, 0.4);
+  box-shadow: 0 5px 50px white;
+  opacity: 75%;
 }
 
 /* FAQ */

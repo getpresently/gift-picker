@@ -76,18 +76,56 @@ function Suggestions({choices, setCurrentPage, resetSelections}: PropTypes): JSX
   }
 
   // filters out options that dont fit mandatory attributes
-  // returns a list of gifts in decending order based on weighted scores (highest-> lowest)
-  function sortGiftsByScore(suggestions: Gift[]): Gift[] {
+  // returns a list of gifts and scores in decending order based on weighted scores (highest-> lowest)
+  function sortGiftsByScore(suggestions: Gift[]): [Gift, number][] {
     let giftAndScore = suggestions.map((gift) => getGiftScore(gift));
     giftAndScore = giftAndScore.filter((gift) => gift[1] > 0);
     giftAndScore = giftAndScore.sort((a, b) => b[1] - a[1]);
-    let onlyGifts = giftAndScore.map((row) => row[0]);
-    return onlyGifts;
+    return giftAndScore;
+  }
+  
+  // returns the list of gifts and scores whose gift status is Live
+  const filterSuggestionsByLive = sortGiftsByScore(suggestions).filter(
+    (gift) => gift[0].status === 'Live',
+  );
+
+  // generates a random integer between min (inclusive) and max (inclusive)
+  // used to simulate a coin toss for breaking ties at the LIMIT_STOP 
+  function getRandomInt(min: number, max: number) {
+    min = Math.ceil(min);
+    max = Math.floor(max);
+    return Math.floor(Math.random() * (max - min + 1)) + min;
   }
 
-  const filteredSuggestions = sortGiftsByScore(suggestions).filter(
-    (g) => g.status === 'Live',
+  // if two gifts have the same weighted score and are separated by LIMIT_STOP, we
+  // randomly select one to display before LIMIT_STOP so that being displayed isn't
+  // determined by the index for gifts with the same score at the LIMIT_STOP point in
+  // filterSuggestionsByLive
+  function randomSwap(suggestions: [Gift, number][]): [Gift, number][] {
+    if (suggestions[LIMIT_STOP + 1] == null) {
+        return suggestions;
+    }
+    else if (suggestions[LIMIT_STOP][1] == suggestions[LIMIT_STOP + 1][1]) {
+        var random = getRandomInt(0, 1);
+        if (random == 1) {
+          suggestions.splice(LIMIT_STOP, 2, suggestions[LIMIT_STOP])
+            return suggestions;
+        } 
+        else {
+          suggestions.splice(LIMIT_STOP, 2, suggestions[LIMIT_STOP + 1])
+            return suggestions;
+        }
+    }
+    else {
+        return suggestions;
+    }
+  } 
+
+  const filteredSuggestions = randomSwap(filterSuggestionsByLive).map(
+    (row) => row[0]
   );
+
+  
 
   //increases the number of suggestions displayed by the value of LIMIT_INCREMENT
   //until LIMIT_STOP (12) suggestions are shown
@@ -99,7 +137,7 @@ function Suggestions({choices, setCurrentPage, resetSelections}: PropTypes): JSX
   };
 
   return (
-    <div>
+    <div id="suggestions-container">
       <div id="top">
         <p className="text-white pb-12">Our gift picks 🎁</p>
       </div>
