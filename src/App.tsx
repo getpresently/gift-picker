@@ -120,10 +120,13 @@ function App(): JSX.Element {
     <div>
       <div className="content_container">
         <div className="results">
-          <Suggestions choices={choices} setCurrentPage={setCurrentPage} resetSelections={resetSelections} />
+          <Suggestions
+            choices={choices}
+            setCurrentPage={setCurrentPage}
+            resetSelections={resetSelections}
+          />
         </div>
-        <div id="backButton">
-        </div>
+        <div id="backButton"></div>
       </div>
       <Footer />
     </div>
