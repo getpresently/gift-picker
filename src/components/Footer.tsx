@@ -34,11 +34,11 @@ function Footer() {
           </> :
           <>
             {about}
-            <Link to="/home" className={'mt-8'}>
-              <div className="flex">
+            <div className="flex">
+              <Link to="/home" className="m-auto">
                 <img className="m-auto w-20 h-20 object-scale-down" style={{pointerEvents: 'none'}} src={logo} alt={'logo bottom'}/>
-              </div>
-            </Link>
+              </Link>
+            </div>
           </>}
         <div className="flex grid grid-cols-1 p-3 md:p-10">
           <span
