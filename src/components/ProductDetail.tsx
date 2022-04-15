@@ -67,11 +67,11 @@ function ProductDetail(): JSX.Element {
                       id="share-button"
                       className="mr-2.5 mb-5 ml-2.5 block sm:inline sm:float-right"
                     >
-                      <button>
+                      <button className="sharebuttonstyling">
                         <p id="share-text">Share</p>
                         <svg
                           id="share-icon"
-                          className="h-7 w-7 text-white"
+                          className="h-5 w-5 text-white"
                           width="24"
                           height="24"
                           viewBox="0 0 24 24"
