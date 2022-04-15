@@ -7,7 +7,7 @@
 }
 
 @media screen and (max-width: 792px) {
-  total-container { 
+  #total-container { 
     width:90%;
     margin: 20px auto; }
 
