@@ -220,7 +220,7 @@ function App(): JSX.Element {
             <EmailCaptureComponent />
           </div>
           <div id="Partners">
-            <h2> Over 1,000 gifts from your favorite brands</h2>
+            <h2>Thousands of gifts from your favorite brands</h2>
             <div id="PartnersLogosContainer">
               <img
                 className="partnerImage"
