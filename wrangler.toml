@@ -1,12 +1,8 @@
 name = "gift-picker"
-type = "webpack"
 account_id = "19526a20a5323a3e861fab2570a4f5d8"
-route = ""
-zone_id = "af91fe5456178d5f378d760ac7ef7804"
-usage_model = ""
 workers_dev = true
-target_type = "webpack"
+compatibility_date = "2022-11-14"
+main = "workers-site/index.js"
 
 [site]
 bucket = "./build"
-entry-point = "workers-site"
