@@ -1,4 +1,3 @@
-import { TargetElement } from "@testing-library/user-event";
 import {Link} from "react-router-dom";
 import "./Suggestion.css"
 import placeHolder from "../placeholder.png"

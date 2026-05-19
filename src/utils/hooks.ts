@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import fetch from "unfetch";
 
 import { Gift, QAndA } from "./types";
 

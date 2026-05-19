@@ -1,6 +1,6 @@
-module.exports = {
-  purge: ["./src/**/*.{js,jsx,ts,tsx}", "./public/index.html"],
-  darkMode: false, // or 'media' or 'class'
+/** @type {import('tailwindcss').Config} */
+export default {
+  content: ["./index.html", "./src/**/*.{js,jsx,ts,tsx}"],
   theme: {
     extend: {
       colors: {
@@ -10,13 +10,10 @@ module.exports = {
         midGrey: "#AEAFB7",
         deepBlack: "#272833",
       },
+      maxWidth: {
+        xxs: "16rem",
+      },
     },
-    maxWidth: {
-      "xxs": "16rem",
-    },
-  },
-  variants: {
-    extend: {},
   },
   plugins: [],
 };

@@ -8,7 +8,7 @@ import ScrollablePage from "./components/ScrollablePage";
 import Suggestions from "./components/Suggestions";
 import Footer from "./components/Footer";
 import Buttons from "./components/Buttons";
-import Typing from "react-typing-animation";
+import { TypeAnimation } from "react-type-animation";
 import Header from "./components/Header";
 import Banner from "./components/Banner";
 import { BrowserRouter as Router, Link, Route, Routes } from "react-router-dom";
@@ -185,16 +185,15 @@ function App(): JSX.Element {
               Don't pick that gift
               <br />
               for your&nbsp;
-              <Typing loop={true} cursorClassName="cursor" className="inline">
-                {giftPeople.map((p) => {
-                  return (
-                    <>
-                      {<span id="typingEffect">{p}</span>}
-                      <Typing.Backspace count={p.length + 1} delay={1000} />
-                    </>
-                  );
-                })}
-              </Typing>
+              <span id="typingEffect">
+                <TypeAnimation
+                  sequence={giftPeople.flatMap((p) => [p, 1000])}
+                  wrapper="span"
+                  speed={50}
+                  repeat={Infinity}
+                  className="inline"
+                />
+              </span>
             </h1>
             <h2 className="subtitle">
               Leave it to the pros. Introducing GiftPicker, the better way to
