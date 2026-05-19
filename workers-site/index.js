@@ -1,6 +1,7 @@
 import {
   getAssetFromKV,
   mapRequestToAsset,
+  serveSinglePageApp,
 } from "@cloudflare/kv-asset-handler";
 
 /**
@@ -32,10 +33,11 @@ async function handleEvent(event) {
   let options = {};
 
   /**
-   * You can add custom logic to how we fetch your assets
-   * by configuring the function `mapRequestToAsset`
+   * Single-page app: serve index.html for any non-file route so the
+   * client-side router handles /quiz, /results, /gift/:id on direct
+   * load, refresh, and shared links instead of 404ing.
    */
-  // options.mapRequestToAsset = handlePrefix(/^\/docs/)
+  options.mapRequestToAsset = serveSinglePageApp;
 
   try {
     if (DEBUG) {
