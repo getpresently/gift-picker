@@ -77,7 +77,9 @@ type RequestPayload = {
   at: string;
 };
 
-const ENDPOINT = (import.meta.env.VITE_FEEDBACK_ENDPOINT as string | undefined)?.trim() ?? "";
+const ENDPOINT =
+  (import.meta.env.VITE_FEEDBACK_ENDPOINT as string | undefined)?.trim() ||
+  "https://script.google.com/macros/s/AKfycbwqZfDFOu0GHi2Wc5Jc4C40X_p1mxNXC306SH6Bm_CE209O0dJgI5wJWR_Xk4x9Gaflpw/exec";
 
 /**
  * Fire-and-forget POST to the Apps Script webhook. Uses `no-cors` mode

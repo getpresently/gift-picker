@@ -2,18 +2,21 @@ import { useEffect, useState } from "react";
 import type { BillingPeriod, Gift } from "./gifts";
 
 /**
- * Live gift database (Google Sheet via nocodeapi).
+ * Live gift database. Served by the same Google Apps Script web app
+ * that receives feedback + requests (single endpoint for everything).
  *
- * Current column shape (post the May-2026 schema change):
+ * Sheet shape (post the May-2026 schema change):
  *   row_id, Gift, Brand, Age, Relation, Type, Interests, Occasion,
  *   Price (numeric string lower bound), PriceMax (numeric / "$1,240" / "open" / ""),
  *   BillingPeriod ("one-time" | "monthly" | "weekly"), Description,
  *   PhotoAddress, Link, AmazonAltLink, Status, Feedback.
  *
- * We adapt the messy values into the clean Gift shape used everywhere in code.
+ * The adapter maps that into the clean Gift shape used everywhere in code.
  */
-const GIFTS_URL =
-  "https://v1.nocodeapi.com/qlangstaff/google_sheets/WmiYFvgDSyDXhouR?tabId=Gifts";
+const API_ENDPOINT =
+  (import.meta.env.VITE_GIFTS_ENDPOINT as string | undefined)?.trim() ||
+  "https://script.google.com/macros/s/AKfycbwqZfDFOu0GHi2Wc5Jc4C40X_p1mxNXC306SH6Bm_CE209O0dJgI5wJWR_Xk4x9Gaflpw/exec";
+const GIFTS_URL = `${API_ENDPOINT}?tab=Gifts`;
 
 type RawRow = Record<string, string | number | undefined>;
 
