@@ -1,14 +1,49 @@
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { AmbientGlow } from "./clay/AmbientGlow";
+import { ClaySurface } from "./clay/ClaySurface";
+import { GiftBox3D } from "./clay/GiftBox3D";
 import { GiftCard } from "./clay/GiftCard";
 import { Pillow } from "./clay/Pillow";
 import { PresentlyMark } from "./clay/PresentlyMark";
 import { Wordmark } from "./clay/Wordmark";
 import { useIsMobile } from "../hooks/useIsMobile";
-import { clearAnswers, loadAnswers, QUESTIONS } from "../data/questions";
-import { rankGifts, SECONDARY_TONES, type Gift } from "../data/gifts";
+import { clearAnswers, loadAnswers, QUESTIONS, type Answers } from "../data/questions";
+import { INTEREST_LABELS, rankGifts, SECONDARY_TONES, VIBE_LABELS, type Gift } from "../data/gifts";
 import { useGifts } from "../data/giftsApi";
+
+const openExternal = (url: string) => {
+  if (url) window.open(url, "_blank", "noopener,noreferrer");
+};
+
+/** Generates real "why this works" bullets from the hero gift + the user's answers. */
+function buildWhyBullets(hero: Gift, answers: Answers): string[] {
+  const lc = (s: string) => s.toLowerCase();
+  const bullets: string[] = [];
+
+  if (typeof answers.budget === "number") {
+    bullets.push(`Lands inside your $${answers.budget} budget`);
+  }
+  if (hero.brand) {
+    bullets.push(`From ${hero.brand}`);
+  }
+
+  const matchedVibes = (answers.vibe ?? [])
+    .flatMap((v) => VIBE_LABELS[v] ?? [])
+    .filter((label) => hero.types.some((t) => lc(t).includes(lc(label)) || lc(label).includes(lc(t))));
+  if (matchedVibes.length) {
+    bullets.push(`A ${matchedVibes.join(", ").toLowerCase()} fit`);
+  }
+
+  const matchedInterests = (answers.interests ?? [])
+    .flatMap((v) => INTEREST_LABELS[v] ?? [])
+    .filter((label) => hero.interests.some((i) => lc(i).includes(lc(label)) || lc(label).includes(lc(i))));
+  if (matchedInterests.length) {
+    bullets.push(matchedInterests.slice(0, 2).join(" · "));
+  }
+
+  return bullets.slice(0, 4);
+}
 
 const SAVED_KEY = "giftpicker_saved_v1";
 
@@ -210,17 +245,178 @@ export function Results() {
 
           {!loading && !error && hero && (
             <>
-              <div style={{ marginBottom: isMobile ? 24 : 36 }}>
-                <GiftCard
-                  gift={hero}
-                  tone="plum"
-                  hero
-                  badge="Top pick"
-                  saved={saved.has(hero.id)}
-                  onToggleSave={toggleSave}
-                  isMobile={isMobile}
-                />
-              </div>
+              {isMobile ? (
+                <div style={{ marginBottom: 24 }}>
+                  <GiftCard
+                    gift={hero}
+                    tone="plum"
+                    hero
+                    badge="Top pick"
+                    saved={saved.has(hero.id)}
+                    onToggleSave={toggleSave}
+                    isMobile={isMobile}
+                  />
+                </div>
+              ) : (
+                <div
+                  style={{
+                    display: "grid",
+                    gridTemplateColumns: "1.3fr 1fr",
+                    gap: 24,
+                    alignItems: "stretch",
+                    marginBottom: 36,
+                  }}
+                >
+                  {/* LEFT: plum hero with floating decoration */}
+                  <ClaySurface
+                    tint="plum"
+                    style={{
+                      padding: 32,
+                      color: "#FFF8EE",
+                      position: "relative",
+                      overflow: "hidden",
+                      minHeight: 360,
+                    }}
+                  >
+                    <div style={{ position: "relative", zIndex: 1, maxWidth: 380 }}>
+                      <div
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          gap: 8,
+                          fontFamily: "Geist, sans-serif",
+                          fontSize: 11,
+                          letterSpacing: "0.14em",
+                          textTransform: "uppercase",
+                          color: "#FFD074",
+                          marginBottom: 16,
+                        }}
+                      >
+                        <span>✦</span> Your top pick
+                      </div>
+                      <h2
+                        style={{
+                          fontFamily: '"Instrument Serif", serif',
+                          fontSize: 44,
+                          lineHeight: 1.08,
+                          letterSpacing: "-0.02em",
+                          margin: 0,
+                          fontWeight: 400,
+                        }}
+                      >
+                        {hero.name}
+                      </h2>
+                      {hero.description && (
+                        <p
+                          style={{
+                            fontFamily: "Geist, sans-serif",
+                            fontSize: 16,
+                            lineHeight: 1.55,
+                            color: "rgba(255,248,238,0.78)",
+                            marginTop: 16,
+                          }}
+                        >
+                          {hero.description}
+                        </p>
+                      )}
+                      <div style={{ display: "flex", alignItems: "baseline", gap: 8, marginTop: 24 }}>
+                        <div
+                          style={{
+                            fontFamily: '"Instrument Serif", serif',
+                            fontSize: 56,
+                            letterSpacing: "-0.03em",
+                            lineHeight: 1,
+                          }}
+                        >
+                          {hero.price > 0 ? `$${hero.price}` : "—"}
+                        </div>
+                        {hero.brand && (
+                          <div
+                            style={{
+                              fontFamily: "Geist, sans-serif",
+                              fontSize: 14,
+                              color: "rgba(255,248,238,0.6)",
+                            }}
+                          >
+                            from {hero.brand}
+                          </div>
+                        )}
+                      </div>
+                      <div style={{ marginTop: 24 }}>
+                        <Pillow tone="coral" size="md" onClick={() => openExternal(hero.link)}>
+                          View gift →
+                        </Pillow>
+                      </div>
+                    </div>
+                    {/* Floating decorative GiftBox3D */}
+                    <div style={{ position: "absolute", right: -30, bottom: -30, opacity: 0.9, pointerEvents: "none" }}>
+                      <GiftBox3D size={260} color="butter" rotate={-12} ribbonColor="#FF8166" />
+                    </div>
+                  </ClaySurface>
+
+                  {/* RIGHT: stacked side panels */}
+                  <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+                    <ClaySurface tint="rose" style={{ padding: 22 }}>
+                      <div
+                        style={{
+                          fontFamily: "Geist, sans-serif",
+                          fontSize: 11,
+                          letterSpacing: "0.12em",
+                          textTransform: "uppercase",
+                          color: "rgba(35,20,16,0.55)",
+                        }}
+                      >
+                        Why this works
+                      </div>
+                      <ul
+                        style={{
+                          fontFamily: "Geist, sans-serif",
+                          fontSize: 14,
+                          color: "#231410",
+                          lineHeight: 1.55,
+                          marginTop: 12,
+                          paddingLeft: 18,
+                        }}
+                      >
+                        {buildWhyBullets(hero, answers).map((b, i) => (
+                          <li key={i} style={{ marginBottom: 6 }}>
+                            {b}
+                          </li>
+                        ))}
+                      </ul>
+                    </ClaySurface>
+                    <ClaySurface tint="butter" style={{ padding: 22 }}>
+                      <div
+                        style={{
+                          fontFamily: "Geist, sans-serif",
+                          fontSize: 11,
+                          letterSpacing: "0.12em",
+                          textTransform: "uppercase",
+                          color: "rgba(35,20,16,0.55)",
+                        }}
+                      >
+                        At a glance
+                      </div>
+                      <div style={{ display: "flex", alignItems: "baseline", gap: 10, marginTop: 8 }}>
+                        <div
+                          style={{
+                            fontFamily: '"Instrument Serif", serif',
+                            fontSize: 48,
+                            lineHeight: 1,
+                            color: "#231410",
+                            letterSpacing: "-0.02em",
+                          }}
+                        >
+                          {picks.length}
+                        </div>
+                        <div style={{ fontFamily: "Geist, sans-serif", fontSize: 13, color: "rgba(35,20,16,0.65)" }}>
+                          matches, hand-picked from {allGifts.length} curated gifts.
+                        </div>
+                      </div>
+                    </ClaySurface>
+                  </div>
+                </div>
+              )}
 
               {rest.length > 0 && (
                 <>
