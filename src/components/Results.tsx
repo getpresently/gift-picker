@@ -117,9 +117,26 @@ export function Results() {
   const toggleSave = (id: string) => {
     setSaved((prev) => {
       const next = new Set(prev);
-      if (next.has(id)) next.delete(id);
-      else next.add(id);
+      const adding = !next.has(id);
+      if (adding) next.add(id);
+      else next.delete(id);
       saveSaved(next);
+      // Log every heart-on event to the Feedback sheet as reason: heart.
+      // Useful as a positive signal alongside the negative "Something off" reports.
+      if (adding) {
+        const gift = picks.find((p) => p.id === id);
+        if (gift) {
+          postFeedback({
+            giftId: gift.id,
+            giftName: gift.name,
+            brand: gift.brand,
+            reason: "heart",
+            reasonLabel: "Saved (heart)",
+            answers,
+            at: new Date().toISOString(),
+          });
+        }
+      }
       return next;
     });
   };
@@ -448,6 +465,8 @@ export function Results() {
         onUndoReport={
           modalIndex !== null && picks[modalIndex] ? handleUndoReport(picks[modalIndex]) : undefined
         }
+        saved={modalIndex !== null && picks[modalIndex] ? saved.has(picks[modalIndex].id) : false}
+        onToggleSave={toggleSave}
       />
     </div>
   );

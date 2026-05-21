@@ -12,7 +12,11 @@
 
 import type { Answers } from "./questions";
 
-export type FeedbackReason = "link" | "stock" | "dont" | "other";
+/**
+ * Visible-in-popover reasons + a couple of implicit signals ("heart")
+ * that the site emits without ever showing a popover option for them.
+ */
+export type FeedbackReason = "link" | "image" | "stock" | "dont" | "other" | "heart";
 
 export type FeedbackOption = {
   v: FeedbackReason;
@@ -29,6 +33,13 @@ export const FEEDBACK_OPTIONS: FeedbackOption[] = [
     e: "🔗",
     tone: "amber",
     ack: "Thanks — we'll re-check the source.",
+  },
+  {
+    v: "image",
+    l: "Image broken",
+    e: "🖼️",
+    tone: "amber",
+    ack: "Thanks — we'll fix the photo.",
   },
   {
     v: "stock",

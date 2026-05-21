@@ -20,6 +20,10 @@ type Props = {
   onReport?: (opt: FeedbackOption, detail?: string) => void;
   /** Called when the user clears feedback for the current gift. */
   onUndoReport?: () => void;
+  /** Whether the current gift is hearted. */
+  saved?: boolean;
+  /** Toggle the heart for the current gift. */
+  onToggleSave?: (giftId: string) => void;
 };
 
 const openExternal = (url: string) => {
@@ -56,6 +60,8 @@ export function ProductModal({
   feedback,
   onReport,
   onUndoReport,
+  saved,
+  onToggleSave,
 }: Props) {
   const open = currentIndex !== null && currentIndex >= 0 && gifts[currentIndex] !== undefined;
   const gift = open ? gifts[currentIndex as number] : null;
@@ -233,6 +239,52 @@ export function ProductModal({
             <div style={{ display: "flex", alignItems: "center", justifyContent: "center", height: "100%" }}>
               <GiftBox3D size={220} color="butter" rotate={-10} ribbonColor="#FF8166" />
             </div>
+          )}
+
+          {/* Save heart — top-right of image. On mobile, offset down to clear
+              the modal's Close button which sits at top-right of the card. */}
+          {onToggleSave && (
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                onToggleSave(gift.id);
+              }}
+              aria-label={saved ? "Unsave" : "Save"}
+              style={{
+                position: "absolute",
+                top: isMobile ? 56 : 14,
+                right: 14,
+                width: 36,
+                height: 36,
+                borderRadius: "50%",
+                background: "rgba(255,255,255,0.85)",
+                backdropFilter: "blur(8px)",
+                border: "none",
+                cursor: "pointer",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                boxShadow:
+                  "inset 0 1px 0 rgba(255,255,255,0.9), 0 4px 10px -2px rgba(80,30,30,0.25)",
+                zIndex: 5,
+              }}
+            >
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 16 16"
+                fill={saved ? "#E64B45" : "none"}
+                stroke={saved ? "#E64B45" : "#231410"}
+                strokeWidth={1.6}
+              >
+                <path
+                  d="M8 14s-5-3.2-5-7a3 3 0 0 1 5-2 3 3 0 0 1 5 2c0 3.8-5 7-5 7z"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+            </button>
           )}
 
           {/* Mobile inline nav arrows */}
