@@ -174,10 +174,12 @@ export function GiftCard(props: Props) {
             src={gift.image}
             alt={gift.name}
             style={{
-              maxWidth: "75%",
-              maxHeight: "75%",
-              objectFit: "contain",
-              filter: "drop-shadow(0 8px 18px rgba(0,0,0,0.25))",
+              position: "absolute",
+              inset: 0,
+              width: "100%",
+              height: "100%",
+              objectFit: "cover",
+              display: "block",
             }}
           />
         ) : (
