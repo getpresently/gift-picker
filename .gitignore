@@ -27,3 +27,4 @@ yarn.lock
 
 # local tooling
 /.claude/
+/.design-ref/

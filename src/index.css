@@ -4,31 +4,22 @@
 
 body {
   margin: 0;
-  text-align: center;
-  background: white;
-  font-family: "Sofia Pro", sans-serif;
+  background: #FBF1E1;
+  color: #231410;
+  font-family: "Geist", system-ui, sans-serif;
+  font-size: 16px;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  font-size: 16px;
-}
-body {
-	background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
-	animation: gradient 15s ease infinite;
-	height: 100%;
-    background-repeat: no-repeat;
-    background-attachment: fixed;
 }
 
-@keyframes gradient {
-	0% {
-		background-position: 0% 50%;
-	}
-	50% {
-		background-position: 100% 50%;
-	}
-	100% {
-		background-position: 0% 50%;
-	}
+@keyframes qslide {
+	from { opacity: 0; transform: translateY(8px); }
+	to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes spin {
+	from { transform: rotate(0deg); }
+	to   { transform: rotate(360deg); }
 }
 
 code {
