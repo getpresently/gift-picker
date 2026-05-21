@@ -15,7 +15,7 @@ import type { BillingPeriod, Gift } from "./gifts";
  */
 const API_ENDPOINT =
   (import.meta.env.VITE_GIFTS_ENDPOINT as string | undefined)?.trim() ||
-  "https://script.google.com/macros/s/AKfycbwqZfDFOu0GHi2Wc5Jc4C40X_p1mxNXC306SH6Bm_CE209O0dJgI5wJWR_Xk4x9Gaflpw/exec";
+  "https://script.google.com/macros/s/AKfycbwPuaXtXuurdqNg94_mGoOR1YHXqKrJyZrkxkt09oFbGGZtS_KdH44vhJNn4qLzeJqhuQ/exec";
 const GIFTS_URL = `${API_ENDPOINT}?tab=Gifts`;
 
 type RawRow = Record<string, string | number | undefined>;
