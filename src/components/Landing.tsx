@@ -70,28 +70,17 @@ export function Landing() {
             }}
           >
             <Wordmark size={isMobile ? "md" : "lg"} onClick={goHome} />
-            {!isMobile && (
-              <nav
-                style={{
-                  display: "flex",
-                  gap: 28,
-                  alignItems: "center",
-                  fontFamily: "Geist, sans-serif",
-                  fontSize: 14,
-                  color: "#5A3F36",
-                }}
-              >
-                <a href="#how" style={{ textDecoration: "none", color: "inherit" }}>How it works</a>
-                <a href="#brands" style={{ textDecoration: "none", color: "inherit" }}>Brands</a>
-                <a href="#testimonials" style={{ textDecoration: "none", color: "inherit" }}>Reviews</a>
-                <Pillow tone="ink" size="sm" onClick={goStart}>Start quiz →</Pillow>
-              </nav>
-            )}
-            {isMobile && (
-              <Pillow tone="coral" size="sm" onClick={goStart} style={{ fontSize: 13, padding: "8px 14px" }}>
-                Start quiz →
-              </Pillow>
-            )}
+            {/* Minimal header: wordmark + single CTA. Section anchors
+                (How it works / Brands / Reviews) were removed to reduce
+                visual noise — the page is short enough to scroll. */}
+            <Pillow
+              tone={isMobile ? "coral" : "ink"}
+              size="sm"
+              onClick={goStart}
+              style={isMobile ? { fontSize: 13, padding: "8px 14px" } : undefined}
+            >
+              Start quiz →
+            </Pillow>
           </div>
         </header>
 
