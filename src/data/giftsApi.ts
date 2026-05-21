@@ -4,7 +4,8 @@ import type { Gift } from "./gifts";
 /**
  * Live gift database (Google Sheet, exposed via nocodeapi).
  * The sheet currently uses column names: row_id, Gift, Brand, Description,
- * Age, Type, Interests, Price, PriceActual, PhotoAddress, Link, Status.
+ * Age, Type, Interests, Relation, Occasions (or Occasion), Price (bucket),
+ * PriceActual ("$80" or "$16/mo"), PriceDisplay, PhotoAddress, Link, Status.
  * We adapt those to the clean Gift shape used everywhere in code.
  */
 const GIFTS_URL =
@@ -20,27 +21,75 @@ function splitCsv(raw: string | number | undefined): string[] {
     .filter(Boolean);
 }
 
-function parsePrice(raw: string | number | undefined): number {
-  if (typeof raw === "number") return raw;
-  if (!raw) return 0;
-  const cleaned = String(raw).replace(/[^0-9.]/g, "");
-  const n = parseFloat(cleaned);
-  return Number.isFinite(n) ? n : 0;
+/** Format a number for display: drop trailing .00 on whole-dollar values. */
+function fmt(n: number): string {
+  return Number.isInteger(n) ? String(n) : n.toFixed(2).replace(/\.?0+$/, "");
+}
+
+/**
+ * Parse a price cell. Handles a few real shapes in the sheet:
+ *   "$80"         → $80, one-time
+ *   "$16/mo"      → $16/mo, monthly
+ *   "$58-295"     → $58–$295 range
+ *   "$123.38 +"   → $123+, "starts from" pricing
+ *
+ * Returns the LOW numeric value (used for budget-bucket fallback derivation)
+ * plus a human-readable label preserving range / + / /mo semantics.
+ */
+function parsePriceCell(raw: string | number | undefined): {
+  price: number;
+  isMonthly: boolean;
+  priceLabel: string;
+} {
+  if (raw === undefined || raw === null) {
+    return { price: 0, isMonthly: false, priceLabel: "" };
+  }
+  const str = String(raw).trim();
+  const isMonthly = /\/mo\b/i.test(str) || /\bmonth(ly)?\b/i.test(str);
+  const isStartingAt = /\+\s*$/.test(str);
+
+  const matches = str.match(/\d+(?:\.\d+)?/g) ?? [];
+  const nums = matches.map(parseFloat).filter((n) => Number.isFinite(n));
+  if (!nums.length) {
+    return { price: 0, isMonthly, priceLabel: "" };
+  }
+  const low = nums[0];
+  const high = nums.length > 1 ? nums[nums.length - 1] : null;
+
+  let priceLabel: string;
+  if (isMonthly) {
+    priceLabel = `$${fmt(low)}/mo`;
+  } else if (high !== null && high > low) {
+    priceLabel = `$${fmt(low)}–$${fmt(high)}`;
+  } else if (isStartingAt) {
+    priceLabel = `$${fmt(low)}+`;
+  } else {
+    priceLabel = `$${fmt(low)}`;
+  }
+
+  return { price: low, isMonthly, priceLabel };
 }
 
 function adaptRow(row: RawRow): Gift {
+  const { price, isMonthly, priceLabel } = parsePriceCell(row.PriceActual);
+  // Support either column name — Dalia added it as "Occasions" but the
+  // spec mapping is "Occasion"; try both.
+  const occasionsRaw = (row.Occasions ?? row.Occasion) as string | undefined;
   return {
     id: String(row.row_id ?? row.rowId ?? row.id ?? ""),
     name: String(row.Gift ?? ""),
     brand: String(row.Brand ?? ""),
     description: String(row.Description ?? ""),
-    price: parsePrice(row.PriceActual),
+    price,
+    priceLabel,
+    isMonthly,
     image: String(row.PhotoAddress ?? ""),
     link: String(row.Link ?? ""),
     ages: splitCsv(row.Age as string | undefined),
     types: splitCsv(row.Type as string | undefined),
     interests: splitCsv(row.Interests as string | undefined),
     relations: splitCsv(row.Relation as string | undefined),
+    occasions: splitCsv(occasionsRaw),
     priceBuckets: splitCsv(row.Price as string | undefined),
     status: String(row.Status ?? ""),
   };

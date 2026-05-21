@@ -71,7 +71,7 @@ export function Results() {
   const [saved, setSaved] = useState<Set<string>>(() => loadSaved());
 
   const answers = useMemo(() => loadAnswers(), []);
-  const picks = useMemo<Gift[]>(() => rankGifts(allGifts, answers, 6), [allGifts, answers]);
+  const picks = useMemo<Gift[]>(() => rankGifts(allGifts, answers), [allGifts, answers]);
 
   // If user lands here with no answers at all, bounce to /quiz.
   useEffect(() => {
@@ -328,7 +328,7 @@ export function Results() {
                             lineHeight: 1,
                           }}
                         >
-                          {hero.price > 0 ? `$${hero.price}` : "—"}
+                          {hero.priceLabel || "—"}
                         </div>
                         {hero.brand && (
                           <div

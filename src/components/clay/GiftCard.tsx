@@ -250,7 +250,7 @@ export function GiftCard(props: Props) {
             lineHeight: 1,
           }}
         >
-          {gift.price > 0 ? `$${gift.price}` : "—"}
+          {gift.priceLabel || "—"}
         </div>
         <Pillow
           tone={hero ? "coral" : "ink"}
