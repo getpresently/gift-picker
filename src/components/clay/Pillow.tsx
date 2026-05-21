@@ -1,5 +1,5 @@
 import { useState } from "react";
-import type { CSSProperties, ReactNode } from "react";
+import type { CSSProperties, MouseEvent, ReactNode } from "react";
 
 export type PillowTone = "coral" | "ink" | "cream" | "plum";
 export type PillowSize = "sm" | "md" | "lg";
@@ -43,7 +43,7 @@ type Props = {
   children: ReactNode;
   tone?: PillowTone;
   size?: PillowSize;
-  onClick?: () => void;
+  onClick?: (e?: MouseEvent<HTMLButtonElement>) => void;
   style?: CSSProperties;
   fullWidth?: boolean;
   disabled?: boolean;

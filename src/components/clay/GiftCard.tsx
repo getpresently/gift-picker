@@ -4,14 +4,19 @@ import { ClaySurface } from "./ClaySurface";
 import { GiftBox3D } from "./GiftBox3D";
 import type { BoxColor } from "./GiftBox3D";
 import { Pillow } from "./Pillow";
+import { PriceDisplay } from "./PriceDisplay";
 import type { Gift } from "../../data/gifts";
 
+/** Cards may receive a ranked gift; matchScore is optional for non-ranked uses. */
+type CardGift = Gift & { matchScore?: number };
+
 type CommonProps = {
-  gift: Gift;
+  gift: CardGift;
   tone: Tint;
   saved: boolean;
   onToggleSave: (id: string) => void;
   isMobile: boolean;
+  onOpenDetails?: () => void;
 };
 
 type Props =
@@ -90,8 +95,18 @@ function HeartButton({ saved, onClick }: { saved: boolean; onClick: () => void }
   );
 }
 
+// CSS line-clamp helper (works in all modern browsers via -webkit-line-clamp).
+function clampLines(n: number): React.CSSProperties {
+  return {
+    display: "-webkit-box",
+    WebkitLineClamp: n,
+    WebkitBoxOrient: "vertical" as never,
+    overflow: "hidden",
+  };
+}
+
 export function GiftCard(props: Props) {
-  const { gift, tone, saved, onToggleSave, isMobile } = props;
+  const { gift, tone, saved, onToggleSave, isMobile, onOpenDetails } = props;
   const hero = "hero" in props && props.hero === true;
   const badge = hero ? (props as { badge?: string }).badge : undefined;
   const [hovered, setHovered] = useState(false);
@@ -100,15 +115,18 @@ export function GiftCard(props: Props) {
   const boxColor = pickBoxColor(hero ? "plum" : tone);
   const imgRatio = hero ? (isMobile ? "4/3" : "3/2") : "1/1";
   const boxSize = hero ? (isMobile ? 160 : 220) : 110;
-  // Outer card is plum on hero (special treatment) and cream on every secondary
-  // card — the per-gift `tone` only colors the inner image-area gradient, so
-  // text stays readable on a light surface. (Matches the prototype.)
   const labelColor = hero ? "rgba(255,248,238,0.65)" : "rgba(35,20,16,0.55)";
   const headingColor = hero ? "#FFF8EE" : "#231410";
+  const heroBadgeText = badge
+    ? typeof gift.matchScore === "number"
+      ? `${badge} · ${Math.round(gift.matchScore)}% MATCH`
+      : badge
+    : null;
 
   return (
     <ClaySurface
       tint={hero ? "plum" : "cream"}
+      onClick={onOpenDetails}
       style={{
         position: "relative",
         padding: hero ? (isMobile ? 22 : 28) : 16,
@@ -117,17 +135,18 @@ export function GiftCard(props: Props) {
         display: "flex",
         flexDirection: "column",
         gap: hero ? 18 : 12,
+        cursor: onOpenDetails ? "pointer" : "default",
       }}
     >
-      {/* hovered hook */}
+      {/* hover sensor — non-blocking */}
       <div
         onMouseEnter={() => setHovered(true)}
         onMouseLeave={() => setHovered(false)}
         style={{ position: "absolute", inset: 0, pointerEvents: "none" }}
       />
 
-      {/* Top-pick badge (hero only) */}
-      {hero && badge && (
+      {/* Top-pick eyebrow (hero only) */}
+      {hero && heroBadgeText && (
         <div
           style={{
             position: "absolute",
@@ -148,9 +167,10 @@ export function GiftCard(props: Props) {
             alignItems: "center",
             gap: 6,
             zIndex: 3,
+            whiteSpace: "nowrap",
           }}
         >
-          <span>✦</span> {badge}
+          <span>✦</span> {heroBadgeText}
         </div>
       )}
 
@@ -185,6 +205,31 @@ export function GiftCard(props: Props) {
         ) : (
           <GiftBox3D size={boxSize} color={boxColor} rotate={hero ? -6 : 6} />
         )}
+
+        {/* Match chip on small cards (white pill, top-left) */}
+        {!hero && typeof gift.matchScore === "number" && (
+          <div
+            style={{
+              position: "absolute",
+              top: 10,
+              left: 10,
+              padding: "4px 9px",
+              borderRadius: 999,
+              background: "rgba(255,255,255,0.92)",
+              backdropFilter: "blur(6px)",
+              fontFamily: "Geist, sans-serif",
+              fontSize: 11,
+              fontWeight: 600,
+              color: "#231410",
+              boxShadow:
+                "inset 0 1px 0 rgba(255,255,255,0.9), 0 2px 6px -1px rgba(80,30,30,0.25)",
+              zIndex: 2,
+            }}
+          >
+            {Math.round(gift.matchScore)}% match
+          </div>
+        )}
+
         <HeartButton saved={saved} onClick={() => onToggleSave(gift.id)} />
       </div>
 
@@ -209,6 +254,7 @@ export function GiftCard(props: Props) {
             color: headingColor,
             marginTop: 2,
             lineHeight: hero ? 1.05 : 1.25,
+            ...clampLines(2),
           }}
         >
           {gift.name}
@@ -223,6 +269,7 @@ export function GiftCard(props: Props) {
               lineHeight: 1.55,
               marginTop: 12,
               maxWidth: 460,
+              ...clampLines(3),
             }}
           >
             {gift.description}
@@ -241,21 +288,14 @@ export function GiftCard(props: Props) {
           flexWrap: "wrap",
         }}
       >
-        <div
-          style={{
-            fontFamily: '"Instrument Serif", serif',
-            fontSize: hero ? (isMobile ? 36 : 48) : 22,
-            color: headingColor,
-            letterSpacing: "-0.02em",
-            lineHeight: 1,
-          }}
-        >
-          {gift.priceLabel || "—"}
-        </div>
+        <PriceDisplay gift={gift} variant={hero ? "hero" : "card"} invert={hero} />
         <Pillow
           tone={hero ? "coral" : "ink"}
           size={hero ? "md" : "sm"}
-          onClick={() => openExternal(gift.link)}
+          onClick={(e) => {
+            e?.stopPropagation?.();
+            openExternal(gift.link);
+          }}
         >
           {hero ? "View gift →" : "View →"}
         </Pillow>

@@ -13,8 +13,14 @@ export type Gift = {
   brand: string;
   description: string;
   price: number;
-  priceLabel: string; // formatted, e.g. "$16" or "$16/mo"
+  priceLabel: string; // formatted, e.g. "$16", "$16/mo", "$58–$295", "$123+"
   isMonthly: boolean;
+  /** Populated when the gift is a recurring subscription. */
+  subscription?: {
+    monthly: number;
+    /** Future field: alternate billing plans (e.g. 6mo, 12mo) — not in DB today. */
+    plans?: { months: number; total: number }[];
+  };
   image: string;
   link: string;
   ages: string[];
@@ -25,6 +31,9 @@ export type Gift = {
   priceBuckets: string[]; // canonical: one of the BUDGET_BUCKETS strings
   status: string;
 };
+
+/** A gift with its computed match score attached (0–100). */
+export type RankedGift = Gift & { matchScore: number };
 
 /* ------------------------------------------------------------------ *
  * Quiz-answer code -> the label strings expected in the sheet column.
@@ -333,8 +342,10 @@ function isBestSeller(gift: Gift): boolean {
  * Rank gifts. Returns up to `take` (default 20) sorted by score desc with
  * tiebreakers. Threshold floor: prefer scores ≥40; if fewer than 5 clear that,
  * relax to ≥20; if still none, return everything ≥0.
+ *
+ * Each returned gift carries its 0–100 `matchScore` for display in the UI.
  */
-export function rankGifts(gifts: Gift[], answers: Answers, take = 20): Gift[] {
+export function rankGifts(gifts: Gift[], answers: Answers, take = 20): RankedGift[] {
   type Scored = { gift: Gift; score: number; interestHits: number; bestSeller: boolean };
   const scored: Scored[] = gifts
     .map((g) => ({
@@ -352,17 +363,52 @@ export function rankGifts(gifts: Gift[], answers: Answers, take = 20): Gift[] {
     return 0;
   };
 
+  const finalize = (list: Scored[]): RankedGift[] =>
+    list
+      .sort(compare)
+      .slice(0, take)
+      .map((s) => ({ ...s.gift, matchScore: s.score }));
+
   // Try strict threshold first; relax if too few clear it.
   const thresholds = [40, 20, 0];
   for (const t of thresholds) {
     const passing = scored.filter((s) => s.score >= t);
-    if (passing.length >= 5 || t === 0) {
-      return passing.sort(compare).slice(0, take).map((s) => s.gift);
-    }
+    if (passing.length >= 5 || t === 0) return finalize(passing);
   }
-  // Shouldn't get here, but typecheck-safe fallback.
-  return scored.sort(compare).slice(0, take).map((s) => s.gift);
+  return finalize(scored);
 }
 
 /** Rotating tint palette for secondary cards (hero is always plum). */
 export const SECONDARY_TONES = ["butter", "rose", "sage", "cream", "plum"] as const;
+
+/**
+ * Build the "Why we picked this" bullets shown in the product modal.
+ * Each line is derived from real answer/gift data — no placeholder copy.
+ */
+export function buildMatchReasons(gift: Gift, answers: Answers): string[] {
+  const lc = (s: string) => s.toLowerCase();
+  const bullets: string[] = [];
+
+  if (typeof answers.budget === "number") {
+    bullets.push(`Lands inside your $${answers.budget} budget`);
+  }
+  if (gift.brand) {
+    bullets.push(`From ${gift.brand}`);
+  }
+
+  const matchedVibes = (answers.vibe ?? [])
+    .flatMap((v) => VIBE_LABELS[v] ?? [])
+    .filter((label) => gift.types.some((t) => lc(t).includes(lc(label)) || lc(label).includes(lc(t))));
+  if (matchedVibes.length) {
+    bullets.push(`A ${matchedVibes.join(", ").toLowerCase()} fit`);
+  }
+
+  const matchedInterests = (answers.interests ?? [])
+    .flatMap((v) => INTEREST_LABELS[v] ?? [])
+    .filter((label) => gift.interests.some((i) => lc(i).includes(lc(label)) || lc(label).includes(lc(i))));
+  if (matchedInterests.length) {
+    bullets.push(matchedInterests.slice(0, 2).join(" · "));
+  }
+
+  return bullets.slice(0, 4);
+}

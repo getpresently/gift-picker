@@ -83,6 +83,7 @@ function adaptRow(row: RawRow): Gift {
     price,
     priceLabel,
     isMonthly,
+    subscription: isMonthly && price > 0 ? { monthly: price, plans: [] } : undefined,
     image: String(row.PhotoAddress ?? ""),
     link: String(row.Link ?? ""),
     ages: splitCsv(row.Age as string | undefined),
