@@ -162,8 +162,18 @@ export const QUESTIONS: Question[] = [
 // Recipients whose age is obvious from the relationship (we skip the age question entirely).
 const SKIP_AGE_RECIPIENTS = new Set(["grandparent"]);
 
-// Recipients who clearly can't be a little kid — hide that age option.
-const HIDE_KID_AGE_FOR = new Set(["partner", "parent", "coworker", "mentor", "self"]);
+// Per-recipient age-option hides. Each set lists age codes that don't apply
+// to that recipient and should be removed from the quiz.
+const HIDE_KID_FOR = new Set(["partner", "parent", "coworker", "mentor", "self"]);
+const HIDE_TEEN_FOR = new Set(["partner", "parent", "coworker", "mentor"]); // not self — a teen can be filling out the quiz
+const HIDE_YOUNG_ADULT_FOR = new Set(["parent"]); // your parent is older than 20-something
+
+// Per-age occasion-option hides. Kids and teens don't have weddings,
+// housewarmings, anniversaries, or new-baby gifts of their own.
+const HIDE_OCCASIONS_FOR_AGE: Record<string, Set<string>> = {
+  kid: new Set(["housewarm", "wed", "baby", "anni"]),
+  teen: new Set(["housewarm", "wed", "baby", "anni"]),
+};
 
 export function getActiveQuestions(answers: Answers): Question[] {
   return QUESTIONS.filter((q) => {
@@ -174,9 +184,22 @@ export function getActiveQuestions(answers: Answers): Question[] {
 
 export function getActiveOptions(q: Question, answers: Answers): Option[] {
   if (q.type === "slider") return [];
-  if (q.id === "age" && answers.recipient && HIDE_KID_AGE_FOR.has(answers.recipient)) {
-    return q.options.filter((o) => o.v !== "kid");
+
+  if (q.id === "age" && answers.recipient) {
+    const r = answers.recipient;
+    return q.options.filter((o) => {
+      if (o.v === "kid" && HIDE_KID_FOR.has(r)) return false;
+      if (o.v === "teen" && HIDE_TEEN_FOR.has(r)) return false;
+      if (o.v === "twenty" && HIDE_YOUNG_ADULT_FOR.has(r)) return false;
+      return true;
+    });
   }
+
+  if (q.id === "occasion" && answers.age && HIDE_OCCASIONS_FOR_AGE[answers.age]) {
+    const hidden = HIDE_OCCASIONS_FOR_AGE[answers.age];
+    return q.options.filter((o) => !hidden.has(o.v));
+  }
+
   return q.options;
 }
 

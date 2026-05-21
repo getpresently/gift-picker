@@ -107,12 +107,19 @@ export const RECIPIENT_LABELS: Record<string, string[]> = {
  * didn't pick an age explicitly (in which case the explicit choice rules).
  */
 export const RECIPIENT_EXCLUDED_AGES: Record<string, string[]> = {
-  partner: ["Baby / New Parent", "Child"],
-  parent: ["Baby / New Parent", "Child"],
+  // Your partner can be any adult but isn't a kid or teen.
+  partner: ["Baby / New Parent", "Child", "Teen"],
+  // Your parent is at least an adult.
+  parent: ["Baby / New Parent", "Child", "Teen", "Young Adult"],
+  // Grandparents are seniors — the age question is skipped in the UI.
   grandparent: ["Baby / New Parent", "Child", "Teen", "Young Adult", "Adult"],
-  coworker: ["Baby / New Parent", "Child"],
-  mentor: ["Baby / New Parent", "Child"],
+  // Coworkers and mentor-figures are at least young adults.
+  coworker: ["Baby / New Parent", "Child", "Teen"],
+  mentor: ["Baby / New Parent", "Child", "Teen"],
+  // The user filling out the quiz isn't shopping for a literal child for
+  // themselves. (They could be a teen, though, so don't exclude that.)
   self: ["Baby / New Parent", "Child"],
+  // Friends and siblings can be any age.
   friend: [],
   sibling: [],
 };
@@ -206,19 +213,15 @@ function scoreAge(gift: Gift, answers: Answers): number {
 
 function scoreBudget(gift: Gift, answers: Answers): number {
   if (typeof answers.budget !== "number") return 0;
-  // Gift Card "Your choice" matches any budget tier — full points.
-  if (gift.isYourChoice) return 15;
+  // Gift Card "Your choice" fits any budget — full points.
+  if (gift.isYourChoice) return 10;
   if (gift.price <= 0) return 0;
 
-  // Use the gift's listed price as-is — a $49/mo subscription is a $49/mo
-  // commitment from the user's POV and should bucket alongside one-shot
-  // $49 gifts, not get annualized.
-  const userIdx = budgetTierIndex(answers.budget);
-  const giftIdx = budgetTierIndex(gift.price);
-  const d = Math.abs(userIdx - giftIdx);
-  if (d === 0) return 10;
-  if (d === 1) return 5;
-  return 0;
+  // Hard cap is enforced in scoreGift (1.10×). Within that, score binary:
+  //  - at or under budget → full 10 pts
+  //  - over budget but within the 10% fuzz → partial 5 pts
+  if (gift.price <= answers.budget) return 10;
+  return 5;
 }
 
 function scoreInterests(gift: Gift, answers: Answers): number {
@@ -318,12 +321,11 @@ function scoreOccasionAdjustment(gift: Gift, answers: Answers): number {
 
 /**
  * Multiplier on the user's stated budget at which we hard-exclude a gift.
- * $120 budget × 2 = $240 cap. Tuned to keep adjacent-tier gifts visible
- * while dropping clear over-budget outliers (e.g. a $400 gift for a $120
- * user). Applies to raw price — subscription amounts are evaluated at
- * their displayed periodic rate, not annualized.
+ * 1.10× = "strict budget with a 10% fuzz" — $120 budget allows up to $132.
+ * Applies to raw price; subscription amounts are evaluated at their
+ * displayed periodic rate (a $49/mo gift counts as $49 vs the budget).
  */
-const BUDGET_CAP_MULTIPLIER = 2;
+const BUDGET_CAP_MULTIPLIER = 1.1;
 
 /**
  * Total 0–100 score for one gift. Returns -1 when the gift is excluded
@@ -331,17 +333,16 @@ const BUDGET_CAP_MULTIPLIER = 2;
  *
  * Hard exclusions:
  *   - status !== "Live"
- *   - Wildly over budget (price > budget × BUDGET_CAP_MULTIPLIER)
+ *   - Over budget by more than 10% (price > budget × 1.10)
  *   - Age mismatch when both sides specify (user picked an age AND gift
- *     has explicit age tags that don't overlap) — prevents e.g. shopping
- *     for a grandparent and being shown a child-tagged gift
+ *     has explicit age tags that don't overlap) OR the recipient implies
+ *     an age the gift doesn't cover (e.g. grandparent → no Child gifts)
  *
  * Weighted score (higher is better):
  *   - Relation match     25 (binary)
  *   - Age bracket match  10 (binary; "New baby" occasion implies baby tag)
- *   - Budget tier        10 same · 5 adjacent · 0 otherwise (raw price,
- *                          no subscription annualization — $49/mo is a
- *                          $49 commitment from the user's POV)
+ *   - Budget             10 at-or-under · 5 within +10% · 0 otherwise
+ *                          (raw price; $49/mo is treated like one-shot $49)
  *   - Interests          0–40 (pro-rated by hits/picks; dominant signal)
  *   - Vibe / Type        0–10 (pro-rated)
  *   - Occasion adjust    ±0 / ±5 / ±10 / ±15 (applied last, per occasion
@@ -415,22 +416,23 @@ function isBestSeller(gift: Gift): boolean {
 }
 
 /**
- * Hard minimum match score. Below this we drop the gift rather than show
- * a mediocre suggestion — interests are 40 pts of the 100-pt total, so
- * anything below 60 likely failed to match the user's interest at all.
- * If fewer than 3 gifts clear this floor we relax to 45 (still a
- * "decent" match) before falling back to the EmptyState component.
+ * Match-score thresholds.
+ *
+ * Behavior:
+ *   - If more than 10 gifts clear MATCH_STRICT (≥60), we show ONLY those.
+ *     Plenty of strong matches available, no need to dilute with weaker ones.
+ *   - Otherwise we widen to MATCH_LOOSE (≥55) — still a meaningful score
+ *     but more permissive. May still return 0 results if nothing scores
+ *     that high; the UI shows its empty state in that case.
+ *   - Anything below MATCH_LOOSE is never shown.
  */
-const MIN_MATCH_SCORE = 60;
-const MIN_MATCH_SCORE_FALLBACK = 45;
+const MATCH_STRICT = 60;
+const MATCH_LOOSE = 55;
 
 /**
  * Rank gifts. Returns up to `take` (default 20) sorted by score desc with
- * tiebreakers, all of which must clear MIN_MATCH_SCORE (or the fallback
- * if the catalog returns too few). When nothing clears the fallback, an
- * empty array is returned — the UI shows its empty state.
- *
- * Each returned gift carries its 0–100 `matchScore` for display in the UI.
+ * tiebreakers. Threshold band per the rules above. Returned gifts carry
+ * their 0–100 `matchScore` for display in the UI.
  */
 export function rankGifts(gifts: Gift[], answers: Answers, take = 20): RankedGift[] {
   type Scored = { gift: Gift; score: number; interestHits: number; bestSeller: boolean };
@@ -456,11 +458,10 @@ export function rankGifts(gifts: Gift[], answers: Answers, take = 20): RankedGif
       .slice(0, take)
       .map((s) => ({ ...s.gift, matchScore: s.score }));
 
-  const above60 = scored.filter((s) => s.score >= MIN_MATCH_SCORE);
-  if (above60.length >= 3) return finalize(above60);
-  // Slightly relax when the catalog is sparse for this combination.
-  const aboveFallback = scored.filter((s) => s.score >= MIN_MATCH_SCORE_FALLBACK);
-  return finalize(aboveFallback);
+  const above60 = scored.filter((s) => s.score >= MATCH_STRICT);
+  if (above60.length > 10) return finalize(above60);
+  const above55 = scored.filter((s) => s.score >= MATCH_LOOSE);
+  return finalize(above55);
 }
 
 /** Rotating tint palette for secondary cards (hero is always plum). */

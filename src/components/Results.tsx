@@ -11,7 +11,7 @@ import { useIsMobile } from "../hooks/useIsMobile";
 import { clearAnswers, loadAnswers, QUESTIONS } from "../data/questions";
 import { buildMatchReasons, rankGifts, SECONDARY_TONES, type RankedGift } from "../data/gifts";
 import { useGifts } from "../data/giftsApi";
-import { postFeedback, type FeedbackOption, type FeedbackRecord } from "../data/feedback";
+import { postFeedback, postRequest, type FeedbackOption, type FeedbackRecord } from "../data/feedback";
 import { buildShareUrl, hydrateAnswersFromShareUrl, shareOrCopy } from "../data/share";
 
 const SAVED_KEY = "giftpicker_saved_v1";
@@ -100,6 +100,13 @@ export function Results() {
     const result = await shareOrCopy(url);
     setShareStatus(result);
     setTimeout(() => setShareStatus("idle"), 2200);
+  };
+
+  const [requestSent, setRequestSent] = useState(false);
+  const handleRequestMore = async () => {
+    if (requestSent) return;
+    setRequestSent(true);
+    await postRequest(answers);
   };
 
   // If user lands here with no answers at all, bounce to /quiz.
@@ -299,7 +306,9 @@ export function Results() {
           {/* States: loading, error, empty, results */}
           {loading && <LoadingState />}
           {!loading && error && <ErrorState message={error} onRetry={() => window.location.reload()} />}
-          {!loading && !error && picks.length === 0 && <EmptyState onRestart={restart} />}
+          {!loading && !error && picks.length === 0 && (
+            <EmptyState onRestart={restart} onRequestMore={handleRequestMore} requestSent={requestSent} />
+          )}
 
           {!loading && !error && hero && (
             <>
@@ -357,9 +366,34 @@ export function Results() {
                 </>
               )}
 
+              {/* "Request more" ghost link — small, always visible below grid */}
+              <div style={{ textAlign: "center", marginTop: isMobile ? 24 : 32 }}>
+                <button
+                  type="button"
+                  onClick={handleRequestMore}
+                  disabled={requestSent}
+                  style={{
+                    background: "transparent",
+                    border: "none",
+                    padding: 0,
+                    fontFamily: "Geist, sans-serif",
+                    fontSize: 13,
+                    color: requestSent ? "rgba(35,20,16,0.45)" : "#C4477E",
+                    cursor: requestSent ? "default" : "pointer",
+                    textDecoration: "underline",
+                    textUnderlineOffset: 3,
+                    textDecorationColor: requestSent ? "rgba(35,20,16,0.25)" : "rgba(196,71,126,0.35)",
+                  }}
+                >
+                  {requestSent
+                    ? "✓ Thanks — we'll add more like these"
+                    : "Not quite right? Request more suggestions in this category →"}
+                </button>
+              </div>
+
               <div
                 style={{
-                  marginTop: isMobile ? 36 : 56,
+                  marginTop: isMobile ? 24 : 32,
                   display: "flex",
                   gap: 12,
                   justifyContent: "center",
@@ -483,7 +517,15 @@ function ErrorState({ message, onRetry }: { message: string; onRetry: () => void
   );
 }
 
-function EmptyState({ onRestart }: { onRestart: () => void }) {
+function EmptyState({
+  onRestart,
+  onRequestMore,
+  requestSent,
+}: {
+  onRestart: () => void;
+  onRequestMore: () => void;
+  requestSent: boolean;
+}) {
   return (
     <div style={{ textAlign: "center", padding: "32px 0" }}>
       <h2
@@ -507,9 +549,14 @@ function EmptyState({ onRestart }: { onRestart: () => void }) {
           lineHeight: 1.55,
         }}
       >
-        Try widening your budget or interests. Our catalog is growing — we'll have better picks for them soon.
+        Our catalog doesn't have great picks for this combination yet. Help us grow — tell us what's missing.
       </p>
-      <Pillow tone="coral" size="md" onClick={onRestart}>↻ Try again</Pillow>
+      <div style={{ display: "flex", gap: 10, justifyContent: "center", flexWrap: "wrap" }}>
+        <Pillow tone="coral" size="md" onClick={onRequestMore} disabled={requestSent}>
+          {requestSent ? "✓ Thanks — we'll add more" : "Request more in this category"}
+        </Pillow>
+        <Pillow tone="cream" size="md" onClick={onRestart}>↻ Try different answers</Pillow>
+      </div>
     </div>
   );
 }

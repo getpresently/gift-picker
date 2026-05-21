@@ -59,7 +59,8 @@ export type FeedbackRecord = {
   at: string; // ISO timestamp
 };
 
-type SubmitPayload = {
+type FeedbackPayload = {
+  type: "feedback";
   giftId: string;
   giftName: string;
   brand: string;
@@ -70,17 +71,27 @@ type SubmitPayload = {
   at: string;
 };
 
+type RequestPayload = {
+  type: "request";
+  answers: Answers;
+  at: string;
+};
+
 const ENDPOINT = (import.meta.env.VITE_FEEDBACK_ENDPOINT as string | undefined)?.trim() ?? "";
 
 /**
  * Fire-and-forget POST to the Apps Script webhook. Uses `no-cors` mode
  * because Apps Script Web Apps don't return CORS headers — the request
  * still reaches the script and writes the row.
+ *
+ * The Apps Script routes by `payload.type` — "feedback" writes to the
+ * Feedback sheet, "request" writes to the Requests sheet (sample script
+ * in the redesign commit summary).
  */
-export async function postFeedback(payload: SubmitPayload): Promise<void> {
+async function postEvent(payload: FeedbackPayload | RequestPayload): Promise<void> {
   if (!ENDPOINT) {
     if (typeof console !== "undefined") {
-      console.info("[feedback] endpoint not configured — logging instead", payload);
+      console.info(`[${payload.type}] endpoint not configured — logging instead`, payload);
     }
     return;
   }
@@ -88,14 +99,25 @@ export async function postFeedback(payload: SubmitPayload): Promise<void> {
     await fetch(ENDPOINT, {
       method: "POST",
       mode: "no-cors",
-      // Apps Script wants text/plain so the JSON arrives intact in e.postData.contents
       headers: { "Content-Type": "text/plain;charset=utf-8" },
       body: JSON.stringify(payload),
     });
   } catch (err) {
-    // Don't block the UI on a feedback failure; just surface to console
     if (typeof console !== "undefined") {
-      console.warn("[feedback] submit failed", err);
+      console.warn(`[${payload.type}] submit failed`, err);
     }
   }
+}
+
+export async function postFeedback(payload: Omit<FeedbackPayload, "type">): Promise<void> {
+  return postEvent({ type: "feedback", ...payload });
+}
+
+/**
+ * User-initiated "Request more in this category" — sent when the user
+ * isn't satisfied with the picks and wants the catalog to grow in this
+ * direction. The Apps Script appends a row to a "Requests" sheet.
+ */
+export async function postRequest(answers: Answers): Promise<void> {
+  return postEvent({ type: "request", answers, at: new Date().toISOString() });
 }
