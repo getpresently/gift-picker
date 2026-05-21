@@ -13,9 +13,10 @@ const HOW_STEPS: { n: string; title: string; body: string; tint: Tint }[] = [
   { n: "03", title: "Show up looking great", body: "Send the link or just buy it yourself.", tint: "sage" },
 ];
 
+// 12 brands → renders cleanly as 6×2 on desktop, 3×4 on mobile.
 const BRANDS = [
-  "Apple", "Airbnb", "Pottery Barn", "Anthropologie", "Peloton", "Fujifilm",
-  "JBL", "Lululemon", "Keurig", "Anker", "Aesop", "MUJI",
+  "Apple", "Lululemon", "Patagonia", "Pottery Barn", "Anthropologie", "Peloton",
+  "Aesop", "Le Creuset", "Diptyque", "Hario", "MUJI", "Allbirds",
 ];
 
 const PRODUCTHUNT_URL = "https://www.producthunt.com/posts/giftpicker-by-presently";
@@ -25,8 +26,6 @@ const TESTIMONIALS: { q: string; n: string; tint: Tint; dot: string }[] = [
   { q: "Finally, a gift quiz that doesn't suggest a scented candle every time.", n: "Marcus T.", tint: "butter", dot: "#7E3F71" },
   { q: "Took 90 seconds. Picked something better than I would have in an hour.", n: "Priya S.", tint: "cream", dot: "#FFD074" },
 ];
-
-const AVATAR_DOTS = ["#FF9D81", "#7E3F71", "#FFD074", "#9DB378", "#7DDCFF"];
 
 function Star({ size = 14 }: { size?: number }) {
   return (
@@ -173,24 +172,9 @@ export function Landing() {
                 </Pillow>
               </div>
 
-              {/* Social proof */}
+              {/* Social proof — rating + quote only. (Avatar placeholders
+                  intentionally omitted until we have real user photos.) */}
               <div style={{ display: "flex", alignItems: "center", gap: 14, marginTop: 32, flexWrap: "wrap" }}>
-                <div style={{ display: "flex" }}>
-                  {AVATAR_DOTS.map((c, i) => (
-                    <div
-                      key={i}
-                      style={{
-                        width: 34,
-                        height: 34,
-                        borderRadius: "50%",
-                        background: c,
-                        marginLeft: i === 0 ? 0 : -10,
-                        border: "2.5px solid #FBF1E1",
-                        boxShadow: "0 3px 8px rgba(80,30,30,0.2)",
-                      }}
-                    />
-                  ))}
-                </div>
                 <div>
                   <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
                     <div style={{ display: "flex", gap: 1 }}>
@@ -338,19 +322,35 @@ export function Landing() {
               >
                 Curated from 200+ brands · including
               </div>
+              {/* 6×2 grid on desktop, 3×4 on mobile — even rows, consistent
+                  serif treatment so the strip reads as one cohesive band. */}
               <div
                 style={{
-                  display: "flex",
-                  flexWrap: "wrap",
-                  gap: isMobile ? 14 : 28,
+                  display: "grid",
+                  gridTemplateColumns: isMobile ? "repeat(3, 1fr)" : "repeat(6, 1fr)",
+                  columnGap: isMobile ? 12 : 24,
+                  rowGap: isMobile ? 16 : 22,
                   alignItems: "center",
+                  justifyItems: "center",
                   fontFamily: '"Instrument Serif", serif',
-                  fontSize: isMobile ? 20 : 26,
+                  fontStyle: "italic",
+                  fontSize: isMobile ? 19 : 24,
                   color: "#FFF8EE",
+                  textAlign: "center",
                 }}
               >
                 {BRANDS.map((b) => (
-                  <span key={b} style={{ opacity: 0.85, letterSpacing: "-0.01em" }}>{b}</span>
+                  <span
+                    key={b}
+                    style={{
+                      opacity: 0.82,
+                      letterSpacing: "-0.01em",
+                      whiteSpace: "nowrap",
+                      lineHeight: 1.1,
+                    }}
+                  >
+                    {b}
+                  </span>
                 ))}
               </div>
             </ClaySurface>

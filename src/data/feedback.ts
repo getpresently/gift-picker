@@ -80,13 +80,41 @@ type FeedbackPayload = {
   detail?: string;
   answers: Answers;
   at: string;
+  clientId: string;
 };
 
 type RequestPayload = {
   type: "request";
   answers: Answers;
   at: string;
+  clientId: string;
 };
+
+/**
+ * Stable per-device anonymous identifier. Lets us distinguish "10 hearts
+ * from 10 people" vs "10 hearts from the same browser" without any login
+ * or PII. Stored in localStorage so it persists across visits on the same
+ * browser; a new device or a cleared profile produces a new id.
+ *
+ * Falls back gracefully if localStorage is unavailable (private mode, SSR).
+ */
+const CLIENT_ID_KEY = "gp_client_id";
+function getClientId(): string {
+  if (typeof window === "undefined") return "ssr";
+  try {
+    let id = window.localStorage.getItem(CLIENT_ID_KEY);
+    if (!id) {
+      id =
+        typeof crypto !== "undefined" && typeof crypto.randomUUID === "function"
+          ? crypto.randomUUID()
+          : `gp_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 10)}`;
+      window.localStorage.setItem(CLIENT_ID_KEY, id);
+    }
+    return id;
+  } catch {
+    return "no-storage";
+  }
+}
 
 const ENDPOINT =
   (import.meta.env.VITE_FEEDBACK_ENDPOINT as string | undefined)?.trim() ||
@@ -122,8 +150,10 @@ async function postEvent(payload: FeedbackPayload | RequestPayload): Promise<voi
   }
 }
 
-export async function postFeedback(payload: Omit<FeedbackPayload, "type">): Promise<void> {
-  return postEvent({ type: "feedback", ...payload });
+export async function postFeedback(
+  payload: Omit<FeedbackPayload, "type" | "clientId">
+): Promise<void> {
+  return postEvent({ type: "feedback", clientId: getClientId(), ...payload });
 }
 
 /**
@@ -132,5 +162,10 @@ export async function postFeedback(payload: Omit<FeedbackPayload, "type">): Prom
  * direction. The Apps Script appends a row to a "Requests" sheet.
  */
 export async function postRequest(answers: Answers): Promise<void> {
-  return postEvent({ type: "request", answers, at: new Date().toISOString() });
+  return postEvent({
+    type: "request",
+    answers,
+    at: new Date().toISOString(),
+    clientId: getClientId(),
+  });
 }

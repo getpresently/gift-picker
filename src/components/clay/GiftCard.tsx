@@ -347,7 +347,9 @@ export function GiftCard(props: Props) {
           size={hero ? "md" : "sm"}
           onClick={(e) => {
             e?.stopPropagation?.();
-            openExternal(gift.link);
+            // Fall back to Amazon when there's no brand-direct link (some
+            // catalog rows are Amazon-only) so the button is never dead.
+            openExternal(gift.link || gift.amazonLink);
           }}
         >
           {hero ? "View gift →" : "View →"}
