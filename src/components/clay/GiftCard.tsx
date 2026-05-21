@@ -352,7 +352,7 @@ export function GiftCard(props: Props) {
             openExternal(gift.link || gift.amazonLink);
           }}
         >
-          {hero ? "View gift →" : "View →"}
+          {hero ? "Buy gift →" : "Buy →"}
         </Pillow>
       </div>
 
