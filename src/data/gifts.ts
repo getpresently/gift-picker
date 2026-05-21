@@ -99,6 +99,24 @@ export const RECIPIENT_LABELS: Record<string, string[]> = {
   self: [], // matches any relation (handled specially in score)
 };
 
+/**
+ * Ages a recipient *cannot* plausibly be. Used to hard-exclude gifts whose
+ * age tag is incompatible with the chosen recipient — e.g. a "Chess for
+ * Kids" tagged Age="Child" should not appear when shopping for a
+ * grandparent, even if interests overlap. Activated only when the user
+ * didn't pick an age explicitly (in which case the explicit choice rules).
+ */
+export const RECIPIENT_EXCLUDED_AGES: Record<string, string[]> = {
+  partner: ["Baby / New Parent", "Child"],
+  parent: ["Baby / New Parent", "Child"],
+  grandparent: ["Baby / New Parent", "Child", "Teen", "Young Adult", "Adult"],
+  coworker: ["Baby / New Parent", "Child"],
+  mentor: ["Baby / New Parent", "Child"],
+  self: ["Baby / New Parent", "Child"],
+  friend: [],
+  sibling: [],
+};
+
 export const OCCASION_LABELS: Record<string, string> = {
   bday: "Birthday",
   anni: "Anniversary",
@@ -299,10 +317,24 @@ function scoreOccasionAdjustment(gift: Gift, answers: Answers): number {
 }
 
 /**
- * Total 0–100 score for one gift.
+ * Multiplier on the user's stated budget at which we hard-exclude a gift.
+ * $120 budget × 2 = $240 cap. Tuned to keep adjacent-tier gifts visible
+ * while dropping clear over-budget outliers (e.g. a $400 gift for a $120
+ * user). Applies to raw price — subscription amounts are evaluated at
+ * their displayed periodic rate, not annualized.
+ */
+const BUDGET_CAP_MULTIPLIER = 2;
+
+/**
+ * Total 0–100 score for one gift. Returns -1 when the gift is excluded
+ * outright; the caller drops those before ranking.
  *
- * Hard filter: only `status === "Live"` gifts get scored (returns -1
- * otherwise so the caller can drop them).
+ * Hard exclusions:
+ *   - status !== "Live"
+ *   - Wildly over budget (price > budget × BUDGET_CAP_MULTIPLIER)
+ *   - Age mismatch when both sides specify (user picked an age AND gift
+ *     has explicit age tags that don't overlap) — prevents e.g. shopping
+ *     for a grandparent and being shown a child-tagged gift
  *
  * Weighted score (higher is better):
  *   - Relation match     25 (binary)
@@ -318,6 +350,39 @@ function scoreOccasionAdjustment(gift: Gift, answers: Answers): number {
 export function scoreGift(gift: Gift, answers: Answers): number {
   // Hard filter: only Live gifts get scored
   if (gift.status && gift.status.trim() !== "Live") return -1;
+
+  // Hard filter: way over budget. Skip for "Your choice" gift cards.
+  if (
+    typeof answers.budget === "number" &&
+    !gift.isYourChoice &&
+    gift.price > 0 &&
+    gift.price > answers.budget * BUDGET_CAP_MULTIPLIER
+  ) {
+    return -1;
+  }
+
+  // Hard filter: age tags both specified, no overlap.
+  if (gift.ages.length > 0) {
+    if (answers.age) {
+      // Explicit user age choice — gift must match one of the allowed labels.
+      const wantedAges = new Set<string>(AGE_LABELS[answers.age]);
+      if (answers.occasion === "baby") wantedAges.add("Baby / New Parent");
+      if (matchCount(gift.ages, [...wantedAges]) === 0) return -1;
+    } else if (answers.recipient && RECIPIENT_EXCLUDED_AGES[answers.recipient]?.length) {
+      // No explicit age but the recipient implies one (e.g. grandparent =
+      // Senior; partner != kid). Exclude when every gift age tag is on
+      // the recipient's denied list.
+      const denied = RECIPIENT_EXCLUDED_AGES[answers.recipient];
+      const allDenied = gift.ages.every((ageTag) =>
+        denied.some((d) => {
+          const na = normalize(ageTag);
+          const nd = normalize(d);
+          return na === nd || na.includes(nd) || nd.includes(na);
+        }),
+      );
+      if (allDenied) return -1;
+    }
+  }
 
   const base =
     scoreRelation(gift, answers) +
@@ -350,9 +415,20 @@ function isBestSeller(gift: Gift): boolean {
 }
 
 /**
+ * Hard minimum match score. Below this we drop the gift rather than show
+ * a mediocre suggestion — interests are 40 pts of the 100-pt total, so
+ * anything below 60 likely failed to match the user's interest at all.
+ * If fewer than 3 gifts clear this floor we relax to 45 (still a
+ * "decent" match) before falling back to the EmptyState component.
+ */
+const MIN_MATCH_SCORE = 60;
+const MIN_MATCH_SCORE_FALLBACK = 45;
+
+/**
  * Rank gifts. Returns up to `take` (default 20) sorted by score desc with
- * tiebreakers. Threshold floor: prefer scores ≥40; if fewer than 5 clear that,
- * relax to ≥20; if still none, return everything ≥0.
+ * tiebreakers, all of which must clear MIN_MATCH_SCORE (or the fallback
+ * if the catalog returns too few). When nothing clears the fallback, an
+ * empty array is returned — the UI shows its empty state.
  *
  * Each returned gift carries its 0–100 `matchScore` for display in the UI.
  */
@@ -380,13 +456,11 @@ export function rankGifts(gifts: Gift[], answers: Answers, take = 20): RankedGif
       .slice(0, take)
       .map((s) => ({ ...s.gift, matchScore: s.score }));
 
-  // Try strict threshold first; relax if too few clear it.
-  const thresholds = [40, 20, 0];
-  for (const t of thresholds) {
-    const passing = scored.filter((s) => s.score >= t);
-    if (passing.length >= 5 || t === 0) return finalize(passing);
-  }
-  return finalize(scored);
+  const above60 = scored.filter((s) => s.score >= MIN_MATCH_SCORE);
+  if (above60.length >= 3) return finalize(above60);
+  // Slightly relax when the catalog is sparse for this combination.
+  const aboveFallback = scored.filter((s) => s.score >= MIN_MATCH_SCORE_FALLBACK);
+  return finalize(aboveFallback);
 }
 
 /** Rotating tint palette for secondary cards (hero is always plum). */
