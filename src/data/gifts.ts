@@ -419,7 +419,7 @@ function isBestSeller(gift: Gift): boolean {
  * Match-score thresholds.
  *
  * Behavior:
- *   - If more than 10 gifts clear MATCH_STRICT (≥60), we show ONLY those.
+ *   - If more than 5 gifts clear MATCH_STRICT (≥60), we show ONLY those.
  *     Plenty of strong matches available, no need to dilute with weaker ones.
  *   - Otherwise we widen to MATCH_LOOSE (≥55) — still a meaningful score
  *     but more permissive. May still return 0 results if nothing scores
@@ -459,7 +459,7 @@ export function rankGifts(gifts: Gift[], answers: Answers, take = 20): RankedGif
       .map((s) => ({ ...s.gift, matchScore: s.score }));
 
   const above60 = scored.filter((s) => s.score >= MATCH_STRICT);
-  if (above60.length > 10) return finalize(above60);
+  if (above60.length > 5) return finalize(above60);
   const above55 = scored.filter((s) => s.score >= MATCH_LOOSE);
   return finalize(above55);
 }

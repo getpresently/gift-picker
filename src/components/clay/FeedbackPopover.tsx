@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { FEEDBACK_OPTIONS, type FeedbackOption } from "../../data/feedback";
 
 type Props = {
@@ -14,6 +14,34 @@ type Props = {
 export function FeedbackPopover({ open, onClose, onPick, anchorSide = "right", openUp = false }: Props) {
   const [otherMode, setOtherMode] = useState(false);
   const [text, setText] = useState("");
+  const popoverRef = useRef<HTMLDivElement>(null);
+
+  // Tap/click outside the popover dismisses it. Bind on next tick so the
+  // very click that opened the popover doesn't immediately close it again.
+  useEffect(() => {
+    if (!open) return;
+    const onPointerDown = (e: PointerEvent) => {
+      const target = e.target as Node | null;
+      if (!target) return;
+      if (popoverRef.current?.contains(target)) return;
+      onClose();
+    };
+    const tid = window.setTimeout(() => {
+      document.addEventListener("pointerdown", onPointerDown);
+    }, 0);
+    return () => {
+      window.clearTimeout(tid);
+      document.removeEventListener("pointerdown", onPointerDown);
+    };
+  }, [open, onClose]);
+
+  // Reset Other-mode + textarea when popover closes.
+  useEffect(() => {
+    if (!open) {
+      setOtherMode(false);
+      setText("");
+    }
+  }, [open]);
 
   if (!open) return null;
 
@@ -46,6 +74,7 @@ export function FeedbackPopover({ open, onClose, onPick, anchorSide = "right", o
 
   return (
     <div
+      ref={popoverRef}
       onClick={(e) => e.stopPropagation()}
       style={{
         position: "absolute",
