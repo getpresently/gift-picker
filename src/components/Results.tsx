@@ -11,6 +11,7 @@ import { useIsMobile } from "../hooks/useIsMobile";
 import { clearAnswers, loadAnswers, QUESTIONS } from "../data/questions";
 import { buildMatchReasons, rankGifts, SECONDARY_TONES, type RankedGift } from "../data/gifts";
 import { useGifts } from "../data/giftsApi";
+import { postFeedback, type FeedbackOption, type FeedbackRecord } from "../data/feedback";
 
 const SAVED_KEY = "giftpicker_saved_v1";
 
@@ -38,9 +39,18 @@ export function Results() {
   const [saved, setSaved] = useState<Set<string>>(() => loadSaved());
 
   const answers = useMemo(() => loadAnswers(), []);
-  const picks = useMemo<RankedGift[]>(() => rankGifts(allGifts, answers), [allGifts, answers]);
-  const [modalIndex, setModalIndex] = useState<number | null>(null);
+  const ranked = useMemo<RankedGift[]>(() => rankGifts(allGifts, answers), [allGifts, answers]);
 
+  const [feedbackById, setFeedbackById] = useState<Record<string, FeedbackRecord>>({});
+  // Live re-rank: flagged gifts sort to the bottom (stable within each group).
+  const picks = useMemo<RankedGift[]>(() => {
+    return ranked
+      .map((g, i) => ({ g, i, flagged: !!feedbackById[g.id] }))
+      .sort((a, b) => (a.flagged === b.flagged ? a.i - b.i : a.flagged ? 1 : -1))
+      .map((x) => x.g);
+  }, [ranked, feedbackById]);
+
+  const [modalIndex, setModalIndex] = useState<number | null>(null);
   const openModal = (i: number) => setModalIndex(i);
   const closeModal = () => setModalIndex(null);
   const navigateModal = (i: number) => setModalIndex(i);
@@ -49,6 +59,31 @@ export function Results() {
     if (modalIndex === null || !picks[modalIndex]) return [];
     return buildMatchReasons(picks[modalIndex], answers);
   }, [modalIndex, picks, answers]);
+
+  const handleReport = (gift: RankedGift) => (opt: FeedbackOption, detail?: string) => {
+    const record: FeedbackRecord = { option: opt, detail, at: new Date().toISOString() };
+    setFeedbackById((prev) => ({ ...prev, [gift.id]: record }));
+    postFeedback({
+      giftId: gift.id,
+      giftName: gift.name,
+      brand: gift.brand,
+      reason: opt.v,
+      reasonLabel: opt.l,
+      detail,
+      answers,
+      at: record.at,
+    });
+  };
+
+  const handleUndoReport = (gift: RankedGift) => () => {
+    setFeedbackById((prev) => {
+      const next = { ...prev };
+      delete next[gift.id];
+      return next;
+    });
+  };
+
+  const flaggedCount = Object.keys(feedbackById).length;
 
   // If user lands here with no answers at all, bounce to /quiz.
   useEffect(() => {
@@ -111,25 +146,56 @@ export function Results() {
             }}
           >
             <Wordmark size={isMobile ? "sm" : "md"} onClick={restart} />
-            <button
-              type="button"
-              onClick={restart}
-              style={{
-                background: "rgba(255,255,255,0.7)",
-                backdropFilter: "blur(8px)",
-                border: "none",
-                borderRadius: 999,
-                padding: "8px 16px",
-                fontFamily: "Geist, sans-serif",
-                fontSize: 13,
-                color: "#5A3F36",
-                cursor: "pointer",
-                boxShadow:
-                  "inset 0 1px 0 rgba(255,255,255,0.9), 0 4px 10px -3px rgba(80,30,30,0.18)",
-              }}
-            >
-              ↻ Start over
-            </button>
+            <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+              {flaggedCount > 0 && (
+                <div
+                  style={{
+                    display: "inline-flex",
+                    alignItems: "center",
+                    gap: 6,
+                    padding: "6px 12px",
+                    borderRadius: 999,
+                    background: "rgba(196,71,126,0.12)",
+                    border: "1px solid rgba(196,71,126,0.25)",
+                    fontFamily: "Geist, sans-serif",
+                    fontSize: 11,
+                    fontWeight: 600,
+                    color: "#C4477E",
+                    letterSpacing: "0.04em",
+                  }}
+                >
+                  <span
+                    style={{
+                      width: 6,
+                      height: 6,
+                      borderRadius: "50%",
+                      background: "#C4477E",
+                      boxShadow: "0 0 0 3px rgba(196,71,126,0.25)",
+                    }}
+                  />
+                  {flaggedCount} reported · refining…
+                </div>
+              )}
+              <button
+                type="button"
+                onClick={restart}
+                style={{
+                  background: "rgba(255,255,255,0.7)",
+                  backdropFilter: "blur(8px)",
+                  border: "none",
+                  borderRadius: 999,
+                  padding: "8px 16px",
+                  fontFamily: "Geist, sans-serif",
+                  fontSize: 13,
+                  color: "#5A3F36",
+                  cursor: "pointer",
+                  boxShadow:
+                    "inset 0 1px 0 rgba(255,255,255,0.9), 0 4px 10px -3px rgba(80,30,30,0.18)",
+                }}
+              >
+                ↻ Start over
+              </button>
+            </div>
           </div>
         </header>
 
@@ -227,6 +293,9 @@ export function Results() {
                   onToggleSave={toggleSave}
                   isMobile={isMobile}
                   onOpenModal={() => openModal(0)}
+                  feedback={feedbackById[hero.id]}
+                  onReport={handleReport(hero)}
+                  onUndoReport={handleUndoReport(hero)}
                 />
               </div>
 
@@ -262,6 +331,9 @@ export function Results() {
                         onToggleSave={toggleSave}
                         isMobile={isMobile}
                         onOpenDetails={() => openModal(i + 1)}
+                        feedback={feedbackById[g.id]}
+                        onReport={handleReport(g)}
+                        onUndoReport={handleUndoReport(g)}
                       />
                     ))}
                   </div>

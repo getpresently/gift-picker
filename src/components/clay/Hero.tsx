@@ -1,9 +1,11 @@
 import { useState } from "react";
 import type { CSSProperties } from "react";
 import { ClaySurface } from "./ClaySurface";
+import { FeedbackPopover } from "./FeedbackPopover";
 import { Pillow } from "./Pillow";
 import { PriceDisplay } from "./PriceDisplay";
 import type { RankedGift } from "../../data/gifts";
+import type { FeedbackOption, FeedbackRecord } from "../../data/feedback";
 
 type Props = {
   gift: RankedGift;
@@ -11,7 +13,9 @@ type Props = {
   onToggleSave: (id: string) => void;
   isMobile: boolean;
   onOpenModal?: () => void;
-  onSomethingOff?: () => void;
+  feedback?: FeedbackRecord;
+  onReport?: (option: FeedbackOption, detail?: string) => void;
+  onUndoReport?: () => void;
 };
 
 function clampLines(n: number): CSSProperties {
@@ -27,8 +31,19 @@ const openExternal = (url: string) => {
   if (url) window.open(url, "_blank", "noopener,noreferrer");
 };
 
-export function Hero({ gift, saved, onToggleSave, isMobile, onOpenModal, onSomethingOff }: Props) {
+export function Hero({
+  gift,
+  saved,
+  onToggleSave,
+  isMobile,
+  onOpenModal,
+  feedback,
+  onReport,
+  onUndoReport,
+}: Props) {
   const [imgHover, setImgHover] = useState(false);
+  const [popoverOpen, setPopoverOpen] = useState(false);
+  const reported = !!feedback;
   const match = typeof gift.matchScore === "number" ? Math.round(gift.matchScore) : null;
   const eyebrowText = match !== null ? `TOP PICK · ${match}% MATCH` : "TOP PICK";
 
@@ -145,30 +160,48 @@ export function Hero({ gift, saved, onToggleSave, isMobile, onOpenModal, onSomet
               View gift →
             </Pillow>
           </div>
-          {onSomethingOff && (
-            <button
-              type="button"
-              onClick={(e) => {
-                e.stopPropagation();
-                onSomethingOff();
-              }}
-              style={{
-                background: "transparent",
-                border: "none",
-                padding: 0,
-                marginTop: 8,
-                fontFamily: "Geist, sans-serif",
-                fontSize: 12,
-                color: "rgba(255,248,238,0.55)",
-                cursor: "pointer",
-                textAlign: "left",
-                textDecoration: "underline",
-                textUnderlineOffset: 3,
-                textDecorationColor: "rgba(255,248,238,0.3)",
-              }}
-            >
-              Something off?
-            </button>
+          {onReport && (
+            <div style={{ position: "relative", marginTop: 8, alignSelf: "flex-start" }}>
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  if (reported && onUndoReport) {
+                    onUndoReport();
+                  } else {
+                    setPopoverOpen((o) => !o);
+                  }
+                }}
+                style={{
+                  background: "transparent",
+                  border: "none",
+                  padding: 0,
+                  fontFamily: "Geist, sans-serif",
+                  fontSize: 12,
+                  color: reported ? "#FFD074" : "rgba(255,248,238,0.55)",
+                  cursor: "pointer",
+                  textAlign: "left",
+                  textDecoration: "underline",
+                  textUnderlineOffset: 3,
+                  textDecorationColor: reported ? "#FFD074" : "rgba(255,248,238,0.3)",
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: 6,
+                }}
+              >
+                {reported ? `${feedback.option.e} Reported · undo` : "Something off?"}
+              </button>
+              <FeedbackPopover
+                open={popoverOpen}
+                onClose={() => setPopoverOpen(false)}
+                onPick={(opt, detail) => {
+                  onReport(opt, detail);
+                  setPopoverOpen(false);
+                }}
+                anchorSide="left"
+                openUp
+              />
+            </div>
           )}
         </div>
 

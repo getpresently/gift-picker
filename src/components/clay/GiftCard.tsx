@@ -1,11 +1,14 @@
 import { useState } from "react";
 import type { Tint } from "./ClaySurface";
 import { ClaySurface } from "./ClaySurface";
+import { FeedbackPopover } from "./FeedbackPopover";
+import { FlagButton } from "./FlagButton";
 import { GiftBox3D } from "./GiftBox3D";
 import type { BoxColor } from "./GiftBox3D";
 import { Pillow } from "./Pillow";
 import { PriceDisplay } from "./PriceDisplay";
 import type { Gift } from "../../data/gifts";
+import type { FeedbackOption, FeedbackRecord } from "../../data/feedback";
 
 /** Cards may receive a ranked gift; matchScore is optional for non-ranked uses. */
 type CardGift = Gift & { matchScore?: number };
@@ -17,6 +20,9 @@ type CommonProps = {
   onToggleSave: (id: string) => void;
   isMobile: boolean;
   onOpenDetails?: () => void;
+  feedback?: FeedbackRecord;
+  onReport?: (option: FeedbackOption, detail?: string) => void;
+  onUndoReport?: () => void;
 };
 
 type Props =
@@ -106,10 +112,12 @@ function clampLines(n: number): React.CSSProperties {
 }
 
 export function GiftCard(props: Props) {
-  const { gift, tone, saved, onToggleSave, isMobile, onOpenDetails } = props;
+  const { gift, tone, saved, onToggleSave, isMobile, onOpenDetails, feedback, onReport, onUndoReport } = props;
   const hero = "hero" in props && props.hero === true;
   const badge = hero ? (props as { badge?: string }).badge : undefined;
   const [hovered, setHovered] = useState(false);
+  const [popoverOpen, setPopoverOpen] = useState(false);
+  const reported = !!feedback;
 
   const imgGradient = TONE_IMAGE_GRADIENT[hero ? "plum" : tone];
   const boxColor = pickBoxColor(hero ? "plum" : tone);
@@ -126,7 +134,10 @@ export function GiftCard(props: Props) {
   return (
     <ClaySurface
       tint={hero ? "plum" : "cream"}
-      onClick={onOpenDetails}
+      onClick={() => {
+        if (popoverOpen) return; // don't open modal while feedback popover is up
+        onOpenDetails?.();
+      }}
       style={{
         position: "relative",
         padding: hero ? (isMobile ? 22 : 28) : 16,
@@ -136,6 +147,7 @@ export function GiftCard(props: Props) {
         flexDirection: "column",
         gap: hero ? 18 : 12,
         cursor: onOpenDetails ? "pointer" : "default",
+        opacity: reported ? 0.78 : 1,
       }}
     >
       {/* hover sensor — non-blocking */}
@@ -206,8 +218,22 @@ export function GiftCard(props: Props) {
           <GiftBox3D size={boxSize} color={boxColor} rotate={hero ? -6 : 6} />
         )}
 
+        {/* Reported overlay — dims the image */}
+        {reported && (
+          <div
+            style={{
+              position: "absolute",
+              inset: 0,
+              background: "rgba(35,20,16,0.18)",
+              backdropFilter: "saturate(0.6)",
+              zIndex: 1,
+              pointerEvents: "none",
+            }}
+          />
+        )}
+
         {/* Match chip on small cards (white pill, top-left) */}
-        {!hero && typeof gift.matchScore === "number" && (
+        {!hero && typeof gift.matchScore === "number" && !reported && (
           <div
             style={{
               position: "absolute",
@@ -231,6 +257,32 @@ export function GiftCard(props: Props) {
         )}
 
         <HeartButton saved={saved} onClick={() => onToggleSave(gift.id)} />
+
+        {/* Flag button + popover (only when onReport handler is provided) */}
+        {onReport && (
+          <>
+            <FlagButton
+              active={popoverOpen || reported}
+              onClick={(e) => {
+                e.stopPropagation();
+                if (reported && onUndoReport) {
+                  onUndoReport();
+                } else {
+                  setPopoverOpen((o) => !o);
+                }
+              }}
+            />
+            <FeedbackPopover
+              open={popoverOpen}
+              onClose={() => setPopoverOpen(false)}
+              onPick={(opt, detail) => {
+                onReport(opt, detail);
+                setPopoverOpen(false);
+              }}
+              anchorSide="right"
+            />
+          </>
+        )}
       </div>
 
       {/* Meta */}
@@ -254,6 +306,7 @@ export function GiftCard(props: Props) {
             color: headingColor,
             marginTop: 2,
             lineHeight: hero ? 1.05 : 1.25,
+            textDecoration: reported ? "line-through" : "none",
             ...clampLines(2),
           }}
         >
@@ -300,6 +353,55 @@ export function GiftCard(props: Props) {
           {hero ? "View gift →" : "View →"}
         </Pillow>
       </div>
+
+      {/* Reported ribbon */}
+      {reported && feedback && (
+        <div
+          style={{
+            marginTop: 4,
+            padding: "8px 10px",
+            borderRadius: 12,
+            border: "1px dashed rgba(35,20,16,0.2)",
+            background: "rgba(196,71,126,0.05)",
+            fontFamily: "Geist, sans-serif",
+            fontSize: 11,
+            color: "rgba(35,20,16,0.7)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            gap: 8,
+            flexWrap: "wrap",
+          }}
+        >
+          <span style={{ flex: 1, minWidth: 0 }}>
+            <span style={{ marginRight: 6 }}>{feedback.option.e}</span>
+            {feedback.option.ack}
+          </span>
+          {onUndoReport && (
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                onUndoReport();
+              }}
+              style={{
+                background: "transparent",
+                border: "none",
+                padding: 0,
+                color: "#C4477E",
+                fontFamily: "Geist, sans-serif",
+                fontSize: 11,
+                fontWeight: 600,
+                cursor: "pointer",
+                textDecoration: "underline",
+                textUnderlineOffset: 2,
+              }}
+            >
+              Undo
+            </button>
+          )}
+        </div>
+      )}
     </ClaySurface>
   );
 }
