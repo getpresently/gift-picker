@@ -156,10 +156,11 @@ export function Hero({
               size="md"
               onClick={(e) => {
                 e?.stopPropagation?.();
-                openExternal(gift.link);
+                // Prefer Amazon if available, otherwise the brand's product link.
+                openExternal(gift.amazonLink || gift.link);
               }}
             >
-              View gift →
+              Buy gift →
             </Pillow>
           </div>
           {onReport && (

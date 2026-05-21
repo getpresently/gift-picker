@@ -504,28 +504,44 @@ export function ProductModal({
             </div>
           )}
 
-          {/* CTAs */}
+          {/* CTAs — Amazon takes the primary slot when present, otherwise
+              the brand link is primary. Both buttons start with "Buy on…". */}
           <div style={{ display: "flex", gap: 10, marginTop: 22, flexWrap: "wrap" }}>
-            <Pillow
-              tone="coral"
-              size="md"
-              onClick={(e) => {
-                e?.stopPropagation?.();
-                openExternal(gift.link);
-              }}
-            >
-              View on {gift.brand || "store"} →
-            </Pillow>
-            {gift.amazonLink && (
+            {gift.amazonLink ? (
+              <>
+                <Pillow
+                  tone="coral"
+                  size="md"
+                  onClick={(e) => {
+                    e?.stopPropagation?.();
+                    openExternal(gift.amazonLink);
+                  }}
+                >
+                  Buy on Amazon →
+                </Pillow>
+                {gift.link && (
+                  <Pillow
+                    tone="ink"
+                    size="md"
+                    onClick={(e) => {
+                      e?.stopPropagation?.();
+                      openExternal(gift.link);
+                    }}
+                  >
+                    Buy on {gift.brand || "store"} →
+                  </Pillow>
+                )}
+              </>
+            ) : (
               <Pillow
-                tone="ink"
+                tone="coral"
                 size="md"
                 onClick={(e) => {
                   e?.stopPropagation?.();
-                  openExternal(gift.amazonLink);
+                  openExternal(gift.link);
                 }}
               >
-                Buy on Amazon →
+                Buy on {gift.brand || "store"} →
               </Pillow>
             )}
           </div>
