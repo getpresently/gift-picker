@@ -1,8 +1,10 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { FeedbackPopover } from "./FeedbackPopover";
 import { GiftBox3D } from "./GiftBox3D";
 import { Pillow } from "./Pillow";
 import { PriceDisplay } from "./PriceDisplay";
 import type { RankedGift } from "../../data/gifts";
+import type { FeedbackOption, FeedbackRecord } from "../../data/feedback";
 
 type Props = {
   gifts: RankedGift[];
@@ -12,6 +14,12 @@ type Props = {
   isMobile: boolean;
   /** Optional dynamic "Why we picked this" bullets — currently hidden by design. */
   matchReasons?: string[];
+  /** Feedback record for the gift at currentIndex (if reported). */
+  feedback?: FeedbackRecord;
+  /** Called when the user picks a feedback option for the current gift. */
+  onReport?: (opt: FeedbackOption, detail?: string) => void;
+  /** Called when the user clears feedback for the current gift. */
+  onUndoReport?: () => void;
 };
 
 const openExternal = (url: string) => {
@@ -38,11 +46,28 @@ function navBtnStyle(enabled: boolean): React.CSSProperties {
   };
 }
 
-export function ProductModal({ gifts, currentIndex, onNavigate, onClose, isMobile, matchReasons }: Props) {
+export function ProductModal({
+  gifts,
+  currentIndex,
+  onNavigate,
+  onClose,
+  isMobile,
+  matchReasons,
+  feedback,
+  onReport,
+  onUndoReport,
+}: Props) {
   const open = currentIndex !== null && currentIndex >= 0 && gifts[currentIndex] !== undefined;
   const gift = open ? gifts[currentIndex as number] : null;
   const canPrev = open && (currentIndex as number) > 0;
   const canNext = open && (currentIndex as number) < gifts.length - 1;
+  const reported = !!feedback;
+
+  const [popoverOpen, setPopoverOpen] = useState(false);
+  // Close the popover whenever the modal navigates to a new gift.
+  useEffect(() => {
+    setPopoverOpen(false);
+  }, [currentIndex]);
 
   useEffect(() => {
     if (!open) return;
@@ -427,7 +452,7 @@ export function ProductModal({ gifts, currentIndex, onNavigate, onClose, isMobil
             </div>
           )}
 
-          {/* CTA */}
+          {/* CTAs */}
           <div style={{ display: "flex", gap: 10, marginTop: 22, flexWrap: "wrap" }}>
             <Pillow
               tone="coral"
@@ -439,7 +464,60 @@ export function ProductModal({ gifts, currentIndex, onNavigate, onClose, isMobil
             >
               View on {gift.brand || "store"} →
             </Pillow>
+            {gift.amazonLink && (
+              <Pillow
+                tone="ink"
+                size="md"
+                onClick={(e) => {
+                  e?.stopPropagation?.();
+                  openExternal(gift.amazonLink);
+                }}
+              >
+                Buy on Amazon →
+              </Pillow>
+            )}
           </div>
+
+          {/* "Something off?" feedback link */}
+          {onReport && (
+            <div style={{ position: "relative", marginTop: 14, alignSelf: "flex-start" }}>
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  if (reported && onUndoReport) onUndoReport();
+                  else setPopoverOpen((o) => !o);
+                }}
+                style={{
+                  background: "transparent",
+                  border: "none",
+                  padding: 0,
+                  fontFamily: "Geist, sans-serif",
+                  fontSize: 12,
+                  color: reported ? "#C4477E" : "rgba(35,20,16,0.55)",
+                  cursor: "pointer",
+                  textDecoration: "underline",
+                  textUnderlineOffset: 3,
+                  textDecorationColor: reported ? "#C4477E" : "rgba(35,20,16,0.3)",
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: 6,
+                }}
+              >
+                {reported ? `${feedback.option.e} Reported · undo` : "Something off?"}
+              </button>
+              <FeedbackPopover
+                open={popoverOpen}
+                onClose={() => setPopoverOpen(false)}
+                onPick={(opt, detail) => {
+                  onReport(opt, detail);
+                  setPopoverOpen(false);
+                }}
+                anchorSide="left"
+                openUp
+              />
+            </div>
+          )}
         </div>
       </div>
     </div>

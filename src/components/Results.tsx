@@ -409,6 +409,11 @@ export function Results() {
         onClose={closeModal}
         isMobile={isMobile}
         matchReasons={modalReasons}
+        feedback={modalIndex !== null && picks[modalIndex] ? feedbackById[picks[modalIndex].id] : undefined}
+        onReport={modalIndex !== null && picks[modalIndex] ? handleReport(picks[modalIndex]) : undefined}
+        onUndoReport={
+          modalIndex !== null && picks[modalIndex] ? handleUndoReport(picks[modalIndex]) : undefined
+        }
       />
     </div>
   );

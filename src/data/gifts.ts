@@ -27,6 +27,8 @@ export type Gift = {
   priceLabel: string;
   image: string;
   link: string;
+  /** Optional secondary purchase link — surfaces a "Buy on Amazon" CTA when set. */
+  amazonLink: string;
   ages: string[];
   types: string[];
   interests: string[];
@@ -104,6 +106,9 @@ export const OCCASION_LABELS: Record<string, string> = {
   wed: "Wedding",
   jb: "Just Because",
   baby: "New Baby",
+  housewarm: "Housewarming",
+  appreciate: "Appreciation",
+  thank: "Thank You",
 };
 
 /* ------------------------------------------------------------------ *
@@ -147,20 +152,25 @@ function matchCount(haystack: string[], candidates: string[]): number {
 }
 
 /* ------------------------------------------------------------------ *
- * Score components per spec — total budget = 100 pts.
- *   Relation 30  ·  Age 20  ·  Budget 15  ·  Interests 15  ·  Vibe 10
- *   Occasion ±10/±15 adjustment (applied last, score floored at 0)
+ * Score components — totals to ~95 pts, plus an Occasion adjustment of
+ * up to ±15 applied last. Score is clamped to [0, 100].
+ *
+ *   Relation 25  ·  Age 10  ·  Budget 10  ·  Interests 40  ·  Vibe 10
+ *
+ * Interests is intentionally the dominant signal: a user picking
+ * "Fitness" should see fitness gifts — not just any gift that fits
+ * their recipient + age bracket.
  * ------------------------------------------------------------------ */
 
 function scoreRelation(gift: Gift, answers: Answers): number {
   if (!answers.recipient) return 0;
   if (answers.recipient === "self") {
     // "Treat myself" — matches any gift that has any Relation tag at all
-    return gift.relations.length > 0 ? 30 : 0;
+    return gift.relations.length > 0 ? 25 : 0;
   }
   const wanted = RECIPIENT_LABELS[answers.recipient] ?? [];
   if (!wanted.length) return 0;
-  return matchCount(gift.relations, wanted) > 0 ? 30 : 0;
+  return matchCount(gift.relations, wanted) > 0 ? 25 : 0;
 }
 
 function scoreAge(gift: Gift, answers: Answers): number {
@@ -168,12 +178,12 @@ function scoreAge(gift: Gift, answers: Answers): number {
   if (answers.age) {
     for (const lbl of AGE_LABELS[answers.age]) wanted.add(lbl);
   }
-  // "New parent" occasion also implies baby-relevant Age tag is a match
+  // "New baby" occasion also implies baby-relevant Age tag is a match
   if (answers.occasion === "baby") {
     wanted.add("Baby / New Parent");
   }
   if (!wanted.size) return 0;
-  return matchCount(gift.ages, [...wanted]) > 0 ? 20 : 0;
+  return matchCount(gift.ages, [...wanted]) > 0 ? 10 : 0;
 }
 
 function scoreBudget(gift: Gift, answers: Answers): number {
@@ -182,16 +192,14 @@ function scoreBudget(gift: Gift, answers: Answers): number {
   if (gift.isYourChoice) return 15;
   if (gift.price <= 0) return 0;
 
-  // Annualize subscriptions so $16/mo is treated like ~$192/yr for tier mapping.
-  let effective = gift.price;
-  if (gift.billingPeriod === "monthly") effective = gift.price * 12;
-  else if (gift.billingPeriod === "weekly") effective = gift.price * 52;
-
+  // Use the gift's listed price as-is — a $49/mo subscription is a $49/mo
+  // commitment from the user's POV and should bucket alongside one-shot
+  // $49 gifts, not get annualized.
   const userIdx = budgetTierIndex(answers.budget);
-  const giftIdx = budgetTierIndex(effective);
+  const giftIdx = budgetTierIndex(gift.price);
   const d = Math.abs(userIdx - giftIdx);
-  if (d === 0) return 15;
-  if (d === 1) return 8;
+  if (d === 0) return 10;
+  if (d === 1) return 5;
   return 0;
 }
 
@@ -205,8 +213,8 @@ function scoreInterests(gift: Gift, answers: Answers): number {
     if (matchCount(gift.interests, labels) > 0) hits++;
   }
   if (!hits) return 0;
-  // Pro-rate to 15 pts max; round to nearest integer.
-  return Math.round((hits / userPicks.length) * 15);
+  // Pro-rate to 40 pts max — interests are the dominant signal.
+  return Math.round((hits / userPicks.length) * 40);
 }
 
 function scoreVibe(gift: Gift, answers: Answers): number {
@@ -290,7 +298,23 @@ function scoreOccasionAdjustment(gift: Gift, answers: Answers): number {
   return 0;
 }
 
-/** Total 0–100 score for one gift. */
+/**
+ * Total 0–100 score for one gift.
+ *
+ * Hard filter: only `status === "Live"` gifts get scored (returns -1
+ * otherwise so the caller can drop them).
+ *
+ * Weighted score (higher is better):
+ *   - Relation match     25 (binary)
+ *   - Age bracket match  10 (binary; "New baby" occasion implies baby tag)
+ *   - Budget tier        10 same · 5 adjacent · 0 otherwise (raw price,
+ *                          no subscription annualization — $49/mo is a
+ *                          $49 commitment from the user's POV)
+ *   - Interests          0–40 (pro-rated by hits/picks; dominant signal)
+ *   - Vibe / Type        0–10 (pro-rated)
+ *   - Occasion adjust    ±0 / ±5 / ±10 / ±15 (applied last, per occasion
+ *                        bonus/penalty table; total clamped to [0, 100])
+ */
 export function scoreGift(gift: Gift, answers: Answers): number {
   // Hard filter: only Live gifts get scored
   if (gift.status && gift.status.trim() !== "Live") return -1;

@@ -93,6 +93,7 @@ function adaptRow(row: RawRow): Gift {
     priceLabel,
     image: String(row.PhotoAddress ?? ""),
     link: String(row.Link ?? ""),
+    amazonLink: String(row.AmazonAltLink ?? "").trim(),
     ages: splitCsv(row.Age as string | undefined),
     types: splitCsv(row.Type as string | undefined),
     interests: splitCsv(row.Interests as string | undefined),
