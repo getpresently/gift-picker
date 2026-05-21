@@ -12,6 +12,7 @@ import { clearAnswers, loadAnswers, QUESTIONS } from "../data/questions";
 import { buildMatchReasons, rankGifts, SECONDARY_TONES, type RankedGift } from "../data/gifts";
 import { useGifts } from "../data/giftsApi";
 import { postFeedback, type FeedbackOption, type FeedbackRecord } from "../data/feedback";
+import { buildShareUrl, hydrateAnswersFromShareUrl, shareOrCopy } from "../data/share";
 
 const SAVED_KEY = "giftpicker_saved_v1";
 
@@ -38,7 +39,15 @@ export function Results() {
   const { data: allGifts, loading, error } = useGifts();
   const [saved, setSaved] = useState<Set<string>>(() => loadSaved());
 
-  const answers = useMemo(() => loadAnswers(), []);
+  // Answers come from sessionStorage by default; fall back to share-URL
+  // params so a recipient can land on /results?r=partner&... and see the
+  // same picks without taking the quiz themselves.
+  const answers = useMemo(() => {
+    const stored = loadAnswers();
+    if (Object.keys(stored).length) return stored;
+    const hydrated = hydrateAnswersFromShareUrl();
+    return hydrated ?? stored;
+  }, []);
   const ranked = useMemo<RankedGift[]>(() => rankGifts(allGifts, answers), [allGifts, answers]);
 
   const [feedbackById, setFeedbackById] = useState<Record<string, FeedbackRecord>>({});
@@ -84,6 +93,14 @@ export function Results() {
   };
 
   const flaggedCount = Object.keys(feedbackById).length;
+
+  const [shareStatus, setShareStatus] = useState<"idle" | "copied" | "shared" | "failed">("idle");
+  const handleShare = async () => {
+    const url = buildShareUrl(answers);
+    const result = await shareOrCopy(url);
+    setShareStatus(result);
+    setTimeout(() => setShareStatus("idle"), 2200);
+  };
 
   // If user lands here with no answers at all, bounce to /quiz.
   useEffect(() => {
@@ -347,8 +364,18 @@ export function Results() {
                   gap: 12,
                   justifyContent: "center",
                   flexWrap: "wrap",
+                  alignItems: "center",
                 }}
               >
+                <Pillow tone="ink" size="lg" onClick={handleShare}>
+                  {shareStatus === "copied"
+                    ? "Copied ✓"
+                    : shareStatus === "shared"
+                      ? "Shared ✓"
+                      : shareStatus === "failed"
+                        ? "Couldn't copy"
+                        : "📤 Share these picks"}
+                </Pillow>
                 <Pillow tone="cream" size="lg" onClick={restart}>
                   ↻ Try again
                 </Pillow>
