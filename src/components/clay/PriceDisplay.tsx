@@ -1,4 +1,4 @@
-import type { Gift } from "../../data/gifts";
+import type { BillingPeriod, Gift } from "../../data/gifts";
 
 type Variant = "card" | "hero" | "modal";
 
@@ -21,38 +21,51 @@ const SUFFIX_SIZE: Record<Variant, number> = {
   hero: 16,
 };
 
-const ALT_PLAN_SIZE: Record<Variant, number> = {
-  card: 12,
-  modal: 13,
-  hero: 14,
-};
+/** Format a number for display with thousands separators; drop trailing zeros. */
+function fmt(n: number): string {
+  if (!Number.isFinite(n)) return "0";
+  if (Number.isInteger(n)) return n.toLocaleString("en-US");
+  return n.toLocaleString("en-US", { maximumFractionDigits: 2 });
+}
+
+/** Amount portion: "Your choice", "$58–$295", "$123+", or "$80". */
+function amountText(gift: Gift): string {
+  if (gift.isYourChoice) return "Your choice";
+  if (gift.price <= 0) return "—";
+  if (gift.priceOpen) return `$${fmt(gift.price)}+`;
+  if (gift.priceMax !== null && gift.priceMax > gift.price) {
+    return `$${fmt(gift.price)}–$${fmt(gift.priceMax)}`;
+  }
+  return `$${fmt(gift.price)}`;
+}
+
+/** Period suffix shown next to the amount. */
+function periodSuffix(billing: BillingPeriod): string | null {
+  if (billing === "monthly") return "/mo";
+  if (billing === "weekly") return "/wk";
+  return null;
+}
 
 export function PriceDisplay({ gift, variant = "card", invert = false }: Props) {
   const headingColor = invert ? "#FFF8EE" : "#231410";
   const dimColor = invert ? "rgba(255,248,238,0.65)" : "rgba(35,20,16,0.55)";
+  const amount = amountText(gift);
+  const suffix = periodSuffix(gift.billingPeriod);
 
-  // Subscription path — primary $X /mo + optional alternate plan
-  if (gift.subscription) {
-    const monthly = gift.subscription.monthly;
-    const plans = gift.subscription.plans ?? [];
-    // Prefer the 6-month plan if present, otherwise the longest plan available
-    const altPlan =
-      plans.find((p) => p.months === 6) ??
-      (plans.length ? plans.reduce((longest, p) => (p.months > longest.months ? p : longest), plans[0]) : null);
-
-    return (
-      <div style={{ display: "inline-flex", alignItems: "baseline", flexWrap: "wrap", gap: 8 }}>
-        <span
-          style={{
-            fontFamily: '"Instrument Serif", serif',
-            fontSize: SERIF_SIZE[variant],
-            letterSpacing: "-0.02em",
-            color: headingColor,
-            lineHeight: 1,
-          }}
-        >
-          ${formatMoney(monthly)}
-        </span>
+  return (
+    <div style={{ display: "inline-flex", alignItems: "baseline", flexWrap: "wrap", gap: 6 }}>
+      <span
+        style={{
+          fontFamily: '"Instrument Serif", serif',
+          fontSize: SERIF_SIZE[variant],
+          letterSpacing: "-0.02em",
+          color: headingColor,
+          lineHeight: 1,
+        }}
+      >
+        {amount}
+      </span>
+      {suffix && (
         <span
           style={{
             fontFamily: "Geist, sans-serif",
@@ -61,41 +74,9 @@ export function PriceDisplay({ gift, variant = "card", invert = false }: Props) 
             lineHeight: 1,
           }}
         >
-          /mo
+          {suffix}
         </span>
-        {variant !== "card" && altPlan && (
-          <span
-            style={{
-              fontFamily: "Geist, sans-serif",
-              fontSize: ALT_PLAN_SIZE[variant],
-              color: dimColor,
-              lineHeight: 1,
-              marginLeft: 4,
-            }}
-          >
-            or ${formatMoney(altPlan.total)} / {altPlan.months} mo
-          </span>
-        )}
-      </div>
-    );
-  }
-
-  // One-shot path — uses priceLabel so we preserve ranges ("$58–$295") and "+" suffixes
-  return (
-    <span
-      style={{
-        fontFamily: '"Instrument Serif", serif',
-        fontSize: SERIF_SIZE[variant],
-        letterSpacing: "-0.02em",
-        color: headingColor,
-        lineHeight: 1,
-      }}
-    >
-      {gift.priceLabel || "—"}
-    </span>
+      )}
+    </div>
   );
-}
-
-function formatMoney(n: number): string {
-  return Number.isInteger(n) ? String(n) : n.toFixed(2).replace(/\.?0+$/, "");
 }

@@ -91,7 +91,7 @@ export const QUESTIONS: Question[] = [
       { v: "holi", l: "Holiday",      e: "🎄" },
       { v: "wed",  l: "Wedding",      e: "💌" },
       { v: "jb",   l: "Just because", e: "☀️" },
-      { v: "baby", l: "New parent",   e: "🍼" },
+      { v: "baby", l: "New baby",     e: "🍼" },
     ],
   },
   {

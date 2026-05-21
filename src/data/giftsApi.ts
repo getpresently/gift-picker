@@ -1,12 +1,16 @@
 import { useEffect, useState } from "react";
-import type { Gift } from "./gifts";
+import type { BillingPeriod, Gift } from "./gifts";
 
 /**
- * Live gift database (Google Sheet, exposed via nocodeapi).
- * The sheet currently uses column names: row_id, Gift, Brand, Description,
- * Age, Type, Interests, Relation, Occasions (or Occasion), Price (bucket),
- * PriceActual ("$80" or "$16/mo"), PriceDisplay, PhotoAddress, Link, Status.
- * We adapt those to the clean Gift shape used everywhere in code.
+ * Live gift database (Google Sheet via nocodeapi).
+ *
+ * Current column shape (post the May-2026 schema change):
+ *   row_id, Gift, Brand, Age, Relation, Type, Interests, Occasion,
+ *   Price (numeric string lower bound), PriceMax (numeric / "$1,240" / "open" / ""),
+ *   BillingPeriod ("one-time" | "monthly" | "weekly"), Description,
+ *   PhotoAddress, Link, AmazonAltLink, Status, Feedback.
+ *
+ * We adapt the messy values into the clean Gift shape used everywhere in code.
  */
 const GIFTS_URL =
   "https://v1.nocodeapi.com/qlangstaff/google_sheets/WmiYFvgDSyDXhouR?tabId=Gifts";
@@ -21,77 +25,79 @@ function splitCsv(raw: string | number | undefined): string[] {
     .filter(Boolean);
 }
 
-/** Format a number for display: drop trailing .00 on whole-dollar values. */
+/** Format a number for display: drop trailing zeros, add thousands separator. */
 function fmt(n: number): string {
-  return Number.isInteger(n) ? String(n) : n.toFixed(2).replace(/\.?0+$/, "");
+  if (!Number.isFinite(n)) return "0";
+  if (Number.isInteger(n)) return n.toLocaleString("en-US");
+  return n.toLocaleString("en-US", { maximumFractionDigits: 2 });
 }
 
-/**
- * Parse a price cell. Handles a few real shapes in the sheet:
- *   "$80"         → $80, one-time
- *   "$16/mo"      → $16/mo, monthly
- *   "$58-295"     → $58–$295 range
- *   "$123.38 +"   → $123+, "starts from" pricing
- *
- * Returns the LOW numeric value (used for budget-bucket fallback derivation)
- * plus a human-readable label preserving range / + / /mo semantics.
- */
-function parsePriceCell(raw: string | number | undefined): {
-  price: number;
-  isMonthly: boolean;
-  priceLabel: string;
-} {
-  if (raw === undefined || raw === null) {
-    return { price: 0, isMonthly: false, priceLabel: "" };
-  }
+/** Parse "$1,240" / "103" / "$80.50" → number; returns null for empty / "open" / unparseable. */
+function parseMoney(raw: string | number | undefined): number | null {
+  if (raw === undefined || raw === null) return null;
   const str = String(raw).trim();
-  const isMonthly = /\/mo\b/i.test(str) || /\bmonth(ly)?\b/i.test(str);
-  const isStartingAt = /\+\s*$/.test(str);
+  if (!str) return null;
+  if (str.toLowerCase() === "open") return null;
+  const cleaned = str.replace(/[^0-9.]/g, "");
+  if (!cleaned) return null;
+  const n = parseFloat(cleaned);
+  return Number.isFinite(n) ? n : null;
+}
 
-  const matches = str.match(/\d+(?:\.\d+)?/g) ?? [];
-  const nums = matches.map(parseFloat).filter((n) => Number.isFinite(n));
-  if (!nums.length) {
-    return { price: 0, isMonthly, priceLabel: "" };
-  }
-  const low = nums[0];
-  const high = nums.length > 1 ? nums[nums.length - 1] : null;
+function normalizeBillingPeriod(raw: string | number | undefined): BillingPeriod {
+  const v = String(raw ?? "").trim().toLowerCase();
+  if (v === "monthly") return "monthly";
+  if (v === "weekly") return "weekly";
+  return "one-time";
+}
 
-  let priceLabel: string;
-  if (isMonthly) {
-    priceLabel = `$${fmt(low)}/mo`;
-  } else if (high !== null && high > low) {
-    priceLabel = `$${fmt(low)}–$${fmt(high)}`;
-  } else if (isStartingAt) {
-    priceLabel = `$${fmt(low)}+`;
-  } else {
-    priceLabel = `$${fmt(low)}`;
-  }
-
-  return { price: low, isMonthly, priceLabel };
+/** Build the display label per the schema-handoff spec. */
+function buildPriceLabel(
+  price: number,
+  priceMax: number | null,
+  priceOpen: boolean,
+  billing: BillingPeriod,
+  isYourChoice: boolean,
+): string {
+  if (isYourChoice) return "Your choice";
+  if (price <= 0 && !priceMax && !priceOpen) return "";
+  let base: string;
+  if (priceOpen) base = `$${fmt(price)}+`;
+  else if (priceMax !== null && priceMax > price) base = `$${fmt(price)}–$${fmt(priceMax)}`;
+  else base = `$${fmt(price)}`;
+  if (billing === "monthly") return `${base}/mo`;
+  if (billing === "weekly") return `${base}/wk`;
+  return base;
 }
 
 function adaptRow(row: RawRow): Gift {
-  const { price, isMonthly, priceLabel } = parsePriceCell(row.PriceActual);
-  // Support either column name — Dalia added it as "Occasions" but the
-  // spec mapping is "Occasion"; try both.
-  const occasionsRaw = (row.Occasions ?? row.Occasion) as string | undefined;
+  const priceRaw = row.Price;
+  const isYourChoice = String(priceRaw ?? "").trim().toLowerCase() === "your choice";
+  const price = isYourChoice ? 0 : parseMoney(priceRaw) ?? 0;
+  const priceMaxRaw = String(row.PriceMax ?? "").trim();
+  const priceOpen = priceMaxRaw.toLowerCase() === "open";
+  const priceMax = priceOpen ? null : parseMoney(priceMaxRaw);
+  const billingPeriod = normalizeBillingPeriod(row.BillingPeriod);
+  const priceLabel = buildPriceLabel(price, priceMax, priceOpen, billingPeriod, isYourChoice);
+
   return {
     id: String(row.row_id ?? row.rowId ?? row.id ?? ""),
     name: String(row.Gift ?? ""),
     brand: String(row.Brand ?? ""),
     description: String(row.Description ?? ""),
     price,
+    priceMax,
+    priceOpen,
+    isYourChoice,
+    billingPeriod,
     priceLabel,
-    isMonthly,
-    subscription: isMonthly && price > 0 ? { monthly: price, plans: [] } : undefined,
     image: String(row.PhotoAddress ?? ""),
     link: String(row.Link ?? ""),
     ages: splitCsv(row.Age as string | undefined),
     types: splitCsv(row.Type as string | undefined),
     interests: splitCsv(row.Interests as string | undefined),
     relations: splitCsv(row.Relation as string | undefined),
-    occasions: splitCsv(occasionsRaw),
-    priceBuckets: splitCsv(row.Price as string | undefined),
+    occasions: splitCsv(row.Occasion as string | undefined),
     status: String(row.Status ?? ""),
   };
 }

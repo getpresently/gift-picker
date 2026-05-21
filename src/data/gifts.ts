@@ -3,24 +3,28 @@ import type { Answers } from "./questions";
 /**
  * Clean, code-side Gift model.
  *
- * The underlying Google Sheet uses messy column names (Gift, PriceActual,
- * PhotoAddress, etc.). The adapter in src/data/giftsApi.ts maps those into
- * these clean field names; the rest of the codebase only sees this shape.
+ * The underlying Google Sheet uses different naming (Gift, PhotoAddress, etc.).
+ * The adapter in src/data/giftsApi.ts maps those into these clean field names;
+ * the rest of the codebase only sees this shape.
  */
+export type BillingPeriod = "one-time" | "monthly" | "weekly";
+
 export type Gift = {
   id: string;
   name: string;
   brand: string;
   description: string;
+  /** Lower-bound numeric price (0 when isYourChoice). */
   price: number;
-  priceLabel: string; // formatted, e.g. "$16", "$16/mo", "$58–$295", "$123+"
-  isMonthly: boolean;
-  /** Populated when the gift is a recurring subscription. */
-  subscription?: {
-    monthly: number;
-    /** Future field: alternate billing plans (e.g. 6mo, 12mo) — not in DB today. */
-    plans?: { months: number; total: number }[];
-  };
+  /** Upper-bound numeric price when the DB has a range; null otherwise. */
+  priceMax: number | null;
+  /** True when DB PriceMax === "open" — display as "$X+". */
+  priceOpen: boolean;
+  /** True when Price === "Your choice" (gift card style — matches any budget). */
+  isYourChoice: boolean;
+  billingPeriod: BillingPeriod;
+  /** Pre-formatted display string ("$58–$295", "$16/mo", "Your choice", etc.). */
+  priceLabel: string;
   image: string;
   link: string;
   ages: string[];
@@ -28,7 +32,6 @@ export type Gift = {
   interests: string[];
   relations: string[];
   occasions: string[];
-  priceBuckets: string[]; // canonical: one of the BUDGET_BUCKETS strings
   status: string;
 };
 
@@ -99,40 +102,22 @@ export const OCCASION_LABELS: Record<string, string> = {
   anni: "Anniversary",
   holi: "Holiday",
   wed: "Wedding",
-  jb: "Just because",
-  baby: "New parent",
+  jb: "Just Because",
+  baby: "New Baby",
 };
 
 /* ------------------------------------------------------------------ *
- * Budget buckets — canonical strings (matching the sheet's Price column)
- * ordered low → high. User's numeric budget maps into one of these.
+ * Budget tiers — used only for scoring (gift catalog stores numeric Price now).
+ * The user's slider value AND the gift's annualized lower-bound price both
+ * map into one of these four tiers; tier-distance determines the score.
  * ------------------------------------------------------------------ */
 
-export const BUDGET_BUCKETS = [
-  "Under $50",
-  "$50-$100",
-  "$100-$250",
-  "Over $250",
-] as const;
-
-export type BudgetBucket = (typeof BUDGET_BUCKETS)[number];
-
-/** Map a numeric budget value to its bucket index (0 = Under $50 ... 3 = Over $250). */
-export function budgetBucketIndex(amount: number): number {
+/** Map a numeric dollar amount to its tier index (0 = Under $50 … 3 = Over $250). */
+export function budgetTierIndex(amount: number): number {
   if (amount < 50) return 0;
   if (amount < 100) return 1;
   if (amount < 250) return 2;
   return 3;
-}
-
-/** Map a sheet bucket string to its index. Accepts variants like "$50-100" (no second $). */
-export function bucketStringIndex(raw: string): number | null {
-  const n = normalize(raw);
-  if (n.includes("under") && n.includes("50")) return 0;
-  if (n.includes("over") && n.includes("250")) return 3;
-  if (n.includes("50") && n.includes("100")) return 1;
-  if (n.includes("100") && n.includes("250")) return 2;
-  return null;
 }
 
 /* ------------------------------------------------------------------ *
@@ -193,18 +178,20 @@ function scoreAge(gift: Gift, answers: Answers): number {
 
 function scoreBudget(gift: Gift, answers: Answers): number {
   if (typeof answers.budget !== "number") return 0;
-  const userIdx = budgetBucketIndex(answers.budget);
-  // Try to find ANY bucket-shaped value in the gift's Price column
-  let bestDistance: number | null = null;
-  for (const raw of gift.priceBuckets) {
-    const idx = bucketStringIndex(raw);
-    if (idx === null) continue;
-    const d = Math.abs(userIdx - idx);
-    if (bestDistance === null || d < bestDistance) bestDistance = d;
-  }
-  if (bestDistance === null) return 0;
-  if (bestDistance === 0) return 15;
-  if (bestDistance === 1) return 8;
+  // Gift Card "Your choice" matches any budget tier — full points.
+  if (gift.isYourChoice) return 15;
+  if (gift.price <= 0) return 0;
+
+  // Annualize subscriptions so $16/mo is treated like ~$192/yr for tier mapping.
+  let effective = gift.price;
+  if (gift.billingPeriod === "monthly") effective = gift.price * 12;
+  else if (gift.billingPeriod === "weekly") effective = gift.price * 52;
+
+  const userIdx = budgetTierIndex(answers.budget);
+  const giftIdx = budgetTierIndex(effective);
+  const d = Math.abs(userIdx - giftIdx);
+  if (d === 0) return 15;
+  if (d === 1) return 8;
   return 0;
 }
 
