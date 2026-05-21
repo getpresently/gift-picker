@@ -52,7 +52,9 @@ export function Hero({
       tint="plum"
       style={{
         position: "relative",
-        padding: isMobile ? "28px 18px 20px" : "32px 28px 22px",
+        // Extra top padding clears the eyebrow badge (which overhangs by ~14px)
+        // and gives the brand line some breathing room below it.
+        padding: isMobile ? "36px 18px 20px" : "44px 28px 22px",
         color: "#FFF8EE",
         overflow: "visible", // allow eyebrow badge to overlap
       }}

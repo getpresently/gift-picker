@@ -107,8 +107,8 @@ export const RECIPIENT_LABELS: Record<string, string[]> = {
  * didn't pick an age explicitly (in which case the explicit choice rules).
  */
 export const RECIPIENT_EXCLUDED_AGES: Record<string, string[]> = {
-  // Your partner can be any adult but isn't a kid or teen.
-  partner: ["Baby / New Parent", "Child", "Teen"],
+  // Your partner can be any age except a literal kid.
+  partner: ["Baby / New Parent", "Child"],
   // Your parent is at least an adult.
   parent: ["Baby / New Parent", "Child", "Teen", "Young Adult"],
   // Grandparents are seniors — the age question is skipped in the UI.
