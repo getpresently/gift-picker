@@ -5,10 +5,11 @@ import { GiftCard } from "./clay/GiftCard";
 import { Hero } from "./clay/Hero";
 import { Pillow } from "./clay/Pillow";
 import { PresentlyMark } from "./clay/PresentlyMark";
+import { ProductModal } from "./clay/ProductModal";
 import { Wordmark } from "./clay/Wordmark";
 import { useIsMobile } from "../hooks/useIsMobile";
 import { clearAnswers, loadAnswers, QUESTIONS } from "../data/questions";
-import { rankGifts, SECONDARY_TONES, type RankedGift } from "../data/gifts";
+import { buildMatchReasons, rankGifts, SECONDARY_TONES, type RankedGift } from "../data/gifts";
 import { useGifts } from "../data/giftsApi";
 
 const SAVED_KEY = "giftpicker_saved_v1";
@@ -38,6 +39,16 @@ export function Results() {
 
   const answers = useMemo(() => loadAnswers(), []);
   const picks = useMemo<RankedGift[]>(() => rankGifts(allGifts, answers), [allGifts, answers]);
+  const [modalIndex, setModalIndex] = useState<number | null>(null);
+
+  const openModal = (i: number) => setModalIndex(i);
+  const closeModal = () => setModalIndex(null);
+  const navigateModal = (i: number) => setModalIndex(i);
+
+  const modalReasons = useMemo(() => {
+    if (modalIndex === null || !picks[modalIndex]) return [];
+    return buildMatchReasons(picks[modalIndex], answers);
+  }, [modalIndex, picks, answers]);
 
   // If user lands here with no answers at all, bounce to /quiz.
   useEffect(() => {
@@ -215,6 +226,7 @@ export function Results() {
                   saved={saved.has(hero.id)}
                   onToggleSave={toggleSave}
                   isMobile={isMobile}
+                  onOpenModal={() => openModal(0)}
                 />
               </div>
 
@@ -249,6 +261,7 @@ export function Results() {
                         saved={saved.has(g.id)}
                         onToggleSave={toggleSave}
                         isMobile={isMobile}
+                        onOpenDetails={() => openModal(i + 1)}
                       />
                     ))}
                   </div>
@@ -288,6 +301,16 @@ export function Results() {
           </footer>
         </div>
       </div>
+
+      {/* Product detail modal — carousel across all picks */}
+      <ProductModal
+        gifts={picks}
+        currentIndex={modalIndex}
+        onNavigate={navigateModal}
+        onClose={closeModal}
+        isMobile={isMobile}
+        matchReasons={modalReasons}
+      />
     </div>
   );
 }
