@@ -431,19 +431,20 @@ export function Results() {
                 </>
               )}
 
-              {/* Bottom actions — one primary CTA + a single line of muted
-                  text links. Replaces the previous three-row stack
-                  (Request more, Share, Try again) which felt busy. */}
+              {/* Bottom actions — single Share CTA + one muted text link.
+                  Start-over already lives in the header so we don't repeat
+                  it here. Big margin above so Share doesn't feel stacked
+                  on top of "Load more" — it's a separate page-end intent. */}
               <div
                 style={{
-                  marginTop: isMobile ? 32 : 44,
+                  marginTop: isMobile ? 56 : 72,
                   display: "flex",
                   flexDirection: "column",
                   alignItems: "center",
-                  gap: 14,
+                  gap: 16,
                 }}
               >
-                <Pillow tone="ink" size="lg" onClick={handleShare}>
+                <Pillow tone="ink" size="md" onClick={handleShare}>
                   {shareStatus === "copied"
                     ? "Copied ✓"
                     : shareStatus === "shared"
@@ -452,52 +453,25 @@ export function Results() {
                         ? "Couldn't copy"
                         : "📤 Share these picks"}
                 </Pillow>
-                <div
+                <button
+                  type="button"
+                  onClick={handleRequestMore}
+                  disabled={requestSent}
                   style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: 14,
-                    flexWrap: "wrap",
-                    justifyContent: "center",
+                    background: "transparent",
+                    border: "none",
+                    padding: 0,
+                    cursor: requestSent ? "default" : "pointer",
                     fontFamily: "Geist, sans-serif",
                     fontSize: 13,
+                    color: requestSent ? "rgba(35,20,16,0.45)" : "#C4477E",
+                    textDecoration: "underline",
+                    textUnderlineOffset: 3,
+                    textDecorationColor: requestSent ? "rgba(35,20,16,0.25)" : "rgba(196,71,126,0.35)",
                   }}
                 >
-                  <button
-                    type="button"
-                    onClick={restart}
-                    style={{
-                      background: "transparent",
-                      border: "none",
-                      padding: 0,
-                      cursor: "pointer",
-                      color: "rgba(35,20,16,0.6)",
-                      textDecoration: "underline",
-                      textUnderlineOffset: 3,
-                      textDecorationColor: "rgba(35,20,16,0.25)",
-                    }}
-                  >
-                    ↻ Try again
-                  </button>
-                  <span aria-hidden style={{ color: "rgba(35,20,16,0.3)" }}>·</span>
-                  <button
-                    type="button"
-                    onClick={handleRequestMore}
-                    disabled={requestSent}
-                    style={{
-                      background: "transparent",
-                      border: "none",
-                      padding: 0,
-                      cursor: requestSent ? "default" : "pointer",
-                      color: requestSent ? "rgba(35,20,16,0.45)" : "#C4477E",
-                      textDecoration: "underline",
-                      textUnderlineOffset: 3,
-                      textDecorationColor: requestSent ? "rgba(35,20,16,0.25)" : "rgba(196,71,126,0.35)",
-                    }}
-                  >
-                    {requestSent ? "✓ Thanks — we'll add more" : "Request more like these →"}
-                  </button>
-                </div>
+                  {requestSent ? "✓ Thanks — we'll add more" : "Not quite right? Request more like these →"}
+                </button>
               </div>
             </>
           )}
