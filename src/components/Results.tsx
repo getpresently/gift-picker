@@ -157,7 +157,32 @@ export function Results() {
   const occasionLabel = labelFor("occasion", answers.occasion);
   const budget = answers.budget;
 
+  // Humanize the selected interest values (the answers store the v codes,
+  // e.g. "cooking", but the breadcrumb wants the friendly labels).
+  const interestsLabel = useMemo(() => {
+    const vals = answers.interests ?? [];
+    if (!vals.length) return null;
+    const q = QUESTIONS.find((x) => x.id === "interests");
+    if (!q || q.type !== "multi") return vals.join(", ");
+    return vals
+      .map((v) => q.options.find((o) => o.v === v)?.l ?? v)
+      .join(", ");
+  }, [answers.interests]);
+
   const [hero, ...rest] = picks;
+
+  // Reveal the secondary grid in batches of 8 so the page doesn't dump
+  // 30+ cards at once. "View more" extends the visible slice; once it
+  // covers the full list the button hides itself.
+  const BATCH_SIZE = 8;
+  const [visibleCount, setVisibleCount] = useState(BATCH_SIZE);
+  // Reset the batch window if the underlying list of picks changes
+  // (new ranking, hydration from share URL, flagging a gift).
+  useEffect(() => {
+    setVisibleCount(BATCH_SIZE);
+  }, [rest.length]);
+  const visibleRest = rest.slice(0, visibleCount);
+  const hasMore = rest.length > visibleCount;
 
   return (
     <div style={{ background: "#FBF1E1", minHeight: "100vh", position: "relative" }}>
@@ -304,7 +329,7 @@ export function Results() {
             >
               For your <em style={{ color: "#C4477E", fontStyle: "italic" }}>{recipientLabel}</em>, with love.
             </h1>
-            {(occasionLabel || typeof budget === "number") && (
+            {(occasionLabel || interestsLabel || typeof budget === "number") && (
               <p
                 style={{
                   fontFamily: "Geist, sans-serif",
@@ -313,7 +338,12 @@ export function Results() {
                   marginTop: 14,
                 }}
               >
-                {[occasionLabel, typeof budget === "number" ? `$${budget} budget` : null, "hand-curated, not auto-generated"]
+                {[
+                  occasionLabel,
+                  interestsLabel,
+                  typeof budget === "number" ? `$${budget} budget` : null,
+                  "hand-curated",
+                ]
                   .filter(Boolean)
                   .join(" · ")}
               </p>
@@ -365,7 +395,7 @@ export function Results() {
                       gap: isMobile ? 12 : 18,
                     }}
                   >
-                    {rest.map((g, i) => (
+                    {visibleRest.map((g, i) => (
                       <GiftCard
                         key={g.id || `gift-${i}`}
                         gift={g}
@@ -380,6 +410,24 @@ export function Results() {
                       />
                     ))}
                   </div>
+
+                  {hasMore && (
+                    <div
+                      style={{
+                        display: "flex",
+                        justifyContent: "center",
+                        marginTop: isMobile ? 24 : 32,
+                      }}
+                    >
+                      <Pillow
+                        tone="cream"
+                        size="md"
+                        onClick={() => setVisibleCount((n) => n + BATCH_SIZE)}
+                      >
+                        View more · {Math.min(BATCH_SIZE, rest.length - visibleCount)} more
+                      </Pillow>
+                    </div>
+                  )}
                 </>
               )}
 
