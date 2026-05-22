@@ -53,6 +53,12 @@ export function Quiz() {
     setShowAllInterests(false);
   }, [step]);
 
+  // Scroll back to the top of the screen whenever the step changes so
+  // long answer lists don't leave the next question scrolled off-screen.
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [step]);
+
   // Clear any pending auto-advance when the question changes or component unmounts.
   useEffect(() => {
     return () => {

@@ -424,46 +424,23 @@ export function Results() {
                         size="md"
                         onClick={() => setVisibleCount((n) => n + BATCH_SIZE)}
                       >
-                        View more · {Math.min(BATCH_SIZE, rest.length - visibleCount)} more
+                        Load more
                       </Pillow>
                     </div>
                   )}
                 </>
               )}
 
-              {/* "Request more" ghost link — small, always visible below grid */}
-              <div style={{ textAlign: "center", marginTop: isMobile ? 24 : 32 }}>
-                <button
-                  type="button"
-                  onClick={handleRequestMore}
-                  disabled={requestSent}
-                  style={{
-                    background: "transparent",
-                    border: "none",
-                    padding: 0,
-                    fontFamily: "Geist, sans-serif",
-                    fontSize: 13,
-                    color: requestSent ? "rgba(35,20,16,0.45)" : "#C4477E",
-                    cursor: requestSent ? "default" : "pointer",
-                    textDecoration: "underline",
-                    textUnderlineOffset: 3,
-                    textDecorationColor: requestSent ? "rgba(35,20,16,0.25)" : "rgba(196,71,126,0.35)",
-                  }}
-                >
-                  {requestSent
-                    ? "✓ Thanks — we'll add more like these"
-                    : "Not quite right? Request more suggestions in this category →"}
-                </button>
-              </div>
-
+              {/* Bottom actions — one primary CTA + a single line of muted
+                  text links. Replaces the previous three-row stack
+                  (Request more, Share, Try again) which felt busy. */}
               <div
                 style={{
-                  marginTop: isMobile ? 24 : 32,
+                  marginTop: isMobile ? 32 : 44,
                   display: "flex",
-                  gap: 12,
-                  justifyContent: "center",
-                  flexWrap: "wrap",
+                  flexDirection: "column",
                   alignItems: "center",
+                  gap: 14,
                 }}
               >
                 <Pillow tone="ink" size="lg" onClick={handleShare}>
@@ -475,9 +452,52 @@ export function Results() {
                         ? "Couldn't copy"
                         : "📤 Share these picks"}
                 </Pillow>
-                <Pillow tone="cream" size="lg" onClick={restart}>
-                  ↻ Try again
-                </Pillow>
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 14,
+                    flexWrap: "wrap",
+                    justifyContent: "center",
+                    fontFamily: "Geist, sans-serif",
+                    fontSize: 13,
+                  }}
+                >
+                  <button
+                    type="button"
+                    onClick={restart}
+                    style={{
+                      background: "transparent",
+                      border: "none",
+                      padding: 0,
+                      cursor: "pointer",
+                      color: "rgba(35,20,16,0.6)",
+                      textDecoration: "underline",
+                      textUnderlineOffset: 3,
+                      textDecorationColor: "rgba(35,20,16,0.25)",
+                    }}
+                  >
+                    ↻ Try again
+                  </button>
+                  <span aria-hidden style={{ color: "rgba(35,20,16,0.3)" }}>·</span>
+                  <button
+                    type="button"
+                    onClick={handleRequestMore}
+                    disabled={requestSent}
+                    style={{
+                      background: "transparent",
+                      border: "none",
+                      padding: 0,
+                      cursor: requestSent ? "default" : "pointer",
+                      color: requestSent ? "rgba(35,20,16,0.45)" : "#C4477E",
+                      textDecoration: "underline",
+                      textUnderlineOffset: 3,
+                      textDecorationColor: requestSent ? "rgba(35,20,16,0.25)" : "rgba(196,71,126,0.35)",
+                    }}
+                  >
+                    {requestSent ? "✓ Thanks — we'll add more" : "Request more like these →"}
+                  </button>
+                </div>
               </div>
             </>
           )}

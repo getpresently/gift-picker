@@ -334,15 +334,26 @@ export function ProductModal({
           )}
         </div>
 
-        {/* Content side */}
+        {/* Content side — split into scrollable middle + fixed footer
+            (CTAs) so the Buy buttons are always visible on mobile even
+            when the description is long. */}
         <div
           style={{
             flex: isMobile ? "1 1 auto" : "1 1 50%",
-            padding: isMobile ? 22 : 28,
-            overflowY: "auto",
+            display: "flex",
+            flexDirection: "column",
             minHeight: 0,
+            position: "relative",
           }}
         >
+          <div
+            style={{
+              flex: "1 1 auto",
+              minHeight: 0,
+              overflowY: "auto",
+              padding: isMobile ? "22px 22px 14px" : "28px 28px 18px",
+            }}
+          >
           {gift.brand && (
             <div
               style={{
@@ -504,9 +515,46 @@ export function ProductModal({
             </div>
           )}
 
+          </div>
+
+          {/* Fade on the bottom edge of the scrollable area (mobile only)
+              hints there's more content above the pinned CTAs. */}
+          {isMobile && (
+            <div
+              aria-hidden
+              style={{
+                position: "absolute",
+                left: 0,
+                right: 0,
+                bottom: 0,
+                height: 28,
+                pointerEvents: "none",
+                background:
+                  "linear-gradient(180deg, rgba(251,241,225,0) 0%, rgba(251,241,225,0.9) 75%, rgba(251,241,225,1) 100%)",
+                transform: "translateY(-100%)",
+                zIndex: 1,
+              }}
+            />
+          )}
+
+          {/* Pinned footer — CTAs + feedback link. flexShrink:0 keeps it
+              from being squeezed; on mobile a subtle top border + cream
+              wash separates it from the scrolling content. */}
+          <div
+            style={{
+              flexShrink: 0,
+              padding: isMobile ? "14px 22px 22px" : "0 28px 28px",
+              borderTop: isMobile ? "1px solid rgba(35,20,16,0.06)" : "none",
+              background: isMobile
+                ? "linear-gradient(180deg, #FBF1E1 0%, #FFFCF5 100%)"
+                : "transparent",
+              position: "relative",
+              zIndex: 2,
+            }}
+          >
           {/* CTAs — Amazon takes the primary slot when present, otherwise
               the brand link is primary. Both buttons start with "Buy on…". */}
-          <div style={{ display: "flex", gap: 10, marginTop: 22, flexWrap: "wrap" }}>
+          <div style={{ display: "flex", gap: 10, marginTop: isMobile ? 0 : 22, flexWrap: "wrap" }}>
             {gift.amazonLink ? (
               <>
                 <Pillow
@@ -586,6 +634,7 @@ export function ProductModal({
               />
             </div>
           )}
+          </div>
         </div>
       </div>
     </div>
