@@ -46,16 +46,14 @@ export type RankedGift = Gift & { matchScore: number };
  * candidate is found (case- & punctuation-insensitive) in its column.
  * ------------------------------------------------------------------ */
 
-// Sheet vocabulary as of 2026-05-24: Baby / Child / Teenager / Young Adult /
-// Adult / Senior. The quiz only has 5 age tiers, so Baby + Child are lumped
-// under "kid". Old labels ("Baby / New Parent", "Teen") kept as fallbacks
-// while the migration settles — safe to prune once the sheet is fully cut
-// over.
+// Sheet vocabulary (Baby / Child / Teenager / Young Adult / Adult /
+// Senior). Quiz now splits Baby and Child as separate tiers.
 export const AGE_LABELS: Record<NonNullable<Answers["age"]>, string[]> = {
-  kid: ["Baby", "Child", "Baby / New Parent"],
-  teen: ["Teenager", "Teen"],
+  baby:   ["Baby"],
+  kid:    ["Child"],
+  teen:   ["Teenager"],
   twenty: ["Young Adult"],
-  adult: ["Adult"],
+  adult:  ["Adult"],
   senior: ["Senior"],
 };
 
@@ -85,29 +83,26 @@ export const INTEREST_LABELS: Record<string, string[]> = {
   travel: ["Travel"],
 };
 
-// Sheet vocabulary as of 2026-05-24: Fun / Practical / Sentimental /
-// Luxurious. "Adventurous" was merged into Fun — keep it on Fun's label
-// list so any unmigrated rows still match.
+// Sheet vocabulary: Fun / Practical / Sentimental / Luxurious.
+// (Adventurous was retired and merged into Fun upstream.)
 export const VIBE_LABELS: Record<string, string[]> = {
-  fun: ["Fun", "Adventurous"],
-  practical: ["Practical"],
+  fun:         ["Fun"],
+  practical:   ["Practical"],
   sentimental: ["Sentimental"],
-  luxurious: ["Luxurious"],
+  luxurious:   ["Luxurious"],
 };
 
-// Sheet vocabulary as of 2026-05-24: Partner / Parent / Grandparent /
-// Sibling / Friend / Coworker / Mentor (or Teacher). "Family" was split
-// per-gift into Parent / Grandparent / Sibling. Old strings retained as
-// fallbacks during the migration window — safe to prune once the sheet
-// is fully cut over.
+// Sheet vocabulary: Partner / Parent / Grandparent / Sibling / Friend /
+// Coworker / Mentor (the sheet uses the legacy "Mentor/Teacher" or
+// "Teacher/Mentor" string — unchanged in the latest migration).
 export const RECIPIENT_LABELS: Record<string, string[]> = {
-  partner:     ["Partner", "Significant Other"],
-  parent:      ["Parent", "Family"],
-  grandparent: ["Grandparent", "Family"],
+  partner:     ["Partner"],
+  parent:      ["Parent"],
+  grandparent: ["Grandparent"],
   friend:      ["Friend"],
-  sibling:     ["Sibling", "Family"],
-  coworker:    ["Coworker", "Colleague"],
-  mentor:      ["Mentor / Teacher", "Mentor", "Teacher", "Mentor/Teacher", "Teacher/Mentor"],
+  sibling:     ["Sibling"],
+  coworker:    ["Coworker"],
+  mentor:      ["Mentor/Teacher", "Teacher/Mentor", "Teacher"],
   self:        [], // matches any relation (handled specially in score)
 };
 
@@ -120,17 +115,17 @@ export const RECIPIENT_LABELS: Record<string, string[]> = {
  */
 export const RECIPIENT_EXCLUDED_AGES: Record<string, string[]> = {
   // Your partner can be any age except a literal kid.
-  partner: ["Baby", "Child", "Baby / New Parent"],
+  partner: ["Baby", "Child"],
   // Your parent is at least an adult.
-  parent: ["Baby", "Child", "Teenager", "Young Adult", "Baby / New Parent", "Teen"],
+  parent: ["Baby", "Child", "Teenager", "Young Adult"],
   // Grandparents are seniors — the age question is skipped in the UI.
-  grandparent: ["Baby", "Child", "Teenager", "Young Adult", "Adult", "Baby / New Parent", "Teen"],
+  grandparent: ["Baby", "Child", "Teenager", "Young Adult", "Adult"],
   // Coworkers and mentor-figures are at least young adults.
-  coworker: ["Baby", "Child", "Teenager", "Baby / New Parent", "Teen"],
-  mentor: ["Baby", "Child", "Teenager", "Baby / New Parent", "Teen"],
+  coworker: ["Baby", "Child", "Teenager"],
+  mentor: ["Baby", "Child", "Teenager"],
   // The user filling out the quiz isn't shopping for a literal child for
   // themselves. (They could be a teen, though, so don't exclude that.)
-  self: ["Baby", "Child", "Baby / New Parent"],
+  self: ["Baby", "Child"],
   // Friends and siblings can be any age.
   friend: [],
   sibling: [],
@@ -215,10 +210,11 @@ function scoreAge(gift: Gift, answers: Answers): number {
   if (answers.age) {
     for (const lbl of AGE_LABELS[answers.age]) wanted.add(lbl);
   }
-  // "New baby" occasion also implies baby-relevant Age tag is a match
+  // "New baby" occasion also implies a baby-relevant Age tag is a match
+  // (e.g. shopping a New Baby gift for a friend should surface gifts
+  // tagged Age=Baby even though the friend isn't tagged Baby).
   if (answers.occasion === "baby") {
     wanted.add("Baby");
-    wanted.add("Baby / New Parent"); // legacy label
   }
   if (!wanted.size) return 0;
   return matchCount(gift.ages, [...wanted]) > 0 ? 10 : 0;
@@ -380,10 +376,7 @@ export function scoreGift(gift: Gift, answers: Answers): number {
     if (answers.age) {
       // Explicit user age choice — gift must match one of the allowed labels.
       const wantedAges = new Set<string>(AGE_LABELS[answers.age]);
-      if (answers.occasion === "baby") {
-        wantedAges.add("Baby");
-        wantedAges.add("Baby / New Parent"); // legacy label
-      }
+      if (answers.occasion === "baby") wantedAges.add("Baby");
       if (matchCount(gift.ages, [...wantedAges]) === 0) return -1;
     } else if (answers.recipient && RECIPIENT_EXCLUDED_AGES[answers.recipient]?.length) {
       // No explicit age but the recipient implies one (e.g. grandparent =
