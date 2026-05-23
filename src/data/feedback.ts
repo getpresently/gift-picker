@@ -10,7 +10,7 @@
  * so dev/preview environments don't error out.
  */
 
-import type { Answers } from "./questions";
+import { humanizeAnswers, type Answers } from "./questions";
 
 /**
  * Visible-in-popover reasons + a couple of implicit signals ("heart")
@@ -70,6 +70,14 @@ export type FeedbackRecord = {
   at: string; // ISO timestamp
 };
 
+/**
+ * Wire payloads sent to the Apps Script. `answers` is the humanized
+ * form (friendly labels like "Partner", "Young adult", "Birthday") —
+ * not the internal v-codes — so the Feedback and Requests sheets
+ * read the way a human did the quiz.
+ */
+type WireAnswers = Record<string, unknown>;
+
 type FeedbackPayload = {
   type: "feedback";
   giftId: string;
@@ -78,14 +86,14 @@ type FeedbackPayload = {
   reason: FeedbackReason;
   reasonLabel: string;
   detail?: string;
-  answers: Answers;
+  answers: WireAnswers;
   at: string;
   clientId: string;
 };
 
 type RequestPayload = {
   type: "request";
-  answers: Answers;
+  answers: WireAnswers;
   at: string;
   clientId: string;
 };
@@ -150,10 +158,21 @@ async function postEvent(payload: FeedbackPayload | RequestPayload): Promise<voi
   }
 }
 
-export async function postFeedback(
-  payload: Omit<FeedbackPayload, "type" | "clientId">
-): Promise<void> {
-  return postEvent({ type: "feedback", clientId: getClientId(), ...payload });
+/**
+ * Public callers pass raw `Answers` (v-codes); we humanize at the wire
+ * boundary so internal types stay clean but the sheet rows are readable.
+ */
+type FeedbackInput = Omit<FeedbackPayload, "type" | "clientId" | "answers"> & {
+  answers: Answers;
+};
+
+export async function postFeedback(payload: FeedbackInput): Promise<void> {
+  return postEvent({
+    type: "feedback",
+    clientId: getClientId(),
+    ...payload,
+    answers: humanizeAnswers(payload.answers),
+  });
 }
 
 /**
@@ -164,7 +183,7 @@ export async function postFeedback(
 export async function postRequest(answers: Answers): Promise<void> {
   return postEvent({
     type: "request",
-    answers,
+    answers: humanizeAnswers(answers),
     at: new Date().toISOString(),
     clientId: getClientId(),
   });

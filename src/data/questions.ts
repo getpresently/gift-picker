@@ -247,3 +247,60 @@ export function clearAnswers(): void {
     // no-op
   }
 }
+
+/**
+ * Map the internal v-codes stored in `Answers` (e.g. `partner`, `twenty`,
+ * `bday`, `cooking`) to the human labels the user actually clicked
+ * (`Partner`, `Young adult`, `Birthday`, `Cooking`). Used before we ship
+ * answers out to the Apps Script — the Feedback and Requests sheets
+ * read much better when they show the same words the user saw.
+ *
+ * Unknown codes (e.g. the "NEW: <typed text>" occasion override set by
+ * Quiz.tsx for free-text occasions) pass through unchanged. The
+ * `occasionOther` field is intentionally dropped from the output — its
+ * content has already been folded into `occasion` at the call site.
+ */
+export function humanizeAnswers(answers: Answers): Record<string, unknown> {
+  const out: Record<string, unknown> = {};
+
+  const choiceLabel = (qid: keyof Answers, code: string | undefined): string | undefined => {
+    if (code === undefined) return undefined;
+    const q = QUESTIONS.find((x) => x.id === qid);
+    if (!q || q.type !== "choice") return code;
+    return q.options.find((o) => o.v === code)?.l ?? code;
+  };
+
+  const multiLabels = (qid: keyof Answers, codes: string[] | undefined): string[] | undefined => {
+    if (codes === undefined) return undefined;
+    const q = QUESTIONS.find((x) => x.id === qid);
+    if (!q || q.type !== "multi") return codes;
+    return codes.map((v) => q.options.find((o) => o.v === v)?.l ?? v);
+  };
+
+  const recipient = choiceLabel("recipient", answers.recipient);
+  if (recipient !== undefined) out.recipient = recipient;
+
+  const age = choiceLabel("age", answers.age);
+  if (age !== undefined) out.age = age;
+
+  // Free-text "Other" occasions: if the caller hasn't already baked the
+  // typed text into `occasion` (e.g. Quiz.tsx overrides it to "NEW: …"
+  // for Requests), surface the user's wording here so the Feedback
+  // sheet doesn't just say "Other".
+  if (answers.occasion === "other" && answers.occasionOther) {
+    out.occasion = answers.occasionOther;
+  } else {
+    const occ = choiceLabel("occasion", answers.occasion);
+    if (occ !== undefined) out.occasion = occ;
+  }
+
+  const interests = multiLabels("interests", answers.interests);
+  if (interests !== undefined) out.interests = interests;
+
+  const vibe = multiLabels("vibe", answers.vibe);
+  if (vibe !== undefined) out.vibe = vibe;
+
+  if (answers.budget !== undefined) out.budget = answers.budget;
+
+  return out;
+}
