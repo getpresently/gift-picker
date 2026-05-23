@@ -141,10 +141,16 @@ export function Results() {
     });
   };
 
+  // "Start over" wipes the current answers and drops the user back at
+  // the first quiz question (not the landing page) so they can retake
+  // immediately without the marketing hero in between.
   const restart = () => {
     clearAnswers();
-    navigate("/");
+    navigate("/quiz");
   };
+  // Wordmark click goes home (no wipe) — leaves the session intact in
+  // case they want to come back to these picks via the back button.
+  const goHome = () => navigate("/");
 
   // Headline labels
   const labelFor = (qid: string, val: string | undefined): string | null => {
@@ -216,7 +222,7 @@ export function Results() {
               padding: isMobile ? "20px 20px 14px" : "20px 56px 16px",
             }}
           >
-            <Wordmark size={isMobile ? "sm" : "md"} onClick={restart} />
+            <Wordmark size={isMobile ? "sm" : "md"} onClick={goHome} />
             <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
               {flaggedCount > 0 && (
                 <div

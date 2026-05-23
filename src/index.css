@@ -41,3 +41,9 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
 }
+
+/* Light placeholder text for inputs that sit on a coral background
+   (currently just the OccasionOtherTile "Type Occasion" input). */
+.gp-other-input::placeholder {
+  color: rgba(255, 248, 238, 0.55);
+}

@@ -4,6 +4,7 @@ import { AmbientGlow } from "./clay/AmbientGlow";
 import { BudgetSlider } from "./clay/BudgetSlider";
 import { ChipChoice } from "./clay/ChipChoice";
 import { ChoiceTile } from "./clay/ChoiceTile";
+import { OccasionOtherTile } from "./clay/OccasionOtherTile";
 import { Pillow } from "./clay/Pillow";
 import { ProgressDots } from "./clay/ProgressDots";
 import { Wordmark } from "./clay/Wordmark";
@@ -288,66 +289,39 @@ export function Quiz() {
             {q.type === "choice" && (
               <>
                 <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: 12 }}>
-                  {activeOptions.map((opt) => (
-                    <ChoiceTile
-                      key={opt.v}
-                      option={opt}
-                      selected={value === opt.v}
-                      onClick={() => pickChoice(opt)}
-                      big
-                    />
-                  ))}
+                  {activeOptions.map((opt) => {
+                    // The "Other" tile on the occasion question morphs into
+                    // an inline text input when selected — see
+                    // OccasionOtherTile for the input-in-tile behavior.
+                    if (q.id === "occasion" && opt.v === "other") {
+                      return (
+                        <OccasionOtherTile
+                          key={opt.v}
+                          option={opt}
+                          selected={value === opt.v}
+                          value={answers.occasionOther ?? ""}
+                          onSelect={() => pickChoice(opt)}
+                          onChange={(v) =>
+                            setAnswers((a) => ({ ...a, occasionOther: v }))
+                          }
+                          onSubmit={() => {
+                            if (canAdvance) next();
+                          }}
+                          big
+                        />
+                      );
+                    }
+                    return (
+                      <ChoiceTile
+                        key={opt.v}
+                        option={opt}
+                        selected={value === opt.v}
+                        onClick={() => pickChoice(opt)}
+                        big
+                      />
+                    );
+                  })}
                 </div>
-
-                {/* Free-text occasion input — only rendered when the user
-                    picked Other on the occasion question. Typing here
-                    sets `occasionOther`; Enter advances when valid. */}
-                {isOccasionOtherSelected && (
-                  <div style={{ marginTop: 16 }}>
-                    <input
-                      type="text"
-                      value={answers.occasionOther ?? ""}
-                      onChange={(e) =>
-                        setAnswers((a) => ({ ...a, occasionOther: e.target.value }))
-                      }
-                      onKeyDown={(e) => {
-                        if (e.key === "Enter" && canAdvance) {
-                          e.preventDefault();
-                          next();
-                        }
-                      }}
-                      placeholder="Bar Mitzvah, retirement, graduation…"
-                      maxLength={60}
-                      autoFocus
-                      style={{
-                        width: "100%",
-                        boxSizing: "border-box",
-                        padding: "14px 18px",
-                        borderRadius: 14,
-                        border: "1px solid rgba(35,20,16,0.12)",
-                        background: "rgba(255,255,255,0.85)",
-                        backdropFilter: "blur(8px)",
-                        fontFamily: "Geist, sans-serif",
-                        fontSize: 16,
-                        color: "#231410",
-                        outline: "none",
-                        boxShadow:
-                          "inset 0 1px 0 rgba(255,255,255,0.9), 0 4px 10px -3px rgba(80,30,30,0.12)",
-                      }}
-                    />
-                    <div
-                      style={{
-                        marginTop: 8,
-                        fontFamily: "Geist, sans-serif",
-                        fontSize: 12,
-                        color: "rgba(35,20,16,0.55)",
-                        textAlign: "center",
-                      }}
-                    >
-                      Tell us what's special — we'll add it to our list.
-                    </div>
-                  </div>
-                )}
               </>
             )}
 
