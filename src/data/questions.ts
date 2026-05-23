@@ -72,11 +72,11 @@ export const QUESTIONS: Question[] = [
     type: "choice",
     autoAdvance: true,
     options: [
-      { v: "kid",    l: "Little one",  e: "🧸", hint: "under 12" },
-      { v: "teen",   l: "Teenager",    e: "🎧" },
-      { v: "twenty", l: "Young adult", e: "🪩", hint: "20s" },
-      { v: "adult",  l: "Adult",       e: "🍷", hint: "30s–50s" },
-      { v: "senior", l: "Senior",      e: "🌳", hint: "60s+" },
+      { v: "kid",    l: "Little one",  e: "🧸", hint: "0–12" },
+      { v: "teen",   l: "Teenager",    e: "🎧", hint: "13–17" },
+      { v: "twenty", l: "Young adult", e: "🪩", hint: "18–25" },
+      { v: "adult",  l: "Adult",       e: "🍷", hint: "late 20s–50s" },
+      { v: "senior", l: "Senior",      e: "🌳", hint: "60+" },
     ],
   },
   {
@@ -137,12 +137,14 @@ export const QUESTIONS: Question[] = [
     type: "multi",
     max: 2,
     bigTiles: true,
+    // Vibes mirror the sheet's Type column (Fun / Practical / Sentimental /
+    // Luxurious). "Adventurous" was retired upstream and folded into Fun;
+    // see VIBE_LABELS in gifts.ts for the back-compat fallback.
     options: [
       { v: "fun",         l: "Fun",         e: "🎉" },
       { v: "practical",   l: "Practical",   e: "🔧" },
       { v: "sentimental", l: "Sentimental", e: "💛" },
       { v: "luxurious",   l: "Luxurious",   e: "💎" },
-      { v: "adventurous", l: "Adventurous", e: "🧭" },
     ],
   },
   {
