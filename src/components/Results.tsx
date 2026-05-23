@@ -453,25 +453,52 @@ export function Results() {
                         ? "Couldn't copy"
                         : "📤 Share these picks"}
                 </Pillow>
-                <button
-                  type="button"
-                  onClick={handleRequestMore}
-                  disabled={requestSent}
+                <div
                   style={{
-                    background: "transparent",
-                    border: "none",
-                    padding: 0,
-                    cursor: requestSent ? "default" : "pointer",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 14,
+                    flexWrap: "wrap",
+                    justifyContent: "center",
                     fontFamily: "Geist, sans-serif",
                     fontSize: 13,
-                    color: requestSent ? "rgba(35,20,16,0.45)" : "#C4477E",
-                    textDecoration: "underline",
-                    textUnderlineOffset: 3,
-                    textDecorationColor: requestSent ? "rgba(35,20,16,0.25)" : "rgba(196,71,126,0.35)",
                   }}
                 >
-                  {requestSent ? "✓ Thanks — we'll add more" : "Not quite right? Request more like these →"}
-                </button>
+                  <button
+                    type="button"
+                    onClick={restart}
+                    style={{
+                      background: "transparent",
+                      border: "none",
+                      padding: 0,
+                      cursor: "pointer",
+                      color: "rgba(35,20,16,0.6)",
+                      textDecoration: "underline",
+                      textUnderlineOffset: 3,
+                      textDecorationColor: "rgba(35,20,16,0.25)",
+                    }}
+                  >
+                    ↻ Start over
+                  </button>
+                  <span aria-hidden style={{ color: "rgba(35,20,16,0.3)" }}>·</span>
+                  <button
+                    type="button"
+                    onClick={handleRequestMore}
+                    disabled={requestSent}
+                    style={{
+                      background: "transparent",
+                      border: "none",
+                      padding: 0,
+                      cursor: requestSent ? "default" : "pointer",
+                      color: requestSent ? "rgba(35,20,16,0.45)" : "#C4477E",
+                      textDecoration: "underline",
+                      textUnderlineOffset: 3,
+                      textDecorationColor: requestSent ? "rgba(35,20,16,0.25)" : "rgba(196,71,126,0.35)",
+                    }}
+                  >
+                    {requestSent ? "✓ Thanks — we'll add more" : "Request more like these →"}
+                  </button>
+                </div>
               </div>
             </>
           )}
