@@ -8,6 +8,7 @@ import { Pillow } from "./clay/Pillow";
 import { ProgressDots } from "./clay/ProgressDots";
 import { Wordmark } from "./clay/Wordmark";
 import { useIsMobile } from "../hooks/useIsMobile";
+import { postRequest } from "../data/feedback";
 import {
   getActiveOptions,
   getActiveQuestions,
@@ -18,6 +19,8 @@ import {
   type Option,
   type Question,
 } from "../data/questions";
+
+const OCCASION_OTHER_MIN_LENGTH = 2;
 
 export function Quiz() {
   const navigate = useNavigate();
@@ -36,12 +39,19 @@ export function Quiz() {
   const value = answers[q.id];
   const activeOptions = getActiveOptions(q, answers);
 
+  // "Other" on the occasion question needs a non-empty typed value before
+  // we let the user advance — otherwise they could ship a blank custom
+  // occasion to the Requests sheet.
+  const isOccasionOtherSelected = q.id === "occasion" && value === "other";
+  const occasionOtherTyped = (answers.occasionOther ?? "").trim();
   const canAdvance =
     q.type === "slider"
       ? true
       : q.type === "multi"
         ? Array.isArray(value) && value.length > 0
-        : value !== undefined;
+        : isOccasionOtherSelected
+          ? occasionOtherTyped.length >= OCCASION_OTHER_MIN_LENGTH
+          : value !== undefined;
 
   // Persist answers whenever they change so a refresh/back doesn't blank progress.
   useEffect(() => {
@@ -86,6 +96,13 @@ export function Quiz() {
     const list = getActiveQuestions(a);
     if (i >= list.length) {
       saveAnswers(a);
+      // If the user typed a free-text occasion, log it to the Requests
+      // sheet so Dalia can see what new categories users are asking for.
+      // The occasion column gets a "NEW: <typed text>" marker; the rest
+      // of the answers ride along so she has full context.
+      if (a.occasion === "other" && a.occasionOther?.trim()) {
+        postRequest({ ...a, occasion: `NEW: ${a.occasionOther.trim()}` });
+      }
       navigate("/results");
     } else {
       setStep(i);
@@ -103,9 +120,19 @@ export function Quiz() {
   };
 
   const pickChoice = (opt: Option) => {
-    const newAnswers: Answers = { ...answers, [q.id]: opt.v };
+    // On the occasion question: picking "Other" reveals a text input and
+    // disables auto-advance. Picking anything else clears any previously
+    // typed free-text so a quick re-pick doesn't carry stale state.
+    const pickingOccasionOther = q.id === "occasion" && opt.v === "other";
+    const clearOccasionOther = q.id === "occasion" && opt.v !== "other";
+
+    const newAnswers: Answers = {
+      ...answers,
+      [q.id]: opt.v,
+      ...(clearOccasionOther ? { occasionOther: undefined } : {}),
+    };
     setAnswers(newAnswers);
-    if (q.type === "choice" && q.autoAdvance) {
+    if (q.type === "choice" && q.autoAdvance && !pickingOccasionOther) {
       if (advanceTimerRef.current !== null) window.clearTimeout(advanceTimerRef.current);
       advanceTimerRef.current = window.setTimeout(() => goTo(safeStep + 1, newAnswers), 320);
     }
@@ -259,17 +286,69 @@ export function Quiz() {
             </div>
 
             {q.type === "choice" && (
-              <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: 12 }}>
-                {activeOptions.map((opt) => (
-                  <ChoiceTile
-                    key={opt.v}
-                    option={opt}
-                    selected={value === opt.v}
-                    onClick={() => pickChoice(opt)}
-                    big
-                  />
-                ))}
-              </div>
+              <>
+                <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: 12 }}>
+                  {activeOptions.map((opt) => (
+                    <ChoiceTile
+                      key={opt.v}
+                      option={opt}
+                      selected={value === opt.v}
+                      onClick={() => pickChoice(opt)}
+                      big
+                    />
+                  ))}
+                </div>
+
+                {/* Free-text occasion input — only rendered when the user
+                    picked Other on the occasion question. Typing here
+                    sets `occasionOther`; Enter advances when valid. */}
+                {isOccasionOtherSelected && (
+                  <div style={{ marginTop: 16 }}>
+                    <input
+                      type="text"
+                      value={answers.occasionOther ?? ""}
+                      onChange={(e) =>
+                        setAnswers((a) => ({ ...a, occasionOther: e.target.value }))
+                      }
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter" && canAdvance) {
+                          e.preventDefault();
+                          next();
+                        }
+                      }}
+                      placeholder="Bar Mitzvah, retirement, graduation…"
+                      maxLength={60}
+                      autoFocus
+                      style={{
+                        width: "100%",
+                        boxSizing: "border-box",
+                        padding: "14px 18px",
+                        borderRadius: 14,
+                        border: "1px solid rgba(35,20,16,0.12)",
+                        background: "rgba(255,255,255,0.85)",
+                        backdropFilter: "blur(8px)",
+                        fontFamily: "Geist, sans-serif",
+                        fontSize: 16,
+                        color: "#231410",
+                        outline: "none",
+                        boxShadow:
+                          "inset 0 1px 0 rgba(255,255,255,0.9), 0 4px 10px -3px rgba(80,30,30,0.12)",
+                      }}
+                    />
+                    <div
+                      style={{
+                        marginTop: 8,
+                        fontFamily: "Geist, sans-serif",
+                        fontSize: 12,
+                        color: "rgba(35,20,16,0.55)",
+                        textAlign: "center",
+                      }}
+                    >
+                      Tell us what's special — we'll add it to our list.
+                    </div>
+                  </div>
+                )}
+              </>
             )}
 
             {q.type === "multi" && q.bigTiles && (
@@ -364,7 +443,10 @@ export function Quiz() {
               minHeight: 64,
             }}
           >
-            {q.type !== "choice" && (
+            {/* Choice questions auto-advance and only show a status hint.
+                Exception: "Other" on the occasion question needs an
+                explicit Next click after the free-text input is filled. */}
+            {(q.type !== "choice" || isOccasionOtherSelected) && (
               <Pillow
                 tone={canAdvance ? "coral" : "cream"}
                 size="lg"
@@ -379,7 +461,7 @@ export function Quiz() {
                 {isLast ? "Reveal my picks ✨" : "Next →"}
               </Pillow>
             )}
-            {q.type === "choice" && (
+            {q.type === "choice" && !isOccasionOtherSelected && (
               <div
                 style={{
                   fontFamily: "Geist, sans-serif",

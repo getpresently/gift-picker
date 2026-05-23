@@ -42,6 +42,13 @@ export type Answers = {
   recipient?: string;
   age?: string;
   occasion?: string;
+  /**
+   * Free-text occasion typed by the user when they pick "Other" on the
+   * occasion question. When set, `occasion === "other"` and the algorithm
+   * skips all occasion-based scoring; the typed value is logged to the
+   * Requests sheet (with a "NEW: " prefix) on quiz completion.
+   */
+  occasionOther?: string;
   interests?: string[];
   vibe?: string[];
   budget?: number;
@@ -96,6 +103,11 @@ export const QUESTIONS: Question[] = [
       { v: "housewarm",  l: "Housewarming", e: "🏠" },
       { v: "appreciate", l: "Appreciation", e: "🌷" },
       { v: "thank",      l: "Thank you",    e: "🙏" },
+      // Picking Other reveals a free-text input under the tiles (no
+      // auto-advance). The typed value is stored as `occasionOther`,
+      // bypasses occasion-based scoring, and gets logged to the
+      // Requests sheet on quiz completion with a "NEW: " prefix.
+      { v: "other",      l: "Other",        e: "✨" },
     ],
   },
   {

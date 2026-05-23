@@ -93,8 +93,8 @@ export const VIBE_LABELS: Record<string, string[]> = {
 };
 
 // Sheet vocabulary: Partner / Parent / Grandparent / Sibling / Friend /
-// Coworker / Mentor (the sheet uses the legacy "Mentor/Teacher" or
-// "Teacher/Mentor" string — unchanged in the latest migration).
+// Coworker / Mentor (sheet column literally reads "Mentor/Teacher" — that
+// string was not remapped in the 2026-05-24 migration).
 export const RECIPIENT_LABELS: Record<string, string[]> = {
   partner:     ["Partner"],
   parent:      ["Parent"],
@@ -102,7 +102,7 @@ export const RECIPIENT_LABELS: Record<string, string[]> = {
   friend:      ["Friend"],
   sibling:     ["Sibling"],
   coworker:    ["Coworker"],
-  mentor:      ["Mentor/Teacher", "Teacher/Mentor", "Teacher"],
+  mentor:      ["Mentor/Teacher"],
   self:        [], // matches any relation (handled specially in score)
 };
 
@@ -264,6 +264,11 @@ function scoreVibe(gift: Gift, answers: Answers): number {
  * occasion in the Occasions column. Each occasion has its own bonus/penalty
  * rules per the spec (see Question 2's README). Returns positive (bonus) or
  * negative (penalty) integer points.
+ *
+ * When the user picked the free-text "Other" occasion (occasion === "other"),
+ * OCCASION_LABELS doesn't have a match → this returns 0 and the algorithm
+ * silently bypasses all occasion-based scoring. That's intentional: a typed
+ * occasion like "Bar Mitzvah" can't be mapped to the sheet's Occasions column.
  */
 function scoreOccasionAdjustment(gift: Gift, answers: Answers): number {
   const occCode = answers.occasion;

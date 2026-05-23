@@ -3,8 +3,9 @@ import { saveAnswers } from "./questions";
 
 /**
  * Share-link encoding. We pack the quiz answers into short URL params
- * (r/a/o/i/v/b) so a recipient lands on /results and sees the same picks
- * — assuming the gift database hasn't shifted underneath them.
+ * (r/a/o/i/v/b, plus o2 for a free-text "Other" occasion) so a recipient
+ * lands on /results and sees the same picks — assuming the gift database
+ * hasn't shifted underneath them.
  *
  * URL shape: /results?r=partner&a=adult&o=bday&i=cooking,home,food&v=sentimental&b=150
  */
@@ -14,6 +15,9 @@ export function encodeAnswers(answers: Answers): string {
   if (answers.recipient) params.set("r", answers.recipient);
   if (answers.age) params.set("a", answers.age);
   if (answers.occasion) params.set("o", answers.occasion);
+  if (answers.occasion === "other" && answers.occasionOther) {
+    params.set("o2", answers.occasionOther);
+  }
   if (answers.interests?.length) params.set("i", answers.interests.join(","));
   if (answers.vibe?.length) params.set("v", answers.vibe.join(","));
   if (typeof answers.budget === "number") params.set("b", String(answers.budget));
@@ -26,6 +30,7 @@ export function decodeAnswers(search: string): Answers | null {
   const r = params.get("r"); if (r) out.recipient = r;
   const a = params.get("a"); if (a) out.age = a;
   const o = params.get("o"); if (o) out.occasion = o;
+  const o2 = params.get("o2"); if (o2 && out.occasion === "other") out.occasionOther = o2;
   const i = params.get("i"); if (i) out.interests = i.split(",").filter(Boolean);
   const v = params.get("v"); if (v) out.vibe = v.split(",").filter(Boolean);
   const b = params.get("b");

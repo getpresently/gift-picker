@@ -154,7 +154,12 @@ export function Results() {
     return q.options.find((o) => o.v === val)?.l ?? val;
   };
   const recipientLabel = labelFor("recipient", answers.recipient)?.toLowerCase() ?? "them";
-  const occasionLabel = labelFor("occasion", answers.occasion);
+  // When the user typed a free-text occasion, show their wording in the
+  // breadcrumb instead of the literal "Other" label.
+  const occasionLabel =
+    answers.occasion === "other" && answers.occasionOther?.trim()
+      ? answers.occasionOther.trim()
+      : labelFor("occasion", answers.occasion);
   const budget = answers.budget;
 
   // Humanize the selected interest values (the answers store the v codes,
