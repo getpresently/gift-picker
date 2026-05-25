@@ -444,11 +444,13 @@ const MATCH_STRICT = 60;
 const MATCH_LOOSE = 55;
 
 /**
- * Rank gifts. Returns up to `take` (default 20) sorted by score desc with
- * tiebreakers. Threshold band per the rules above. Returned gifts carry
- * their 0–100 `matchScore` for display in the UI.
+ * Rank gifts. Returns every gift that clears the threshold band sorted
+ * by score desc with tiebreakers. No upper cap — the Results page
+ * paginates the list 8 at a time via its "Load more" control, so the
+ * full set of qualified matches is available to the user. Returned
+ * gifts carry their 0–100 `matchScore` for display in the UI.
  */
-export function rankGifts(gifts: Gift[], answers: Answers, take = 20): RankedGift[] {
+export function rankGifts(gifts: Gift[], answers: Answers): RankedGift[] {
   type Scored = { gift: Gift; score: number; interestHits: number; bestSeller: boolean };
   const scored: Scored[] = gifts
     .map((g) => ({
@@ -469,7 +471,6 @@ export function rankGifts(gifts: Gift[], answers: Answers, take = 20): RankedGif
   const finalize = (list: Scored[]): RankedGift[] =>
     list
       .sort(compare)
-      .slice(0, take)
       .map((s) => ({ ...s.gift, matchScore: s.score }));
 
   const above60 = scored.filter((s) => s.score >= MATCH_STRICT);
