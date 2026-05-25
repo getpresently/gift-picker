@@ -2,8 +2,10 @@ import { useState } from "react";
 import type { CSSProperties } from "react";
 import { ClaySurface } from "./ClaySurface";
 import { FeedbackPopover } from "./FeedbackPopover";
+import { GiftBox3D } from "./GiftBox3D";
 import { Pillow } from "./Pillow";
 import { PriceDisplay } from "./PriceDisplay";
+import { useImageFallback } from "../../hooks/useImageFallback";
 import type { RankedGift } from "../../data/gifts";
 import type { FeedbackOption, FeedbackRecord } from "../../data/feedback";
 
@@ -44,6 +46,10 @@ export function Hero({
   const [imgHover, setImgHover] = useState(false);
   const [popoverOpen, setPopoverOpen] = useState(false);
   const reported = !!feedback;
+  // Fall back to the GiftBox3D placeholder if the hero photo URL is
+  // broken — without this the well shows the browser's broken-image
+  // icon, which is the loudest possible failure mode on a hero card.
+  const { failed: imgFailed, onError: onImgError } = useImageFallback(gift.image);
   const match = typeof gift.matchScore === "number" ? Math.round(gift.matchScore) : null;
   const eyebrowText = match !== null ? `TOP PICK · ${match}% MATCH` : "TOP PICK";
 
@@ -234,10 +240,11 @@ export function Hero({
             transition: "transform 200ms cubic-bezier(.22,1.4,.4,1)",
           }}
         >
-          {gift.image && (
+          {gift.image && !imgFailed ? (
             <img
               src={gift.image}
               alt={gift.name}
+              onError={onImgError}
               style={{
                 position: "absolute",
                 inset: 0,
@@ -247,6 +254,20 @@ export function Hero({
                 display: "block",
               }}
             />
+          ) : (
+            // No (or broken) photo — center a GiftBox3D in the well as
+            // the placeholder. Sits behind the heart/save button.
+            <div
+              style={{
+                position: "absolute",
+                inset: 0,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <GiftBox3D size={isMobile ? 130 : 180} color="coral" rotate={-8} ribbonColor="#FFD074" />
+            </div>
           )}
           {/* Save heart top-right */}
           <span

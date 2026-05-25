@@ -7,6 +7,7 @@ import { GiftBox3D } from "./GiftBox3D";
 import type { BoxColor } from "./GiftBox3D";
 import { Pillow } from "./Pillow";
 import { PriceDisplay } from "./PriceDisplay";
+import { useImageFallback } from "../../hooks/useImageFallback";
 import type { Gift } from "../../data/gifts";
 import type { FeedbackOption, FeedbackRecord } from "../../data/feedback";
 
@@ -118,6 +119,10 @@ export function GiftCard(props: Props) {
   const [hovered, setHovered] = useState(false);
   const [popoverOpen, setPopoverOpen] = useState(false);
   const reported = !!feedback;
+  // Fall back to the GiftBox3D placeholder if the photo URL 404s, hot-links
+  // get blocked, etc. — otherwise the broken-image icon + alt text leaks
+  // through the card.
+  const { failed: imgFailed, onError: onImgError } = useImageFallback(gift.image);
 
   const imgGradient = TONE_IMAGE_GRADIENT[hero ? "plum" : tone];
   const boxColor = pickBoxColor(hero ? "plum" : tone);
@@ -201,10 +206,11 @@ export function GiftCard(props: Props) {
           justifyContent: "center",
         }}
       >
-        {gift.image ? (
+        {gift.image && !imgFailed ? (
           <img
             src={gift.image}
             alt={gift.name}
+            onError={onImgError}
             style={{
               position: "absolute",
               inset: 0,
