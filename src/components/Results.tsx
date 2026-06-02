@@ -13,6 +13,7 @@ import { buildMatchReasons, rankGifts, SECONDARY_TONES, type RankedGift } from "
 import { useGifts } from "../data/giftsApi";
 import { postFeedback, postRequest, type FeedbackOption, type FeedbackRecord } from "../data/feedback";
 import { buildShareUrl, hydrateAnswersFromShareUrl, shareOrCopy } from "../data/share";
+import { track } from "../data/analytics";
 
 const SAVED_KEY = "giftpicker_saved_v1";
 
@@ -82,6 +83,12 @@ export function Results() {
       answers,
       at: record.at,
     });
+    track("gift_feedback", {
+      gift_id: gift.id,
+      brand: gift.brand,
+      reason: opt.v,
+      has_detail: !!detail,
+    });
   };
 
   const handleUndoReport = (gift: RankedGift) => () => {
@@ -99,6 +106,7 @@ export function Results() {
     const url = buildShareUrl(answers);
     const result = await shareOrCopy(url);
     setShareStatus(result);
+    track("gift_share", { method: result });
     setTimeout(() => setShareStatus("idle"), 2200);
   };
 
@@ -106,6 +114,7 @@ export function Results() {
   const handleRequestMore = async () => {
     if (requestSent) return;
     setRequestSent(true);
+    track("request_more");
     await postRequest(answers);
   };
 
@@ -134,6 +143,11 @@ export function Results() {
             reasonLabel: "Saved (heart)",
             answers,
             at: new Date().toISOString(),
+          });
+          track("gift_save", {
+            gift_id: gift.id,
+            brand: gift.brand,
+            price: gift.price,
           });
         }
       }

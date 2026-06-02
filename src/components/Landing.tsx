@@ -6,6 +6,7 @@ import { Pillow } from "./clay/Pillow";
 import { PresentlyMark } from "./clay/PresentlyMark";
 import { Wordmark } from "./clay/Wordmark";
 import { useIsMobile } from "../hooks/useIsMobile";
+import { track } from "../data/analytics";
 
 const HOW_STEPS: { n: string; title: string; body: string; tint: Tint }[] = [
   { n: "01", title: "Tell us about them", body: "Closeness, vibes, budget. Five questions, no account.", tint: "rose" },
@@ -39,7 +40,10 @@ export function Landing() {
   const navigate = useNavigate();
   const isMobile = useIsMobile();
 
-  const goStart = () => navigate("/quiz");
+  const goStart = () => {
+    track("quiz_start");
+    navigate("/quiz");
+  };
   const goHome = () => navigate("/");
 
   return (

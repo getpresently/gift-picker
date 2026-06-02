@@ -8,6 +8,7 @@ import type { BoxColor } from "./GiftBox3D";
 import { Pillow } from "./Pillow";
 import { PriceDisplay } from "./PriceDisplay";
 import { useImageFallback } from "../../hooks/useImageFallback";
+import { track } from "../../data/analytics";
 import type { Gift } from "../../data/gifts";
 import type { FeedbackOption, FeedbackRecord } from "../../data/feedback";
 
@@ -355,6 +356,15 @@ export function GiftCard(props: Props) {
             e?.stopPropagation?.();
             // Fall back to Amazon when there's no brand-direct link (some
             // catalog rows are Amazon-only) so the button is never dead.
+            const destination = gift.link ? "brand" : "amazon";
+            track("gift_buy_click", {
+              gift_id: gift.id,
+              gift_name: gift.name,
+              brand: gift.brand,
+              price: gift.price,
+              source: hero ? "hero_card" : "card",
+              destination,
+            });
             openExternal(gift.link || gift.amazonLink);
           }}
         >

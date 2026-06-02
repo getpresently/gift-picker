@@ -4,6 +4,7 @@ import { GiftBox3D } from "./GiftBox3D";
 import { Pillow } from "./Pillow";
 import { PriceDisplay } from "./PriceDisplay";
 import { useImageFallback } from "../../hooks/useImageFallback";
+import { track } from "../../data/analytics";
 import type { RankedGift } from "../../data/gifts";
 import type { FeedbackOption, FeedbackRecord } from "../../data/feedback";
 
@@ -569,6 +570,14 @@ export function ProductModal({
                   size="md"
                   onClick={(e) => {
                     e?.stopPropagation?.();
+                    track("gift_buy_click", {
+                      gift_id: gift.id,
+                      gift_name: gift.name,
+                      brand: gift.brand,
+                      price: gift.price,
+                      source: "modal",
+                      destination: "amazon",
+                    });
                     openExternal(gift.amazonLink);
                   }}
                 >
@@ -580,6 +589,14 @@ export function ProductModal({
                     size="md"
                     onClick={(e) => {
                       e?.stopPropagation?.();
+                      track("gift_buy_click", {
+                        gift_id: gift.id,
+                        gift_name: gift.name,
+                        brand: gift.brand,
+                        price: gift.price,
+                        source: "modal",
+                        destination: "brand",
+                      });
                       openExternal(gift.link);
                     }}
                   >
@@ -593,6 +610,14 @@ export function ProductModal({
                 size="md"
                 onClick={(e) => {
                   e?.stopPropagation?.();
+                  track("gift_buy_click", {
+                    gift_id: gift.id,
+                    gift_name: gift.name,
+                    brand: gift.brand,
+                    price: gift.price,
+                    source: "modal",
+                    destination: "brand",
+                  });
                   openExternal(gift.link);
                 }}
               >

@@ -8,16 +8,19 @@ import {
 import { Landing } from "./components/Landing";
 import { Quiz } from "./components/Quiz";
 import { Results } from "./components/Results";
+import { pageview } from "./data/analytics";
 
 /**
- * Reset scroll position to the top whenever the route changes. Without
- * this, navigating from a scrolled-down Landing → /quiz lands the user
- * mid-page on the new screen, which is jarring on mobile.
+ * Per-route side effects: (1) reset scroll position to the top so the
+ * next screen doesn't open mid-page, and (2) fire a GA page_view event
+ * so SPA navigations are tracked. Manual tracking because gtag's
+ * implicit page_view is disabled in index.html — see analytics.ts.
  */
-function ScrollToTop(): null {
+function RouteEffects(): null {
   const { pathname, search } = useLocation();
   useEffect(() => {
     window.scrollTo(0, 0);
+    pageview(pathname + search);
   }, [pathname, search]);
   return null;
 }
@@ -26,7 +29,7 @@ function App(): JSX.Element {
   return (
     <div className="App">
       <Router>
-        <ScrollToTop />
+        <RouteEffects />
         <Routes>
           <Route path="/" element={<Landing />} />
           <Route path="/home" element={<Landing />} />

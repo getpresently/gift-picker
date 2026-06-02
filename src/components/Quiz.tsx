@@ -10,6 +10,7 @@ import { ProgressDots } from "./clay/ProgressDots";
 import { Wordmark } from "./clay/Wordmark";
 import { useIsMobile } from "../hooks/useIsMobile";
 import { postRequest } from "../data/feedback";
+import { track } from "../data/analytics";
 import {
   getActiveOptions,
   getActiveQuestions,
@@ -66,9 +67,15 @@ export function Quiz() {
 
   // Scroll back to the top of the screen whenever the step changes so
   // long answer lists don't leave the next question scrolled off-screen.
+  // Also fire a quiz_step_view analytics event so we can see funnel
+  // drop-off by question id in GA.
   useEffect(() => {
     window.scrollTo(0, 0);
-  }, [step]);
+    const activeQ = activeQuestions[Math.min(step, activeQuestions.length - 1)];
+    if (activeQ) {
+      track("quiz_step_view", { step_index: step, question_id: activeQ.id });
+    }
+  }, [step]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Clear any pending auto-advance when the question changes or component unmounts.
   useEffect(() => {
@@ -103,7 +110,19 @@ export function Quiz() {
       // of the answers ride along so she has full context.
       if (a.occasion === "other" && a.occasionOther?.trim()) {
         postRequest({ ...a, occasion: `NEW: ${a.occasionOther.trim()}` });
+        track("occasion_other_typed", { value: a.occasionOther.trim() });
       }
+      // Quiz funnel completion event. Includes the high-level answer
+      // dimensions so we can segment completion rate by recipient /
+      // age bracket / occasion / budget without joining sheets.
+      track("quiz_complete", {
+        recipient: a.recipient,
+        age: a.age,
+        occasion: a.occasion === "other" ? "other" : a.occasion,
+        interests_count: a.interests?.length ?? 0,
+        vibe_count: a.vibe?.length ?? 0,
+        budget: a.budget,
+      });
       navigate("/results");
     } else {
       setStep(i);

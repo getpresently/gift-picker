@@ -6,6 +6,7 @@ import { GiftBox3D } from "./GiftBox3D";
 import { Pillow } from "./Pillow";
 import { PriceDisplay } from "./PriceDisplay";
 import { useImageFallback } from "../../hooks/useImageFallback";
+import { track } from "../../data/analytics";
 import type { RankedGift } from "../../data/gifts";
 import type { FeedbackOption, FeedbackRecord } from "../../data/feedback";
 
@@ -163,6 +164,15 @@ export function Hero({
               onClick={(e) => {
                 e?.stopPropagation?.();
                 // Prefer Amazon if available, otherwise the brand's product link.
+                const destination = gift.amazonLink ? "amazon" : "brand";
+                track("gift_buy_click", {
+                  gift_id: gift.id,
+                  gift_name: gift.name,
+                  brand: gift.brand,
+                  price: gift.price,
+                  source: "hero",
+                  destination,
+                });
                 openExternal(gift.amazonLink || gift.link);
               }}
             >
