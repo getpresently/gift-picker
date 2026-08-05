@@ -82,6 +82,23 @@ export function ProductModal({
   // gift to a working one re-tries the next image cleanly.
   const { failed: imgFailed, onError: onImgError } = useImageFallback(gift?.image);
 
+  // Per-gift permalink (/gift/:id) copy affordance.
+  const [linkCopied, setLinkCopied] = useState(false);
+  useEffect(() => {
+    setLinkCopied(false);
+  }, [currentIndex]);
+  const copyGiftLink = async () => {
+    if (!gift) return;
+    try {
+      await navigator.clipboard.writeText(`${window.location.origin}/gift/${gift.id}`);
+      setLinkCopied(true);
+      track("gift_link_copy", { gift_id: gift.id, source: "modal" });
+      setTimeout(() => setLinkCopied(false), 2000);
+    } catch {
+      // Clipboard unavailable; leave the button as-is.
+    }
+  };
+
   useEffect(() => {
     if (!open) return;
     const onKey = (e: KeyboardEvent) => {
@@ -626,46 +643,77 @@ export function ProductModal({
             )}
           </div>
 
-          {/* "Something off?" feedback link */}
-          {onReport && (
-            <div style={{ position: "relative", marginTop: 14, alignSelf: "flex-start" }}>
-              <button
-                type="button"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  if (reported && onUndoReport) onUndoReport();
-                  else setPopoverOpen((o) => !o);
-                }}
-                style={{
-                  background: "transparent",
-                  border: "none",
-                  padding: 0,
-                  fontFamily: "Geist, sans-serif",
-                  fontSize: 12,
-                  color: reported ? "#C4477E" : "rgba(35,20,16,0.55)",
-                  cursor: "pointer",
-                  textDecoration: "underline",
-                  textUnderlineOffset: 3,
-                  textDecorationColor: reported ? "#C4477E" : "rgba(35,20,16,0.3)",
-                  display: "inline-flex",
-                  alignItems: "center",
-                  gap: 6,
-                }}
-              >
-                {reported ? `${feedback.option.e} Reported · undo` : "Something off?"}
-              </button>
-              <FeedbackPopover
-                open={popoverOpen}
-                onClose={() => setPopoverOpen(false)}
-                onPick={(opt, detail) => {
-                  onReport(opt, detail);
-                  setPopoverOpen(false);
-                }}
-                anchorSide="left"
-                openUp
-              />
-            </div>
-          )}
+          {/* Footer links: "Something off?" feedback + per-gift permalink */}
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: 16,
+              marginTop: 14,
+              flexWrap: "wrap",
+            }}
+          >
+            {onReport && (
+              <div style={{ position: "relative" }}>
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    if (reported && onUndoReport) onUndoReport();
+                    else setPopoverOpen((o) => !o);
+                  }}
+                  style={{
+                    background: "transparent",
+                    border: "none",
+                    padding: 0,
+                    fontFamily: "Geist, sans-serif",
+                    fontSize: 12,
+                    color: reported ? "#C4477E" : "rgba(35,20,16,0.55)",
+                    cursor: "pointer",
+                    textDecoration: "underline",
+                    textUnderlineOffset: 3,
+                    textDecorationColor: reported ? "#C4477E" : "rgba(35,20,16,0.3)",
+                    display: "inline-flex",
+                    alignItems: "center",
+                    gap: 6,
+                  }}
+                >
+                  {reported ? `${feedback.option.e} Reported · undo` : "Something off?"}
+                </button>
+                <FeedbackPopover
+                  open={popoverOpen}
+                  onClose={() => setPopoverOpen(false)}
+                  onPick={(opt, detail) => {
+                    onReport(opt, detail);
+                    setPopoverOpen(false);
+                  }}
+                  anchorSide="left"
+                  openUp
+                />
+              </div>
+            )}
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                copyGiftLink();
+              }}
+              style={{
+                background: "transparent",
+                border: "none",
+                padding: 0,
+                fontFamily: "Geist, sans-serif",
+                fontSize: 12,
+                color: linkCopied ? "#4CAF50" : "rgba(35,20,16,0.55)",
+                cursor: "pointer",
+                textDecoration: "underline",
+                textUnderlineOffset: 3,
+                textDecorationColor: "rgba(35,20,16,0.3)",
+              }}
+            >
+              {linkCopied ? "Link copied ✓" : "🔗 Copy link"}
+            </button>
+          </div>
           </div>
         </div>
       </div>

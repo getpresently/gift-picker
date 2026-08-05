@@ -1,0 +1,23 @@
+# GiftPicker
+
+> GiftPicker (giftpicker.io) is a free 30-second gift-recommendation quiz by Presently. Users answer five questions about the recipient (relationship, age, occasion, interests, vibe, budget) and receive ranked, personalized gift picks from a hand-curated database of 200+ brands, with direct buy links to the brand's site or Amazon. No account required.
+
+## What it does
+
+- Five-question quiz: who the gift is for (partner, parent, grandparent, friend, sibling, coworker, mentor, or treat yourself), their age, the occasion, up to 3 interests, the gift vibe, and a budget slider.
+- Occasions covered: Birthday, Anniversary, Holiday, Wedding, Just Because, New Baby, Housewarming, Appreciation, Thank You, plus free-text custom occasions.
+- Interest categories: Apparel and Accessories, Cooking, Creativity, Experiences, Fitness, Food and Drinks, Gaming, Health and Wellness, Home and Decor, Learning, Music, Nature and Outdoors, Organization, Personalization, Pets, Rest and Relaxation, Seasonal Gifts, Self-Care and Beauty, Sustainability, Tech and Electronics, Toys and Games, Travel.
+- Results are scored 0-100 by a weighted matching algorithm (interests weighted heaviest, then relationship, budget fit, age fit, and vibe, with occasion adjustments). Only strong matches are shown.
+- Every gift result has a permanent shareable page at https://giftpicker.io/gift/{id}.
+- Results pages can be shared via URL; the link reproduces the same picks.
+- Gifts are hand-curated from 200+ brands including Apple, Lululemon, Patagonia, Pottery Barn, Anthropologie, Peloton, Aesop, Le Creuset, Diptyque, Hario, MUJI, and Allbirds.
+
+## Key pages
+
+- [Home](https://giftpicker.io/): product overview and quiz entry point.
+- [Quiz](https://giftpicker.io/quiz): the five-question gift finder.
+- [Sitemap](https://giftpicker.io/sitemap.xml): all indexable pages including individual gift pages.
+
+## About
+
+GiftPicker is built and curated by Presently. The catalog is maintained by hand: real gifts from real brands, not AI-generated filler. Feedback tools are built in (users can flag broken links, unavailable products, or bad matches, and request new gift categories).

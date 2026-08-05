@@ -5,6 +5,7 @@ import {
   Routes,
   useLocation,
 } from "react-router-dom";
+import { GiftPage } from "./components/GiftPage";
 import { Landing } from "./components/Landing";
 import { Quiz } from "./components/Quiz";
 import { Results } from "./components/Results";
@@ -35,6 +36,9 @@ function App(): JSX.Element {
           <Route path="/home" element={<Landing />} />
           <Route path="/quiz" element={<Quiz />} />
           <Route path="/results" element={<Results />} />
+          {/* Shareable, crawler-indexable page per gift. The worker
+              prerenders meta + static content for these URLs. */}
+          <Route path="/gift/:giftId" element={<GiftPage />} />
           {/* Catch-all: any unknown route falls back to Landing. SPA fallback at the
               Cloudflare worker means /quiz, /results, deep links all hit React Router first. */}
           <Route path="*" element={<Landing />} />

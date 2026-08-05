@@ -1,3 +1,7 @@
 # https://www.robotstxt.org/robotstxt.html
+# All crawlers welcome, including AI crawlers (GPTBot, ClaudeBot,
+# PerplexityBot, Google-Extended, etc.).
 User-agent: *
 Disallow:
+
+Sitemap: https://giftpicker.io/sitemap.xml
