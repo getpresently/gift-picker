@@ -5,12 +5,12 @@
  * analytics layer hiccups.
  *
  * Event names use snake_case per GA4 convention. Param values are
- * limited to JSON primitives — GA4 ignores nested objects.
+ * limited to JSON primitives, GA4 ignores nested objects.
  *
  * See index.html for the tag install. Pageview tracking is manual
  * (`send_page_view: false` on the config call) so SPA route changes
  * fire consistently regardless of the GA4 admin's Enhanced Measurement
- * settings — see `pageview()` below + the effect in App.tsx.
+ * settings, see `pageview()` below + the effect in App.tsx.
  */
 
 type GtagCommand = "event" | "config" | "set" | "js";
@@ -31,7 +31,7 @@ export function track(event: string, params?: TrackParams): void {
   try {
     gtag("event", event, params ?? {});
   } catch {
-    // Analytics failure must never bubble up — silently swallow.
+    // Analytics failure must never bubble up, silently swallow.
   }
 }
 

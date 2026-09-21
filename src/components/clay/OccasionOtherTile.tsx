@@ -37,7 +37,7 @@ export function OccasionOtherTile({
   const inputRef = useRef<HTMLInputElement>(null);
 
   // Focus the input every time the tile transitions into the selected
-  // state — including re-selection after picking another tile and coming
+  // state, including re-selection after picking another tile and coming
   // back to Other.
   useEffect(() => {
     if (selected && inputRef.current) {
@@ -137,7 +137,7 @@ export function OccasionOtherTile({
       onClick={() => inputRef.current?.focus()}
       style={baseStyle}
       role="group"
-      aria-label={`${option.l} — type your occasion`}
+      aria-label={`${option.l}: type your occasion`}
     >
       {emoji}
       <div style={{ flex: 1, minWidth: 0 }}>

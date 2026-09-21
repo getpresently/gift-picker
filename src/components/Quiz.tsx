@@ -7,7 +7,6 @@ import { ChoiceTile } from "./clay/ChoiceTile";
 import { OccasionOtherTile } from "./clay/OccasionOtherTile";
 import { Pillow } from "./clay/Pillow";
 import { ProgressDots } from "./clay/ProgressDots";
-import { Wordmark } from "./clay/Wordmark";
 import { useIsMobile } from "../hooks/useIsMobile";
 import { postRequest } from "../data/feedback";
 import { track } from "../data/analytics";
@@ -21,6 +20,7 @@ import {
   type Option,
   type Question,
 } from "../data/questions";
+import { SiteHeader } from "./clay/SiteHeader";
 
 const OCCASION_OTHER_MIN_LENGTH = 2;
 
@@ -42,7 +42,7 @@ export function Quiz() {
   const activeOptions = getActiveOptions(q, answers);
 
   // "Other" on the occasion question needs a non-empty typed value before
-  // we let the user advance — otherwise they could ship a blank custom
+  // we let the user advance, otherwise they could ship a blank custom
   // occasion to the Requests sheet.
   const isOccasionOtherSelected = q.id === "occasion" && value === "other";
   const occasionOtherTyped = (answers.occasionOther ?? "").trim();
@@ -183,26 +183,28 @@ export function Quiz() {
       <div style={{ position: "relative", minHeight: "100vh", display: "flex", flexDirection: "column" }}>
         <AmbientGlow variant="quiz" />
 
-        {/* Full-viewport-width sticky nav */}
-        <header
+        <SiteHeader onLogoClick={() => { clearAnswers(); navigate("/"); }} />
+
+        <div
           style={{
-            position: "sticky",
-            top: 0,
-            zIndex: 50,
-            background: "rgba(251, 241, 225, 0.82)",
-            backdropFilter: "blur(14px)",
-            WebkitBackdropFilter: "blur(14px)",
-            borderBottom: "1px solid rgba(35,20,16,0.06)",
+            position: "relative",
+            zIndex: 1,
+            padding: isMobile ? "24px 20px 32px" : "32px 56px 48px",
+            flex: 1,
+            display: "flex",
+            flexDirection: "column",
+            maxWidth: 1280,
+            margin: "0 auto",
+            width: "100%",
           }}
         >
+          {/* Progress */}
           <div
             style={{
-              display: "flex",
-              justifyContent: "space-between",
+              display: "grid",
+              gridTemplateColumns: "40px 1fr 40px",
               alignItems: "center",
-              maxWidth: 1280,
-              margin: "0 auto",
-              padding: isMobile ? "20px 20px 14px" : "20px 56px 16px",
+              marginBottom: isMobile ? 24 : 36,
             }}
           >
             <button
@@ -234,27 +236,10 @@ export function Quiz() {
                 />
               </svg>
             </button>
-            <Wordmark size={isMobile ? "sm" : "md"} onClick={() => { clearAnswers(); navigate("/"); }} />
-            <div style={{ width: 40 }} aria-hidden="true" />
-          </div>
-        </header>
-
-        <div
-          style={{
-            position: "relative",
-            zIndex: 1,
-            padding: isMobile ? "24px 20px 32px" : "32px 56px 48px",
-            flex: 1,
-            display: "flex",
-            flexDirection: "column",
-            maxWidth: 1280,
-            margin: "0 auto",
-            width: "100%",
-          }}
-        >
-          {/* Progress */}
-          <div style={{ display: "flex", justifyContent: "center", marginBottom: isMobile ? 24 : 36 }}>
-            <ProgressDots total={activeQuestions.length} step={safeStep} />
+            <div style={{ display: "flex", justifyContent: "center" }}>
+              <ProgressDots total={activeQuestions.length} step={safeStep} />
+            </div>
+            <div aria-hidden="true" />
           </div>
 
           {/* Question card */}
@@ -310,7 +295,7 @@ export function Quiz() {
                 <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: 12 }}>
                   {activeOptions.map((opt) => {
                     // The "Other" tile on the occasion question morphs into
-                    // an inline text input when selected — see
+                    // an inline text input when selected, see
                     // OccasionOtherTile for the input-in-tile behavior.
                     if (q.id === "occasion" && opt.v === "other") {
                       return (

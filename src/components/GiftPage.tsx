@@ -11,6 +11,9 @@ import { useIsMobile } from "../hooks/useIsMobile";
 import { useImageFallback } from "../hooks/useImageFallback";
 import { useGifts } from "../data/giftsApi";
 import { track } from "../data/analytics";
+import { isAmazonUrl, openBuyLink as openExternal } from "../data/affiliate";
+import { AffiliateDisclosure } from "./clay/AffiliateDisclosure";
+import { SiteHeader } from "./clay/SiteHeader";
 
 /**
  * Standalone, shareable page for a single gift at /gift/:giftId.
@@ -21,10 +24,6 @@ import { track } from "../data/analytics";
  * Gift ids are the sheet row ids ("r2", "r3", ...) synthesized by the
  * Apps Script, so links survive as long as rows aren't reordered.
  */
-
-const openExternal = (url: string) => {
-  if (url) window.open(url, "_blank", "noopener,noreferrer");
-};
 
 export function GiftPage() {
   const navigate = useNavigate();
@@ -55,34 +54,11 @@ export function GiftPage() {
       <div style={{ position: "relative", minHeight: "100vh" }}>
         <AmbientGlow variant="results" />
 
-        {/* Sticky nav: wordmark home + quiz CTA */}
-        <header
-          style={{
-            position: "sticky",
-            top: 0,
-            zIndex: 50,
-            background: "rgba(251, 241, 225, 0.82)",
-            backdropFilter: "blur(14px)",
-            WebkitBackdropFilter: "blur(14px)",
-            borderBottom: "1px solid rgba(35,20,16,0.06)",
-          }}
-        >
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-              maxWidth: 1280,
-              margin: "0 auto",
-              padding: isMobile ? "20px 20px 14px" : "20px 56px 16px",
-            }}
-          >
-            <Wordmark size={isMobile ? "sm" : "md"} onClick={() => navigate("/")} />
-            <Pillow tone="coral" size="sm" onClick={() => navigate("/quiz")}>
+        <SiteHeader onLogoClick={() => navigate("/")}>
+          <Pillow tone="coral" size="sm" onClick={() => navigate("/quiz")}>
               Find a gift →
             </Pillow>
-          </div>
-        </header>
+        </SiteHeader>
 
         <div
           style={{
@@ -371,6 +347,7 @@ export function GiftPage() {
           >
             <Wordmark size="sm" />
             <PresentlyMark />
+            {gift && (gift.amazonLink || isAmazonUrl(gift.link)) && <AffiliateDisclosure />}
           </footer>
         </div>
       </div>

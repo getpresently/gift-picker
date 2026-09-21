@@ -18,16 +18,16 @@ export type Gift = {
   price: number;
   /** Upper-bound numeric price when the DB has a range; null otherwise. */
   priceMax: number | null;
-  /** True when DB PriceMax === "open" — display as "$X+". */
+  /** True when DB PriceMax === "open", display as "$X+". */
   priceOpen: boolean;
-  /** True when Price === "Your choice" (gift card style — matches any budget). */
+  /** True when Price === "Your choice" (gift card style, matches any budget). */
   isYourChoice: boolean;
   billingPeriod: BillingPeriod;
   /** Pre-formatted display string ("$58–$295", "$16/mo", "Your choice", etc.). */
   priceLabel: string;
   image: string;
   link: string;
-  /** Optional secondary purchase link — surfaces a "Buy on Amazon" CTA when set. */
+  /** Optional secondary purchase link, surfaces a "Buy on Amazon" CTA when set. */
   amazonLink: string;
   ages: string[];
   types: string[];
@@ -93,7 +93,7 @@ export const VIBE_LABELS: Record<string, string[]> = {
 };
 
 // Sheet vocabulary: Partner / Parent / Grandparent / Sibling / Friend /
-// Coworker / Mentor (sheet column literally reads "Mentor/Teacher" — that
+// Coworker / Mentor (sheet column literally reads "Mentor/Teacher", that
 // string was not remapped in the 2026-05-24 migration).
 export const RECIPIENT_LABELS: Record<string, string[]> = {
   partner:     ["Partner"],
@@ -108,7 +108,7 @@ export const RECIPIENT_LABELS: Record<string, string[]> = {
 
 /**
  * Ages a recipient *cannot* plausibly be. Used to hard-exclude gifts whose
- * age tag is incompatible with the chosen recipient — e.g. a "Chess for
+ * age tag is incompatible with the chosen recipient, e.g. a "Chess for
  * Kids" tagged Age="Child" should not appear when shopping for a
  * grandparent, even if interests overlap. Activated only when the user
  * didn't pick an age explicitly (in which case the explicit choice rules).
@@ -118,7 +118,7 @@ export const RECIPIENT_EXCLUDED_AGES: Record<string, string[]> = {
   partner: ["Baby", "Child"],
   // Your parent is at least an adult.
   parent: ["Baby", "Child", "Teenager", "Young Adult"],
-  // Grandparents are seniors — the age question is skipped in the UI.
+  // Grandparents are seniors, the age question is skipped in the UI.
   grandparent: ["Baby", "Child", "Teenager", "Young Adult", "Adult"],
   // Coworkers and mentor-figures are at least young adults.
   coworker: ["Baby", "Child", "Teenager"],
@@ -144,7 +144,7 @@ export const OCCASION_LABELS: Record<string, string> = {
 };
 
 /* ------------------------------------------------------------------ *
- * Budget tiers — used only for scoring (gift catalog stores numeric Price now).
+ * Budget tiers, used only for scoring (gift catalog stores numeric Price now).
  * The user's slider value AND the gift's annualized lower-bound price both
  * map into one of these four tiers; tier-distance determines the score.
  * ------------------------------------------------------------------ */
@@ -184,20 +184,20 @@ function matchCount(haystack: string[], candidates: string[]): number {
 }
 
 /* ------------------------------------------------------------------ *
- * Score components — totals to ~95 pts, plus an Occasion adjustment of
+ * Score components, totals to ~95 pts, plus an Occasion adjustment of
  * up to ±15 applied last. Score is clamped to [0, 100].
  *
  *   Relation 25  ·  Age 10  ·  Budget 10  ·  Interests 40  ·  Vibe 10
  *
  * Interests is intentionally the dominant signal: a user picking
- * "Fitness" should see fitness gifts — not just any gift that fits
+ * "Fitness" should see fitness gifts, not just any gift that fits
  * their recipient + age bracket.
  * ------------------------------------------------------------------ */
 
 function scoreRelation(gift: Gift, answers: Answers): number {
   if (!answers.recipient) return 0;
   if (answers.recipient === "self") {
-    // "Treat myself" — matches any gift that has any Relation tag at all
+    // "Treat myself", matches any gift that has any Relation tag at all
     return gift.relations.length > 0 ? 25 : 0;
   }
   const wanted = RECIPIENT_LABELS[answers.recipient] ?? [];
@@ -222,7 +222,7 @@ function scoreAge(gift: Gift, answers: Answers): number {
 
 function scoreBudget(gift: Gift, answers: Answers): number {
   if (typeof answers.budget !== "number") return 0;
-  // Gift Card "Your choice" fits any budget — full points.
+  // Gift Card "Your choice" fits any budget, full points.
   if (gift.isYourChoice) return 10;
   if (gift.price <= 0) return 0;
 
@@ -243,7 +243,7 @@ function scoreInterests(gift: Gift, answers: Answers): number {
     if (matchCount(gift.interests, labels) > 0) hits++;
   }
   if (!hits) return 0;
-  // Pro-rate to 40 pts max — interests are the dominant signal.
+  // Pro-rate to 40 pts max, interests are the dominant signal.
   return Math.round((hits / userPicks.length) * 40);
 }
 
@@ -260,7 +260,7 @@ function scoreVibe(gift: Gift, answers: Answers): number {
 }
 
 /**
- * Occasion adjustment — only applied when the gift is tagged for the user's
+ * Occasion adjustment, only applied when the gift is tagged for the user's
  * occasion in the Occasions column. Each occasion has its own bonus/penalty
  * rules per the spec (see Question 2's README). Returns positive (bonus) or
  * negative (penalty) integer points.
@@ -335,7 +335,7 @@ function scoreOccasionAdjustment(gift: Gift, answers: Answers): number {
 
 /**
  * Multiplier on the user's stated budget at which we hard-exclude a gift.
- * 1.10× = "strict budget with a 10% fuzz" — $120 budget allows up to $132.
+ * 1.10× = "strict budget with a 10% fuzz", $120 budget allows up to $132.
  * Applies to raw price; subscription amounts are evaluated at their
  * displayed periodic rate (a $49/mo gift counts as $49 vs the budget).
  */
@@ -379,7 +379,7 @@ export function scoreGift(gift: Gift, answers: Answers): number {
   // Hard filter: age tags both specified, no overlap.
   if (gift.ages.length > 0) {
     if (answers.age) {
-      // Explicit user age choice — gift must match one of the allowed labels.
+      // Explicit user age choice, gift must match one of the allowed labels.
       const wantedAges = new Set<string>(AGE_LABELS[answers.age]);
       if (answers.occasion === "baby") wantedAges.add("Baby");
       if (matchCount(gift.ages, [...wantedAges]) === 0) return -1;
@@ -435,7 +435,7 @@ function isBestSeller(gift: Gift): boolean {
  * Behavior:
  *   - If more than 5 gifts clear MATCH_STRICT (≥60), we show ONLY those.
  *     Plenty of strong matches available, no need to dilute with weaker ones.
- *   - Otherwise we widen to MATCH_LOOSE (≥55) — still a meaningful score
+ *   - Otherwise we widen to MATCH_LOOSE (≥55), still a meaningful score
  *     but more permissive. May still return 0 results if nothing scores
  *     that high; the UI shows its empty state in that case.
  *   - Anything below MATCH_LOOSE is never shown.
@@ -445,7 +445,7 @@ const MATCH_LOOSE = 55;
 
 /**
  * Rank gifts. Returns every gift that clears the threshold band sorted
- * by score desc with tiebreakers. No upper cap — the Results page
+ * by score desc with tiebreakers. No upper cap, the Results page
  * paginates the list 8 at a time via its "Load more" control, so the
  * full set of qualified matches is available to the user. Returned
  * gifts carry their 0–100 `matchScore` for display in the UI.
@@ -484,7 +484,7 @@ export const SECONDARY_TONES = ["butter", "rose", "sage", "cream", "plum"] as co
 
 /**
  * Build the "Why we picked this" bullets shown in the product modal.
- * Each line is derived from real answer/gift data — no placeholder copy.
+ * Each line is derived from real answer/gift data, no placeholder copy.
  */
 export function buildMatchReasons(gift: Gift, answers: Answers): string[] {
   const lc = (s: string) => s.toLowerCase();

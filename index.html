@@ -12,7 +12,7 @@
 
       gtag('js', new Date());
 
-      // SPA route changes are tracked manually via src/data/analytics.ts —
+      // SPA route changes are tracked manually via src/data/analytics.ts:
       // disable the implicit first page_view here so we don't double-count
       // when the React app fires its own page_view on initial mount.
       gtag('config', 'G-4TNQSM74DH', { send_page_view: false });

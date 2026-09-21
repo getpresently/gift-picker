@@ -7,6 +7,7 @@ import { useImageFallback } from "../../hooks/useImageFallback";
 import { track } from "../../data/analytics";
 import type { RankedGift } from "../../data/gifts";
 import type { FeedbackOption, FeedbackRecord } from "../../data/feedback";
+import { openBuyLink as openExternal } from "../../data/affiliate";
 
 type Props = {
   gifts: RankedGift[];
@@ -14,7 +15,7 @@ type Props = {
   onNavigate: (index: number) => void;
   onClose: () => void;
   isMobile: boolean;
-  /** Optional dynamic "Why we picked this" bullets — currently hidden by design. */
+  /** Optional dynamic "Why we picked this" bullets, currently hidden by design. */
   matchReasons?: string[];
   /** Feedback record for the gift at currentIndex (if reported). */
   feedback?: FeedbackRecord;
@@ -28,9 +29,6 @@ type Props = {
   onToggleSave?: (giftId: string) => void;
 };
 
-const openExternal = (url: string) => {
-  if (url) window.open(url, "_blank", "noopener,noreferrer");
-};
 
 function navBtnStyle(enabled: boolean): React.CSSProperties {
   return {
@@ -134,7 +132,7 @@ export function ProductModal({
         animation: "fbFade 220ms cubic-bezier(.22,1.4,.4,1)",
       }}
     >
-      {/* Desktop nav arrows — outside the card */}
+      {/* Desktop nav arrows, outside the card */}
       {!isMobile && (
         <div
           onClick={(e) => e.stopPropagation()}
@@ -266,7 +264,7 @@ export function ProductModal({
             </div>
           )}
 
-          {/* Save heart — top-right of image. On mobile, offset down to clear
+          {/* Save heart, top-right of image. On mobile, offset down to clear
               the modal's Close button which sits at top-right of the card. */}
           {onToggleSave && (
             <button
@@ -359,7 +357,7 @@ export function ProductModal({
           )}
         </div>
 
-        {/* Content side — split into scrollable middle + fixed footer
+        {/* Content side, split into scrollable middle + fixed footer
             (CTAs) so the Buy buttons are always visible on mobile even
             when the description is long. */}
         <div
@@ -476,7 +474,7 @@ export function ProductModal({
             </p>
           )}
 
-          {/* "Why we picked this" — built but hidden by default. Remove the
+          {/* "Why we picked this", built but hidden by default. Remove the
               `display: none` to enable when product is ready. */}
           {reasons.length > 0 && (
             <div
@@ -562,7 +560,7 @@ export function ProductModal({
             />
           )}
 
-          {/* Pinned footer — CTAs + feedback link. flexShrink:0 keeps it
+          {/* Pinned footer, CTAs + feedback link. flexShrink:0 keeps it
               from being squeezed; on mobile a subtle top border + cream
               wash separates it from the scrolling content. */}
           <div
@@ -577,7 +575,7 @@ export function ProductModal({
               zIndex: 2,
             }}
           >
-          {/* CTAs — Amazon takes the primary slot when present, otherwise
+          {/* CTAs, Amazon takes the primary slot when present, otherwise
               the brand link is primary. Both buttons start with "Buy on…". */}
           <div style={{ display: "flex", gap: 10, marginTop: isMobile ? 0 : 22, flexWrap: "wrap" }}>
             {gift.amazonLink ? (

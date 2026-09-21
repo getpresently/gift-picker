@@ -2,6 +2,6 @@
 # All crawlers welcome, including AI crawlers (GPTBot, ClaudeBot,
 # PerplexityBot, Google-Extended, etc.).
 User-agent: *
-Disallow:
+Disallow: /review
 
 Sitemap: https://giftpicker.io/sitemap.xml

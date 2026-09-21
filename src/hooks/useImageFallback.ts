@@ -12,7 +12,7 @@ import { useEffect, useState } from "react";
  *     ? <img src={gift.image} onError={onError} ... />
  *     : <GiftBox3D ... />;
  *
- * The failure state resets whenever `src` changes — important for the
+ * The failure state resets whenever `src` changes, important for the
  * ProductModal's carousel, where the user can paginate from a broken-
  * image gift to a working one without the next image being suppressed.
  */

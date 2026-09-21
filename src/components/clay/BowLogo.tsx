@@ -2,9 +2,14 @@ import { useId } from "react";
 
 type Props = { size?: number };
 
+/**
+ * GiftPicker mark: a front-view gift box with a lid, one ribbon running over
+ * lid and body, and a bow sitting on the lid. Flat on purpose so it stays
+ * crisp at 22px in the header.
+ */
 export function BowLogo({ size = 28 }: Props) {
   const uid = useId().replace(/:/g, "");
-  const bow = `bow-${uid}`;
+  const box = `box-${uid}`;
   const rib = `rib-${uid}`;
   return (
     <svg
@@ -16,7 +21,7 @@ export function BowLogo({ size = 28 }: Props) {
       style={{ display: "block", filter: "drop-shadow(0 4px 10px rgba(80,30,30,0.18))" }}
     >
       <defs>
-        <linearGradient id={bow} x1="0" y1="0" x2="1" y2="1">
+        <linearGradient id={box} x1="0" y1="0" x2="1" y2="1">
           <stop offset="0" stopColor="#FF9D81" />
           <stop offset="0.5" stopColor="#E64B45" />
           <stop offset="1" stopColor="#C4477E" />
@@ -26,27 +31,24 @@ export function BowLogo({ size = 28 }: Props) {
           <stop offset="1" stopColor="#FFD074" />
         </linearGradient>
       </defs>
-      <rect x="6" y="20" width="28" height="16" rx="4" fill={`url(#${bow})`} />
-      <rect x="18" y="20" width="4" height="16" fill={`url(#${rib})`} opacity="0.95" />
-      <path d="M20 18 C 14 12, 6 13, 7 18 C 8 21, 14 21, 20 18 Z" fill={`url(#${rib})`} />
-      <path d="M14 17 C 12 16, 10 16, 8 17 C 9 18, 11 18, 14 18 Z" fill="rgba(120,60,30,0.18)" />
-      <path d="M20 18 C 26 12, 34 13, 33 18 C 32 21, 26 21, 20 18 Z" fill={`url(#${rib})`} />
-      <path d="M26 17 C 28 16, 30 16, 32 17 C 31 18, 29 18, 26 18 Z" fill="rgba(120,60,30,0.18)" />
-      <rect x="17.5" y="16" width="5" height="6" rx="1" fill="#FFD074" stroke="rgba(120,60,30,0.18)" strokeWidth="0.4" />
-      <path
-        d="M18 22 Q 14 26, 12 30 Q 10 32, 13 33 L 16 30 Q 18 26, 20 24"
-        fill="none"
-        stroke={`url(#${rib})`}
-        strokeWidth="2.2"
-        strokeLinecap="round"
-      />
-      <path
-        d="M22 22 Q 26 26, 28 32 Q 28 35, 26 35 L 25 30 Q 23 26, 21 24"
-        fill="none"
-        stroke={`url(#${rib})`}
-        strokeWidth="2.2"
-        strokeLinecap="round"
-      />
+
+      {/* body, then the lid overhanging it slightly */}
+      <rect x="8" y="20" width="24" height="15" rx="3" fill={`url(#${box})`} />
+      <rect x="8" y="21.4" width="24" height="1.6" fill="rgba(60,15,20,0.18)" />
+      <rect x="6" y="15" width="28" height="7" rx="2.4" fill={`url(#${box})`} />
+      <rect x="6" y="15" width="28" height="7" rx="2.4" fill="rgba(255,255,255,0.14)" />
+      <rect x="7.2" y="15.6" width="25.6" height="1.3" rx="0.65" fill="rgba(255,255,255,0.35)" />
+
+      {/* ribbon over lid and body */}
+      <rect x="18" y="15" width="4" height="20" fill={`url(#${rib})`} />
+      <rect x="18" y="21.4" width="4" height="1.6" fill="rgba(120,60,30,0.18)" />
+
+      {/* bow on the lid */}
+      <path d="M20 15 C 15 8.5, 8 9, 9.2 13.4 C 10 16, 15 16, 20 15 Z" fill={`url(#${rib})`} />
+      <path d="M20 15 C 25 8.5, 32 9, 30.8 13.4 C 30 16, 25 16, 20 15 Z" fill={`url(#${rib})`} />
+      <path d="M20 15 C 16.5 14.6, 13.5 13.8, 12 12.6 C 13.6 14.4, 16.8 15.5, 20 15.6 Z" fill="rgba(120,60,30,0.22)" />
+      <path d="M20 15 C 23.5 14.6, 26.5 13.8, 28 12.6 C 26.4 14.4, 23.2 15.5, 20 15.6 Z" fill="rgba(120,60,30,0.22)" />
+      <rect x="17.8" y="12.6" width="4.4" height="4.8" rx="1.3" fill="#FFD074" stroke="rgba(120,60,30,0.22)" strokeWidth="0.4" />
     </svg>
   );
 }

@@ -7,10 +7,11 @@ import { PresentlyMark } from "./clay/PresentlyMark";
 import { Wordmark } from "./clay/Wordmark";
 import { useIsMobile } from "../hooks/useIsMobile";
 import { track } from "../data/analytics";
+import { SiteHeader } from "./clay/SiteHeader";
 
 const HOW_STEPS: { n: string; title: string; body: string; tint: Tint }[] = [
   { n: "01", title: "Tell us about them", body: "Closeness, vibes, budget. Five questions, no account.", tint: "rose" },
-  { n: "02", title: "We do the thinking", body: "Real gifts from real brands. Curated, never AI-slop.", tint: "butter" },
+  { n: "02", title: "We do the thinking", body: "Every gift is hand-curated by our team, then matched to your answers.", tint: "butter" },
   { n: "03", title: "Show up looking great", body: "Send the link or just buy it yourself.", tint: "sage" },
 ];
 
@@ -51,33 +52,8 @@ export function Landing() {
       <div style={{ position: "relative", minHeight: "100vh" }}>
         <AmbientGlow variant="landing" />
 
-        {/* Full-viewport-width sticky nav (inner row stays bounded to page width) */}
-        <header
-          style={{
-            position: "sticky",
-            top: 0,
-            zIndex: 50,
-            background: "rgba(251, 241, 225, 0.82)",
-            backdropFilter: "blur(14px)",
-            WebkitBackdropFilter: "blur(14px)",
-            borderBottom: "1px solid rgba(35,20,16,0.06)",
-          }}
-        >
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-              maxWidth: 1280,
-              margin: "0 auto",
-              padding: isMobile ? "20px 20px 14px" : "24px 56px 16px",
-            }}
-          >
-            <Wordmark size={isMobile ? "md" : "lg"} onClick={goHome} />
-            {/* Minimal header: wordmark + single CTA. Section anchors
-                (How it works / Brands / Reviews) were removed to reduce
-                visual noise — the page is short enough to scroll. */}
-            <Pillow
+        <SiteHeader onLogoClick={goHome}>
+          <Pillow
               tone={isMobile ? "coral" : "ink"}
               size="sm"
               onClick={goStart}
@@ -85,8 +61,7 @@ export function Landing() {
             >
               Start quiz →
             </Pillow>
-          </div>
-        </header>
+        </SiteHeader>
 
         <div
           style={{
@@ -155,7 +130,7 @@ export function Landing() {
                   maxWidth: 460,
                 }}
               >
-                Five questions. A pile of gifts they'll actually love. Built for the chronically indecisive — and the
+                Five questions. A pile of gifts they'll actually love. Built for the chronically indecisive and the
                 deeply caring.
               </p>
 
@@ -165,7 +140,7 @@ export function Landing() {
                 </Pillow>
               </div>
 
-              {/* Social proof — rating + quote only. (Avatar placeholders
+              {/* Social proof, rating + quote only. (Avatar placeholders
                   intentionally omitted until we have real user photos.) */}
               <div style={{ display: "flex", alignItems: "center", gap: 14, marginTop: 32, flexWrap: "wrap" }}>
                 <div>
@@ -199,7 +174,7 @@ export function Landing() {
               }}
             >
               <div style={{ position: "absolute", top: isMobile ? 30 : 60, left: isMobile ? 30 : 80 }}>
-                <GiftBox3D size={isMobile ? 130 : 200} color="butter" rotate={-12} />
+                <GiftBox3D size={isMobile ? 130 : 200} color="butter" rotate={-12} ribbonColor="#FF8166" />
               </div>
               <div style={{ position: "absolute", top: isMobile ? 90 : 130, right: isMobile ? 30 : 60, zIndex: 2 }}>
                 <GiftBox3D size={isMobile ? 150 : 230} color="coral" rotate={8} />
@@ -315,7 +290,7 @@ export function Landing() {
               >
                 Curated from 200+ brands · including
               </div>
-              {/* 6×2 grid on desktop, 3×4 on mobile — even rows, consistent
+              {/* 6×2 grid on desktop, 3×4 on mobile, even rows, consistent
                   serif treatment so the strip reads as one cohesive band. */}
               <div
                 style={{

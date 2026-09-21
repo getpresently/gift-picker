@@ -9,6 +9,7 @@ import { useImageFallback } from "../../hooks/useImageFallback";
 import { track } from "../../data/analytics";
 import type { RankedGift } from "../../data/gifts";
 import type { FeedbackOption, FeedbackRecord } from "../../data/feedback";
+import { openBuyLink as openExternal } from "../../data/affiliate";
 
 type Props = {
   gift: RankedGift;
@@ -30,9 +31,6 @@ function clampLines(n: number): CSSProperties {
   };
 }
 
-const openExternal = (url: string) => {
-  if (url) window.open(url, "_blank", "noopener,noreferrer");
-};
 
 export function Hero({
   gift,
@@ -48,7 +46,7 @@ export function Hero({
   const [popoverOpen, setPopoverOpen] = useState(false);
   const reported = !!feedback;
   // Fall back to the GiftBox3D placeholder if the hero photo URL is
-  // broken — without this the well shows the browser's broken-image
+  // broken, without this the well shows the browser's broken-image
   // icon, which is the loudest possible failure mode on a hero card.
   const { failed: imgFailed, onError: onImgError } = useImageFallback(gift.image);
   const match = typeof gift.matchScore === "number" ? Math.round(gift.matchScore) : null;
@@ -265,7 +263,7 @@ export function Hero({
               }}
             />
           ) : (
-            // No (or broken) photo — center a GiftBox3D in the well as
+            // No (or broken) photo, center a GiftBox3D in the well as
             // the placeholder. Sits behind the heart/save button.
             <div
               style={{

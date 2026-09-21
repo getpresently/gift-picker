@@ -13,14 +13,29 @@ import {
 const DEBUG = false;
 
 /**
- * Gift database endpoint (same Apps Script web app the client uses).
- * Fetched at the edge with a 1-hour cache so gift-page prerenders and
- * the sitemap don't hammer Apps Script.
+ * Gift database endpoint (same Apps Script web app the client uses). It takes
+ * 18-40s to answer, so pages never wait on it: the cron below copies the live
+ * rows into the GIFTS_CACHE KV namespace and requests read from there.
  */
 const GIFTS_ENDPOINT =
   "https://script.google.com/macros/s/AKfycbwPuaXtXuurdqNg94_mGoOR1YHXqKrJyZrkxkt09oFbGGZtS_KdH44vhJNn4qLzeJqhuQ/exec?tab=Gifts";
 
 const SITE_ORIGIN = "https://giftpicker.io";
+const GIFTS_KEY = "gifts:live:v1";
+const SITEMAP_KEY = "sitemap:xml:v1";
+// How long a page request will wait on the origin when KV is empty (first deploy).
+const COLD_WAIT_MS = 2500;
+// Only the fields prerendering and the sitemap need; keeps the KV value small
+// so parsing it stays well inside the per-request CPU budget.
+const SLIM_FIELDS = ["row_id", "Gift", "Brand", "Description", "PhotoAddress", "Link",
+                     "AmazonAltLink", "Price", "PriceMax", "BillingPeriod"];
+
+const AMAZON_TAG = "dalia0f8-20";
+const ASIN_RE = /\/(?:dp|gp\/product|gp\/aw\/d|exec\/obidos\/ASIN|o\/ASIN)\/([A-Z0-9]{10})(?:[/?&#]|$)/i;
+
+addEventListener("scheduled", (event) => {
+  event.waitUntil(refreshGifts());
+});
 
 addEventListener("fetch", (event) => {
   try {
@@ -42,7 +57,7 @@ async function handleEvent(event) {
 
   // Dynamic sitemap: /, /quiz, plus one URL per live gift.
   if (url.pathname === "/sitemap.xml") {
-    return serveSitemap();
+    return serveSitemap(event);
   }
 
   let options = {};
@@ -73,11 +88,16 @@ async function handleEvent(event) {
     const giftMatch = url.pathname.match(/^\/gift\/(r\d+)\/?$/);
     if (giftMatch) {
       try {
-        const rewritten = await prerenderGiftPage(response, giftMatch[1]);
+        const rewritten = await prerenderGiftPage(event, response, giftMatch[1]);
         if (rewritten) response = rewritten;
       } catch (e) {
         // fall through with the plain SPA shell
       }
+    }
+
+    // The internal review tool must never be indexed.
+    if (url.pathname.startsWith("/review")) {
+      response.headers.set("X-Robots-Tag", "noindex, nofollow");
     }
 
     response.headers.set("X-XSS-Protection", "1; mode=block");
@@ -107,19 +127,59 @@ async function handleEvent(event) {
   }
 }
 
-/** Fetch the gift rows from Apps Script with a 1-hour edge cache. */
-async function fetchGifts() {
-  const res = await fetch(GIFTS_ENDPOINT, {
-    redirect: "follow",
-    cf: { cacheTtl: 3600, cacheEverything: true },
-  });
-  if (!res.ok) throw new Error(`gifts fetch ${res.status}`);
-  const json = await res.json();
-  return Array.isArray(json.data) ? json.data : [];
-}
-
 function isLive(row) {
   return String(row.Status || "").trim().toLowerCase() === "live";
+}
+
+/**
+ * Pull the catalog from Apps Script and store the live rows (slimmed) plus a
+ * ready-made sitemap in KV. Runs from the cron; never overwrites good data
+ * with an empty or failed response.
+ */
+async function refreshGifts() {
+  const res = await fetch(GIFTS_ENDPOINT, { redirect: "follow" });
+  if (!res.ok) throw new Error(`gifts fetch ${res.status}`);
+  const json = await res.json();
+  const all = Array.isArray(json.data) ? json.data : [];
+  const rows = all.filter(isLive).map((r) => {
+    const slim = {};
+    for (const k of SLIM_FIELDS) if (r[k] !== undefined && r[k] !== "") slim[k] = r[k];
+    return slim;
+  });
+  if (!rows.length) throw new Error("gifts fetch returned no live rows");
+  await GIFTS_CACHE.put(GIFTS_KEY, JSON.stringify({ at: Date.now(), rows }));
+  await GIFTS_CACHE.put(SITEMAP_KEY, buildSitemap(rows));
+  return rows;
+}
+
+/**
+ * Live gift rows for a request. Normally an instant KV read. If KV is empty
+ * (first deploy), race the origin against a short timeout so the page is never
+ * held hostage by Apps Script; the refresh keeps going in the background.
+ */
+async function loadGifts(event) {
+  try {
+    const cached = await GIFTS_CACHE.get(GIFTS_KEY, { type: "json" });
+    if (cached && Array.isArray(cached.rows)) return cached.rows;
+  } catch (e) {}
+  const refresh = refreshGifts();
+  event.waitUntil(refresh.catch(() => {}));
+  const timeout = new Promise((resolve) => setTimeout(() => resolve(null), COLD_WAIT_MS));
+  return Promise.race([refresh.catch(() => null), timeout]);
+}
+
+/** Amazon links carry the Associates tag; everything else passes through. */
+function affiliateUrl(url) {
+  try {
+    const u = new URL(url);
+    if (!/(^|\.)amazon\.com$/i.test(u.hostname)) return url;
+    const m = u.pathname.match(ASIN_RE);
+    if (m) return `https://www.amazon.com/dp/${m[1].toUpperCase()}?tag=${AMAZON_TAG}`;
+    u.searchParams.set("tag", AMAZON_TAG);
+    return u.toString();
+  } catch (e) {
+    return url;
+  }
 }
 
 function escapeHtml(s) {
@@ -153,10 +213,12 @@ function priceLabel(row) {
  * gift-specific content. Returns null if the gift isn't found (the
  * plain shell is served and React shows its not-found state).
  */
-async function prerenderGiftPage(response, giftId) {
-  const gifts = await fetchGifts();
+async function prerenderGiftPage(event, response, giftId) {
+  const gifts = await loadGifts(event);
+  if (!gifts) return null;
+  // KV only holds live rows, so a miss means retired, rejected, or unknown.
   const row = gifts.find((g) => g.row_id === giftId);
-  if (!row || !isLive(row)) return null;
+  if (!row) return null;
 
   const html = await response.text();
 
@@ -168,7 +230,7 @@ async function prerenderGiftPage(response, giftId) {
   const pageUrl = `${SITE_ORIGIN}/gift/${giftId}`;
   const title = brand ? `${name} by ${brand} · GiftPicker` : `${name} · GiftPicker`;
   const metaDesc = desc || `${name}${brand ? ` from ${brand}` : ""}, a hand-curated gift pick on GiftPicker.`;
-  const buyLink = escapeHtml(row.Link || row.AmazonAltLink || `${SITE_ORIGIN}/quiz`);
+  const buyLink = escapeHtml(affiliateUrl(row.AmazonAltLink || row.Link || `${SITE_ORIGIN}/quiz`));
 
   const jsonLd = {
     "@context": "https://schema.org",
@@ -211,8 +273,9 @@ async function prerenderGiftPage(response, giftId) {
 		<h1 style="font-size:36px;line-height:1.1;margin:0 0 12px;">${name}</h1>
 		${label ? `<p style="font-size:20px;margin:0 0 12px;">${escapeHtml(label)}</p>` : ""}
 		${desc ? `<p>${desc}</p>` : ""}
-		<p><a href="${buyLink}" rel="noopener" style="color:#C4477E;">Buy this gift</a></p>
+		<p><a href="${buyLink}" rel="sponsored noopener" style="color:#C4477E;">Buy this gift</a></p>
 		<p>This is a hand-curated gift pick on <a href="${SITE_ORIGIN}/" style="color:#C4477E;">GiftPicker</a>, a free 30-second quiz that recommends genuinely good gifts from 200+ brands. <a href="${SITE_ORIGIN}/quiz" style="color:#C4477E;">Take the quiz</a> to get picks tailored to your recipient.</p>
+		<p style="font-size:12px;color:#8a7a72;">As an Amazon Associate, GiftPicker earns from qualifying purchases.</p>
 	</div>`;
 
   let out = replaceBetween(html, "<!--gp-meta-->", "<!--/gp-meta-->", metaBlock);
@@ -237,22 +300,25 @@ function replaceBetween(html, startMarker, endMarker, replacement) {
   );
 }
 
-/** /sitemap.xml: static routes + one entry per live gift. */
-async function serveSitemap() {
-  let urls = [`${SITE_ORIGIN}/`, `${SITE_ORIGIN}/quiz`];
-  try {
-    const gifts = await fetchGifts();
-    urls = urls.concat(
-      gifts.filter(isLive).map((g) => `${SITE_ORIGIN}/gift/${g.row_id}`)
-    );
-  } catch (e) {
-    // Gift fetch failed: serve the static routes rather than erroring.
-  }
-  const body =
+function buildSitemap(rows) {
+  const urls = [`${SITE_ORIGIN}/`, `${SITE_ORIGIN}/quiz`].concat(
+    (rows || []).map((g) => `${SITE_ORIGIN}/gift/${g.row_id}`)
+  );
+  return (
     `<?xml version="1.0" encoding="UTF-8"?>\n` +
     `<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n` +
     urls.map((u) => `  <url><loc>${escapeHtml(u)}</loc></url>`).join("\n") +
-    `\n</urlset>\n`;
+    `\n</urlset>\n`
+  );
+}
+
+/** /sitemap.xml: static routes + one entry per live gift, prebuilt in KV. */
+async function serveSitemap(event) {
+  let body = null;
+  try {
+    body = await GIFTS_CACHE.get(SITEMAP_KEY);
+  } catch (e) {}
+  if (!body) body = buildSitemap(await loadGifts(event));
   return new Response(body, {
     headers: {
       "Content-Type": "application/xml; charset=utf-8",

@@ -227,7 +227,7 @@ export function saveAnswers(answers: Answers): void {
   try {
     sessionStorage.setItem(STORAGE_KEY, JSON.stringify(answers));
   } catch {
-    // sessionStorage can throw in private mode or if full — fail silently
+    // sessionStorage can throw in private mode or if full, fail silently
   }
 }
 
@@ -252,12 +252,12 @@ export function clearAnswers(): void {
  * Map the internal v-codes stored in `Answers` (e.g. `partner`, `twenty`,
  * `bday`, `cooking`) to the human labels the user actually clicked
  * (`Partner`, `Young adult`, `Birthday`, `Cooking`). Used before we ship
- * answers out to the Apps Script — the Feedback and Requests sheets
+ * answers out to the Apps Script, the Feedback and Requests sheets
  * read much better when they show the same words the user saw.
  *
  * Unknown codes (e.g. the "NEW: <typed text>" occasion override set by
  * Quiz.tsx for free-text occasions) pass through unchanged. The
- * `occasionOther` field is intentionally dropped from the output — its
+ * `occasionOther` field is intentionally dropped from the output, its
  * content has already been folded into `occasion` at the call site.
  */
 export function humanizeAnswers(answers: Answers): Record<string, unknown> {

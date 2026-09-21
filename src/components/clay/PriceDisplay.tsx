@@ -31,7 +31,7 @@ function fmt(n: number): string {
 /** Amount portion: "Your choice", "$58–$295", "$123+", or "$80". */
 function amountText(gift: Gift): string {
   if (gift.isYourChoice) return "Your choice";
-  if (gift.price <= 0) return "—";
+  if (gift.price <= 0) return "";
   if (gift.priceOpen) return `$${fmt(gift.price)}+`;
   if (gift.priceMax !== null && gift.priceMax > gift.price) {
     return `$${fmt(gift.price)}–$${fmt(gift.priceMax)}`;

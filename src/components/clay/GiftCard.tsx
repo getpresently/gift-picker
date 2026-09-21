@@ -10,7 +10,8 @@ import { PriceDisplay } from "./PriceDisplay";
 import { useImageFallback } from "../../hooks/useImageFallback";
 import { track } from "../../data/analytics";
 import type { Gift } from "../../data/gifts";
-import type { FeedbackOption, FeedbackRecord } from "../../data/feedback";
+import { isDemoting, type FeedbackOption, type FeedbackRecord } from "../../data/feedback";
+import { openBuyLink as openExternal } from "../../data/affiliate";
 
 /** Cards may receive a ranked gift; matchScore is optional for non-ranked uses. */
 type CardGift = Gift & { matchScore?: number };
@@ -31,10 +32,6 @@ type Props =
   | (CommonProps & { hero: true; badge?: string })
   | (CommonProps & { hero?: false });
 
-const openExternal = (url: string) => {
-  if (!url) return;
-  window.open(url, "_blank", "noopener,noreferrer");
-};
 
 const TONE_IMAGE_GRADIENT: Record<Tint, string> = {
   cream:  "linear-gradient(160deg, #FBF1E1, #E8D7B8)",
@@ -120,8 +117,9 @@ export function GiftCard(props: Props) {
   const [hovered, setHovered] = useState(false);
   const [popoverOpen, setPopoverOpen] = useState(false);
   const reported = !!feedback;
+  const demoted = isDemoting(feedback);
   // Fall back to the GiftBox3D placeholder if the photo URL 404s, hot-links
-  // get blocked, etc. — otherwise the broken-image icon + alt text leaks
+  // get blocked, etc., otherwise the broken-image icon + alt text leaks
   // through the card.
   const { failed: imgFailed, onError: onImgError } = useImageFallback(gift.image);
 
@@ -153,10 +151,10 @@ export function GiftCard(props: Props) {
         flexDirection: "column",
         gap: hero ? 18 : 12,
         cursor: onOpenDetails ? "pointer" : "default",
-        opacity: reported ? 0.78 : 1,
+        opacity: demoted ? 0.78 : 1,
       }}
     >
-      {/* hover sensor — non-blocking */}
+      {/* hover sensor, non-blocking */}
       <div
         onMouseEnter={() => setHovered(true)}
         onMouseLeave={() => setHovered(false)}
@@ -225,8 +223,8 @@ export function GiftCard(props: Props) {
           <GiftBox3D size={boxSize} color={boxColor} rotate={hero ? -6 : 6} />
         )}
 
-        {/* Reported overlay — dims the image */}
-        {reported && (
+        {/* Demoted overlay, dims the image */}
+        {demoted && (
           <div
             style={{
               position: "absolute",
@@ -240,7 +238,7 @@ export function GiftCard(props: Props) {
         )}
 
         {/* Match chip on small cards (white pill, top-left) */}
-        {!hero && typeof gift.matchScore === "number" && !reported && (
+        {!hero && typeof gift.matchScore === "number" && !demoted && (
           <div
             style={{
               position: "absolute",
@@ -313,7 +311,7 @@ export function GiftCard(props: Props) {
             color: headingColor,
             marginTop: 2,
             lineHeight: hero ? 1.05 : 1.25,
-            textDecoration: reported ? "line-through" : "none",
+            textDecoration: demoted ? "line-through" : "none",
             ...clampLines(2),
           }}
         >

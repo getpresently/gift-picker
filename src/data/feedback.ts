@@ -32,14 +32,14 @@ export const FEEDBACK_OPTIONS: FeedbackOption[] = [
     l: "Link not working",
     e: "🔗",
     tone: "amber",
-    ack: "Thanks — we'll re-check the source.",
+    ack: "Thanks, we'll re-check the source.",
   },
   {
     v: "image",
     l: "Image broken",
     e: "🖼️",
     tone: "amber",
-    ack: "Thanks — we'll fix the photo.",
+    ack: "Thanks, we'll fix the photo.",
   },
   {
     v: "stock",
@@ -53,7 +53,7 @@ export const FEEDBACK_OPTIONS: FeedbackOption[] = [
     l: "Don't like product",
     e: "👎",
     tone: "coral",
-    ack: "Got it — we'll learn from this.",
+    ack: "Got it, we'll learn from this.",
   },
   {
     v: "other",
@@ -71,9 +71,17 @@ export type FeedbackRecord = {
 };
 
 /**
+ * Reports that mean the shopper can't or won't buy it (disliked, unavailable,
+ * dead link) dim the gift and sink it in the results. A broken photo or an
+ * "other" note leaves it exactly where it is: the gift is still a good pick.
+ */
+const DEMOTING_REASONS: ReadonlySet<FeedbackReason> = new Set<FeedbackReason>(["dont", "stock", "link"]);
+export const isDemoting = (r?: FeedbackRecord): boolean => !!r && DEMOTING_REASONS.has(r.option.v);
+
+/**
  * Wire payloads sent to the Apps Script. `answers` is the humanized
- * form (friendly labels like "Partner", "Young adult", "Birthday") —
- * not the internal v-codes — so the Feedback and Requests sheets
+ * form (friendly labels like "Partner", "Young adult", "Birthday")
+ * rather than the internal v-codes, so the Feedback and Requests sheets
  * read the way a human did the quiz.
  */
 type WireAnswers = Record<string, unknown>;
@@ -130,17 +138,17 @@ const ENDPOINT =
 
 /**
  * Fire-and-forget POST to the Apps Script webhook. Uses `no-cors` mode
- * because Apps Script Web Apps don't return CORS headers — the request
+ * because Apps Script Web Apps don't return CORS headers; the request
  * still reaches the script and writes the row.
  *
- * The Apps Script routes by `payload.type` — "feedback" writes to the
+ * The Apps Script routes by `payload.type`: "feedback" writes to the
  * Feedback sheet, "request" writes to the Requests sheet (sample script
  * in the redesign commit summary).
  */
 async function postEvent(payload: FeedbackPayload | RequestPayload): Promise<void> {
   if (!ENDPOINT) {
     if (typeof console !== "undefined") {
-      console.info(`[${payload.type}] endpoint not configured — logging instead`, payload);
+      console.info(`[${payload.type}] endpoint not configured, logging instead`, payload);
     }
     return;
   }
@@ -176,7 +184,7 @@ export async function postFeedback(payload: FeedbackInput): Promise<void> {
 }
 
 /**
- * User-initiated "Request more in this category" — sent when the user
+ * User-initiated "Request more in this category", sent when the user
  * isn't satisfied with the picks and wants the catalog to grow in this
  * direction. The Apps Script appends a row to a "Requests" sheet.
  */

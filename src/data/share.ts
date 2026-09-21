@@ -4,7 +4,7 @@ import { saveAnswers } from "./questions";
 /**
  * Share-link encoding. We pack the quiz answers into short URL params
  * (r/a/o/i/v/b, plus o2 for a free-text "Other" occasion) so a recipient
- * lands on /results and sees the same picks — assuming the gift database
+ * lands on /results and sees the same picks, assuming the gift database
  * hasn't shifted underneath them.
  *
  * URL shape: /results?r=partner&a=adult&o=bday&i=cooking,home,food&v=sentimental&b=150
@@ -70,7 +70,7 @@ export async function shareOrCopy(url: string, title = "My GiftPicker picks"): P
       await (navigator as Navigator & { share: (data: ShareData) => Promise<void> }).share({ title, url });
       return "shared";
     } catch {
-      // user cancelled or share not allowed — try clipboard
+      // user cancelled or share not allowed, try clipboard
     }
   }
   try {

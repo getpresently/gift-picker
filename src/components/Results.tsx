@@ -11,9 +11,12 @@ import { useIsMobile } from "../hooks/useIsMobile";
 import { clearAnswers, loadAnswers, QUESTIONS } from "../data/questions";
 import { buildMatchReasons, rankGifts, SECONDARY_TONES, type RankedGift } from "../data/gifts";
 import { useGifts } from "../data/giftsApi";
-import { postFeedback, postRequest, type FeedbackOption, type FeedbackRecord } from "../data/feedback";
+import { isDemoting, postFeedback, postRequest, type FeedbackOption, type FeedbackRecord } from "../data/feedback";
 import { buildShareUrl, hydrateAnswersFromShareUrl, shareOrCopy } from "../data/share";
 import { track } from "../data/analytics";
+import { AffiliateDisclosure } from "./clay/AffiliateDisclosure";
+import { isAmazonUrl } from "../data/affiliate";
+import { SiteHeader } from "./clay/SiteHeader";
 
 const SAVED_KEY = "giftpicker_saved_v1";
 
@@ -52,10 +55,10 @@ export function Results() {
   const ranked = useMemo<RankedGift[]>(() => rankGifts(allGifts, answers), [allGifts, answers]);
 
   const [feedbackById, setFeedbackById] = useState<Record<string, FeedbackRecord>>({});
-  // Live re-rank: flagged gifts sort to the bottom (stable within each group).
+  // Live re-rank: gifts reported as disliked or unavailable sort to the bottom (stable within each group).
   const picks = useMemo<RankedGift[]>(() => {
     return ranked
-      .map((g, i) => ({ g, i, flagged: !!feedbackById[g.id] }))
+      .map((g, i) => ({ g, i, flagged: isDemoting(feedbackById[g.id]) }))
       .sort((a, b) => (a.flagged === b.flagged ? a.i - b.i : a.flagged ? 1 : -1))
       .map((x) => x.g);
   }, [ranked, feedbackById]);
@@ -162,7 +165,7 @@ export function Results() {
     clearAnswers();
     navigate("/quiz");
   };
-  // Wordmark click goes home (no wipe) — leaves the session intact in
+  // Wordmark click goes home (no wipe), leaves the session intact in
   // case they want to come back to these picks via the back button.
   const goHome = () => navigate("/");
 
@@ -214,31 +217,8 @@ export function Results() {
       <div style={{ position: "relative", minHeight: "100vh" }}>
         <AmbientGlow variant="results" />
 
-        {/* Sticky full-width nav */}
-        <header
-          style={{
-            position: "sticky",
-            top: 0,
-            zIndex: 50,
-            background: "rgba(251, 241, 225, 0.82)",
-            backdropFilter: "blur(14px)",
-            WebkitBackdropFilter: "blur(14px)",
-            borderBottom: "1px solid rgba(35,20,16,0.06)",
-          }}
-        >
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-              maxWidth: 1280,
-              margin: "0 auto",
-              padding: isMobile ? "20px 20px 14px" : "20px 56px 16px",
-            }}
-          >
-            <Wordmark size={isMobile ? "sm" : "md"} onClick={goHome} />
-            <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-              {flaggedCount > 0 && (
+        <SiteHeader onLogoClick={goHome}>
+          {flaggedCount > 0 && (
                 <div
                   style={{
                     display: "inline-flex",
@@ -286,9 +266,7 @@ export function Results() {
               >
                 ↻ Start over
               </button>
-            </div>
-          </div>
-        </header>
+        </SiteHeader>
 
         <div
           style={{
@@ -456,10 +434,10 @@ export function Results() {
                 </>
               )}
 
-              {/* Bottom actions — single Share CTA + one muted text link.
+              {/* Bottom actions, single Share CTA + one muted text link.
                   Start-over already lives in the header so we don't repeat
                   it here. Big margin above so Share doesn't feel stacked
-                  on top of "Load more" — it's a separate page-end intent. */}
+                  on top of "Load more", it's a separate page-end intent. */}
               <div
                 style={{
                   marginTop: isMobile ? 56 : 72,
@@ -521,7 +499,7 @@ export function Results() {
                       textDecorationColor: requestSent ? "rgba(35,20,16,0.25)" : "rgba(196,71,126,0.35)",
                     }}
                   >
-                    {requestSent ? "✓ Thanks — we'll add more" : "Request more like these →"}
+                    {requestSent ? "✓ Thanks, we'll add more" : "Request more like these →"}
                   </button>
                 </div>
               </div>
@@ -542,11 +520,12 @@ export function Results() {
           >
             <Wordmark size="sm" />
             <PresentlyMark />
+            {picks.some((g) => g.amazonLink || isAmazonUrl(g.link)) && <AffiliateDisclosure />}
           </footer>
         </div>
       </div>
 
-      {/* Product detail modal — carousel across all picks */}
+      {/* Product detail modal, carousel across all picks */}
       <ProductModal
         gifts={picks}
         currentIndex={modalIndex}
@@ -650,7 +629,7 @@ function EmptyState({
           fontWeight: 400,
         }}
       >
-        Nothing matched — yet.
+        Nothing matched yet.
       </h2>
       <p
         style={{
@@ -662,11 +641,11 @@ function EmptyState({
           lineHeight: 1.55,
         }}
       >
-        Our catalog doesn't have great picks for this combination yet. Help us grow — tell us what's missing.
+        Our catalog doesn't have great picks for this combination yet. Help us grow: tell us what's missing.
       </p>
       <div style={{ display: "flex", gap: 10, justifyContent: "center", flexWrap: "wrap" }}>
         <Pillow tone="coral" size="md" onClick={onRequestMore} disabled={requestSent}>
-          {requestSent ? "✓ Thanks — we'll add more" : "Request more in this category"}
+          {requestSent ? "✓ Thanks, we'll add more" : "Request more in this category"}
         </Pillow>
         <Pillow tone="cream" size="md" onClick={onRestart}>↻ Try different answers</Pillow>
       </div>

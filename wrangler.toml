@@ -6,3 +6,12 @@ main = "workers-site/index.js"
 
 [site]
 bucket = "./build"
+
+# Edge copy of the gift catalog. The Apps Script takes 18-40s to answer, so gift
+# pages and the sitemap read from KV instead, and the cron below keeps it fresh.
+[[kv_namespaces]]
+binding = "GIFTS_CACHE"
+id = "cec49aa4e2e84fcfa84810c4f6a88a73"
+
+[triggers]
+crons = ["*/10 * * * *"]
