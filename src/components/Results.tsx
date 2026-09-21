@@ -355,7 +355,7 @@ export function Results() {
               For your <em style={{ color: "#C4477E", fontStyle: "italic" }}>{recipientLabel}</em>, with love.
             </h1>
             {/* The adjust button is glued to the last phrase so it never wraps onto a line of its own. */}
-            <p style={{ fontFamily: "Geist, sans-serif", fontSize: 15, lineHeight: 1.7, color: "rgba(35,20,16,0.62)", margin: "14px 0 0" }}>
+            <p style={{ fontFamily: "Geist, sans-serif", fontSize: 15, lineHeight: 1.7, color: "rgba(35,20,16,0.55)", margin: "14px 0 0" }}>
               {[
                 genderLabel,
                 occasionLabel,
@@ -367,37 +367,37 @@ export function Results() {
                 .join("")}
               <span style={{ whiteSpace: "nowrap" }}>
                 hand-curated
-                  <button
-                    type="button"
-                    onClick={() => setRefineOpen(true)}
-                    aria-label="Adjust your answers"
-                    title="Adjust your answers"
-                    style={{
-                      width: 30,
-                      height: 30,
-                      borderRadius: "50%",
-                      border: "none",
-                      background: "rgba(255,255,255,0.75)",
-                      boxShadow: "inset 0 1px 0 rgba(255,255,255,0.9), 0 3px 8px -2px rgba(80,30,30,0.2)",
-                      color: "#5A3F36",
-                      cursor: "pointer",
-                      display: "inline-flex",
+                <button
+                  type="button"
+                  onClick={() => setRefineOpen(true)}
+                  aria-label="Adjust your answers"
+                  title="Adjust your answers"
+                  style={{
+                    width: 30,
+                    height: 30,
+                    borderRadius: "50%",
+                    border: "none",
+                    background: "rgba(255,255,255,0.75)",
+                    boxShadow: "inset 0 1px 0 rgba(255,255,255,0.9), 0 3px 8px -2px rgba(80,30,30,0.2)",
+                    color: "#5A3F36",
+                    cursor: "pointer",
+                    display: "inline-flex",
                     verticalAlign: "middle",
                     marginLeft: 8,
                     position: "relative",
                     top: -1,
-                      alignItems: "center",
-                      justifyContent: "center",
-                      flexShrink: 0,
-                    }}
-                  >
-                    <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
-                      <path d="M2 4h6.2M11.8 4H14M2 8h1.7M7.3 8H14M2 12h8.2M13.8 12H14" />
-                      <circle cx="10" cy="4" r="1.8" />
-                      <circle cx="5.5" cy="8" r="1.8" />
-                      <circle cx="12" cy="12" r="1.8" />
-                    </svg>
-                  </button>
+                    alignItems: "center",
+                    justifyContent: "center",
+                    flexShrink: 0,
+                  }}
+                >
+                  <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
+                    <path d="M2 4h6.2M11.8 4H14M2 8h1.7M7.3 8H14M2 12h8.2M13.8 12H14" />
+                    <circle cx="10" cy="4" r="1.8" />
+                    <circle cx="5.5" cy="8" r="1.8" />
+                    <circle cx="12" cy="12" r="1.8" />
+                  </svg>
+                </button>
               </span>
             </p>
           </div>
@@ -433,7 +433,7 @@ export function Results() {
                         fontSize: 12,
                         letterSpacing: "0.14em",
                         textTransform: "uppercase",
-                        color: "rgba(35,20,16,0.62)",
+                        color: "rgba(35,20,16,0.5)",
                       }}
                     >
                       More they might love
@@ -516,6 +516,23 @@ export function Results() {
                     fontSize: 13,
                   }}
                 >
+                  <button
+                    type="button"
+                    onClick={restart}
+                    style={{
+                      background: "transparent",
+                      border: "none",
+                      padding: 0,
+                      cursor: "pointer",
+                      color: "rgba(35,20,16,0.6)",
+                      textDecoration: "underline",
+                      textUnderlineOffset: 3,
+                      textDecorationColor: "rgba(35,20,16,0.25)",
+                    }}
+                  >
+                    ↻ Start over
+                  </button>
+                  <span aria-hidden style={{ color: "rgba(35,20,16,0.3)" }}>·</span>
                   <button
                     type="button"
                     onClick={handleRequestMore}
@@ -613,7 +630,7 @@ function LoadingState() {
         style={{
           fontFamily: "Geist, sans-serif",
           fontSize: 13,
-          color: "rgba(35,20,16,0.62)",
+          color: "rgba(35,20,16,0.55)",
           marginTop: 14,
         }}
       >

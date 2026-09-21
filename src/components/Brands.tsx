@@ -134,7 +134,7 @@ export function BrandsPage() {
                 fontFamily: SANS,
                 fontSize: 12,
                 letterSpacing: "0.14em",
-                color: "rgba(35,20,16,0.62)",
+                color: "rgba(35,20,16,0.55)",
                 textTransform: "uppercase",
                 marginBottom: 12,
               }}
@@ -345,7 +345,7 @@ export function BrandsPage() {
                   <Pillow tone="coral" size="lg" type="submit" disabled={status === "sending"}>
                     {status === "sending" ? "Sending…" : "Submit for review"}
                   </Pillow>
-                  <p style={{ fontFamily: SANS, fontSize: 12, lineHeight: 1.5, color: "rgba(35,20,16,0.62)", margin: 0, maxWidth: 360 }}>
+                  <p style={{ fontFamily: SANS, fontSize: 12, lineHeight: 1.5, color: "rgba(35,20,16,0.5)", margin: 0, maxWidth: 360 }}>
                     We use these details only to reply about your submission. See our{" "}
                     <a
                       href="/privacy"

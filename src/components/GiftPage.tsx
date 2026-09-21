@@ -75,7 +75,7 @@ export function GiftPage() {
               style={{
                 fontFamily: "Geist, sans-serif",
                 textAlign: "center",
-                color: "rgba(35,20,16,0.62)",
+                color: "rgba(35,20,16,0.55)",
                 padding: "80px 0",
               }}
             >
@@ -176,7 +176,7 @@ export function GiftPage() {
                         fontSize: 11,
                         letterSpacing: "0.14em",
                         textTransform: "uppercase",
-                        color: "rgba(35,20,16,0.62)",
+                        color: "rgba(35,20,16,0.55)",
                         fontWeight: 600,
                       }}
                     >

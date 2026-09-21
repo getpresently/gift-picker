@@ -251,7 +251,7 @@ export function Landing() {
                 fontFamily: "Geist, sans-serif",
                 fontSize: 12,
                 letterSpacing: "0.14em",
-                color: "rgba(35,20,16,0.62)",
+                color: "rgba(35,20,16,0.55)",
                 textTransform: "uppercase",
                 marginBottom: 12,
               }}
@@ -494,7 +494,7 @@ export function Landing() {
                   fontSize: 12,
                   letterSpacing: "0.14em",
                   textTransform: "uppercase",
-                  color: "rgba(35,20,16,0.62)",
+                  color: "rgba(35,20,16,0.55)",
                   marginBottom: 6,
                 }}
               >

@@ -53,7 +53,7 @@ function Section({ title, hint, children }: { title: string; hint?: string; chil
         >
           {title}
         </h3>
-        {hint && <span style={{ fontFamily: "Geist, sans-serif", fontSize: 12, color: "rgba(35,20,16,0.62)" }}>{hint}</span>}
+        {hint && <span style={{ fontFamily: "Geist, sans-serif", fontSize: 12, color: "rgba(35,20,16,0.45)" }}>{hint}</span>}
       </div>
       {children}
     </section>
@@ -197,7 +197,6 @@ export function RefineModal({ open, answers, isMobile, onClose, onApply }: Props
             </div>
             {draft.occasion === "other" && (
               <input
-                className="gp-field"
                 type="text"
                 value={draft.occasionOther ?? ""}
                 onChange={(e) => setDraft((d) => ({ ...d, occasionOther: e.target.value }))}
@@ -211,7 +210,7 @@ export function RefineModal({ open, answers, isMobile, onClose, onApply }: Props
                   borderRadius: 12,
                   border: "none",
                   background: "rgba(35,20,16,0.05)",
-                  boxShadow: "inset 0 0 0 1.5px rgba(35,20,16,0.18)",
+                  boxShadow: "inset 0 0 0 1.5px rgba(35,20,16,0.1)",
                   fontFamily: "Geist, sans-serif",
                   fontSize: 14,
                   color: "#231410",

@@ -235,7 +235,6 @@ function PasswordGate({ unlock }: { unlock: UnlockState }) {
               {autoChecking ? "Checking your saved session." : "Enter the review password to continue."}
             </p>
             <input
-              className="gp-field"
               type="password"
               value={value}
               onChange={(e) => setValue(e.target.value)}
@@ -251,7 +250,7 @@ function PasswordGate({ unlock }: { unlock: UnlockState }) {
                 borderRadius: 12,
                 border: "none",
                 background: "rgba(35,20,16,0.05)",
-                boxShadow: "inset 0 0 0 1.5px rgba(35,20,16,0.18)",
+                boxShadow: "inset 0 0 0 1.5px rgba(35,20,16,0.1)",
                 fontFamily: "Geist, sans-serif",
                 fontSize: 15,
                 color: "#231410",
@@ -999,7 +998,6 @@ function ReviewTool({ unlock }: { unlock: UnlockState }) {
 
           <div style={{ display: "flex", gap: 10, marginBottom: 20, flexWrap: "wrap" }}>
             <input
-              className="gp-field"
               value={search}
               onChange={(e) => applySearch(e.target.value)}
               placeholder="Search by name or brand"
@@ -1010,7 +1008,7 @@ function ReviewTool({ unlock }: { unlock: UnlockState }) {
                 borderRadius: 12,
                 border: "none",
                 background: "rgba(35,20,16,0.05)",
-                boxShadow: "inset 0 0 0 1.5px rgba(35,20,16,0.18)",
+                boxShadow: "inset 0 0 0 1.5px rgba(35,20,16,0.08)",
                 fontFamily: "Geist, sans-serif",
                 fontSize: 14,
                 color: "#231410",
@@ -1018,7 +1016,6 @@ function ReviewTool({ unlock }: { unlock: UnlockState }) {
               }}
             />
             <select
-              className="gp-field"
               value={sortKey}
               onChange={(e) => applySort(e.target.value as SortKey)}
               style={{
@@ -1026,7 +1023,7 @@ function ReviewTool({ unlock }: { unlock: UnlockState }) {
                 borderRadius: 12,
                 border: "none",
                 background: "rgba(35,20,16,0.05)",
-                boxShadow: "inset 0 0 0 1.5px rgba(35,20,16,0.18)",
+                boxShadow: "inset 0 0 0 1.5px rgba(35,20,16,0.08)",
                 fontFamily: "Geist, sans-serif",
                 fontSize: 14,
                 color: "#231410",

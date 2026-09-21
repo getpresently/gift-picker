@@ -75,7 +75,7 @@ function LegalShell({
               style={{
                 fontFamily: "Geist, sans-serif",
                 fontSize: 13,
-                color: "rgba(35,20,16,0.62)",
+                color: "rgba(35,20,16,0.5)",
                 margin: "0 0 32px",
               }}
             >

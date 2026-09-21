@@ -29,7 +29,7 @@ export function FooterLinks() {
             style={{
               fontFamily: "Geist, sans-serif",
               fontSize: 11,
-              color: "rgba(35,20,16,0.62)",
+              color: "rgba(35,20,16,0.45)",
               textDecoration: "none",
               textUnderlineOffset: 3,
             }}

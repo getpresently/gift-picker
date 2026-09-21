@@ -271,7 +271,7 @@ export function Quiz() {
                 style={{
                   fontFamily: "Geist, sans-serif",
                   fontSize: 15,
-                  color: "rgba(35,20,16,0.62)",
+                  color: "rgba(35,20,16,0.55)",
                   marginTop: 10,
                 }}
               >
@@ -414,8 +414,8 @@ export function Quiz() {
           {/* Next button area */}
           <div
             style={{
-              marginTop: q.type === "choice" && !isOccasionOtherSelected ? 0 : "auto",
-              paddingTop: q.type === "choice" && !isOccasionOtherSelected ? 20 : isMobile ? 28 : 36,
+              marginTop: "auto",
+              paddingTop: isMobile ? 28 : 36,
               display: "flex",
               justifyContent: "center",
               minHeight: 64,
@@ -444,7 +444,7 @@ export function Quiz() {
                 style={{
                   fontFamily: "Geist, sans-serif",
                   fontSize: 12,
-                  color: "rgba(35,20,16,0.62)",
+                  color: "rgba(35,20,16,0.4)",
                   letterSpacing: "0.04em",
                 }}
               >

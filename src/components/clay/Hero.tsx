@@ -100,7 +100,7 @@ export function Hero({
           gridTemplateColumns: isMobile ? "1fr" : "1.05fr 0.95fr",
           gridTemplateAreas: isMobile ? '"image" "text"' : '"text image"',
           gap: isMobile ? 18 : 28,
-          alignItems: isMobile ? "start" : "stretch",
+          alignItems: "start",
         }}
       >
         {/* TEXT */}
@@ -147,7 +147,7 @@ export function Hero({
               {gift.description}
             </p>
           )}
-          <div style={{ marginTop: isMobile ? 4 : "auto", paddingTop: isMobile ? 0 : 8 }}>
+          <div style={{ marginTop: 4 }}>
             <PriceDisplay gift={gift} variant="hero" invert />
           </div>
           <div style={{ display: "flex", gap: 10, marginTop: 6, flexWrap: "wrap" }}>
@@ -235,7 +235,7 @@ export function Hero({
           style={{
             gridArea: "image",
             position: "relative",
-            aspectRatio: isMobile ? "16/10" : "1/1",
+            aspectRatio: isMobile ? "16/10" : "4/3",
             borderRadius: 18,
             background: "linear-gradient(160deg, #FFE9A8, #F7C76A)",
             border: "none",
