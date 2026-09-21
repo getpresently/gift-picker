@@ -1,4 +1,5 @@
 import { API_ENDPOINT } from "./giftsApi";
+import { withRetry } from "./reviewApi";
 
 export type Placement = "editorial" | "sponsored";
 
@@ -28,11 +29,8 @@ export const BRAND_EMAIL = "hello@giftpicker.io";
 export async function submitBrand(s: BrandSubmission): Promise<BrandResult> {
   let json: unknown;
   try {
-    const res = await fetch(API_ENDPOINT, {
-      method: "POST",
-      body: JSON.stringify({ type: "brand", at: new Date().toISOString(), ...s }),
-    });
-    json = await res.json();
+    const body = JSON.stringify({ type: "brand", at: new Date().toISOString(), ...s });
+    json = await withRetry(() => fetch(API_ENDPOINT, { method: "POST", body }).then((res) => res.json()), 3);
   } catch {
     return { ok: false, error: "network" };
   }

@@ -50,11 +50,12 @@ export function useReviewGifts(): FetchState & { reload: () => void } {
   useEffect(() => {
     let cancelled = false;
     setState((s) => ({ data: s.data, loading: true, error: null }));
-    fetch(`${API_ENDPOINT}?tab=Gifts`, { cache: "no-store" })
-      .then((r) => {
+    withRetry(() =>
+      fetch(`${API_ENDPOINT}?tab=Gifts`, { cache: "no-store" }).then((r) => {
         if (!r.ok) throw new Error(`Gift API responded ${r.status}`);
         return r.json();
-      })
+      }),
+    )
       .then((payload: { data?: RawRow[] }) => {
         if (cancelled) return;
         const rows = Array.isArray(payload?.data) ? payload.data : [];
@@ -123,16 +124,34 @@ export type ReviewResult<T extends object = Record<string, never>> =
   | ({ ok: true } & T)
   | { ok: false; error: ReviewErrorCode };
 
+/**
+ * Google's web-app redirect intermittently answers with an HTML 404 page
+ * instead of the script's JSON (roughly one call in three on 9/21/26), even
+ * though the script itself ran. Every review call is idempotent (a ping, or
+ * a "set these exact values on the row that still holds this gift"), so a
+ * failed attempt is simply repeated.
+ */
+export async function withRetry<T>(attempt: () => Promise<T>, tries = 4): Promise<T> {
+  let lastErr: unknown;
+  for (let i = 0; i < tries; i++) {
+    try {
+      return await attempt();
+    } catch (err) {
+      lastErr = err;
+      if (i < tries - 1) await new Promise((r) => setTimeout(r, 400 * (i + 1)));
+    }
+  }
+  throw lastErr;
+}
+
 async function postReview<T extends object = Record<string, never>>(
   body: Record<string, unknown>,
 ): Promise<ReviewResult<T>> {
   let json: unknown;
   try {
-    const res = await fetch(API_ENDPOINT, {
-      method: "POST",
-      body: JSON.stringify(body),
-    });
-    json = await res.json();
+    json = await withRetry(() =>
+      fetch(API_ENDPOINT, { method: "POST", body: JSON.stringify(body) }).then((res) => res.json()),
+    );
   } catch {
     return { ok: false, error: "network" };
   }

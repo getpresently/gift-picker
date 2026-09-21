@@ -74,6 +74,19 @@ function matchesFilter(g: ReviewGift, filter: FilterKey): boolean {
   }
 }
 
+type NoteKind = "done" | "todo" | "decide" | "other";
+
+/** Notes written during the 9/21/26 catalog cleanup start with a verb that says what they are. */
+function noteKind(text: string): NoteKind {
+  const t = text.trim();
+  if (/^(Added|Repaired prior suggestion|Retired|Auto-repaired|Model updated)\b/i.test(t)) return "done";
+  if (/^Needs fix\b/i.test(t)) return "todo";
+  if (/^(Flagged|Check|User-submitted)\b/i.test(t)) return "decide";
+  return "other";
+}
+
+const isOpenNote = (text?: string) => !!text && noteKind(text) !== "done";
+
 function computeVisibleIds(
   gifts: ReviewGift[],
   filter: FilterKey,
@@ -100,8 +113,8 @@ function computeVisibleIds(
       return sb - sa;
     });
   } else if (sortKey === "notes") {
-    const withNotes = list.filter((g) => g.feedback);
-    const withoutNotes = list.filter((g) => !g.feedback);
+    const withNotes = list.filter((g) => isOpenNote(g.feedback));
+    const withoutNotes = list.filter((g) => !isOpenNote(g.feedback));
     list = [...withNotes, ...withoutNotes];
   }
   return list.map((g) => g.id);
@@ -317,14 +330,22 @@ function TagRow({ label, values }: { label: string; values: string[] }) {
   );
 }
 
+const NOTE_STYLES: Record<NoteKind, { label: string; bg: string; ring: string; fg: string }> = {
+  done: { label: "Already done", bg: "rgba(92,122,78,0.09)", ring: "rgba(92,122,78,0.22)", fg: "#3F5A33" },
+  todo: { label: "Suggested fix, not done yet", bg: "rgba(230,75,69,0.08)", ring: "rgba(230,75,69,0.25)", fg: "#B23A35" },
+  decide: { label: "Your call", bg: "rgba(196,71,126,0.08)", ring: "rgba(196,71,126,0.2)", fg: "#C4477E" },
+  other: { label: "Note", bg: "rgba(35,20,16,0.05)", ring: "rgba(35,20,16,0.12)", fg: "#5A3F36" },
+};
+
 function FeedbackNote({ text }: { text: string }) {
+  const st = NOTE_STYLES[noteKind(text)];
   return (
     <div
       style={{
         padding: 14,
         borderRadius: 14,
-        background: "rgba(196,71,126,0.08)",
-        boxShadow: "inset 0 0 0 1px rgba(196,71,126,0.2)",
+        background: st.bg,
+        boxShadow: `inset 0 0 0 1px ${st.ring}`,
       }}
     >
       <div
@@ -333,12 +354,12 @@ function FeedbackNote({ text }: { text: string }) {
           fontSize: 11,
           letterSpacing: "0.12em",
           textTransform: "uppercase",
-          color: "#C4477E",
+          color: st.fg,
           fontWeight: 600,
           marginBottom: 6,
         }}
       >
-        Editor note
+        {st.label}
       </div>
       <div style={{ fontFamily: "Geist, sans-serif", fontSize: 13, lineHeight: 1.5, color: "#231410" }}>{text}</div>
     </div>
@@ -561,6 +582,25 @@ function ClosestMatchesPanel({
  * Action bar, toast, banner
  * ------------------------------------------------------------------ */
 
+function Key({ k, dark }: { k: string; dark?: boolean }) {
+  return (
+    <kbd
+      style={{
+        marginLeft: 8,
+        padding: "1px 6px",
+        borderRadius: 6,
+        fontFamily: "Geist, sans-serif",
+        fontSize: 11,
+        fontWeight: 600,
+        background: dark ? "rgba(35,20,16,0.08)" : "rgba(255,255,255,0.22)",
+        color: "inherit",
+      }}
+    >
+      {k}
+    </kbd>
+  );
+}
+
 function ActionBar({
   isMobile,
   disabled,
@@ -580,8 +620,40 @@ function ActionBar({
   onBack: () => void;
   onUndo: () => void;
 }) {
-  const wrapStyle: CSSProperties = isMobile
-    ? {
+  if (!isMobile) {
+    return (
+      <div style={{ display: "flex", flexDirection: "column", gap: 8, marginBottom: 16 }}>
+        <div style={{ display: "flex", gap: 8 }}>
+          <Pillow tone="coral" size="md" onClick={onApprove} disabled={disabled} style={{ flex: 1 }}>
+            Approve
+            <Key k="A" />
+          </Pillow>
+          <Pillow tone="plum" size="md" onClick={onReject} disabled={disabled} style={{ flex: 1 }}>
+            Reject
+            <Key k="R" />
+          </Pillow>
+        </div>
+        <div style={{ display: "flex", gap: 8 }}>
+          <Pillow tone="ink" size="sm" onClick={onBack} disabled={disabled} style={{ flex: 1 }}>
+            Back
+            <Key k="←" />
+          </Pillow>
+          <Pillow tone="ink" size="sm" onClick={onSkip} disabled={disabled} style={{ flex: 1 }}>
+            Skip
+            <Key k="S" />
+          </Pillow>
+          <Pillow tone="cream" size="sm" onClick={onUndo} disabled={!canUndo} style={{ flex: 1 }}>
+            Undo
+            <Key k="U" dark />
+          </Pillow>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div
+      style={{
         position: "fixed",
         left: 0,
         right: 0,
@@ -595,24 +667,21 @@ function ActionBar({
         WebkitBackdropFilter: "blur(14px)",
         borderTop: "1px solid rgba(35,20,16,0.08)",
         overflowX: "auto",
-      }
-    : { display: "flex", gap: 10, marginTop: 24, flexWrap: "wrap" };
-
-  return (
-    <div style={wrapStyle}>
-      <Pillow tone="coral" size={isMobile ? "sm" : "md"} onClick={onApprove} disabled={disabled}>
+      }}
+    >
+      <Pillow tone="coral" size="sm" onClick={onApprove} disabled={disabled}>
         Approve
       </Pillow>
-      <Pillow tone="plum" size={isMobile ? "sm" : "md"} onClick={onReject} disabled={disabled}>
+      <Pillow tone="plum" size="sm" onClick={onReject} disabled={disabled}>
         Reject
       </Pillow>
-      <Pillow tone="ink" size={isMobile ? "sm" : "md"} onClick={onSkip} disabled={disabled}>
+      <Pillow tone="ink" size="sm" onClick={onSkip} disabled={disabled}>
         Skip
       </Pillow>
-      <Pillow tone="ink" size={isMobile ? "sm" : "md"} onClick={onBack} disabled={disabled}>
+      <Pillow tone="ink" size="sm" onClick={onBack} disabled={disabled}>
         Back
       </Pillow>
-      <Pillow tone="cream" size={isMobile ? "sm" : "md"} onClick={onUndo} disabled={!canUndo}>
+      <Pillow tone="cream" size="sm" onClick={onUndo} disabled={!canUndo}>
         Undo last
       </Pillow>
     </div>
@@ -915,6 +984,8 @@ function ReviewTool({ unlock }: { unlock: UnlockState }) {
 
   useEffect(() => {
     function onKeyDown(e: KeyboardEvent) {
+      // Cmd+R must stay "refresh"; only bare, non-repeating keys count.
+      if (e.metaKey || e.ctrlKey || e.altKey || e.repeat) return;
       const target = e.target as HTMLElement | null;
       const tag = target?.tagName;
       if (tag === "INPUT" || tag === "TEXTAREA" || target?.isContentEditable) return;
@@ -1032,7 +1103,7 @@ function ReviewTool({ unlock }: { unlock: UnlockState }) {
             >
               <option value="sheet">Sheet order</option>
               <option value="redundant">Most redundant first</option>
-              <option value="notes">Has editor note first</option>
+              <option value="notes">Open notes first</option>
             </select>
           </div>
 
@@ -1102,22 +1173,24 @@ function ReviewTool({ unlock }: { unlock: UnlockState }) {
               }}
             >
               <GiftCard gift={currentGift} isMobile={isMobile} />
-              <ClosestMatchesPanel gift={currentGift} matcher={matcher} giftById={giftById} onJump={jumpTo} />
+              <div>
+                {!isMobile && (
+                  <ActionBar
+                    isMobile={false}
+                    disabled={!currentGift}
+                    canUndo={undoStack.length > 0}
+                    onApprove={() => performAction("approve")}
+                    onReject={() => performAction("reject")}
+                    onSkip={skip}
+                    onBack={back}
+                    onUndo={undoLast}
+                  />
+                )}
+                <ClosestMatchesPanel gift={currentGift} matcher={matcher} giftById={giftById} onJump={jumpTo} />
+              </div>
             </div>
           )}
 
-          {!isMobile && (
-            <ActionBar
-              isMobile={false}
-              disabled={!currentGift}
-              canUndo={undoStack.length > 0}
-              onApprove={() => performAction("approve")}
-              onReject={() => performAction("reject")}
-              onSkip={skip}
-              onBack={back}
-              onUndo={undoLast}
-            />
-          )}
         </div>
 
         {isMobile && (
