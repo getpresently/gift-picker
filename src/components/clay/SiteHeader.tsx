@@ -20,20 +20,20 @@ export function SiteHeader({ onLogoClick, children }: { onLogoClick?: () => void
         borderBottom: "1px solid rgba(35,20,16,0.06)",
       }}
     >
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          gap: 12,
-          maxWidth: 1280,
-          margin: "0 auto",
-          padding: isMobile ? "20px 20px 14px" : "24px 56px 16px",
-          minHeight: isMobile ? 36 : 44,
-        }}
-      >
-        <Wordmark size={isMobile ? "md" : "lg"} onClick={onLogoClick} />
-        {children && <div style={{ display: "flex", alignItems: "center", gap: 12 }}>{children}</div>}
+      <div style={{ maxWidth: 1280, margin: "0 auto", padding: isMobile ? "20px 20px 14px" : "24px 56px 16px" }}>
+        {/* Fixed row height: the logo must not shift with whatever sits on the right. */}
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            gap: 12,
+            height: isMobile ? 38 : 44,
+          }}
+        >
+          <Wordmark size={isMobile ? "md" : "lg"} onClick={onLogoClick} />
+          {children && <div style={{ display: "flex", alignItems: "center", gap: 12 }}>{children}</div>}
+        </div>
       </div>
     </header>
   );

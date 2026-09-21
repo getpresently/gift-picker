@@ -1,23 +1,29 @@
 # GiftPicker
 
-> GiftPicker (giftpicker.io) is a free 30-second gift-recommendation quiz by Presently. Users answer five questions about the recipient (relationship, age, occasion, interests, vibe, budget) and receive ranked, personalized gift picks from a hand-curated database of 200+ brands, with direct buy links to the brand's site or Amazon. No account required.
+> GiftPicker (giftpicker.io) is a free 30-second gift-recommendation quiz by Presently. Users answer six questions about the recipient (relationship, age, occasion, interests, vibe, budget) and receive ranked, personalized gift picks from a hand-curated catalog of about 560 gifts from 200+ brands, with direct buy links to the brand's site or Amazon. No account required.
 
 ## What it does
 
-- Five-question quiz: who the gift is for (partner, parent, grandparent, friend, sibling, coworker, mentor, or treat yourself), their age, the occasion, up to 3 interests, the gift vibe, and a budget slider.
-- Occasions covered: Birthday, Anniversary, Holiday, Wedding, Just Because, New Baby, Housewarming, Appreciation, Thank You, plus free-text custom occasions.
+- Six-question quiz: who the gift is for (partner, parent, grandparent, friend, sibling, coworker, mentor, or treat yourself), their age (6 tiers: baby, little one, teenager, young adult, adult, senior), the occasion (10 options, see below), up to 3 interests, up to 2 vibes, and a budget slider.
+- Occasions covered: Birthday, Anniversary, Holiday, Wedding, Just Because, New Baby, Housewarming, Appreciation, Thank You, or Other, which reveals a free-text field for a custom occasion.
 - Interest categories: Apparel and Accessories, Cooking, Creativity, Experiences, Fitness, Food and Drinks, Gaming, Health and Wellness, Home and Decor, Learning, Music, Nature and Outdoors, Organization, Personalization, Pets, Rest and Relaxation, Seasonal Gifts, Self-Care and Beauty, Sustainability, Tech and Electronics, Toys and Games, Travel.
-- Results are scored 0-100 by a weighted matching algorithm (interests weighted heaviest, then relationship, budget fit, age fit, and vibe, with occasion adjustments). Only strong matches are shown.
-- Every gift result has a permanent shareable page at https://giftpicker.io/gift/{id}.
+- Vibes: Fun, Practical, Sentimental, Luxurious.
+- Every gift in the catalog is hand-curated by the GiftPicker team, then matched to the quiz answers by a weighted scoring algorithm (interests weighted heaviest, then relationship, then budget fit, age fit, and vibe, with occasion adjustments). Only strong matches are shown, scored 0-100.
 - Results pages can be shared via URL; the link reproduces the same picks.
 - Gifts are hand-curated from 200+ brands including Apple, Lululemon, Patagonia, Pottery Barn, Anthropologie, Peloton, Aesop, Le Creuset, Diptyque, Hario, MUJI, and Allbirds.
+
+## Gift pages
+
+Every gift has a permanent, indexable page at https://giftpicker.io/gift/{id} (about 560 live pages, listed in the sitemap). Each page contains the gift's name and brand, a description, its price or price range, a product photo, a direct buy link (to the brand's site or Amazon, tagged as an affiliate link where applicable), and schema.org Product structured data (name, description, image, brand, and price where available).
 
 ## Key pages
 
 - [Home](https://giftpicker.io/): product overview and quiz entry point.
-- [Quiz](https://giftpicker.io/quiz): the five-question gift finder.
-- [Sitemap](https://giftpicker.io/sitemap.xml): all indexable pages including individual gift pages.
+- [Quiz](https://giftpicker.io/quiz): the six-question gift finder.
+- [Sitemap](https://giftpicker.io/sitemap.xml): every indexable page, meaning the home page and every live gift page.
+
+Note: /results pages are per-visitor quiz output and /review is an internal tool; neither is meant to be indexed or cited as a canonical source. Use the gift pages above instead.
 
 ## About
 
-GiftPicker is built and curated by Presently. The catalog is maintained by hand: real gifts from real brands, not AI-generated filler. Feedback tools are built in (users can flag broken links, unavailable products, or bad matches, and request new gift categories).
+GiftPicker is built and curated by Presently. The catalog is maintained by hand, and every gift is a real product from a real brand. Feedback tools are built in (users can flag broken links, unavailable products, or bad matches, and request new gift categories).

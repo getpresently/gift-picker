@@ -417,7 +417,50 @@ export function Landing() {
             }}
           >
             <Wordmark size="sm" />
-            <PresentlyMark />
+            <div style={{ display: "flex", alignItems: "center", gap: 14, flexWrap: "wrap" }}>
+              <PresentlyMark />
+              <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                <button
+                  type="button"
+                  onClick={() => navigate("/privacy")}
+                  onMouseEnter={(e) => (e.currentTarget.style.textDecoration = "underline")}
+                  onMouseLeave={(e) => (e.currentTarget.style.textDecoration = "none")}
+                  style={{
+                    background: "transparent",
+                    border: "none",
+                    padding: 0,
+                    fontFamily: "Geist, sans-serif",
+                    fontSize: 11,
+                    color: "rgba(35,20,16,0.45)",
+                    textDecoration: "none",
+                    textUnderlineOffset: 3,
+                    cursor: "pointer",
+                  }}
+                >
+                  Privacy
+                </button>
+                <span style={{ fontFamily: "Geist, sans-serif", fontSize: 11, color: "rgba(35,20,16,0.35)" }}>·</span>
+                <button
+                  type="button"
+                  onClick={() => navigate("/terms")}
+                  onMouseEnter={(e) => (e.currentTarget.style.textDecoration = "underline")}
+                  onMouseLeave={(e) => (e.currentTarget.style.textDecoration = "none")}
+                  style={{
+                    background: "transparent",
+                    border: "none",
+                    padding: 0,
+                    fontFamily: "Geist, sans-serif",
+                    fontSize: 11,
+                    color: "rgba(35,20,16,0.45)",
+                    textDecoration: "none",
+                    textUnderlineOffset: 3,
+                    cursor: "pointer",
+                  }}
+                >
+                  Terms
+                </button>
+              </div>
+            </div>
           </footer>
         </div>
       </div>

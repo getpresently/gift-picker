@@ -1,0 +1,185 @@
+/**
+ * giftpicker.io: Google Apps Script web app (bound to the Gift Database sheet).
+ *
+ * Deploy as: Web app, execute as "Me", access "Anyone".
+ * When updating, edit the EXISTING deployment and pick "New version" so the
+ * /exec URL (hardcoded in the site) stays the same.
+ *
+ *   GET  /exec?tab=<Sheet>  -> { data: [...] }  rows of that tab, with a synthetic row_id ("r<row>")
+ *   POST /exec  JSON body routed on `type`:
+ *     "feedback" -> append to Feedback
+ *     "request"  -> append to Requests
+ *     "review"   -> internal review tool (password-gated), see handleReview_
+ *
+ * The review password is NOT in this file. Set it once under
+ * Project Settings > Script Properties as REVIEW_SECRET.
+ */
+
+// Column order MUST match the existing sheets; clientId is the last column.
+const FEEDBACK_HEADERS = [
+  "at", "giftId", "giftName", "brand", "reason",
+  "reasonLabel", "detail", "answers", "clientId"
+];
+
+const REQUEST_HEADERS = [
+  "at", "type", "recipient", "age", "occasion",
+  "interests", "vibe", "budget", "clientId"
+];
+
+// Values the review tool may write into the Gifts "Status" column.
+const REVIEW_STATUSES = ["Live", "Rejected", "Retired", "Dead", "OOS", "Draft"];
+
+function doGet(e) {
+  try {
+    const tab = (e && e.parameter && e.parameter.tab) || "Gifts";
+    const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(tab);
+    if (!sheet) return jsonOut_({ error: "Sheet not found: " + tab });
+
+    const values = sheet.getDataRange().getValues();
+    if (values.length < 2) return jsonOut_({ data: [] });
+
+    const headers = values[0].map(String);
+    const data = values.slice(1).map(function (row, i) {
+      const obj = { row_id: "r" + (i + 2) };
+      headers.forEach(function (h, c) { obj[h] = row[c]; });
+      return obj;
+    });
+    return jsonOut_({ data: data });
+  } catch (err) {
+    return jsonOut_({ error: String(err) });
+  }
+}
+
+function doPost(e) {
+  try {
+    const body = (e && e.postData && e.postData.contents)
+      ? JSON.parse(e.postData.contents)
+      : {};
+    const type = String(body.type || "").toLowerCase();
+
+    if (type === "feedback") return jsonOut_(handleFeedback_(body));
+    if (type === "request")  return jsonOut_(handleRequest_(body));
+    if (type === "review")   return jsonOut_(handleReview_(body));
+    return jsonOut_({ error: "Unknown type: " + type });
+  } catch (err) {
+    return jsonOut_({ error: String(err) });
+  }
+}
+
+function handleFeedback_(p) {
+  const sheet = ensureSheet_("Feedback", FEEDBACK_HEADERS);
+  sheet.appendRow([
+    p.at || new Date().toISOString(),
+    p.giftId || "",
+    p.giftName || "",
+    p.brand || "",
+    p.reason || "",
+    p.reasonLabel || "",
+    p.detail || "",
+    safeJson_(p.answers),
+    p.clientId || "",
+  ]);
+  return { ok: true };
+}
+
+function handleRequest_(p) {
+  const sheet = ensureSheet_("Requests", REQUEST_HEADERS);
+  const a = p.answers || {};
+  sheet.appendRow([
+    p.at || new Date().toISOString(),
+    p.type || "request",
+    a.recipient || "",
+    a.age || "",
+    a.occasion || "",
+    joinIfArray_(a.interests),
+    joinIfArray_(a.vibe),
+    a.budget || "",
+    p.clientId || "",
+  ]);
+  return { ok: true };
+}
+
+/**
+ * Review tool writes. Every call must carry the REVIEW_SECRET password.
+ *   { action: "ping" }  -> { ok: true } when the password is right
+ *   { action: "set", rowId: "r123", gift: "<exact Gift cell>", status?, reviewed? }
+ * `gift` must match what is in that row right now, so a write can never land
+ * on the wrong gift if rows were inserted or deleted since the tool loaded.
+ */
+function handleReview_(p) {
+  const secret = PropertiesService.getScriptProperties().getProperty("REVIEW_SECRET");
+  if (!secret) return { ok: false, error: "not_configured" };
+  if (!p.secret || String(p.secret) !== secret) {
+    Utilities.sleep(500);  // slows down password guessing
+    return { ok: false, error: "unauthorized" };
+  }
+  if (p.action === "ping") return { ok: true };
+  if (p.action !== "set") return { ok: false, error: "bad_action" };
+
+  const m = /^r(\d+)$/.exec(String(p.rowId || ""));
+  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("Gifts");
+  if (!m || !sheet) return { ok: false, error: "bad_row" };
+  const row = Number(m[1]);
+  if (row < 2 || row > sheet.getLastRow()) return { ok: false, error: "bad_row" };
+
+  if (p.status !== undefined && REVIEW_STATUSES.indexOf(p.status) === -1) {
+    return { ok: false, error: "bad_value" };
+  }
+  if (p.reviewed !== undefined && typeof p.reviewed !== "boolean") {
+    return { ok: false, error: "bad_value" };
+  }
+
+  const headers = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0].map(String);
+  const giftCol = headers.indexOf("Gift") + 1;
+  const statusCol = headers.indexOf("Status") + 1;
+  const reviewCol = headers.indexOf("Review status") + 1;
+  if (!giftCol || !statusCol || !reviewCol) return { ok: false, error: "bad_sheet" };
+
+  const lock = LockService.getScriptLock();
+  lock.waitLock(10000);
+  try {
+    const current = String(sheet.getRange(row, giftCol).getValue()).trim();
+    if (current !== String(p.gift || "").trim()) return { ok: false, error: "row_moved" };
+    if (p.status !== undefined) sheet.getRange(row, statusCol).setValue(p.status);
+    if (p.reviewed !== undefined) sheet.getRange(row, reviewCol).setValue(p.reviewed);
+    SpreadsheetApp.flush();
+    return {
+      ok: true,
+      rowId: p.rowId,
+      status: String(sheet.getRange(row, statusCol).getValue()),
+      reviewed: sheet.getRange(row, reviewCol).getValue() === true,
+    };
+  } finally {
+    lock.releaseLock();
+  }
+}
+
+/** Arrays go into a cell as "a, b"; appendRow would otherwise write "[Ljava.lang.Object;@...". */
+function joinIfArray_(v) {
+  if (Array.isArray(v)) return v.join(", ");
+  return v == null ? "" : v;
+}
+
+function ensureSheet_(name, headers) {
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  let sheet = ss.getSheetByName(name);
+  if (!sheet) {
+    sheet = ss.insertSheet(name);
+    sheet.appendRow(headers);
+    sheet.setFrozenRows(1);
+  } else if (sheet.getLastRow() === 0) {
+    sheet.appendRow(headers);
+    sheet.setFrozenRows(1);
+  }
+  return sheet;
+}
+
+function safeJson_(v) {
+  try { return JSON.stringify(v); } catch (_) { return String(v); }
+}
+
+function jsonOut_(obj) {
+  return ContentService
+    .createTextOutput(JSON.stringify(obj))
+    .setMimeType(ContentService.MimeType.JSON);
+}

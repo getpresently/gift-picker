@@ -13,10 +13,13 @@ import type { BillingPeriod, Gift } from "./gifts";
  *
  * The adapter maps that into the clean Gift shape used everywhere in code.
  */
-const API_ENDPOINT =
+export const API_ENDPOINT =
   (import.meta.env.VITE_GIFTS_ENDPOINT as string | undefined)?.trim() ||
   "https://script.google.com/macros/s/AKfycbwPuaXtXuurdqNg94_mGoOR1YHXqKrJyZrkxkt09oFbGGZtS_KdH44vhJNn4qLzeJqhuQ/exec";
 const GIFTS_URL = `${API_ENDPOINT}?tab=Gifts`;
+// Edge copy of the live rows, served by the Cloudflare worker from KV. The Apps
+// Script can take several seconds, so it is only the fallback.
+const EDGE_GIFTS_URL = "/api/gifts";
 
 type RawRow = Record<string, string | number | undefined>;
 
@@ -73,7 +76,7 @@ function buildPriceLabel(
   return base;
 }
 
-function adaptRow(row: RawRow): Gift {
+export function adaptRow(row: RawRow): Gift {
   const priceRaw = row.Price;
   const isYourChoice = String(priceRaw ?? "").trim().toLowerCase() === "your choice";
   const price = isYourChoice ? 0 : parseMoney(priceRaw) ?? 0;
@@ -108,24 +111,33 @@ function adaptRow(row: RawRow): Gift {
 
 type Result = { data: Gift[]; loading: boolean; error: string | null };
 
+async function fetchRows(): Promise<RawRow[]> {
+  try {
+    const r = await fetch(EDGE_GIFTS_URL);
+    if (r.ok && (r.headers.get("content-type") ?? "").includes("application/json")) {
+      const payload = (await r.json()) as { data?: RawRow[] };
+      if (Array.isArray(payload?.data) && payload.data.length) return payload.data;
+    }
+  } catch {
+    // fall through to the origin
+  }
+  const r = await fetch(GIFTS_URL);
+  if (!r.ok) throw new Error(`Gift API responded ${r.status}`);
+  const payload = (await r.json()) as { data?: RawRow[] };
+  return Array.isArray(payload?.data) ? payload.data : [];
+}
+
 export function useGifts(): Result {
   const [state, setState] = useState<Result>({ data: [], loading: true, error: null });
 
   useEffect(() => {
     let cancelled = false;
-    fetch(GIFTS_URL)
-      .then((r) => {
-        if (!r.ok) throw new Error(`Gift API responded ${r.status}`);
-        return r.json();
-      })
-      .then((payload: { data?: RawRow[] }) => {
-        if (cancelled) return;
-        const rows = Array.isArray(payload?.data) ? payload.data : [];
-        setState({ data: rows.map(adaptRow), loading: false, error: null });
+    fetchRows()
+      .then((rows) => {
+        if (!cancelled) setState({ data: rows.map(adaptRow), loading: false, error: null });
       })
       .catch((err: unknown) => {
-        if (cancelled) return;
-        setState({ data: [], loading: false, error: String(err) });
+        if (!cancelled) setState({ data: [], loading: false, error: String(err) });
       });
     return () => {
       cancelled = true;

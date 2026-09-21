@@ -23,6 +23,8 @@ const GIFTS_ENDPOINT =
 const SITE_ORIGIN = "https://giftpicker.io";
 const GIFTS_KEY = "gifts:live:v1";
 const SITEMAP_KEY = "sitemap:xml:v1";
+// Full live rows for the quiz results page, served at /api/gifts.
+const FULL_KEY = "gifts:full:v1";
 // How long a page request will wait on the origin when KV is empty (first deploy).
 const COLD_WAIT_MS = 2500;
 // Only the fields prerendering and the sitemap need; keeps the KV value small
@@ -58,6 +60,12 @@ async function handleEvent(event) {
   // Dynamic sitemap: /, /quiz, plus one URL per live gift.
   if (url.pathname === "/sitemap.xml") {
     return serveSitemap(event);
+  }
+
+  // Live catalog for the results page, straight from KV (the site falls
+  // back to Apps Script if this ever answers with an error).
+  if (url.pathname === "/api/gifts") {
+    return serveGiftsApi();
   }
 
   let options = {};
@@ -98,6 +106,10 @@ async function handleEvent(event) {
     // The internal review tool must never be indexed.
     if (url.pathname.startsWith("/review")) {
       response.headers.set("X-Robots-Tag", "noindex, nofollow");
+    }
+    // Results are per-visitor quiz output: previews still work, search skips them.
+    if (url.pathname.startsWith("/results")) {
+      response.headers.set("X-Robots-Tag", "noindex, follow");
     }
 
     response.headers.set("X-XSS-Protection", "1; mode=block");
@@ -147,6 +159,7 @@ async function refreshGifts() {
     return slim;
   });
   if (!rows.length) throw new Error("gifts fetch returned no live rows");
+  await GIFTS_CACHE.put(FULL_KEY, JSON.stringify({ data: all.filter(isLive) }));
   await GIFTS_CACHE.put(GIFTS_KEY, JSON.stringify({ at: Date.now(), rows }));
   await GIFTS_CACHE.put(SITEMAP_KEY, buildSitemap(rows));
   return rows;
@@ -166,6 +179,22 @@ async function loadGifts(event) {
   event.waitUntil(refresh.catch(() => {}));
   const timeout = new Promise((resolve) => setTimeout(() => resolve(null), COLD_WAIT_MS));
   return Promise.race([refresh.catch(() => null), timeout]);
+}
+
+async function serveGiftsApi() {
+  let body = null;
+  try {
+    body = await GIFTS_CACHE.get(FULL_KEY);
+  } catch (e) {}
+  if (!body) {
+    return new Response(JSON.stringify({ error: "unavailable" }), {
+      status: 503,
+      headers: { "Content-Type": "application/json; charset=utf-8", "Cache-Control": "no-store" },
+    });
+  }
+  return new Response(body, {
+    headers: { "Content-Type": "application/json; charset=utf-8", "Cache-Control": "public, max-age=60" },
+  });
 }
 
 /** Amazon links carry the Associates tag; everything else passes through. */
@@ -228,7 +257,8 @@ async function prerenderGiftPage(event, response, giftId) {
   const image = escapeHtml(row.PhotoAddress || `${SITE_ORIGIN}/logo512.png`);
   const label = priceLabel(row);
   const pageUrl = `${SITE_ORIGIN}/gift/${giftId}`;
-  const title = brand ? `${name} by ${brand} · GiftPicker` : `${name} · GiftPicker`;
+  // Built from the raw values and escaped once; name/brand above are already escaped.
+  const title = escapeHtml(row.Brand ? `${row.Gift} by ${row.Brand} · GiftPicker` : `${row.Gift} · GiftPicker`);
   const metaDesc = desc || `${name}${brand ? ` from ${brand}` : ""}, a hand-curated gift pick on GiftPicker.`;
   const buyLink = escapeHtml(affiliateUrl(row.AmazonAltLink || row.Link || `${SITE_ORIGIN}/quiz`));
 
@@ -257,12 +287,12 @@ async function prerenderGiftPage(event, response, giftId) {
 	<link rel="canonical" href="${pageUrl}"/>
 	<meta property="og:type" content="product"/>
 	<meta property="og:site_name" content="GiftPicker"/>
-	<meta property="og:title" content="${escapeHtml(title)}"/>
+	<meta property="og:title" content="${title}"/>
 	<meta property="og:description" content="${metaDesc}"/>
 	<meta property="og:url" content="${pageUrl}"/>
 	<meta property="og:image" content="${image}"/>
 	<meta name="twitter:card" content="summary_large_image"/>
-	<meta name="twitter:title" content="${escapeHtml(title)}"/>
+	<meta name="twitter:title" content="${title}"/>
 	<meta name="twitter:description" content="${metaDesc}"/>
 	<meta name="twitter:image" content="${image}"/>
 	<script type="application/ld+json">${JSON.stringify(jsonLd)}</script>`;
@@ -281,7 +311,7 @@ async function prerenderGiftPage(event, response, giftId) {
   let out = replaceBetween(html, "<!--gp-meta-->", "<!--/gp-meta-->", metaBlock);
   out = replaceBetween(out, "<!--gp-static-->", "<!--/gp-static-->", staticBlock);
   // Swap the tab title too (it lives outside the meta markers).
-  out = out.replace(/<title>[^<]*<\/title>/, `<title>${escapeHtml(title)}</title>`);
+  out = out.replace(/<title>[^<]*<\/title>/, `<title>${title}</title>`);
 
   return new Response(out, {
     status: 200,
@@ -301,7 +331,7 @@ function replaceBetween(html, startMarker, endMarker, replacement) {
 }
 
 function buildSitemap(rows) {
-  const urls = [`${SITE_ORIGIN}/`, `${SITE_ORIGIN}/quiz`].concat(
+  const urls = [`${SITE_ORIGIN}/`].concat(
     (rows || []).map((g) => `${SITE_ORIGIN}/gift/${g.row_id}`)
   );
   return (
