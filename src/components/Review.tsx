@@ -5,6 +5,7 @@ import { ClaySurface } from "./clay/ClaySurface";
 import { GiftBox3D } from "./clay/GiftBox3D";
 import { Pillow } from "./clay/Pillow";
 import { PriceDisplay } from "./clay/PriceDisplay";
+import { useNavigate } from "react-router-dom";
 import { SiteHeader } from "./clay/SiteHeader";
 import { useImageFallback } from "../hooks/useImageFallback";
 import { useIsMobile } from "../hooks/useIsMobile";
@@ -188,6 +189,7 @@ const plainLinkStyle: CSSProperties = {
 
 function PasswordGate({ unlock }: { unlock: UnlockState }) {
   const isMobile = useIsMobile();
+  const navigate = useNavigate();
   const [value, setValue] = useState("");
   const [submitting, setSubmitting] = useState(false);
 
@@ -209,7 +211,7 @@ function PasswordGate({ unlock }: { unlock: UnlockState }) {
     <div style={{ background: "#FBF1E1", minHeight: "100vh", position: "relative" }}>
       <AmbientGlow variant="quiz" />
       <div style={{ position: "relative", zIndex: 1, minHeight: "100vh" }}>
-        <SiteHeader />
+        <SiteHeader onLogoClick={() => navigate("/")} />
         <div style={{ maxWidth: 420, margin: "0 auto", padding: isMobile ? "40px 20px" : "88px 20px" }}>
           <ClaySurface tint="cream" style={{ padding: isMobile ? 22 : 32 }}>
             <div
@@ -797,6 +799,7 @@ function ErrorBanner({ text, reloadable, onDismiss }: { text: string; reloadable
 
 function ReviewTool({ unlock }: { unlock: UnlockState }) {
   const isMobile = useIsMobile();
+  const navigate = useNavigate();
   const { data, loading, error, reload } = useReviewGifts();
 
   const [overrides, setOverrides] = useState<Record<string, { status: string; reviewed: boolean }>>({});
@@ -1018,7 +1021,7 @@ function ReviewTool({ unlock }: { unlock: UnlockState }) {
       <div style={{ position: "relative", minHeight: "100vh" }}>
         <AmbientGlow variant="results" />
 
-        <SiteHeader>
+        <SiteHeader onLogoClick={() => navigate("/")}>
           <span style={{ fontFamily: "Geist, sans-serif", fontSize: 13, color: "rgba(35,20,16,0.6)", whiteSpace: "nowrap" }}>
             {tally.approved} approved, {tally.rejected} rejected
           </span>
