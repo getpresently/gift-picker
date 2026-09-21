@@ -4,8 +4,8 @@ import type { Gift } from "./gifts";
  * "Same kind of item, different brand" matcher, computed entirely client
  * side over the live catalog (about 560 rows today, so an O(n squared)
  * pass is cheap). TF-IDF cosine similarity over Gift name (weight 0.7)
- * and Description (weight 0.3), plus a small shared-Interests bonus and
- * a mild cross-price penalty.
+ * and Description (weight 0.3), plus a product-type match, a small
+ * shared-Interests bonus, and a mild cross-price penalty.
  */
 
 const FIELD_WEIGHT_NAME = 0.7;
@@ -44,7 +44,62 @@ const GENERIC = new Set([
   "featuring", "designed", "made", "comes", "enjoy", "give", "gives", "makes",
   "perfectly", "beautiful", "high", "quality", "durable", "stylish", "unique",
   "personalized", "custom", "handmade", "top", "favorite", "favorites",
+  "oz", "fl", "ml", "qt", "lb", "inch", "in", "piece", "count", "gen", "generation",
 ]);
+
+/**
+ * What kind of object a gift is. Word overlap alone misses "Rambler Tumbler"
+ * vs "Kids Water Bottle" and wrongly pairs a spray "bottle" with drinkware, so
+ * two gifts of the same kind get a strong boost and a typed gift is nudged
+ * away from untyped candidates. Checked against the name first, then the
+ * start of the description.
+ */
+const PRODUCT_TYPES: [string, RegExp][] = [
+  ["drinkware", /\b(tumblers?|water bottles?|insulated (steel |stainless )?bottles?|bottle with straw|travel mugs?|smart mugs?|heated mugs?|mug 3|thermos|rambler|freesip)\b/],
+  ["planter", /\b(planters?|plant pots?)\b/],
+  ["coffee-maker", /\b(coffee maker|espresso|keurig|nespresso|vertuo|cold brew|french press|pour[- ]over)\b/],
+  ["kettle", /\bkettle\b/],
+  ["headphones", /\b(headphones?|earbuds?|earphones?|headset)\b/],
+  ["speaker", /\b(speakers?|soundbar|sound bar|partybox)\b/],
+  ["instant-camera", /\b(instant camera|instant film camera|instax mini|polaroid|film camera|camp snap)\b/],
+  ["photo-printer", /\b(photo printer|smartphone printer)\b/],
+  ["wearable", /\b(smartwatch|apple watch|watch se|fitness tracker|whoop|smart ring|oura|forerunner)\b/],
+  ["massage", /\b(massage gun|theragun|massager|percussive)\b/],
+  ["yoga-mat", /\byoga mat\b/],
+  ["blanket", /\b(blanket|cozychic throw|knit throw)\b/],
+  ["candle", /\bcandles?\b(?! holder)/],
+  ["diffuser", /\bdiffuser\b/],
+  ["jigsaw", /\b(jigsaw|\d+ piece puzzle)\b/],
+  ["e-reader", /\b(kindle|e-reader|ereader|e-ink)\b/],
+  ["controller", /\b(controller|gamepad)\b/],
+  ["keyboard", /\bkeyboard\b/],
+  ["sheets", /\bsheet set\b/],
+  ["slippers", /\bslippers?\b/],
+  ["sneakers", /\b(sneakers?|running shoe|air force 1)\b/],
+  ["hoodie", /\bhoodie\b/],
+  ["digital-frame", /\bdigital (photo |picture )?frame\b/],
+  ["sleep-clock", /\b(sunrise alarm|sound machine|alarm clock)\b/],
+  ["indoor-garden", /\b(indoor garden|smart garden|hydroponic)\b/],
+  ["dutch-oven", /\b(dutch oven|round oven|cocotte)\b/],
+  ["ice-cream-maker", /\b(ice cream maker|creami)\b/],
+  ["coffee-subscription", /\b(coffee (subscription|club|of the month))\b/],
+  ["cheese", /\b(cheese|charcuterie)\b/],
+  ["chocolate", /\b(chocolates?|truffles|bonbons)\b/],
+  ["vr-headset", /\b(quest 3|vr headset|mixed reality headset)\b/],
+  ["online-class", /\b(masterclass|udemy|online class)\b/],
+  ["sunglasses", /\b(sunglasses|wayfarer)\b/],
+  ["wallet", /\b(wallet|card holder)\b/],
+];
+const TYPE_MATCH_BONUS = 0.35;
+const TYPE_MISMATCH_PENALTY = 0.1;
+
+function productType(name: string, description: string): string | null {
+  const n = stripAccents(name.toLowerCase());
+  for (const [type, re] of PRODUCT_TYPES) if (re.test(n)) return type;
+  const d = stripAccents(description.toLowerCase()).slice(0, 140);
+  for (const [type, re] of PRODUCT_TYPES) if (re.test(d)) return type;
+  return null;
+}
 
 /** Canonicalize near-synonym tokens (applied AFTER stemming below). */
 const SYNONYMS = new Map<string, string>([
@@ -180,6 +235,8 @@ export function buildMatcher(
   const nameVecs = gifts.map((_, i) => tfidfVector(nameTfs[i], nameDf, n));
   const descVecs = gifts.map((_, i) => tfidfVector(descTfs[i], descDf, n));
 
+  const types = gifts.map((g) => productType(g.name, g.description));
+
   const indexById = new Map<string, number>();
   gifts.forEach((g, i) => indexById.set(g.id, i));
 
@@ -199,6 +256,8 @@ export function buildMatcher(
       const b = gifts[j];
       let score = FIELD_WEIGHT_NAME * cosine(nameVecs[i], nameVecs[j]) + FIELD_WEIGHT_DESC * cosine(descVecs[i], descVecs[j]);
       score += sharedInterestBonus(a.interests, b.interests);
+      if (types[i] && types[i] === types[j]) score += TYPE_MATCH_BONUS;
+      else if (types[i] && types[j] !== types[i]) score -= TYPE_MISMATCH_PENALTY;
       if (a.price > 0 && b.price > 0) {
         const ratio = Math.max(a.price, b.price) / Math.min(a.price, b.price);
         if (ratio > PRICE_RATIO_LIMIT) score -= PRICE_PENALTY;
