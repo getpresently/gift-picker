@@ -79,7 +79,7 @@ type NoteKind = "done" | "todo" | "decide" | "other";
 /** Notes written during the 9/21/26 catalog cleanup start with a verb that says what they are. */
 function noteKind(text: string): NoteKind {
   const t = text.trim();
-  if (/^(Added|Repaired prior suggestion|Retired|Auto-repaired|Model updated)\b/i.test(t)) return "done";
+  if (/^(Added|Repaired prior suggestion|Retired|Auto-repaired|Model updated|Fixed|Kept)\b/i.test(t)) return "done";
   if (/^Needs fix\b/i.test(t)) return "todo";
   if (/^(Flagged|Check|User-submitted)\b/i.test(t)) return "decide";
   return "other";
@@ -333,7 +333,7 @@ function TagRow({ label, values }: { label: string; values: string[] }) {
 const NOTE_STYLES: Record<NoteKind, { label: string; bg: string; ring: string; fg: string }> = {
   done: { label: "Already done", bg: "rgba(92,122,78,0.09)", ring: "rgba(92,122,78,0.22)", fg: "#3F5A33" },
   todo: { label: "Suggested fix, not done yet", bg: "rgba(230,75,69,0.08)", ring: "rgba(230,75,69,0.25)", fg: "#B23A35" },
-  decide: { label: "Your call", bg: "rgba(196,71,126,0.08)", ring: "rgba(196,71,126,0.2)", fg: "#C4477E" },
+  decide: { label: "Your call: Approve keeps it, Reject removes it", bg: "rgba(196,71,126,0.08)", ring: "rgba(196,71,126,0.2)", fg: "#C4477E" },
   other: { label: "Note", bg: "rgba(35,20,16,0.05)", ring: "rgba(35,20,16,0.12)", fg: "#5A3F36" },
 };
 
