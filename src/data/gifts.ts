@@ -35,6 +35,8 @@ export type Gift = {
   relations: string[];
   occasions: string[];
   status: string;
+  /** "" means the gift suits anyone; only clearly gendered products are tagged. */
+  gender: "" | "men" | "women";
 };
 
 /** A gift with its computed match score attached (0–100). */
@@ -365,6 +367,9 @@ const BUDGET_CAP_MULTIPLIER = 1.1;
 export function scoreGift(gift: Gift, answers: Answers): number {
   // Hard filter: only Live gifts get scored
   if (gift.status && gift.status.trim() !== "Live") return -1;
+  // Optional "For him / For her" refinement: hide gifts made for the other gender.
+  if (answers.gender === "him" && gift.gender === "women") return -1;
+  if (answers.gender === "her" && gift.gender === "men") return -1;
 
   // Hard filter: way over budget. Skip for "Your choice" gift cards.
   if (

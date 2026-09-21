@@ -76,6 +76,13 @@ function buildPriceLabel(
   return base;
 }
 
+function normalizeGender(raw: string | number | undefined): "" | "men" | "women" {
+  const v = String(raw ?? "").trim().toLowerCase();
+  if (v === "men" || v === "male" || v === "him") return "men";
+  if (v === "women" || v === "female" || v === "her") return "women";
+  return "";
+}
+
 export function adaptRow(row: RawRow): Gift {
   const priceRaw = row.Price;
   const isYourChoice = String(priceRaw ?? "").trim().toLowerCase() === "your choice";
@@ -106,6 +113,7 @@ export function adaptRow(row: RawRow): Gift {
     relations: splitCsv(row.Relation as string | undefined),
     occasions: splitCsv(row.Occasion as string | undefined),
     status: String(row.Status ?? ""),
+    gender: normalizeGender(row.Gender),
   };
 }
 

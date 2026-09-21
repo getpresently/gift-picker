@@ -8,7 +8,7 @@ import { PresentlyMark } from "./clay/PresentlyMark";
 import { ProductModal } from "./clay/ProductModal";
 import { Wordmark } from "./clay/Wordmark";
 import { useIsMobile } from "../hooks/useIsMobile";
-import { clearAnswers, loadAnswers, QUESTIONS } from "../data/questions";
+import { clearAnswers, GENDER_OPTIONS, loadAnswers, QUESTIONS, saveAnswers, type Answers } from "../data/questions";
 import { buildMatchReasons, rankGifts, SECONDARY_TONES, type RankedGift } from "../data/gifts";
 import { useGifts } from "../data/giftsApi";
 import { isDemoting, postFeedback, postRequest, type FeedbackOption, type FeedbackRecord } from "../data/feedback";
@@ -17,6 +17,7 @@ import { track } from "../data/analytics";
 import { AffiliateDisclosure } from "./clay/AffiliateDisclosure";
 import { isAmazonUrl } from "../data/affiliate";
 import { SiteHeader } from "./clay/SiteHeader";
+import { RefineModal } from "./clay/RefineModal";
 
 const SAVED_KEY = "giftpicker_saved_v1";
 
@@ -46,12 +47,12 @@ export function Results() {
   // Answers come from sessionStorage by default; fall back to share-URL
   // params so a recipient can land on /results?r=partner&... and see the
   // same picks without taking the quiz themselves.
-  const answers = useMemo(() => {
+  const [answers, setAnswers] = useState<Answers>(() => {
     const stored = loadAnswers();
     if (Object.keys(stored).length) return stored;
     const hydrated = hydrateAnswersFromShareUrl();
     return hydrated ?? stored;
-  }, []);
+  });
   const ranked = useMemo<RankedGift[]>(() => rankGifts(allGifts, answers), [allGifts, answers]);
 
   const [feedbackById, setFeedbackById] = useState<Record<string, FeedbackRecord>>({});
@@ -111,6 +112,24 @@ export function Results() {
     setShareStatus(result);
     track("gift_share", { method: result });
     setTimeout(() => setShareStatus("idle"), 2200);
+  };
+
+  const [refineOpen, setRefineOpen] = useState(false);
+  const applyRefine = (next: Answers) => {
+    setAnswers(next);
+    saveAnswers(next);
+    setRequestSent(false);
+    setRefineOpen(false);
+    track("results_refine", {
+      recipient: next.recipient,
+      age: next.age,
+      occasion: next.occasion,
+      interests_count: next.interests?.length ?? 0,
+      vibe_count: next.vibe?.length ?? 0,
+      budget: next.budget,
+      gender: next.gender ?? "any",
+    });
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   const [requestSent, setRequestSent] = useState(false);
@@ -184,6 +203,8 @@ export function Results() {
       ? answers.occasionOther.trim()
       : labelFor("occasion", answers.occasion);
   const budget = answers.budget;
+  const genderLabel =
+    answers.gender && answers.gender !== "any" ? GENDER_OPTIONS.find((g) => g.v === answers.gender)?.l ?? null : null;
 
   // Humanize the selected interest values (the answers store the v codes,
   // e.g. "cooking", but the breadcrumb wants the friendly labels).
@@ -332,16 +353,19 @@ export function Results() {
             >
               For your <em style={{ color: "#C4477E", fontStyle: "italic" }}>{recipientLabel}</em>, with love.
             </h1>
-            {(occasionLabel || interestsLabel || typeof budget === "number") && (
-              <p
-                style={{
-                  fontFamily: "Geist, sans-serif",
-                  fontSize: 15,
-                  color: "rgba(35,20,16,0.55)",
-                  marginTop: 14,
-                }}
-              >
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                flexWrap: "wrap",
+                gap: 8,
+                marginTop: 14,
+              }}
+            >
+              <p style={{ fontFamily: "Geist, sans-serif", fontSize: 15, color: "rgba(35,20,16,0.55)", margin: 0 }}>
                 {[
+                  genderLabel,
                   occasionLabel,
                   interestsLabel,
                   typeof budget === "number" ? `$${budget} budget` : null,
@@ -350,7 +374,34 @@ export function Results() {
                   .filter(Boolean)
                   .join(" · ")}
               </p>
-            )}
+              <button
+                type="button"
+                onClick={() => setRefineOpen(true)}
+                aria-label="Adjust your answers"
+                title="Adjust your answers"
+                style={{
+                  width: 30,
+                  height: 30,
+                  borderRadius: "50%",
+                  border: "none",
+                  background: "rgba(255,255,255,0.75)",
+                  boxShadow: "inset 0 1px 0 rgba(255,255,255,0.9), 0 3px 8px -2px rgba(80,30,30,0.2)",
+                  color: "#5A3F36",
+                  cursor: "pointer",
+                  display: "inline-flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  flexShrink: 0,
+                }}
+              >
+                <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
+                  <path d="M2 4h6.2M11.8 4H14M2 8h1.7M7.3 8H14M2 12h8.2M13.8 12H14" />
+                  <circle cx="10" cy="4" r="1.8" />
+                  <circle cx="5.5" cy="8" r="1.8" />
+                  <circle cx="12" cy="12" r="1.8" />
+                </svg>
+              </button>
+            </div>
           </div>
 
           {/* States: loading, error, empty, results */}
@@ -567,6 +618,14 @@ export function Results() {
           </footer>
         </div>
       </div>
+
+      <RefineModal
+        open={refineOpen}
+        answers={answers}
+        isMobile={isMobile}
+        onClose={() => setRefineOpen(false)}
+        onApply={applyRefine}
+      />
 
       {/* Product detail modal, carousel across all picks */}
       <ProductModal

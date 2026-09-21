@@ -52,7 +52,17 @@ export type Answers = {
   interests?: string[];
   vibe?: string[];
   budget?: number;
+  /** Optional refinement from the results page; never asked in the quiz. */
+  gender?: Gender;
 };
+
+export type Gender = "any" | "him" | "her";
+
+export const GENDER_OPTIONS: { v: Gender; l: string }[] = [
+  { v: "any", l: "Anyone" },
+  { v: "him", l: "For him" },
+  { v: "her", l: "For her" },
+];
 
 export const QUESTIONS: Question[] = [
   {
@@ -301,6 +311,9 @@ export function humanizeAnswers(answers: Answers): Record<string, unknown> {
   if (vibe !== undefined) out.vibe = vibe;
 
   if (answers.budget !== undefined) out.budget = answers.budget;
+  if (answers.gender && answers.gender !== "any") {
+    out.gender = GENDER_OPTIONS.find((g) => g.v === answers.gender)?.l ?? answers.gender;
+  }
 
   return out;
 }
