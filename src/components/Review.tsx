@@ -369,7 +369,7 @@ function FeedbackNote({ text }: { text: string }) {
 }
 
 function GiftCard({ gift, isMobile }: { gift: ReviewGift; isMobile: boolean }) {
-  const { failed, onError } = useImageFallback(gift.image);
+  const { failed, onError, loaded, onLoad } = useImageFallback(gift.image);
 
   return (
     <ClaySurface tint="cream" style={{ padding: isMobile ? 18 : 28, overflow: "hidden" }}>
@@ -386,10 +386,12 @@ function GiftCard({ gift, isMobile }: { gift: ReviewGift; isMobile: boolean }) {
           >
             {gift.image && !failed ? (
               <img
+                key={gift.image}
                 src={gift.image}
                 alt={gift.name}
                 onError={onError}
-                style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }}
+                onLoad={onLoad}
+                style={{ opacity: loaded ? 1 : 0, transition: "opacity 160ms ease", position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }}
               />
             ) : (
               <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center" }}>
@@ -475,7 +477,7 @@ function GiftCard({ gift, isMobile }: { gift: ReviewGift; isMobile: boolean }) {
  * ------------------------------------------------------------------ */
 
 function MatchThumb({ gift }: { gift: ReviewGift }) {
-  const { failed, onError } = useImageFallback(gift.image);
+  const { failed, onError, loaded, onLoad } = useImageFallback(gift.image);
   return (
     <div
       style={{
@@ -492,10 +494,12 @@ function MatchThumb({ gift }: { gift: ReviewGift }) {
     >
       {gift.image && !failed ? (
         <img
+          key={gift.image}
           src={gift.image}
           alt={gift.name}
           onError={onError}
-          style={{ width: "100%", height: "100%", objectFit: "cover" }}
+          onLoad={onLoad}
+          style={{ opacity: loaded ? 1 : 0, transition: "opacity 160ms ease", width: "100%", height: "100%", objectFit: "cover" }}
         />
       ) : (
         <GiftBox3D size={30} color="butter" rotate={-8} ribbonColor="#FF8166" />

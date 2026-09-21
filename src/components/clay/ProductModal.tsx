@@ -78,7 +78,7 @@ export function ProductModal({
   // Fall back to the GiftBox3D placeholder if the photo URL is broken.
   // Reset hook tracks `gift.image` so navigating from a broken-photo
   // gift to a working one re-tries the next image cleanly.
-  const { failed: imgFailed, onError: onImgError } = useImageFallback(gift?.image);
+  const { failed: imgFailed, onError: onImgError, loaded: imgLoaded, onLoad: onImgLoad } = useImageFallback(gift?.image);
 
   // Per-gift permalink (/gift/:id) copy affordance.
   const [linkCopied, setLinkCopied] = useState(false);
@@ -253,10 +253,12 @@ export function ProductModal({
         >
           {gift.image && !imgFailed ? (
             <img
+              key={gift.image}
               src={gift.image}
               alt={gift.name}
               onError={onImgError}
-              style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
+              onLoad={onImgLoad}
+              style={{ opacity: imgLoaded ? 1 : 0, transition: "opacity 160ms ease", width: "100%", height: "100%", objectFit: "cover", display: "block" }}
             />
           ) : (
             <div style={{ display: "flex", alignItems: "center", justifyContent: "center", height: "100%" }}>

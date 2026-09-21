@@ -48,7 +48,7 @@ export function Hero({
   // Fall back to the GiftBox3D placeholder if the hero photo URL is
   // broken, without this the well shows the browser's broken-image
   // icon, which is the loudest possible failure mode on a hero card.
-  const { failed: imgFailed, onError: onImgError } = useImageFallback(gift.image);
+  const { failed: imgFailed, onError: onImgError, loaded: imgLoaded, onLoad: onImgLoad } = useImageFallback(gift.image);
   const match = typeof gift.matchScore === "number" ? Math.round(gift.matchScore) : null;
   const eyebrowText = match !== null ? `TOP PICK · ${match}% MATCH` : "TOP PICK";
 
@@ -250,10 +250,14 @@ export function Hero({
         >
           {gift.image && !imgFailed ? (
             <img
+              key={gift.image}
               src={gift.image}
               alt={gift.name}
               onError={onImgError}
+              onLoad={onImgLoad}
               style={{
+                opacity: imgLoaded ? 1 : 0,
+                transition: "opacity 160ms ease",
                 position: "absolute",
                 inset: 0,
                 width: "100%",

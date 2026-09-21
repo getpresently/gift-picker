@@ -36,7 +36,7 @@ export function GiftPage() {
     () => allGifts.find((g) => g.id === giftId) ?? null,
     [allGifts, giftId],
   );
-  const { failed: imgFailed, onError: onImgError } = useImageFallback(gift?.image);
+  const { failed: imgFailed, onError: onImgError, loaded: imgLoaded, onLoad: onImgLoad } = useImageFallback(gift?.image);
 
   const [copied, setCopied] = useState(false);
   const copyLink = async () => {
@@ -140,10 +140,14 @@ export function GiftPage() {
                 >
                   {gift.image && !imgFailed ? (
                     <img
+                      key={gift.image}
                       src={gift.image}
                       alt={gift.name}
                       onError={onImgError}
+                      onLoad={onImgLoad}
                       style={{
+                        opacity: imgLoaded ? 1 : 0,
+                        transition: "opacity 160ms ease",
                         position: "absolute",
                         inset: 0,
                         width: "100%",

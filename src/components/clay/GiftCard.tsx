@@ -121,7 +121,7 @@ export function GiftCard(props: Props) {
   // Fall back to the GiftBox3D placeholder if the photo URL 404s, hot-links
   // get blocked, etc., otherwise the broken-image icon + alt text leaks
   // through the card.
-  const { failed: imgFailed, onError: onImgError } = useImageFallback(gift.image);
+  const { failed: imgFailed, onError: onImgError, loaded: imgLoaded, onLoad: onImgLoad } = useImageFallback(gift.image);
 
   const imgGradient = TONE_IMAGE_GRADIENT[hero ? "plum" : tone];
   const boxColor = pickBoxColor(hero ? "plum" : tone);
@@ -207,10 +207,14 @@ export function GiftCard(props: Props) {
       >
         {gift.image && !imgFailed ? (
           <img
+            key={gift.image}
             src={gift.image}
             alt={gift.name}
             onError={onImgError}
+            onLoad={onImgLoad}
             style={{
+              opacity: imgLoaded ? 1 : 0,
+              transition: "opacity 160ms ease",
               position: "absolute",
               inset: 0,
               width: "100%",
