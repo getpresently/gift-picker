@@ -75,7 +75,7 @@ function LegalShell({
               style={{
                 fontFamily: "Geist, sans-serif",
                 fontSize: 13,
-                color: "rgba(35,20,16,0.5)",
+                color: "rgba(35,20,16,0.62)",
                 margin: "0 0 32px",
               }}
             >
@@ -224,6 +224,13 @@ export function PrivacyPage() {
         merchant's own privacy policy applies. {AFFILIATE_DISCLOSURE}
       </p>
 
+      <h2 style={sectionHeadingStyle}>Brand submissions</h2>
+      <p style={paragraphStyle}>
+        If you submit a product through our For brands page, we keep the
+        contact and product details you send so we can review it and reply.
+        We don't use them for anything else.
+      </p>
+
       <h2 style={sectionHeadingStyle}>We don't sell your information</h2>
       <p style={paragraphStyle}>GiftPicker does not sell personal information.</p>
 
@@ -285,6 +292,13 @@ export function TermsPage() {
         GiftPicker may earn a commission from purchases made through links
         on the site, at no extra cost to you. This does not change the
         price you pay. {AFFILIATE_DISCLOSURE}
+      </p>
+
+      <h2 style={sectionHeadingStyle}>Sponsored placements</h2>
+      <p style={paragraphStyle}>
+        Brands can pay for a sponsored placement. A sponsored gift has to
+        pass the same editorial review as every other gift, appears only
+        in results it matches, and is always labeled as sponsored.
       </p>
 
       <h2 style={sectionHeadingStyle}>No warranties</h2>

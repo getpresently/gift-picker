@@ -103,6 +103,15 @@ async function handleEvent(event) {
       }
     }
 
+    const staticPage = STATIC_PAGES[url.pathname.replace(/\/+$/, "") || "/"];
+    if (staticPage) {
+      try {
+        response = await prerenderStaticPage(response, url.pathname.replace(/\/+$/, ""), staticPage);
+      } catch (e) {
+        // fall through with the plain SPA shell
+      }
+    }
+
     // The internal review tool must never be indexed.
     if (url.pathname.startsWith("/review")) {
       response.headers.set("X-Robots-Tag", "noindex, nofollow");
@@ -330,8 +339,64 @@ function replaceBetween(html, startMarker, endMarker, replacement) {
   );
 }
 
+/**
+ * Non-gift pages that should be indexed under their own URL. Without this,
+ * they'd inherit the home page's canonical, title, and description.
+ */
+const STATIC_PAGES = {
+  "/brands": {
+    title: "For brands: submit a gift for review · GiftPicker",
+    description:
+      "Submit your product to GiftPicker's hand-curated gift catalog for a free editorial review, or ask about a clearly labeled sponsored placement.",
+    body:
+      "Brands can submit a product for a free editorial review. Our team reviews it the same way we review every gift in the catalog, and if it fits, we add it and match it to the shoppers it suits. Approved products can also be promoted with a sponsored placement, which is always labeled and only appears for shoppers whose answers it fits.",
+  },
+  "/privacy": {
+    title: "Privacy Policy · GiftPicker",
+    description: "How GiftPicker handles your data: no account, no selling of personal information, and minimal analytics.",
+  },
+  "/terms": {
+    title: "Terms of Use · GiftPicker",
+    description: "The terms for using GiftPicker, a free gift recommendation quiz with hand-curated picks from independent merchants.",
+  },
+};
+
+async function prerenderStaticPage(response, path, page) {
+  const html = await response.text();
+  const pageUrl = `${SITE_ORIGIN}${path}`;
+  const title = escapeHtml(page.title);
+  const desc = escapeHtml(page.description);
+  const metaBlock = `
+	<meta name="description" content="${desc}"/>
+	<link rel="canonical" href="${pageUrl}"/>
+	<meta property="og:type" content="website"/>
+	<meta property="og:site_name" content="GiftPicker"/>
+	<meta property="og:title" content="${title}"/>
+	<meta property="og:description" content="${desc}"/>
+	<meta property="og:url" content="${pageUrl}"/>
+	<meta property="og:image" content="${SITE_ORIGIN}/og-image.png"/>
+	<meta property="og:image:width" content="1200"/>
+	<meta property="og:image:height" content="630"/>
+	<meta name="twitter:card" content="summary_large_image"/>
+	<meta name="twitter:title" content="${title}"/>
+	<meta name="twitter:description" content="${desc}"/>
+	<meta name="twitter:image" content="${SITE_ORIGIN}/og-image.png"/>`;
+  let out = replaceBetween(html, "<!--gp-meta-->", "<!--/gp-meta-->", metaBlock);
+  if (page.body) {
+    const staticBlock = `
+	<div style="max-width:720px;margin:0 auto;padding:48px 24px;font-family:Geist,system-ui,sans-serif;color:#231410;background:#FBF1E1;line-height:1.6;">
+		<h1 style="font-size:36px;line-height:1.1;margin:0 0 12px;">${escapeHtml(page.title.split(" · ")[0])}</h1>
+		<p>${escapeHtml(page.body)}</p>
+		<p><a href="${SITE_ORIGIN}/" style="color:#C4477E;">GiftPicker</a> is a free 30-second gift quiz with hand-curated picks from 200+ brands.</p>
+	</div>`;
+    out = replaceBetween(out, "<!--gp-static-->", "<!--/gp-static-->", staticBlock);
+  }
+  out = out.replace(/<title>[^<]*<\/title>/, `<title>${title}</title>`);
+  return new Response(out, { status: response.status, headers: response.headers });
+}
+
 function buildSitemap(rows) {
-  const urls = [`${SITE_ORIGIN}/`].concat(
+  const urls = [`${SITE_ORIGIN}/`, `${SITE_ORIGIN}/brands`].concat(
     (rows || []).map((g) => `${SITE_ORIGIN}/gift/${g.row_id}`)
   );
   return (

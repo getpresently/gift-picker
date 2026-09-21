@@ -8,6 +8,7 @@ import { Wordmark } from "./clay/Wordmark";
 import { useIsMobile } from "../hooks/useIsMobile";
 import { track } from "../data/analytics";
 import { SiteHeader } from "./clay/SiteHeader";
+import { FooterLinks } from "./clay/FooterLinks";
 
 const HOW_STEPS: { n: string; title: string; body: string; tint: Tint }[] = [
   { n: "01", title: "Tell us about them", body: "Closeness, vibes, budget. Five questions, no account.", tint: "rose" },
@@ -250,7 +251,7 @@ export function Landing() {
                 fontFamily: "Geist, sans-serif",
                 fontSize: 12,
                 letterSpacing: "0.14em",
-                color: "rgba(35,20,16,0.55)",
+                color: "rgba(35,20,16,0.62)",
                 textTransform: "uppercase",
                 marginBottom: 12,
               }}
@@ -318,7 +319,7 @@ export function Landing() {
           </section>
 
           {/* Brands */}
-          <section id="brands" style={{ marginTop: isMobile ? 56 : 80 }}>
+          <section id="brands" style={{ marginTop: isMobile ? 64 : 96 }}>
             <ClaySurface tint="ink" style={{ padding: isMobile ? "24px 20px" : "36px 40px", color: "#FFF8EE" }}>
               <div
                 style={{
@@ -368,7 +369,7 @@ export function Landing() {
 
           {/* Testimonials */}
           {/* Kept off ClaySurface on purpose so this band doesn't mirror the step cards above. */}
-          <section id="testimonials" style={{ marginTop: isMobile ? 64 : 104 }}>
+          <section id="testimonials" style={{ marginTop: isMobile ? 64 : 96 }}>
             <div
               style={{
                 display: "grid",
@@ -452,7 +453,7 @@ export function Landing() {
           </section>
 
           {/* Closing CTA */}
-          <section style={{ marginTop: isMobile ? 56 : 88, textAlign: "center" }}>
+          <section style={{ marginTop: isMobile ? 64 : 96, textAlign: "center" }}>
             <h2
               style={{
                 fontFamily: '"Instrument Serif", serif',
@@ -471,10 +472,54 @@ export function Landing() {
             <Pillow tone="coral" size="lg" onClick={goStart}>Take the quiz →</Pillow>
           </section>
 
+          {/* For brands */}
+          <section
+            id="brands-cta"
+            style={{
+              marginTop: isMobile ? 48 : 72,
+              padding: isMobile ? "22px 20px" : "24px 32px",
+              borderRadius: 22,
+              background: "rgba(196,71,126,0.07)",
+              display: "flex",
+              flexDirection: isMobile ? "column" : "row",
+              alignItems: isMobile ? "flex-start" : "center",
+              justifyContent: "space-between",
+              gap: isMobile ? 16 : 24,
+            }}
+          >
+            <div>
+              <div
+                style={{
+                  fontFamily: "Geist, sans-serif",
+                  fontSize: 12,
+                  letterSpacing: "0.14em",
+                  textTransform: "uppercase",
+                  color: "rgba(35,20,16,0.62)",
+                  marginBottom: 6,
+                }}
+              >
+                For brands
+              </div>
+              <div
+                style={{
+                  fontFamily: '"Instrument Serif", serif',
+                  fontSize: isMobile ? 22 : 26,
+                  lineHeight: 1.2,
+                  color: "#231410",
+                }}
+              >
+                Make something people love to give? Submit it for review or ask about sponsored placement.
+              </div>
+            </div>
+            <Pillow tone="cream" size="md" onClick={() => navigate("/brands")} style={{ flexShrink: 0 }}>
+              Submit a product →
+            </Pillow>
+          </section>
+
           {/* Footer */}
           <footer
             style={{
-              marginTop: isMobile ? 56 : 80,
+              marginTop: isMobile ? 40 : 56,
               paddingTop: 24,
               borderTop: "1px solid rgba(35,20,16,0.08)",
               display: "flex",
@@ -487,47 +532,7 @@ export function Landing() {
             <Wordmark size="sm" />
             <div style={{ display: "flex", alignItems: "center", gap: 14, flexWrap: "wrap" }}>
               <PresentlyMark />
-              <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-                <button
-                  type="button"
-                  onClick={() => navigate("/privacy")}
-                  onMouseEnter={(e) => (e.currentTarget.style.textDecoration = "underline")}
-                  onMouseLeave={(e) => (e.currentTarget.style.textDecoration = "none")}
-                  style={{
-                    background: "transparent",
-                    border: "none",
-                    padding: 0,
-                    fontFamily: "Geist, sans-serif",
-                    fontSize: 11,
-                    color: "rgba(35,20,16,0.45)",
-                    textDecoration: "none",
-                    textUnderlineOffset: 3,
-                    cursor: "pointer",
-                  }}
-                >
-                  Privacy
-                </button>
-                <span style={{ fontFamily: "Geist, sans-serif", fontSize: 11, color: "rgba(35,20,16,0.35)" }}>·</span>
-                <button
-                  type="button"
-                  onClick={() => navigate("/terms")}
-                  onMouseEnter={(e) => (e.currentTarget.style.textDecoration = "underline")}
-                  onMouseLeave={(e) => (e.currentTarget.style.textDecoration = "none")}
-                  style={{
-                    background: "transparent",
-                    border: "none",
-                    padding: 0,
-                    fontFamily: "Geist, sans-serif",
-                    fontSize: 11,
-                    color: "rgba(35,20,16,0.45)",
-                    textDecoration: "none",
-                    textUnderlineOffset: 3,
-                    cursor: "pointer",
-                  }}
-                >
-                  Terms
-                </button>
-              </div>
+              <FooterLinks />
             </div>
           </footer>
         </div>

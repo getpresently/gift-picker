@@ -47,3 +47,13 @@ code {
 .gp-other-input::placeholder {
   color: rgba(255, 248, 238, 0.55);
 }
+
+/* Shared text-field treatment: inline styles set the resting ring, this adds
+   a visible focus ring (inline styles can't express :focus). */
+.gp-field:focus {
+  box-shadow: inset 0 0 0 2px #E64B45 !important;
+  background: #FFFFFF !important;
+}
+.gp-field::placeholder {
+  color: rgba(35, 20, 16, 0.38);
+}

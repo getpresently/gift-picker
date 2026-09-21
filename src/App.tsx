@@ -5,6 +5,7 @@ import {
   Routes,
   useLocation,
 } from "react-router-dom";
+import { BrandsPage } from "./components/Brands";
 import { GiftPage } from "./components/GiftPage";
 import { PrivacyPage, TermsPage } from "./components/Legal";
 import { Review } from "./components/Review";
@@ -43,6 +44,7 @@ function App(): JSX.Element {
           <Route path="/gift/:giftId" element={<GiftPage />} />
           <Route path="/privacy" element={<PrivacyPage />} />
           <Route path="/terms" element={<TermsPage />} />
+          <Route path="/brands" element={<BrandsPage />} />
           {/* Internal, password-gated catalog review tool (noindex via worker + robots). */}
           <Route path="/review" element={<Review />} />
           {/* Catch-all: any unknown route falls back to Landing. SPA fallback at the

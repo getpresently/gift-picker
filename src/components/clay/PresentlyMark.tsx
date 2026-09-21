@@ -1,6 +1,6 @@
 export function PresentlyMark() {
   return (
-    <span style={{ fontFamily: "Geist, system-ui, sans-serif", fontSize: 12, color: "rgba(35,20,16,0.5)" }}>
+    <span style={{ fontFamily: "Geist, system-ui, sans-serif", fontSize: 12, color: "rgba(35,20,16,0.62)" }}>
       by{" "}
       <span
         style={{

@@ -14,6 +14,7 @@ import { track } from "../data/analytics";
 import { isAmazonUrl, openBuyLink as openExternal } from "../data/affiliate";
 import { AffiliateDisclosure } from "./clay/AffiliateDisclosure";
 import { SiteHeader } from "./clay/SiteHeader";
+import { FooterLinks } from "./clay/FooterLinks";
 
 /**
  * Standalone, shareable page for a single gift at /gift/:giftId.
@@ -74,7 +75,7 @@ export function GiftPage() {
               style={{
                 fontFamily: "Geist, sans-serif",
                 textAlign: "center",
-                color: "rgba(35,20,16,0.55)",
+                color: "rgba(35,20,16,0.62)",
                 padding: "80px 0",
               }}
             >
@@ -175,7 +176,7 @@ export function GiftPage() {
                         fontSize: 11,
                         letterSpacing: "0.14em",
                         textTransform: "uppercase",
-                        color: "rgba(35,20,16,0.55)",
+                        color: "rgba(35,20,16,0.62)",
                         fontWeight: 600,
                       }}
                     >
@@ -348,47 +349,7 @@ export function GiftPage() {
             <Wordmark size="sm" />
             <div style={{ display: "flex", alignItems: "center", gap: 14, flexWrap: "wrap" }}>
               <PresentlyMark />
-              <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-                <button
-                  type="button"
-                  onClick={() => navigate("/privacy")}
-                  onMouseEnter={(e) => (e.currentTarget.style.textDecoration = "underline")}
-                  onMouseLeave={(e) => (e.currentTarget.style.textDecoration = "none")}
-                  style={{
-                    background: "transparent",
-                    border: "none",
-                    padding: 0,
-                    fontFamily: "Geist, sans-serif",
-                    fontSize: 11,
-                    color: "rgba(35,20,16,0.45)",
-                    textDecoration: "none",
-                    textUnderlineOffset: 3,
-                    cursor: "pointer",
-                  }}
-                >
-                  Privacy
-                </button>
-                <span style={{ fontFamily: "Geist, sans-serif", fontSize: 11, color: "rgba(35,20,16,0.35)" }}>·</span>
-                <button
-                  type="button"
-                  onClick={() => navigate("/terms")}
-                  onMouseEnter={(e) => (e.currentTarget.style.textDecoration = "underline")}
-                  onMouseLeave={(e) => (e.currentTarget.style.textDecoration = "none")}
-                  style={{
-                    background: "transparent",
-                    border: "none",
-                    padding: 0,
-                    fontFamily: "Geist, sans-serif",
-                    fontSize: 11,
-                    color: "rgba(35,20,16,0.45)",
-                    textDecoration: "none",
-                    textUnderlineOffset: 3,
-                    cursor: "pointer",
-                  }}
-                >
-                  Terms
-                </button>
-              </div>
+              <FooterLinks />
             </div>
             {gift && (gift.amazonLink || isAmazonUrl(gift.link)) && <AffiliateDisclosure />}
           </footer>

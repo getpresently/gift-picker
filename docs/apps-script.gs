@@ -5,10 +5,12 @@
  * When updating, edit the EXISTING deployment and pick "New version" so the
  * /exec URL (hardcoded in the site) stays the same.
  *
- *   GET  /exec?tab=<Sheet>  -> { data: [...] }  rows of that tab, with a synthetic row_id ("r<row>")
+ *   GET  /exec?tab=Gifts  -> { data: [...] }  rows with a synthetic row_id ("r<row>").
+ *        Only tabs in PUBLIC_TABS are served; Brands holds contact details.
  *   POST /exec  JSON body routed on `type`:
  *     "feedback" -> append to Feedback
  *     "request"  -> append to Requests
+ *     "brand"    -> append to Brands (the /brands submission form)
  *     "review"   -> internal review tool (password-gated), see handleReview_
  *
  * The review password is NOT in this file. Set it once under
@@ -26,12 +28,21 @@ const REQUEST_HEADERS = [
   "interests", "vibe", "budget", "clientId"
 ];
 
+const BRAND_HEADERS = [
+  "Submitted", "Placement", "Brand", "Contact name", "Email", "Website",
+  "Product", "Product link", "Price", "Great gift for", "Notes", "Status"
+];
+
+// The GET endpoint is public. Never add a tab that holds personal details.
+const PUBLIC_TABS = ["Gifts"];
+
 // Values the review tool may write into the Gifts "Status" column.
 const REVIEW_STATUSES = ["Live", "Rejected", "Retired", "Dead", "OOS", "Draft"];
 
 function doGet(e) {
   try {
     const tab = (e && e.parameter && e.parameter.tab) || "Gifts";
+    if (PUBLIC_TABS.indexOf(tab) === -1) return jsonOut_({ error: "Sheet not found: " + tab });
     const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(tab);
     if (!sheet) return jsonOut_({ error: "Sheet not found: " + tab });
 
@@ -59,6 +70,7 @@ function doPost(e) {
 
     if (type === "feedback") return jsonOut_(handleFeedback_(body));
     if (type === "request")  return jsonOut_(handleRequest_(body));
+    if (type === "brand")    return jsonOut_(handleBrand_(body));
     if (type === "review")   return jsonOut_(handleReview_(body));
     return jsonOut_({ error: "Unknown type: " + type });
   } catch (err) {
@@ -96,6 +108,41 @@ function handleRequest_(p) {
     a.budget || "",
     p.clientId || "",
   ]);
+  return { ok: true };
+}
+
+/**
+ * Brand submissions from /brands. Returns { ok: true } only after the row is
+ * written, because the form shows success based on this reply.
+ */
+function handleBrand_(p) {
+  const clip = function (v, n) { return String(v == null ? "" : v).trim().slice(0, n || 300); };
+  // Honeypot: the hidden "company" field is only ever filled by bots.
+  if (clip(p.company)) return { ok: true };
+  const row = {
+    placement: p.placement === "sponsored" ? "Sponsored placement" : "Editorial review",
+    brand: clip(p.brand), contactName: clip(p.contactName), email: clip(p.email),
+    website: clip(p.website), product: clip(p.product), productUrl: clip(p.productUrl),
+    price: clip(p.price, 60), giftFor: clip(p.giftFor), notes: clip(p.notes, 1500),
+  };
+  const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(row.email);
+  if (!row.brand || !row.contactName || !emailOk || !row.product || !row.productUrl || !row.price) {
+    return { ok: false, error: "invalid" };
+  }
+  const lock = LockService.getScriptLock();
+  lock.waitLock(10000);
+  try {
+    const sheet = ensureSheet_("Brands", BRAND_HEADERS);
+    // Leading "=", "+", "-", "@" would be evaluated as a formula; prefix with an apostrophe.
+    const safe = function (v) { return /^[=+\-@]/.test(v) ? "'" + v : v; };
+    sheet.appendRow([
+      new Date(), row.placement, safe(row.brand), safe(row.contactName), safe(row.email),
+      safe(row.website), safe(row.product), safe(row.productUrl), safe(row.price),
+      safe(row.giftFor), safe(row.notes), "New",
+    ]);
+  } finally {
+    lock.releaseLock();
+  }
   return { ok: true };
 }
 

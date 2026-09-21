@@ -51,8 +51,8 @@ export function ChoiceTile({ option, selected, onClick, big, disabled }: Props) 
         boxShadow: selected
           ? "inset 0 1.4px 0 rgba(255,255,255,0.5), 0 10px 22px -6px rgba(180,40,35,0.5), 0 2px 0 rgba(0,0,0,0.12), inset 0 -2px 0 rgba(0,0,0,0.15)"
           : hovered
-            ? "inset 0 1.2px 0 rgba(255,255,255,0.7), inset 0 -2px 0 rgba(90,40,30,0.06), 0 10px 22px -10px rgba(80,30,30,0.18), 0 4px 0 rgba(90,40,30,0.08), 0 0 0 3px rgba(230,75,69,0.12), 0 0 24px 0 rgba(230,75,69,0.22)"
-            : "inset 0 1.2px 0 rgba(255,255,255,0.7), inset 0 -2px 0 rgba(90,40,30,0.06), 0 10px 22px -10px rgba(80,30,30,0.18), 0 4px 0 rgba(90,40,30,0.08)",
+            ? "inset 0 0 0 1px rgba(35,20,16,0.07), inset 0 1.2px 0 rgba(255,255,255,0.7), inset 0 -2px 0 rgba(90,40,30,0.06), 0 10px 22px -10px rgba(80,30,30,0.18), 0 4px 0 rgba(90,40,30,0.08), 0 0 0 3px rgba(230,75,69,0.12), 0 0 24px 0 rgba(230,75,69,0.22)"
+            : "inset 0 0 0 1px rgba(35,20,16,0.07), inset 0 1.2px 0 rgba(255,255,255,0.7), inset 0 -2px 0 rgba(90,40,30,0.06), 0 10px 22px -10px rgba(80,30,30,0.18), 0 4px 0 rgba(90,40,30,0.08)",
         transition: "all 200ms cubic-bezier(.22,1.4,.4,1)",
         outline: "none",
         WebkitTapHighlightColor: "transparent",
