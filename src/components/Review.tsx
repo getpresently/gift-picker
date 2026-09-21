@@ -61,7 +61,7 @@ function matchesFilter(g: ReviewGift, filter: FilterKey): boolean {
   const status = g.status.trim();
   switch (filter) {
     case "needs":
-      return isLiveStatus(status) && !g.reviewed;
+      return !g.reviewed;
     case "approved":
       return isLiveStatus(status) && g.reviewed;
     case "rejected":
@@ -87,7 +87,10 @@ function computeVisibleIds(
       (g) => g.name.toLowerCase().includes(searchLower) || g.brand.toLowerCase().includes(searchLower),
     );
   }
-  if (sortKey === "redundant") {
+  if (filter === "needs" && sortKey === "sheet") {
+    // Live gifts are what shoppers see, so they lead the queue.
+    list = [...list.filter((g) => isLiveStatus(g.status)), ...list.filter((g) => !isLiveStatus(g.status))];
+  } else if (sortKey === "redundant") {
     list = [...list].sort((a, b) => {
       const ra = matcher(a.id);
       const rb = matcher(b.id);
@@ -737,6 +740,7 @@ function ReviewTool({ unlock }: { unlock: UnlockState }) {
   const [tally, setTally] = useState<Tally>({ approved: 0, rejected: 0 });
   const [toast, setToast] = useState<ToastState | null>(null);
   const [banner, setBanner] = useState<BannerState | null>(null);
+  const [caughtUp, setCaughtUp] = useState(false);
 
   const toastTimer = useRef<number | null>(null);
   const toastCounter = useRef(0);
@@ -781,6 +785,15 @@ function ReviewTool({ unlock }: { unlock: UnlockState }) {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loading]);
+
+  // Once nothing is left to review, carry on through the full catalog.
+  useEffect(() => {
+    if (loading || error || !merged.length || filter !== "needs" || counts.needs > 0) return;
+    const ids = computeVisibleIds(merged, "all", searchLower, sortKey, matcher);
+    setFilter("all");
+    setCurrentId(ids[0] ?? null);
+    setCaughtUp(true);
+  }, [loading, error, merged, filter, counts.needs, searchLower, sortKey, matcher]);
 
   const applyFilter = useCallback(
     (f: FilterKey) => {
@@ -1025,6 +1038,23 @@ function ReviewTool({ unlock }: { unlock: UnlockState }) {
               <option value="notes">Has editor note first</option>
             </select>
           </div>
+
+          {caughtUp && filter === "all" && !loading && (
+            <div
+              style={{
+                marginBottom: 16,
+                padding: "12px 16px",
+                borderRadius: 14,
+                background: "rgba(92,122,78,0.12)",
+                fontFamily: "Geist, sans-serif",
+                fontSize: 14,
+                lineHeight: 1.5,
+                color: "#2F4526",
+              }}
+            >
+              Every gift has been reviewed. You're now going through the full catalog in sheet order.
+            </div>
+          )}
 
           {loading && (
             <ClaySurface tint="cream" style={{ padding: 48, textAlign: "center" }}>
