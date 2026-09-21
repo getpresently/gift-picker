@@ -23,11 +23,53 @@ const BRANDS = [
 
 const PRODUCTHUNT_URL = "https://www.producthunt.com/posts/giftpicker-by-presently";
 
-const TESTIMONIALS: { q: string; n: string; tint: Tint; dot: string }[] = [
-  { q: "My boyfriend uses the V60 every single morning. I look like a genius.", n: "Ella R.", tint: "rose", dot: "#FF9D81" },
-  { q: "Finally, a gift quiz that doesn't suggest a scented candle every time.", n: "Marcus T.", tint: "butter", dot: "#7E3F71" },
-  { q: "Took 90 seconds. Picked something better than I would have in an hour.", n: "Priya S.", tint: "cream", dot: "#FFD074" },
+// The first entry is the featured pull quote; `em` is the phrase set in plum italic.
+const TESTIMONIALS: { q: string; em?: string; n: string; bg: string; fg: string }[] = [
+  { q: "My boyfriend uses the V60 every single morning. I look like a genius.", em: "genius", n: "Ella R.", bg: "#FFD9CC", fg: "#8A3A2A" },
+  { q: "Took 90 seconds. Picked something better than I would have in an hour.", n: "Priya S.", bg: "#FFE7B0", fg: "#7A5410" },
+  { q: "Finally, a gift quiz that doesn’t suggest a scented candle every time.", n: "Marcus T.", bg: "#EBD3E4", fg: "#7E3F71" },
 ];
+
+function initials(name: string) {
+  return name
+    .split(/\s+/)
+    .map((p) => p[0])
+    .join("")
+    .replace(/[^A-Z]/gi, "")
+    .toUpperCase();
+}
+
+function Attribution({ t, size }: { t: (typeof TESTIMONIALS)[number]; size: "lg" | "sm" }) {
+  const d = size === "lg" ? 34 : 28;
+  return (
+    <figcaption style={{ display: "flex", alignItems: "center", gap: 10, marginTop: size === "lg" ? 22 : 14 }}>
+      <span
+        aria-hidden
+        style={{
+          width: d,
+          height: d,
+          borderRadius: "50%",
+          background: t.bg,
+          color: t.fg,
+          display: "inline-flex",
+          alignItems: "center",
+          justifyContent: "center",
+          fontFamily: "Geist, sans-serif",
+          fontSize: size === "lg" ? 12 : 11,
+          fontWeight: 600,
+          letterSpacing: "0.02em",
+          boxShadow: "inset 0 1px 0 rgba(255,255,255,0.7), 0 2px 6px -1px rgba(80,30,30,0.16)",
+        }}
+      >
+        {initials(t.n)}
+      </span>
+      <span style={{ fontFamily: "Geist, sans-serif", fontSize: 13, fontWeight: 600, color: "#231410" }}>{t.n}</span>
+      <span style={{ display: "inline-flex", gap: 1 }} aria-label="5 out of 5 stars">
+        {[0, 1, 2, 3, 4].map((i) => <Star key={i} size={10} />)}
+      </span>
+    </figcaption>
+  );
+}
 
 function Star({ size = 14 }: { size?: number }) {
   return (
@@ -325,61 +367,87 @@ export function Landing() {
           </section>
 
           {/* Testimonials */}
-          <section id="testimonials" style={{ marginTop: isMobile ? 48 : 72 }}>
+          {/* Kept off ClaySurface on purpose so this band doesn't mirror the step cards above. */}
+          <section id="testimonials" style={{ marginTop: isMobile ? 64 : 104 }}>
             <div
               style={{
                 display: "grid",
-                gridTemplateColumns: isMobile ? "1fr" : "repeat(3, 1fr)",
-                gap: 16,
+                gridTemplateColumns: isMobile ? "1fr" : "1.3fr 1fr",
+                columnGap: 72,
+                rowGap: 28,
+                alignItems: "center",
               }}
             >
-              {TESTIMONIALS.map((t) => (
-                <ClaySurface key={t.n} tint={t.tint} style={{ padding: 22 }}>
-                  <div
-                    style={{
-                      fontFamily: '"Instrument Serif", serif',
-                      fontSize: 28,
-                      color: "#C4477E",
-                      lineHeight: 1,
-                      marginBottom: 8,
-                    }}
-                  >
-                    "
-                  </div>
-                  <div
-                    style={{
-                      fontFamily: '"Instrument Serif", serif',
-                      fontSize: isMobile ? 20 : 22,
-                      fontStyle: "italic",
-                      color: "#231410",
-                      lineHeight: 1.3,
-                      letterSpacing: "-0.01em",
-                    }}
-                  >
-                    {t.q}
-                  </div>
-                  <div style={{ display: "flex", alignItems: "center", gap: 10, marginTop: 14 }}>
+              {(() => {
+                const f = TESTIMONIALS[0];
+                const [before, after] = f.em ? f.q.split(f.em) : [f.q, ""];
+                return (
+                  <figure style={{ margin: 0 }}>
                     <div
+                      aria-hidden
                       style={{
-                        width: 28,
-                        height: 28,
-                        borderRadius: "50%",
-                        background: t.dot,
-                        border: "2px solid #FFFCF5",
-                        boxShadow: "0 2px 6px rgba(80,30,30,0.18)",
+                        fontFamily: '"Instrument Serif", serif',
+                        fontSize: isMobile ? 88 : 120,
+                        lineHeight: 1,
+                        height: isMobile ? 44 : 60,
+                        color: "#C4477E",
+                        opacity: 0.35,
                       }}
-                    />
-                    <div>
-                      <div style={{ fontFamily: "Geist, sans-serif", fontSize: 13, fontWeight: 600, color: "#231410" }}>
-                        {t.n}
-                      </div>
-                      <div style={{ display: "flex", gap: 1, marginTop: 2 }}>
-                        {[0, 1, 2, 3, 4].map((i) => <Star key={i} size={10} />)}
-                      </div>
+                    >
+                      &ldquo;
                     </div>
-                  </div>
-                </ClaySurface>
-              ))}
+                    <blockquote
+                      style={{
+                        margin: 0,
+                        fontFamily: '"Instrument Serif", serif',
+                        fontSize: isMobile ? 32 : 44,
+                        lineHeight: 1.1,
+                        letterSpacing: "-0.02em",
+                        color: "#231410",
+                        textWrap: "balance" as never,
+                      }}
+                    >
+                      {before}
+                      {f.em && <em style={{ color: "#C4477E", fontStyle: "italic" }}>{f.em}</em>}
+                      {after}
+                    </blockquote>
+                    <Attribution t={f} size="lg" />
+                  </figure>
+                );
+              })()}
+              <div
+                style={
+                  isMobile
+                    ? { borderTop: "1px solid rgba(35,20,16,0.1)", paddingTop: 4 }
+                    : undefined
+                }
+              >
+                {TESTIMONIALS.slice(1).map((t, i) => (
+                  <figure
+                    key={t.n}
+                    style={{
+                      margin: 0,
+                      padding: "22px 0",
+                      borderTop: i > 0 ? "1px solid rgba(35,20,16,0.1)" : "none",
+                    }}
+                  >
+                    <blockquote
+                      style={{
+                        margin: 0,
+                        fontFamily: '"Instrument Serif", serif',
+                        fontStyle: "italic",
+                        fontSize: isMobile ? 21 : 24,
+                        lineHeight: 1.28,
+                        letterSpacing: "-0.01em",
+                        color: "#231410",
+                      }}
+                    >
+                      &ldquo;{t.q}&rdquo;
+                    </blockquote>
+                    <Attribution t={t} size="sm" />
+                  </figure>
+                ))}
+              </div>
             </div>
           </section>
 
