@@ -105,13 +105,18 @@
 
 	<!-- TAB TITLE -->
 	<title>GiftPicker by Presently</title>
+
+	<!-- Browsers that run JavaScript never paint the crawler fallback below;
+	     crawlers and no-JS clients still get it. -->
+	<script>document.documentElement.classList.add("js")</script>
+	<style>.js #gp-static{display:none}</style>
 </head>
 <body>
-<!-- Static fallback content: what crawlers and no-JS clients see. React
-     replaces the contents of #root on mount, so real users never see this
-     beyond a brief flash. The worker swaps the gp-static block for
-     gift-specific content on /gift/:id routes. -->
-<div id="root"><!--gp-static-->
+<!-- Static fallback content: what crawlers and no-JS clients see. It's
+     hidden for JS browsers (see the head) and React replaces #root on mount.
+     The worker swaps the gp-static block for page-specific content on
+     /gift/:id, /brands, and other prerendered routes. -->
+<div id="root"><div id="gp-static"><!--gp-static-->
 	<div style="max-width:720px;margin:0 auto;padding:48px 24px;font-family:Geist,system-ui,sans-serif;color:#231410;background:#FBF1E1;line-height:1.6;">
 		<h1 style="font-size:40px;line-height:1.1;margin:0 0 16px;">GiftPicker: stop guessing, start gifting.</h1>
 		<p>GiftPicker is a free 30-second quiz that recommends genuinely good gifts from a hand-curated database of 200+ brands. No account needed. Answer six quick questions and get ranked, personalized gift picks with direct buy links.</p>
@@ -125,7 +130,7 @@
 		<p>Including Apple, Lululemon, Patagonia, Pottery Barn, Anthropologie, Peloton, Aesop, Le Creuset, Diptyque, Hario, MUJI, and Allbirds.</p>
 		<p><a href="https://giftpicker.io/quiz" style="color:#C4477E;">Take the quiz</a> · Free · By Presently</p>
 	</div>
-<!--/gp-static--></div>
+<!--/gp-static--></div></div>
 <script type="module" src="/src/index.tsx"></script>
 </body>
 </html>
