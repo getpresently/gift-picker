@@ -15,6 +15,10 @@
  *
  * The review password is NOT in this file. Set it once under
  * Project Settings > Script Properties as REVIEW_SECRET.
+ *
+ * Free-text "Other" occasions land in the Requests sheet with the occasion
+ * column prefixed "NEW: ". Filter on that to see what new categories users
+ * are asking for.
  */
 
 // Column order MUST match the existing sheets; clientId is the last column.
