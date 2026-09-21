@@ -62,13 +62,11 @@ function Section({ title, hint, children }: { title: string; hint?: string; chil
 
 export function RefineModal({ open, answers, isMobile, onClose, onApply }: Props) {
   const [draft, setDraft] = useState<Answers>(answers);
-  const [advancedOpen, setAdvancedOpen] = useState(false);
 
   // Start from the live answers every time the modal opens.
   useEffect(() => {
     if (!open) return;
     setDraft(answers);
-    setAdvancedOpen(!!answers.gender && answers.gender !== "any");
   }, [open, answers]);
 
   useEffect(() => {
@@ -177,6 +175,17 @@ export function RefineModal({ open, answers, isMobile, onClose, onApply }: Props
                   <ChipChoice key={o.v} option={o} selected={draft.recipient === o.v} atMax={false} onClick={() => set({ recipient: o.v })} />
                 ))}
             </div>
+            <div style={{ ...grid(3), marginTop: 8 }} role="radiogroup" aria-label="Gift is for">
+              {GENDER_OPTIONS.map((g) => (
+                <ChipChoice
+                  key={g.v}
+                  option={{ v: g.v, l: g.l }}
+                  selected={(draft.gender ?? "any") === g.v}
+                  atMax={false}
+                  onClick={() => setDraft((d) => ({ ...d, gender: g.v }))}
+                />
+              ))}
+            </div>
           </Section>
 
           {activeIds.includes("age") && (
@@ -270,50 +279,6 @@ export function RefineModal({ open, answers, isMobile, onClose, onApply }: Props
             </Section>
           )}
 
-          <button
-            type="button"
-            onClick={() => setAdvancedOpen((o) => !o)}
-            aria-expanded={advancedOpen}
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: 8,
-              background: "transparent",
-              border: "none",
-              padding: "4px 0",
-              marginBottom: advancedOpen ? 12 : 0,
-              cursor: "pointer",
-              fontFamily: "Geist, sans-serif",
-              fontSize: 13,
-              fontWeight: 600,
-              color: "#5A3F36",
-            }}
-          >
-            <svg
-              width="10"
-              height="10"
-              viewBox="0 0 10 10"
-              style={{ transform: advancedOpen ? "rotate(90deg)" : "none", transition: "transform 160ms ease" }}
-            >
-              <path d="M3 1.5L7 5L3 8.5" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
-            </svg>
-            Advanced
-          </button>
-          {advancedOpen && (
-            <Section title="Gift is for">
-              <div style={grid(3)}>
-                {GENDER_OPTIONS.map((g) => (
-                  <ChipChoice
-                    key={g.v}
-                    option={{ v: g.v, l: g.l }}
-                    selected={(draft.gender ?? "any") === g.v}
-                    atMax={false}
-                    onClick={() => setDraft((d) => ({ ...d, gender: g.v }))}
-                  />
-                ))}
-              </div>
-            </Section>
-          )}
         </div>
 
         <div

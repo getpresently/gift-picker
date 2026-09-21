@@ -114,7 +114,16 @@ async function handleEvent(event) {
 
     // The internal review tool must never be indexed.
     if (url.pathname.startsWith("/review")) {
+      try {
+        const html = await response.text();
+        const out = replaceBetween(html, "<!--gp-meta-->", "<!--/gp-meta-->", `\n\t<meta name="robots" content="noindex, nofollow"/>`)
+          .replace(/<title>[^<]*<\/title>/, "<title>GiftPicker</title>");
+        response = new Response(out, { status: response.status, headers: response.headers });
+      } catch (e) {
+        // fall through with the plain SPA shell; the header below still applies
+      }
       response.headers.set("X-Robots-Tag", "noindex, nofollow");
+      response.headers.set("Cache-Control", "no-store");
     }
     // Results are per-visitor quiz output: previews still work, search skips them.
     if (url.pathname.startsWith("/results")) {

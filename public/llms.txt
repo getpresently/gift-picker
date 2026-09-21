@@ -23,7 +23,7 @@ Every gift has a permanent, indexable page at https://giftpicker.io/gift/{id} (a
 - [For brands](https://giftpicker.io/brands): how brands submit a product for free editorial review or request a sponsored placement. Sponsored gifts pass the same review, only appear in results they match, and are always labeled.
 - [Sitemap](https://giftpicker.io/sitemap.xml): every indexable page, meaning the home page and every live gift page.
 
-Note: /results pages are per-visitor quiz output and /review is an internal tool; neither is meant to be indexed or cited as a canonical source. Use the gift pages above instead.
+Note: /results pages are per-visitor quiz output and are not meant to be indexed or cited as a canonical source. Use the gift pages above instead.
 
 ## About
 
