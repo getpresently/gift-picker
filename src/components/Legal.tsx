@@ -6,6 +6,7 @@ import { ClaySurface } from "./clay/ClaySurface";
 import { Pillow } from "./clay/Pillow";
 import { SiteHeader } from "./clay/SiteHeader";
 import { Wordmark } from "./clay/Wordmark";
+import { PresentlyMark } from "./clay/PresentlyMark";
 import { useIsMobile } from "../hooks/useIsMobile";
 import { AFFILIATE_DISCLOSURE } from "../data/affiliate";
 
@@ -106,6 +107,7 @@ function LegalShell({
             }}
           >
             <Wordmark size="sm" />
+            <PresentlyMark />
           </footer>
         </div>
       </div>

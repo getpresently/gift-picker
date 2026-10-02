@@ -8,6 +8,7 @@ import { useIsMobile } from "../hooks/useIsMobile";
 import { track } from "../data/analytics";
 import { SiteHeader } from "./clay/SiteHeader";
 import { FooterLinks } from "./clay/FooterLinks";
+import { PresentlyMark } from "./clay/PresentlyMark";
 
 const HOW_STEPS: { n: string; title: string; body: string; tint: Tint }[] = [
   { n: "01", title: "Tell us about them", body: "Closeness, vibes, budget. A few questions, no account.", tint: "rose" },
@@ -530,6 +531,7 @@ export function Landing() {
           >
             <Wordmark size="sm" />
             <div style={{ display: "flex", alignItems: "center", gap: 14, flexWrap: "wrap" }}>
+              <PresentlyMark />
               <FooterLinks />
             </div>
           </footer>

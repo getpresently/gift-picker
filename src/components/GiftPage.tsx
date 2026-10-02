@@ -14,6 +14,7 @@ import { isAmazonUrl, openBuyLink as openExternal } from "../data/affiliate";
 import { AffiliateDisclosure } from "./clay/AffiliateDisclosure";
 import { SiteHeader } from "./clay/SiteHeader";
 import { FooterLinks } from "./clay/FooterLinks";
+import { PresentlyMark } from "./clay/PresentlyMark";
 import { GiftCard } from "./clay/GiftCard";
 import { SECONDARY_TONES } from "../data/gifts";
 import { relatedGifts } from "../data/related";
@@ -410,6 +411,7 @@ export function GiftPage() {
           >
             <Wordmark size="sm" />
             <div style={{ display: "flex", alignItems: "center", gap: 14, flexWrap: "wrap" }}>
+              <PresentlyMark />
               <FooterLinks />
             </div>
             {gift && (gift.amazonLink || isAmazonUrl(gift.link)) && <AffiliateDisclosure />}

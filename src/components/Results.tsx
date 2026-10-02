@@ -19,6 +19,7 @@ import { AffiliateDisclosure } from "./clay/AffiliateDisclosure";
 import { isAmazonUrl } from "../data/affiliate";
 import { SiteHeader } from "./clay/SiteHeader";
 import { FooterLinks } from "./clay/FooterLinks";
+import { PresentlyMark } from "./clay/PresentlyMark";
 import { RefineModal } from "./clay/RefineModal";
 
 export function Results() {
@@ -545,6 +546,7 @@ export function Results() {
           >
             <Wordmark size="sm" />
             <div style={{ display: "flex", alignItems: "center", gap: 14, flexWrap: "wrap" }}>
+              <PresentlyMark />
               <FooterLinks />
             </div>
             {picks.some((g) => g.amazonLink || isAmazonUrl(g.link)) && <AffiliateDisclosure />}

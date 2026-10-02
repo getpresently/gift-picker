@@ -12,7 +12,8 @@ const overlap = (a: string[], b: string[]) => {
  * nothing made for the other gender), ranked by shared interests first, then
  * shared vibes and relations, with a nudge toward a similar price. Gifts of
  * the same product type are pushed down so the row offers alternatives
- * rather than near-copies of the gift on the page.
+ * rather than near-copies of the gift on the page, and each brand appears
+ * at most once.
  */
 export function relatedGifts(gift: Gift, all: Gift[], count = 4): Gift[] {
   const interests = gift.interests.filter((i) => !/^best sellers?$/i.test(i.trim()));
@@ -35,6 +36,8 @@ export function relatedGifts(gift: Gift, all: Gift[], count = 4): Gift[] {
     })
     .filter((x) => x.sharedInterests > 0)
     .sort((a, b) => b.score - a.score)
+    // One gift per brand, so the row never shows two near-identical picks.
+    .filter((x, i, list) => list.findIndex((y) => norm(y.g.brand) === norm(x.g.brand)) === i)
     .slice(0, count)
     .map((x) => x.g);
 }

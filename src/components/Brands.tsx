@@ -4,6 +4,7 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import { AmbientGlow } from "./clay/AmbientGlow";
 import { ClaySurface } from "./clay/ClaySurface";
 import { FooterLinks } from "./clay/FooterLinks";
+import { PresentlyMark } from "./clay/PresentlyMark";
 import { Pillow } from "./clay/Pillow";
 import { SiteHeader } from "./clay/SiteHeader";
 import { Wordmark } from "./clay/Wordmark";
@@ -377,6 +378,7 @@ export function BrandsPage() {
           >
             <Wordmark size="sm" />
             <div style={{ display: "flex", alignItems: "center", gap: 14, flexWrap: "wrap" }}>
+              <PresentlyMark />
               <FooterLinks />
             </div>
           </footer>
