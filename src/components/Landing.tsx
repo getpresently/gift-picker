@@ -3,7 +3,6 @@ import { AmbientGlow } from "./clay/AmbientGlow";
 import { ClaySurface, type Tint } from "./clay/ClaySurface";
 import { GiftBox3D } from "./clay/GiftBox3D";
 import { Pillow } from "./clay/Pillow";
-import { PresentlyMark } from "./clay/PresentlyMark";
 import { Wordmark } from "./clay/Wordmark";
 import { useIsMobile } from "../hooks/useIsMobile";
 import { track } from "../data/analytics";
@@ -11,7 +10,7 @@ import { SiteHeader } from "./clay/SiteHeader";
 import { FooterLinks } from "./clay/FooterLinks";
 
 const HOW_STEPS: { n: string; title: string; body: string; tint: Tint }[] = [
-  { n: "01", title: "Tell us about them", body: "Closeness, vibes, budget. Five questions, no account.", tint: "rose" },
+  { n: "01", title: "Tell us about them", body: "Closeness, vibes, budget. A few questions, no account.", tint: "rose" },
   { n: "02", title: "We do the thinking", body: "Every gift is hand-curated by our team, then matched to your answers.", tint: "butter" },
   { n: "03", title: "Show up looking great", body: "Send the link or just buy it yourself.", tint: "sage" },
 ];
@@ -173,7 +172,7 @@ export function Landing() {
                   maxWidth: 460,
                 }}
               >
-                Five questions. A pile of gifts they'll actually love. Built for the chronically indecisive and the
+                A few questions. A pile of gifts they'll actually love. Built for the chronically indecisive and the
                 deeply caring.
               </p>
 
@@ -202,7 +201,7 @@ export function Landing() {
                       marginTop: 2,
                     }}
                   >
-                    "best gift I've ever given."
+                    “best gift I’ve ever given.”
                   </div>
                 </div>
               </div>
@@ -238,7 +237,7 @@ export function Landing() {
                   transform: "rotate(6deg)",
                 }}
               >
-                <div style={{ fontWeight: 600, color: "#231410" }}>For: Ella</div>
+                <div style={{ fontWeight: 600, color: "#231410" }}>For: Maya</div>
                 <div style={{ color: "rgba(35,20,16,0.55)", fontSize: 11 }}>Birthday · $50–$120</div>
               </ClaySurface>
             </div>
@@ -269,7 +268,7 @@ export function Landing() {
                 fontWeight: 400,
               }}
             >
-              Three quick taps to a <em style={{ color: "#C4477E", fontStyle: "italic" }}>great</em> gift.
+              Three steps to a <em style={{ color: "#C4477E", fontStyle: "italic" }}>great</em> gift.
             </h2>
             <div
               style={{
@@ -531,7 +530,6 @@ export function Landing() {
           >
             <Wordmark size="sm" />
             <div style={{ display: "flex", alignItems: "center", gap: 14, flexWrap: "wrap" }}>
-              <PresentlyMark />
               <FooterLinks />
             </div>
           </footer>

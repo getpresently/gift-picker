@@ -93,7 +93,7 @@ const PRODUCT_TYPES: [string, RegExp][] = [
 const TYPE_MATCH_BONUS = 0.35;
 const TYPE_MISMATCH_PENALTY = 0.1;
 
-function productType(name: string, description: string): string | null {
+export function productType(name: string, description: string): string | null {
   const n = stripAccents(name.toLowerCase());
   for (const [type, re] of PRODUCT_TYPES) if (re.test(n)) return type;
   const d = stripAccents(description.toLowerCase()).slice(0, 140);

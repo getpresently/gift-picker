@@ -10,6 +10,7 @@
  *   POST /exec  JSON body routed on `type`:
  *     "feedback" -> append to Feedback
  *     "request"  -> append to Requests
+ *     "notify"   -> optional email for a request, written to Requests "email"
  *     "brand"    -> append to Brands (the /brands submission form)
  *     "review"   -> internal review tool (password-gated), see handleReview_
  *
@@ -74,6 +75,7 @@ function doPost(e) {
 
     if (type === "feedback") return jsonOut_(handleFeedback_(body));
     if (type === "request")  return jsonOut_(handleRequest_(body));
+    if (type === "notify")   return jsonOut_(handleNotify_(body));
     if (type === "brand")    return jsonOut_(handleBrand_(body));
     if (type === "review")   return jsonOut_(handleReview_(body));
     return jsonOut_({ error: "Unknown type: " + type });
@@ -113,6 +115,57 @@ function handleRequest_(p) {
     p.clientId || "",
   ]);
   return { ok: true };
+}
+
+/**
+ * Optional email from the "Want a heads-up?" line shown after a request.
+ * Writes it onto that shopper's latest matching Requests row (same clientId
+ * and interests) in an "email" column, created on first use. If the request
+ * row has not landed yet, appends a "notify" row carrying the answers.
+ * The Requests tab is never served publicly (see PUBLIC_TABS).
+ */
+function handleNotify_(p) {
+  const email = String(p.email == null ? "" : p.email).trim().slice(0, 254);
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return { ok: false, error: "invalid" };
+  const safeEmail = /^[=+\-@]/.test(email) ? "'" + email : email;
+  const clientId = String(p.clientId || "").slice(0, 80);
+  const a = p.answers || {};
+  const interests = String(joinIfArray_(a.interests));
+  const lock = LockService.getScriptLock();
+  lock.waitLock(10000);
+  try {
+    const sheet = ensureSheet_("Requests", REQUEST_HEADERS);
+    const lastCol = sheet.getLastColumn();
+    const headers = sheet.getRange(1, 1, 1, lastCol).getValues()[0].map(String);
+    let emailCol = headers.indexOf("email") + 1;
+    if (!emailCol) {
+      emailCol = lastCol + 1;
+      sheet.getRange(1, emailCol).setValue("email");
+    }
+    const idCol = headers.indexOf("clientId") + 1;
+    const interestsCol = headers.indexOf("interests") + 1;
+    const last = sheet.getLastRow();
+    if (idCol && interestsCol && clientId && last > 1) {
+      const from = Math.max(2, last - 199);
+      const rows = sheet.getRange(from, 1, last - from + 1, Math.max(idCol, interestsCol)).getValues();
+      for (let i = rows.length - 1; i >= 0; i--) {
+        if (String(rows[i][idCol - 1]) === clientId && String(rows[i][interestsCol - 1]) === interests) {
+          sheet.getRange(from + i, emailCol).setValue(safeEmail);
+          return { ok: true };
+        }
+      }
+    }
+    const row = [
+      p.at || new Date().toISOString(), "notify", a.recipient || "", a.age || "",
+      a.occasion || "", interests, joinIfArray_(a.vibe), a.budget || "", clientId,
+    ];
+    while (row.length < emailCol - 1) row.push("");
+    row.push(safeEmail);
+    sheet.appendRow(row);
+    return { ok: true };
+  } finally {
+    lock.releaseLock();
+  }
 }
 
 /**

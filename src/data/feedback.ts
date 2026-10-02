@@ -106,6 +106,14 @@ type RequestPayload = {
   clientId: string;
 };
 
+type NotifyPayload = {
+  type: "notify";
+  email: string;
+  answers: WireAnswers;
+  at: string;
+  clientId: string;
+};
+
 /**
  * Stable per-device anonymous identifier. Lets us distinguish "10 hearts
  * from 10 people" vs "10 hearts from the same browser" without any login
@@ -145,7 +153,7 @@ const ENDPOINT =
  * Feedback sheet, "request" writes to the Requests sheet (sample script
  * in the redesign commit summary).
  */
-async function postEvent(payload: FeedbackPayload | RequestPayload): Promise<void> {
+async function postEvent(payload: FeedbackPayload | RequestPayload | NotifyPayload): Promise<void> {
   if (!ENDPOINT) {
     if (typeof console !== "undefined") {
       console.info(`[${payload.type}] endpoint not configured, logging instead`, payload);
@@ -191,6 +199,24 @@ export async function postFeedback(payload: FeedbackInput): Promise<void> {
 export async function postRequest(answers: Answers): Promise<void> {
   return postEvent({
     type: "request",
+    answers: humanizeAnswers(answers),
+    at: new Date().toISOString(),
+    clientId: getClientId(),
+  });
+}
+
+/**
+ * Optional email a shopper leaves after "Request more", so we can send one
+ * note when gifts for that request are added. The Apps Script writes it onto
+ * their Requests row ("notify" handler). Keep NOTIFY_OPT_IN_LIVE false until
+ * the updated script is deployed, or emails would be silently dropped.
+ */
+export const NOTIFY_OPT_IN_LIVE = false;
+
+export async function postNotify(answers: Answers, email: string): Promise<void> {
+  return postEvent({
+    type: "notify",
+    email: email.trim(),
     answers: humanizeAnswers(answers),
     at: new Date().toISOString(),
     clientId: getClientId(),

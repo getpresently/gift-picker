@@ -143,6 +143,7 @@ export const OCCASION_LABELS: Record<string, string> = {
   housewarm: "Housewarming",
   appreciate: "Appreciation",
   thank: "Thank You",
+  newjob: "New Job",
 };
 
 /* ------------------------------------------------------------------ *

@@ -4,7 +4,6 @@ import { AmbientGlow } from "./clay/AmbientGlow";
 import { ClaySurface } from "./clay/ClaySurface";
 import { GiftBox3D } from "./clay/GiftBox3D";
 import { Pillow } from "./clay/Pillow";
-import { PresentlyMark } from "./clay/PresentlyMark";
 import { PriceDisplay } from "./clay/PriceDisplay";
 import { Wordmark } from "./clay/Wordmark";
 import { useIsMobile } from "../hooks/useIsMobile";
@@ -15,6 +14,10 @@ import { isAmazonUrl, openBuyLink as openExternal } from "../data/affiliate";
 import { AffiliateDisclosure } from "./clay/AffiliateDisclosure";
 import { SiteHeader } from "./clay/SiteHeader";
 import { FooterLinks } from "./clay/FooterLinks";
+import { GiftCard } from "./clay/GiftCard";
+import { SECONDARY_TONES } from "../data/gifts";
+import { relatedGifts } from "../data/related";
+import { loadSaved, saveSaved } from "../data/saved";
 
 /**
  * Standalone, shareable page for a single gift at /gift/:giftId.
@@ -37,6 +40,19 @@ export function GiftPage() {
     [allGifts, giftId],
   );
   const { failed: imgFailed, onError: onImgError, loaded: imgLoaded, onLoad: onImgLoad } = useImageFallback(gift?.image);
+
+  const related = useMemo(() => (gift ? relatedGifts(gift, allGifts) : []), [gift, allGifts]);
+  const [saved, setSaved] = useState<Set<string>>(() => loadSaved());
+  const toggleSave = (id: string) => {
+    setSaved((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      saveSaved(next);
+      track("gift_save_toggle", { gift_id: id, saved: next.has(id), source: "gift_page_related" });
+      return next;
+    });
+  };
 
   const [copied, setCopied] = useState(false);
   const copyLink = async () => {
@@ -319,6 +335,48 @@ export function GiftPage() {
             </ClaySurface>
           )}
 
+          {/* More gifts like this: keeps a shared link from being a dead end */}
+          {!loading && !error && gift && related.length > 0 && (
+            <section style={{ marginTop: isMobile ? 36 : 52 }}>
+              <div style={{ textAlign: "center", margin: isMobile ? "0 0 18px" : "0 0 24px" }}>
+                <span
+                  style={{
+                    fontFamily: "Geist, sans-serif",
+                    fontSize: 12,
+                    letterSpacing: "0.14em",
+                    textTransform: "uppercase",
+                    color: "rgba(35,20,16,0.5)",
+                  }}
+                >
+                  More gifts like this
+                </span>
+              </div>
+              <div
+                style={{
+                  display: "grid",
+                  gridTemplateColumns: isMobile ? "1fr 1fr" : "repeat(4, 1fr)",
+                  gap: isMobile ? 12 : 18,
+                }}
+              >
+                {related.map((g, i) => (
+                  <GiftCard
+                    key={g.id}
+                    gift={g}
+                    tone={SECONDARY_TONES[i % SECONDARY_TONES.length]}
+                    saved={saved.has(g.id)}
+                    onToggleSave={toggleSave}
+                    isMobile={isMobile}
+                    onOpenDetails={() => {
+                      track("gift_related_open", { from: gift.id, to: g.id });
+                      navigate(`/gift/${g.id}`);
+                      window.scrollTo({ top: 0 });
+                    }}
+                  />
+                ))}
+              </div>
+            </section>
+          )}
+
           {/* Cross-sell into the quiz */}
           {!loading && !error && gift && (
             <div style={{ textAlign: "center", marginTop: isMobile ? 32 : 44 }}>
@@ -352,7 +410,6 @@ export function GiftPage() {
           >
             <Wordmark size="sm" />
             <div style={{ display: "flex", alignItems: "center", gap: 14, flexWrap: "wrap" }}>
-              <PresentlyMark />
               <FooterLinks />
             </div>
             {gift && (gift.amazonLink || isAmazonUrl(gift.link)) && <AffiliateDisclosure />}

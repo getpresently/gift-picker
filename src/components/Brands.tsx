@@ -5,7 +5,6 @@ import { AmbientGlow } from "./clay/AmbientGlow";
 import { ClaySurface } from "./clay/ClaySurface";
 import { FooterLinks } from "./clay/FooterLinks";
 import { Pillow } from "./clay/Pillow";
-import { PresentlyMark } from "./clay/PresentlyMark";
 import { SiteHeader } from "./clay/SiteHeader";
 import { Wordmark } from "./clay/Wordmark";
 import { useIsMobile } from "../hooks/useIsMobile";
@@ -156,7 +155,7 @@ export function BrandsPage() {
               Get your product in front of <em style={{ color: "#C4477E", fontStyle: "italic" }}>gift shoppers</em>.
             </h1>
             <p style={{ fontFamily: SANS, fontSize: isMobile ? 16 : 17, lineHeight: 1.6, color: "rgba(35,20,16,0.68)", margin: "18px 0 0" }}>
-              GiftPicker matches people to gifts from a hand-curated catalog of more than 560 products across 200+ brands.
+              GiftPicker matches people to gifts from a hand-curated catalog of more than 500 products across 300+ brands.
               Shoppers arrive knowing who they're buying for, the occasion, and their budget, so the right product reaches
               them when they're ready to buy.
             </p>
@@ -378,7 +377,6 @@ export function BrandsPage() {
           >
             <Wordmark size="sm" />
             <div style={{ display: "flex", alignItems: "center", gap: 14, flexWrap: "wrap" }}>
-              <PresentlyMark />
               <FooterLinks />
             </div>
           </footer>

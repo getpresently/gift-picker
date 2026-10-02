@@ -113,6 +113,7 @@ export const QUESTIONS: Question[] = [
       { v: "housewarm",  l: "Housewarming", e: "🏠" },
       { v: "appreciate", l: "Appreciation", e: "🌷" },
       { v: "thank",      l: "Thank you",    e: "🙏" },
+      { v: "newjob",     l: "New job",      e: "💼" },
       // Picking Other reveals a free-text input under the tiles (no
       // auto-advance). The typed value is stored as `occasionOther`,
       // bypasses occasion-based scoring, and gets logged to the
@@ -196,11 +197,34 @@ const HIDE_YOUNG_ADULT_FOR = new Set(["parent"]); // your parent is older than 2
 
 // Per-age occasion-option hides. Babies, children, and teens don't have
 // weddings, housewarmings, anniversaries, or new-baby gifts of their own.
+// Teens keep "New job" (first jobs happen); babies and kids don't.
 const HIDE_OCCASIONS_FOR_AGE: Record<string, Set<string>> = {
-  baby: new Set(["housewarm", "wed", "baby", "anni"]),
-  kid:  new Set(["housewarm", "wed", "baby", "anni"]),
+  baby: new Set(["housewarm", "wed", "baby", "anni", "newjob"]),
+  kid:  new Set(["housewarm", "wed", "baby", "anni", "newjob"]),
   teen: new Set(["housewarm", "wed", "baby", "anni"]),
 };
+
+// Typed "Other" occasions that mean an occasion we already offer. The
+// shopper's own wording still shows on the results page; only scoring
+// treats it as the built-in occasion. Anything unmatched stays "other".
+const TYPED_OCCASION_ALIASES: { code: string; pattern: RegExp }[] = [
+  { code: "holi", pattern: /\b(christmas|xmas|x-mas|c?hanukk?ah|kwanzaa|diwali|eid|lunar new year|holidays?|secret santa)\b/i },
+  { code: "newjob", pattern: /\b(new job|first job|job|promotion|promoted|new role|new position)\b/i },
+];
+
+/** Built-in occasion code for a typed "Other" occasion, or null if it is genuinely new. */
+export function typedOccasionCode(text: string | undefined): string | null {
+  const t = (text ?? "").trim();
+  if (!t) return null;
+  return TYPED_OCCASION_ALIASES.find((a) => a.pattern.test(t))?.code ?? null;
+}
+
+/** Answers as the scorer should see them: a typed holiday counts as Holiday, and so on. */
+export function scoringAnswers(answers: Answers): Answers {
+  if (answers.occasion !== "other") return answers;
+  const code = typedOccasionCode(answers.occasionOther);
+  return code ? { ...answers, occasion: code } : answers;
+}
 
 export function getActiveQuestions(answers: Answers): Question[] {
   return QUESTIONS.filter((q) => {

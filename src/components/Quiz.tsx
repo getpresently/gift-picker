@@ -16,6 +16,7 @@ import {
   loadAnswers,
   saveAnswers,
   clearAnswers,
+  typedOccasionCode,
   type Answers,
   type Option,
   type Question,
@@ -107,9 +108,13 @@ export function Quiz() {
       // If the user typed a free-text occasion, log it to the Requests
       // sheet so Dalia can see what new categories users are asking for.
       // The occasion column gets a "NEW: <typed text>" marker; the rest
-      // of the answers ride along so she has full context.
+      // of the answers ride along so she has full context. Typed names for
+      // occasions we already offer (Christmas, a promotion) are scored as
+      // those occasions instead, so they are not logged as new.
       if (a.occasion === "other" && a.occasionOther?.trim()) {
-        postRequest({ ...a, occasion: `NEW: ${a.occasionOther.trim()}` });
+        if (!typedOccasionCode(a.occasionOther)) {
+          postRequest({ ...a, occasion: `NEW: ${a.occasionOther.trim()}` });
+        }
         track("occasion_other_typed", { value: a.occasionOther.trim() });
       }
       // Quiz funnel completion event. Includes the high-level answer

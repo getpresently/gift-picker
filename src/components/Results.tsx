@@ -4,14 +4,15 @@ import { AmbientGlow } from "./clay/AmbientGlow";
 import { GiftCard } from "./clay/GiftCard";
 import { Hero } from "./clay/Hero";
 import { Pillow } from "./clay/Pillow";
-import { PresentlyMark } from "./clay/PresentlyMark";
 import { ProductModal } from "./clay/ProductModal";
 import { Wordmark } from "./clay/Wordmark";
 import { useIsMobile } from "../hooks/useIsMobile";
-import { clearAnswers, GENDER_OPTIONS, loadAnswers, QUESTIONS, saveAnswers, type Answers } from "../data/questions";
+import { clearAnswers, GENDER_OPTIONS, loadAnswers, QUESTIONS, saveAnswers, scoringAnswers, type Answers } from "../data/questions";
 import { buildMatchReasons, rankGifts, SECONDARY_TONES, type RankedGift } from "../data/gifts";
 import { useGifts } from "../data/giftsApi";
-import { isDemoting, postFeedback, postRequest, type FeedbackOption, type FeedbackRecord } from "../data/feedback";
+import { isDemoting, NOTIFY_OPT_IN_LIVE, postFeedback, postRequest, type FeedbackOption, type FeedbackRecord } from "../data/feedback";
+import { NotifyOptIn } from "./clay/NotifyOptIn";
+import { loadSaved, saveSaved } from "../data/saved";
 import { buildShareUrl, hydrateAnswersFromShareUrl, shareOrCopy } from "../data/share";
 import { track } from "../data/analytics";
 import { AffiliateDisclosure } from "./clay/AffiliateDisclosure";
@@ -19,25 +20,6 @@ import { isAmazonUrl } from "../data/affiliate";
 import { SiteHeader } from "./clay/SiteHeader";
 import { FooterLinks } from "./clay/FooterLinks";
 import { RefineModal } from "./clay/RefineModal";
-
-const SAVED_KEY = "giftpicker_saved_v1";
-
-function loadSaved(): Set<string> {
-  try {
-    const raw = sessionStorage.getItem(SAVED_KEY);
-    return new Set(raw ? JSON.parse(raw) : []);
-  } catch {
-    return new Set();
-  }
-}
-
-function saveSaved(s: Set<string>) {
-  try {
-    sessionStorage.setItem(SAVED_KEY, JSON.stringify([...s]));
-  } catch {
-    // no-op
-  }
-}
 
 export function Results() {
   const navigate = useNavigate();
@@ -54,7 +36,10 @@ export function Results() {
     const hydrated = hydrateAnswersFromShareUrl();
     return hydrated ?? stored;
   });
-  const ranked = useMemo<RankedGift[]>(() => rankGifts(allGifts, answers), [allGifts, answers]);
+  // Scoring sees typed occasions it recognizes (Christmas, a promotion) as
+  // the built-in occasion; the header keeps the shopper's own wording.
+  const scoring = useMemo(() => scoringAnswers(answers), [answers]);
+  const ranked = useMemo<RankedGift[]>(() => rankGifts(allGifts, scoring), [allGifts, scoring]);
 
   const [feedbackById, setFeedbackById] = useState<Record<string, FeedbackRecord>>({});
   // Live re-rank: gifts reported as disliked or unavailable sort to the bottom (stable within each group).
@@ -72,8 +57,8 @@ export function Results() {
 
   const modalReasons = useMemo(() => {
     if (modalIndex === null || !picks[modalIndex]) return [];
-    return buildMatchReasons(picks[modalIndex], answers);
-  }, [modalIndex, picks, answers]);
+    return buildMatchReasons(picks[modalIndex], scoring);
+  }, [modalIndex, picks, scoring]);
 
   const handleReport = (gift: RankedGift) => (opt: FeedbackOption, detail?: string) => {
     const record: FeedbackRecord = { option: opt, detail, at: new Date().toISOString() };
@@ -219,6 +204,15 @@ export function Results() {
       .join(", ");
   }, [answers.interests]);
 
+  // Summary line under the headline. The adjust button rides on the last
+  // part (inside a nowrap span) so it never wraps onto a line of its own.
+  const summaryParts = [
+    genderLabel,
+    occasionLabel,
+    interestsLabel,
+    typeof budget === "number" ? `$${budget} budget` : null,
+  ].filter((p): p is string => Boolean(p));
+
   const [hero, ...rest] = picks;
 
   // Reveal the secondary grid in batches of 8 so the page doesn't dump
@@ -320,20 +314,6 @@ export function Results() {
                 marginBottom: 16,
               }}
             >
-              <span
-                style={{
-                  display: "inline-block",
-                  width: 6,
-                  height: 6,
-                  borderRadius: "50%",
-                  background: loading ? "#FFD074" : error ? "#E64B45" : "#4CAF50",
-                  boxShadow: loading
-                    ? "0 0 0 4px rgba(255,208,116,0.3)"
-                    : error
-                      ? "0 0 0 4px rgba(230,75,69,0.25)"
-                      : "0 0 0 4px rgba(76,175,80,0.25)",
-                }}
-              />
               {loading
                 ? "Finding your picks…"
                 : error
@@ -354,19 +334,10 @@ export function Results() {
             >
               For your <em style={{ color: "#C4477E", fontStyle: "italic" }}>{recipientLabel}</em>, with love.
             </h1>
-            {/* The adjust button is glued to the last phrase so it never wraps onto a line of its own. */}
             <p style={{ fontFamily: "Geist, sans-serif", fontSize: 15, lineHeight: 1.7, color: "rgba(35,20,16,0.55)", margin: "14px 0 0" }}>
-              {[
-                genderLabel,
-                occasionLabel,
-                interestsLabel,
-                typeof budget === "number" ? `$${budget} budget` : null,
-              ]
-                .filter(Boolean)
-                .map((part) => `${part} · `)
-                .join("")}
+              {summaryParts.slice(0, -1).map((part) => `${part} · `).join("")}
               <span style={{ whiteSpace: "nowrap" }}>
-                hand-curated
+                {summaryParts[summaryParts.length - 1]}
                 <button
                   type="button"
                   onClick={() => setRefineOpen(true)}
@@ -406,7 +377,7 @@ export function Results() {
           {loading && <LoadingState />}
           {!loading && error && <ErrorState message={error} onRetry={() => window.location.reload()} />}
           {!loading && !error && picks.length === 0 && (
-            <EmptyState onRestart={restart} onRequestMore={handleRequestMore} requestSent={requestSent} />
+            <EmptyState onRestart={restart} onRequestMore={handleRequestMore} requestSent={requestSent} answers={answers} />
           )}
 
           {!loading && !error && hero && (
@@ -551,6 +522,11 @@ export function Results() {
                     {requestSent ? "✓ Thanks, we'll add more" : "Request more like these →"}
                   </button>
                 </div>
+                {requestSent && NOTIFY_OPT_IN_LIVE && (
+                  <div style={{ marginTop: 18 }}>
+                    <NotifyOptIn answers={answers} />
+                  </div>
+                )}
               </div>
             </>
           )}
@@ -569,7 +545,6 @@ export function Results() {
           >
             <Wordmark size="sm" />
             <div style={{ display: "flex", alignItems: "center", gap: 14, flexWrap: "wrap" }}>
-              <PresentlyMark />
               <FooterLinks />
             </div>
             {picks.some((g) => g.amazonLink || isAmazonUrl(g.link)) && <AffiliateDisclosure />}
@@ -673,10 +648,12 @@ function EmptyState({
   onRestart,
   onRequestMore,
   requestSent,
+  answers,
 }: {
   onRestart: () => void;
   onRequestMore: () => void;
   requestSent: boolean;
+  answers: Answers;
 }) {
   return (
     <div style={{ textAlign: "center", padding: "32px 0" }}>
@@ -709,6 +686,11 @@ function EmptyState({
         </Pillow>
         <Pillow tone="cream" size="md" onClick={onRestart}>↻ Try different answers</Pillow>
       </div>
+      {requestSent && NOTIFY_OPT_IN_LIVE && (
+        <div style={{ marginTop: 22 }}>
+          <NotifyOptIn answers={answers} />
+        </div>
+      )}
     </div>
   );
 }

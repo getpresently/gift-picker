@@ -4,7 +4,6 @@ import { useNavigate } from "react-router-dom";
 import { AmbientGlow } from "./clay/AmbientGlow";
 import { ClaySurface } from "./clay/ClaySurface";
 import { Pillow } from "./clay/Pillow";
-import { PresentlyMark } from "./clay/PresentlyMark";
 import { SiteHeader } from "./clay/SiteHeader";
 import { Wordmark } from "./clay/Wordmark";
 import { useIsMobile } from "../hooks/useIsMobile";
@@ -107,7 +106,6 @@ function LegalShell({
             }}
           >
             <Wordmark size="sm" />
-            <PresentlyMark />
           </footer>
         </div>
       </div>
@@ -145,7 +143,9 @@ export function PrivacyPage() {
       <h2 style={sectionHeadingStyle}>No accounts</h2>
       <p style={paragraphStyle}>
         GiftPicker does not ask you to create an account. We do not ask for
-        your name, your email address, or any payment information.
+        your name or any payment information. The only time we ask for an
+        email address is the optional heads-up after a request, described
+        below.
       </p>
 
       <h2 style={sectionHeadingStyle}>Your quiz answers</h2>
@@ -168,8 +168,9 @@ export function PrivacyPage() {
       <p style={paragraphStyle}>
         We store a random, anonymous ID in your browser's local storage.
         It's attached to feedback, hearts, and requests you make, so we can
-        tell distinct visitors apart. It is not linked to your name, email,
-        or any other identifying information.
+        tell distinct visitors apart. It is not linked to your name or any
+        other identifying information, unless you choose to leave an email
+        for a request heads-up.
       </p>
 
       <h2 style={sectionHeadingStyle}>Feedback you send us</h2>
@@ -222,6 +223,14 @@ export function PrivacyPage() {
         or recognize cookies on your browser and may collect information
         directly from you. Once you leave for a merchant's site, that
         merchant's own privacy policy applies. {AFFILIATE_DISCLOSURE}
+      </p>
+
+      <h2 style={sectionHeadingStyle}>Request heads-ups</h2>
+      <p style={paragraphStyle}>
+        When you ask us for more gifts like the ones you were shown, you can
+        leave your email for a heads-up. We keep it with that request and use
+        it only to send you one note when we add gifts for it. We don't add it
+        to a mailing list or share it with anyone.
       </p>
 
       <h2 style={sectionHeadingStyle}>Brand submissions</h2>
