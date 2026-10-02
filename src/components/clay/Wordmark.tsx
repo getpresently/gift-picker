@@ -8,10 +8,13 @@ type Props = {
   onClick?: () => void;
 };
 
-const sizes: Record<Size, { gap: number; logo: number; font: number }> = {
-  sm: { gap: 6, logo: 22, font: 15 },
-  md: { gap: 8, logo: 28, font: 18 },
-  lg: { gap: 10, logo: 36, font: 22 },
+// `lift` raises the mark so its red box body, not the light bow above it,
+// lines up with the x-height of the wordmark. Centering the whole SVG left
+// the body (and its drop shadow) reading about 2px low at lg.
+const sizes: Record<Size, { gap: number; logo: number; font: number; lift: number }> = {
+  sm: { gap: 6, logo: 22, font: 15, lift: 1 },
+  md: { gap: 8, logo: 28, font: 18, lift: 1.5 },
+  lg: { gap: 10, logo: 36, font: 22, lift: 2 },
 };
 
 export function Wordmark({ size = "md", light = false, onClick }: Props) {
@@ -32,7 +35,9 @@ export function Wordmark({ size = "md", light = false, onClick }: Props) {
         outline: "none",
       }}
     >
-      <BowLogo size={s.logo} />
+      <span style={{ display: "block", transform: `translateY(-${s.lift}px)` }}>
+        <BowLogo size={s.logo} />
+      </span>
       <span
         style={{
           fontFamily: "Geist, system-ui, sans-serif",
