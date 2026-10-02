@@ -52,7 +52,15 @@ function Thumb({ pct }: { pct: number }) {
   );
 }
 
-const PRESETS = [25, 50, 100, 200];
+// Quick picks set both handles. `lo: null` means no floor; `hi: null` means
+// the top of the slider ("$200+").
+const PRESETS: { label: string; lo: number | null; hi: number | null }[] = [
+  { label: "Under $25", lo: null, hi: 25 },
+  { label: "$25\u2013$50", lo: 25, hi: 50 },
+  { label: "$50\u2013$100", lo: 50, hi: 100 },
+  { label: "$100\u2013$200", lo: 100, hi: 200 },
+  { label: "$200+", lo: 200, hi: null },
+];
 
 export function BudgetSlider({ value, onChange, minValue, onMinChange, min, max, step }: Props) {
   const toPct = (v: number) => ((v - min) / (max - min)) * 100;
@@ -146,36 +154,37 @@ export function BudgetSlider({ value, onChange, minValue, onMinChange, min, max,
       </div>
 
       <div style={{ display: "flex", gap: 8, marginTop: 20, flexWrap: "wrap", justifyContent: "center" }}>
-        {PRESETS.map((v) => (
-          <button
-            key={v}
-            type="button"
-            onClick={() => {
-              onChange(v);
-              if (ranged && floor >= v) onMinChange!(min);
-            }}
-            style={{
-              padding: "8px 14px",
-              borderRadius: 999,
-              background:
-                value === v
-                  ? "linear-gradient(160deg, #FF8C71, #E64B45)"
-                  : "rgba(255,255,255,0.7)",
-              color: value === v ? "#FFF8EE" : "#5A3F36",
-              border: "1px solid rgba(35,20,16,0.08)",
-              cursor: "pointer",
-              fontFamily: "Geist, sans-serif",
-              fontSize: 13,
-              fontWeight: 500,
-              boxShadow:
-                value === v
+        {PRESETS.map((p) => {
+          const lo = p.lo ?? min;
+          const hi = p.hi ?? max;
+          const active = value === hi && (ranged ? floor === lo : true);
+          return (
+            <button
+              key={p.label}
+              type="button"
+              onClick={() => {
+                onChange(hi);
+                if (ranged) onMinChange!(lo);
+              }}
+              style={{
+                padding: "8px 14px",
+                borderRadius: 999,
+                background: active ? "linear-gradient(160deg, #FF8C71, #E64B45)" : "rgba(255,255,255,0.7)",
+                color: active ? "#FFF8EE" : "#5A3F36",
+                border: "1px solid rgba(35,20,16,0.08)",
+                cursor: "pointer",
+                fontFamily: "Geist, sans-serif",
+                fontSize: 13,
+                fontWeight: 500,
+                boxShadow: active
                   ? "inset 0 1px 0 rgba(255,255,255,0.4), 0 4px 10px -2px rgba(180,40,35,0.4)"
                   : "inset 0 1px 0 rgba(255,255,255,0.6)",
-            }}
-          >
-            ${v}
-          </button>
-        ))}
+              }}
+            >
+              {p.label}
+            </button>
+          );
+        })}
       </div>
     </div>
   );
