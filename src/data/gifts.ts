@@ -339,10 +339,10 @@ function occasionRule(gift: Gift, answers: Answers, occLabel: string): { bonus: 
       };
     }
     case "New Baby": {
-      // +10 if gift.ages includes Baby (or Child)
-      // −10 if gift has NO baby-relevant age tags
-      const hasBaby = ["Baby", "Child"].some((b) => tolerantIncludes(gift.ages, b));
-      return hasBaby ? { bonus: 10, penalty: 0 } : { bonus: 0, penalty: 10 };
+      // +10 for the explicit tag. No penalty for gifts without a baby age
+      // tag: those are curated for the new parents themselves (a hospital
+      // bag, a meal delivery), which is exactly what the tag is for.
+      return { bonus: 10, penalty: 0 };
     }
     default:
       // Birthday, Housewarming, Appreciation, Thank You, and any newer occasion:
