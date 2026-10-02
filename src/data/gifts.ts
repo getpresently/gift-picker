@@ -188,14 +188,29 @@ function matchCount(haystack: string[], candidates: string[]): number {
 
 /* ------------------------------------------------------------------ *
  * Score components, totals to ~95 pts, plus an Occasion adjustment of
- * up to ±15 applied last. Score is clamped to [0, 100].
+ * +10 to −15 applied last. Score is clamped to [0, 100].
  *
  *   Relation 25  ·  Age 10  ·  Budget 10  ·  Interests 40  ·  Vibe 10
  *
  * Interests is intentionally the dominant signal: a user picking
  * "Fitness" should see fitness gifts, not just any gift that fits
- * their recipient + age bracket.
+ * their recipient + age bracket. The occasion bonus is scaled by interest
+ * coverage (see scoreOccasionAdjustment) so it can't undo that: a gift
+ * matching more of the picked interests ranks higher unless it lacks the
+ * recipient or age tag, runs over budget, takes an occasion penalty, or
+ * misses both the vibe and the occasion tag.
  * ------------------------------------------------------------------ */
+
+/** How many of the user's picked interests the gift carries (each pick counts once). */
+function interestMatchCount(gift: Gift, answers: Answers): number {
+  const picks = answers.interests ?? [];
+  let hits = 0;
+  for (const v of picks) {
+    const labels = INTEREST_LABELS[v] ?? [];
+    if (matchCount(gift.interests, labels) > 0) hits++;
+  }
+  return hits;
+}
 
 function scoreRelation(gift: Gift, answers: Answers): number {
   if (!answers.recipient) return 0;
@@ -236,18 +251,9 @@ function scoreBudget(gift: Gift, answers: Answers): number {
   return 5;
 }
 
-function scoreInterests(gift: Gift, answers: Answers): number {
-  const userPicks = answers.interests ?? [];
-  if (!userPicks.length) return 0;
-  // Count: how many of the user's N picks have at least one matching label in the gift
-  let hits = 0;
-  for (const v of userPicks) {
-    const labels = INTEREST_LABELS[v] ?? [];
-    if (matchCount(gift.interests, labels) > 0) hits++;
-  }
-  if (!hits) return 0;
-  // Pro-rate to 40 pts max, interests are the dominant signal.
-  return Math.round((hits / userPicks.length) * 40);
+/** Interest coverage (hits / picks) pro-rated to 40 pts max, the dominant signal. */
+function scoreInterests(coverage: number): number {
+  return Math.round(coverage * 40);
 }
 
 function scoreVibe(gift: Gift, answers: Answers): number {
@@ -264,76 +270,86 @@ function scoreVibe(gift: Gift, answers: Answers): number {
 
 /**
  * Occasion adjustment, only applied when the gift is tagged for the user's
- * occasion in the Occasions column. Each occasion has its own bonus/penalty
- * rules per the spec (see Question 2's README). Returns positive (bonus) or
- * negative (penalty) integer points.
+ * occasion in the Occasions column. Occasions with their own rule (per the
+ * spec, see Question 2's README) earn a bonus and/or a penalty from it;
+ * every other occasion (Birthday, Housewarming, Appreciation, Thank You,
+ * and any label added to OCCASION_LABELS later) earns a flat +10 for the
+ * explicit tag match, so the curator's occasion tags always count.
+ *
+ * The bonus is multiplied by `coverage`, the share of the user's picked
+ * interests the gift matches: a gift matching 1 of 3 interests gets a third
+ * of it, one matching none gets nothing. Occasion fit then refines the
+ * order among gifts that suit what the recipient is into, without lifting
+ * a weaker interest match over a stronger one or pulling unrelated gifts
+ * into the results. Penalties apply in full, since they mark gifts the
+ * spec calls a poor fit for the occasion. Returns integer points.
  *
  * When the user picked the free-text "Other" occasion (occasion === "other"),
  * OCCASION_LABELS doesn't have a match → this returns 0 and the algorithm
  * silently bypasses all occasion-based scoring. That's intentional: a typed
  * occasion like "Bar Mitzvah" can't be mapped to the sheet's Occasions column.
  */
-function scoreOccasionAdjustment(gift: Gift, answers: Answers): number {
-  const occCode = answers.occasion;
-  if (!occCode) return 0;
-  const occLabel = OCCASION_LABELS[occCode];
+function scoreOccasionAdjustment(gift: Gift, answers: Answers, coverage: number): number {
+  const occLabel = answers.occasion ? OCCASION_LABELS[answers.occasion] : undefined;
   if (!occLabel) return 0;
   // If the gift isn't tagged for this occasion (column empty or doesn't include
   // the user's pick), skip occasion scoring for this gift entirely.
-  if (!gift.occasions.length) return 0;
   if (!tolerantIncludes(gift.occasions, occLabel)) return 0;
+  const { bonus, penalty } = occasionRule(gift, answers, occLabel);
+  return Math.round(bonus * coverage) - penalty;
+}
 
+/** Per-occasion bonus (before coverage scaling) and penalty, both as positive points. */
+function occasionRule(gift: Gift, answers: Answers, occLabel: string): { bonus: number; penalty: number } {
   switch (occLabel) {
-    case "Birthday": {
-      // +10 if interests match well (any overlap with user's selected interests)
-      const wanted = (answers.interests ?? []).flatMap((v) => INTEREST_LABELS[v] ?? []);
-      return matchCount(gift.interests, wanted) > 0 ? 10 : 0;
-    }
     case "Anniversary": {
       // +10 if gift.types includes Sentimental or Luxurious
       // −10 if gift.types contains ONLY Practical/Fun (nothing else)
       const hasSentLux = gift.types.some(
         (t) => tolerantIncludes([t], "Sentimental") || tolerantIncludes([t], "Luxurious"),
       );
-      if (hasSentLux) return 10;
+      if (hasSentLux) return { bonus: 10, penalty: 0 };
       const onlyPracFun =
         gift.types.length > 0 &&
         gift.types.every((t) => tolerantIncludes([t], "Practical") || tolerantIncludes([t], "Fun"));
-      return onlyPracFun ? -10 : 0;
+      return { bonus: 0, penalty: onlyPracFun ? 10 : 0 };
     }
     case "Holiday": {
       // +10 if gift.relations matches the user's recipient
-      if (!answers.recipient) return 0;
-      if (answers.recipient === "self") return gift.relations.length > 0 ? 10 : 0;
-      const wanted = RECIPIENT_LABELS[answers.recipient] ?? [];
-      return matchCount(gift.relations, wanted) > 0 ? 10 : 0;
+      let fits = false;
+      if (answers.recipient === "self") fits = gift.relations.length > 0;
+      else if (answers.recipient) fits = matchCount(gift.relations, RECIPIENT_LABELS[answers.recipient] ?? []) > 0;
+      return { bonus: fits ? 10 : 0, penalty: 0 };
     }
     case "Wedding": {
       // +10 if gift.interests has Home & Decor / Experiences / Personalization
       // −15 if gift.interests has Gaming / Tech & Electronics / Fitness
       const positive = ["Home & Decor", "Experiences", "Personalization"];
       const negative = ["Gaming", "Tech & Electronics", "Fitness"];
-      let adj = 0;
-      if (positive.some((p) => tolerantIncludes(gift.interests, p))) adj += 10;
-      if (negative.some((p) => tolerantIncludes(gift.interests, p))) adj -= 15;
-      return adj;
+      return {
+        bonus: positive.some((p) => tolerantIncludes(gift.interests, p)) ? 10 : 0,
+        penalty: negative.some((p) => tolerantIncludes(gift.interests, p)) ? 15 : 0,
+      };
     }
-    case "Just because": {
+    case "Just Because": {
       // +10 if gift.types includes Fun; −5 if gift.types includes Luxurious
-      let adj = 0;
-      if (tolerantIncludes(gift.types, "Fun")) adj += 10;
-      if (tolerantIncludes(gift.types, "Luxurious")) adj -= 5;
-      return adj;
+      return {
+        bonus: tolerantIncludes(gift.types, "Fun") ? 10 : 0,
+        penalty: tolerantIncludes(gift.types, "Luxurious") ? 5 : 0,
+      };
     }
-    case "New parent": {
-      // +10 if gift.ages includes Baby / New Parent
+    case "New Baby": {
+      // +10 if gift.ages includes Baby (or Child)
       // −10 if gift has NO baby-relevant age tags
-      const babyRelevant = ["Baby / New Parent", "Child"];
-      const hasBaby = babyRelevant.some((b) => tolerantIncludes(gift.ages, b));
-      return hasBaby ? 10 : -10;
+      const hasBaby = ["Baby", "Child"].some((b) => tolerantIncludes(gift.ages, b));
+      return hasBaby ? { bonus: 10, penalty: 0 } : { bonus: 0, penalty: 10 };
     }
+    default:
+      // Birthday, Housewarming, Appreciation, Thank You, and any newer occasion:
+      // the explicit tag match itself is the signal. For Birthday this is the
+      // old "+10 when interests match", now proportional to how well they match.
+      return { bonus: 10, penalty: 0 };
   }
-  return 0;
 }
 
 /**
@@ -362,8 +378,9 @@ const BUDGET_CAP_MULTIPLIER = 1.1;
  *                          (raw price; $49/mo is treated like one-shot $49)
  *   - Interests          0–40 (pro-rated by hits/picks; dominant signal)
  *   - Vibe / Type        0–10 (pro-rated)
- *   - Occasion adjust    ±0 / ±5 / ±10 / ±15 (applied last, per occasion
- *                        bonus/penalty table; total clamped to [0, 100])
+ *   - Occasion adjust    bonus up to +10 scaled by interest coverage, minus
+ *                        a penalty of 0 / 5 / 10 / 15 (applied last, per
+ *                        occasion table; total clamped to [0, 100])
  */
 export function scoreGift(gift: Gift, answers: Answers): number {
   // Hard filter: only Live gifts get scored
@@ -405,34 +422,53 @@ export function scoreGift(gift: Gift, answers: Answers): number {
     }
   }
 
+  const picks = answers.interests?.length ?? 0;
+  const coverage = picks ? interestMatchCount(gift, answers) / picks : 0;
+
   const base =
     scoreRelation(gift, answers) +
     scoreAge(gift, answers) +
     scoreBudget(gift, answers) +
-    scoreInterests(gift, answers) +
+    scoreInterests(coverage) +
     scoreVibe(gift, answers);
 
-  const occAdj = scoreOccasionAdjustment(gift, answers);
+  // With no interests picked (possible from the Refine panel) there is
+  // nothing to scale the occasion bonus by, so it applies in full.
+  const occAdj = scoreOccasionAdjustment(gift, answers, picks ? coverage : 1);
   const total = base + occAdj;
   return Math.max(0, Math.min(100, total));
 }
 
 /* ------------------------------------------------------------------ *
- * Tiebreakers: 1) more interest matches first, 2) Best Sellers boost
+ * Tiebreakers for equal scores: 1) more interest matches, 2) Best
+ * Sellers, 3) price closest to the budget
  * ------------------------------------------------------------------ */
-
-function interestMatchCount(gift: Gift, answers: Answers): number {
-  const picks = answers.interests ?? [];
-  let hits = 0;
-  for (const v of picks) {
-    const labels = INTEREST_LABELS[v] ?? [];
-    if (matchCount(gift.interests, labels) > 0) hits++;
-  }
-  return hits;
-}
 
 function isBestSeller(gift: Gift): boolean {
   return tolerantIncludes(gift.interests, "Best Sellers") || tolerantIncludes(gift.interests, "Best Seller");
+}
+
+/**
+ * How close the gift's price sits to the user's budget, from 0 to 1. Used
+ * only as the last tiebreaker, so among equally scored gifts one priced
+ * near the budget comes before a much cheaper one, without changing any
+ * displayed score or which gifts qualify.
+ *   - At or under budget: price / budget ($30 on a $120 budget = 0.25).
+ *     Ranged prices use the top of the range up to the budget, so an $85
+ *     to $175 range on a $120 budget, an open "$X+" price, or a "Your
+ *     choice" gift card all count as 1.
+ *   - Over budget (within the 10% cap): budget / price, just under 1.
+ *   - Unknown price (0) or no budget: 0.
+ */
+function budgetFit(gift: Gift, answers: Answers): number {
+  const budget = answers.budget;
+  if (typeof budget !== "number" || budget <= 0) return 0;
+  if (gift.isYourChoice) return 1;
+  if (gift.price <= 0) return 0;
+  if (gift.price > budget) return budget / gift.price;
+  if (gift.priceOpen) return 1;
+  const top = gift.priceMax !== null && gift.priceMax > gift.price ? Math.min(gift.priceMax, budget) : gift.price;
+  return top / budget;
 }
 
 /**
@@ -457,13 +493,14 @@ const MATCH_LOOSE = 55;
  * gifts carry their 0–100 `matchScore` for display in the UI.
  */
 export function rankGifts(gifts: Gift[], answers: Answers): RankedGift[] {
-  type Scored = { gift: Gift; score: number; interestHits: number; bestSeller: boolean };
+  type Scored = { gift: Gift; score: number; interestHits: number; bestSeller: boolean; budgetFit: number };
   const scored: Scored[] = gifts
     .map((g) => ({
       gift: g,
       score: scoreGift(g, answers),
       interestHits: interestMatchCount(g, answers),
       bestSeller: isBestSeller(g),
+      budgetFit: budgetFit(g, answers),
     }))
     .filter((s) => s.score >= 0);
 
@@ -471,7 +508,7 @@ export function rankGifts(gifts: Gift[], answers: Answers): RankedGift[] {
     if (b.score !== a.score) return b.score - a.score;
     if (b.interestHits !== a.interestHits) return b.interestHits - a.interestHits;
     if (a.bestSeller !== b.bestSeller) return a.bestSeller ? -1 : 1;
-    return 0;
+    return b.budgetFit - a.budgetFit;
   };
 
   const finalize = (list: Scored[]): RankedGift[] =>
