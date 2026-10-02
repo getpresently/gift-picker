@@ -272,6 +272,8 @@ export function RefineModal({ open, answers, isMobile, onClose, onApply }: Props
               <BudgetSlider
                 value={typeof draft.budget === "number" ? draft.budget : budgetQ.defaultValue}
                 onChange={(v) => setDraft((d) => ({ ...d, budget: v }))}
+                minValue={draft.budgetMin ?? budgetQ.min}
+                onMinChange={(v) => setDraft((d) => ({ ...d, budgetMin: v > budgetQ.min ? v : undefined }))}
                 min={budgetQ.min}
                 max={budgetQ.max}
                 step={budgetQ.step}

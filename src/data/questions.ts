@@ -52,6 +52,8 @@ export type Answers = {
   interests?: string[];
   vibe?: string[];
   budget?: number;
+  /** Optional budget floor (the slider's left handle). Unset means no floor. */
+  budgetMin?: number;
   /** Optional refinement from the results page; never asked in the quiz. */
   gender?: Gender;
 };
@@ -334,7 +336,9 @@ export function humanizeAnswers(answers: Answers): Record<string, unknown> {
   const vibe = multiLabels("vibe", answers.vibe);
   if (vibe !== undefined) out.vibe = vibe;
 
-  if (answers.budget !== undefined) out.budget = answers.budget;
+  if (answers.budget !== undefined) {
+    out.budget = typeof answers.budgetMin === "number" ? `${answers.budgetMin}-${answers.budget}` : answers.budget;
+  }
   if (answers.gender && answers.gender !== "any") {
     out.gender = GENDER_OPTIONS.find((g) => g.v === answers.gender)?.l ?? answers.gender;
   }

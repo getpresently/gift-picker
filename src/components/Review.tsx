@@ -24,9 +24,14 @@ import type { ReviewErrorCode, ReviewGift, UnlockState } from "../data/reviewApi
  * redundant near-duplicates via the close-matches panel.
  */
 
-type FilterKey = "needs" | "approved" | "rejected" | "retired" | "all";
+type FilterKey = "needs" | "approved" | "rejected" | "dead" | "retired" | "all";
 type SortKey = "sheet" | "redundant" | "notes";
-type ActionKind = "approve" | "reject";
+type ActionKind = "approve" | "reject" | "dead";
+
+/** Status each action writes; approve keeps the current status. */
+const ACTION_STATUS: Record<Exclude<ActionKind, "approve">, string> = { reject: "Rejected", dead: "Dead" };
+const ACTION_TOAST: Record<ActionKind, string> = { approve: "Approved", reject: "Rejected", dead: "Marked dead" };
+const TALLY_KEY: Record<ActionKind, keyof Tally> = { approve: "approved", reject: "rejected", dead: "dead" };
 
 type UndoEntry = {
   rowId: string;
@@ -38,7 +43,7 @@ type UndoEntry = {
   nextReviewed: boolean;
 };
 
-type Tally = { approved: number; rejected: number };
+type Tally = { approved: number; rejected: number; dead: number };
 type ToastState = { id: number; label: string; showUndo: boolean };
 type BannerState = { text: string; reloadable: boolean };
 
@@ -50,6 +55,7 @@ const FILTERS: { key: FilterKey; label: string }[] = [
   { key: "needs", label: "Needs review" },
   { key: "approved", label: "Approved" },
   { key: "rejected", label: "Rejected" },
+  { key: "dead", label: "Dead" },
   { key: "retired", label: "Retired" },
   { key: "all", label: "All" },
 ];
@@ -67,6 +73,8 @@ function matchesFilter(g: ReviewGift, filter: FilterKey): boolean {
       return isLiveStatus(status) && g.reviewed;
     case "rejected":
       return status === "Rejected";
+    case "dead":
+      return status === "Dead";
     case "retired":
       return status === "Retired";
     case "all":
@@ -613,6 +621,7 @@ function ActionBar({
   canUndo,
   onApprove,
   onReject,
+  onDead,
   onSkip,
   onBack,
   onUndo,
@@ -622,6 +631,7 @@ function ActionBar({
   canUndo: boolean;
   onApprove: () => void;
   onReject: () => void;
+  onDead: () => void;
   onSkip: () => void;
   onBack: () => void;
   onUndo: () => void;
@@ -637,6 +647,10 @@ function ActionBar({
           <Pillow tone="plum" size="md" onClick={onReject} disabled={disabled} style={{ flex: 1 }}>
             Reject
             <Key k="R" />
+          </Pillow>
+          <Pillow tone="cream" size="md" onClick={onDead} disabled={disabled} style={{ flex: 0.7 }}>
+            Dead
+            <Key k="D" dark />
           </Pillow>
         </div>
         <div style={{ display: "flex", gap: 8 }}>
@@ -680,6 +694,9 @@ function ActionBar({
       </Pillow>
       <Pillow tone="plum" size="sm" onClick={onReject} disabled={disabled}>
         Reject
+      </Pillow>
+      <Pillow tone="cream" size="sm" onClick={onDead} disabled={disabled}>
+        Dead
       </Pillow>
       <Pillow tone="ink" size="sm" onClick={onSkip} disabled={disabled}>
         Skip
@@ -812,7 +829,7 @@ function ReviewTool({ unlock }: { unlock: UnlockState }) {
   const [sortKey, setSortKey] = useState<SortKey>("sheet");
   const [currentId, setCurrentId] = useState<string | null>(null);
   const [undoStack, setUndoStack] = useState<UndoEntry[]>([]);
-  const [tally, setTally] = useState<Tally>({ approved: 0, rejected: 0 });
+  const [tally, setTally] = useState<Tally>({ approved: 0, rejected: 0, dead: 0 });
   const [toast, setToast] = useState<ToastState | null>(null);
   const [banner, setBanner] = useState<BannerState | null>(null);
   const [caughtUp, setCaughtUp] = useState(false);
@@ -838,11 +855,12 @@ function ReviewTool({ unlock }: { unlock: UnlockState }) {
   const giftById = useMemo(() => new Map(merged.map((g) => [g.id, g])), [merged]);
 
   const counts = useMemo(() => {
-    const c: Record<FilterKey, number> = { needs: 0, approved: 0, rejected: 0, retired: 0, all: merged.length };
+    const c: Record<FilterKey, number> = { needs: 0, approved: 0, rejected: 0, dead: 0, retired: 0, all: merged.length };
     for (const g of merged) {
       if (matchesFilter(g, "needs")) c.needs++;
       if (matchesFilter(g, "approved")) c.approved++;
       if (matchesFilter(g, "rejected")) c.rejected++;
+      if (matchesFilter(g, "dead")) c.dead++;
       if (matchesFilter(g, "retired")) c.retired++;
     }
     return c;
@@ -929,14 +947,14 @@ function ReviewTool({ unlock }: { unlock: UnlockState }) {
 
       const prevStatus = gift.status;
       const prevReviewed = gift.reviewed;
-      const nextStatus = action === "reject" ? "Rejected" : prevStatus;
+      const nextStatus = action === "approve" ? prevStatus : ACTION_STATUS[action];
       const nextReviewed = true;
-      const tallyKey: keyof Tally = action === "approve" ? "approved" : "rejected";
+      const tallyKey = TALLY_KEY[action];
 
       setOverrides((o) => ({ ...o, [currentId]: { status: nextStatus, reviewed: nextReviewed } }));
       setTally((t) => ({ ...t, [tallyKey]: t[tallyKey] + 1 }));
       setUndoStack((s) => [...s, { rowId: currentId, giftName: gift.name, action, prevStatus, prevReviewed, nextStatus, nextReviewed }]);
-      showToast(action === "approve" ? "Approved" : "Rejected", true);
+      showToast(ACTION_TOAST[action], true);
 
       const idx = filteredIds.indexOf(currentId);
       const nextId = idx >= 0 && idx + 1 < filteredIds.length ? filteredIds[idx + 1] : null;
@@ -946,7 +964,7 @@ function ReviewTool({ unlock }: { unlock: UnlockState }) {
         secret: unlock.secret,
         rowId: currentId,
         gift: gift.name,
-        ...(action === "reject" ? { status: "Rejected" } : {}),
+        ...(action === "approve" ? {} : { status: ACTION_STATUS[action] }),
         reviewed: true,
       }).then((res) => {
         if (res.ok) return;
@@ -962,7 +980,7 @@ function ReviewTool({ unlock }: { unlock: UnlockState }) {
   const undoLast = useCallback(() => {
     const entry = undoStack[undoStack.length - 1];
     if (!entry || !unlock.secret) return;
-    const tallyKey: keyof Tally = entry.action === "approve" ? "approved" : "rejected";
+    const tallyKey = TALLY_KEY[entry.action];
 
     setUndoStack((s) => s.slice(0, -1));
     setOverrides((o) => ({ ...o, [entry.rowId]: { status: entry.prevStatus, reviewed: entry.prevReviewed } }));
@@ -1003,6 +1021,9 @@ function ReviewTool({ unlock }: { unlock: UnlockState }) {
       } else if (key === "r") {
         e.preventDefault();
         performAction("reject");
+      } else if (key === "d") {
+        e.preventDefault();
+        performAction("dead");
       } else if (key === "s" || e.key === "ArrowRight") {
         e.preventDefault();
         skip();
@@ -1027,7 +1048,7 @@ function ReviewTool({ unlock }: { unlock: UnlockState }) {
 
         <SiteHeader onLogoClick={() => navigate("/")}>
           <span style={{ fontFamily: "Geist, sans-serif", fontSize: 13, color: "rgba(35,20,16,0.6)", whiteSpace: "nowrap" }}>
-            {tally.approved} approved, {tally.rejected} rejected
+            {tally.approved} approved, {tally.rejected} rejected{tally.dead ? `, ${tally.dead} dead` : ""}
           </span>
           <Pillow tone="ink" size="sm" onClick={unlock.lock}>
             Lock
@@ -1188,6 +1209,7 @@ function ReviewTool({ unlock }: { unlock: UnlockState }) {
                     canUndo={undoStack.length > 0}
                     onApprove={() => performAction("approve")}
                     onReject={() => performAction("reject")}
+                    onDead={() => performAction("dead")}
                     onSkip={skip}
                     onBack={back}
                     onUndo={undoLast}
@@ -1207,6 +1229,7 @@ function ReviewTool({ unlock }: { unlock: UnlockState }) {
             canUndo={undoStack.length > 0}
             onApprove={() => performAction("approve")}
             onReject={() => performAction("reject")}
+                    onDead={() => performAction("dead")}
             onSkip={skip}
             onBack={back}
             onUndo={undoLast}

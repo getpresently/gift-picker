@@ -399,6 +399,19 @@ export function scoreGift(gift: Gift, answers: Answers): number {
     return -1;
   }
 
+  // Hard filter: under the budget floor. A gift qualifies when its price, or
+  // the top of its range, reaches the floor (with the same 10% fuzz, applied
+  // downward). Gift cards and open-ended prices always qualify.
+  if (
+    typeof answers.budgetMin === "number" &&
+    !gift.isYourChoice &&
+    !gift.priceOpen &&
+    gift.price > 0 &&
+    Math.max(gift.price, gift.priceMax ?? 0) < answers.budgetMin / BUDGET_CAP_MULTIPLIER
+  ) {
+    return -1;
+  }
+
   // Hard filter: age tags both specified, no overlap.
   if (gift.ages.length > 0) {
     if (answers.age) {
@@ -534,7 +547,11 @@ export function buildMatchReasons(gift: Gift, answers: Answers): string[] {
   const bullets: string[] = [];
 
   if (typeof answers.budget === "number") {
-    bullets.push(`Lands inside your $${answers.budget} budget`);
+    bullets.push(
+      typeof answers.budgetMin === "number"
+        ? `Lands inside your $${answers.budgetMin} to $${answers.budget} budget`
+        : `Lands inside your $${answers.budget} budget`,
+    );
   }
   if (gift.brand) {
     bullets.push(`From ${gift.brand}`);

@@ -11,7 +11,7 @@ import { FooterLinks } from "./clay/FooterLinks";
 import { PresentlyMark } from "./clay/PresentlyMark";
 
 const HOW_STEPS: { n: string; title: string; body: string; tint: Tint }[] = [
-  { n: "01", title: "Tell us about them", body: "Closeness, vibes, budget. A few questions, no account.", tint: "rose" },
+  { n: "01", title: "Tell us about them", body: "Closeness, vibes, budget. Six questions, no account.", tint: "rose" },
   { n: "02", title: "We do the thinking", body: "Every gift is hand-curated by our team, then matched to your answers.", tint: "butter" },
   { n: "03", title: "Show up looking great", body: "Send the link or just buy it yourself.", tint: "sage" },
 ];
@@ -173,7 +173,7 @@ export function Landing() {
                   maxWidth: 460,
                 }}
               >
-                A few questions. A pile of gifts they'll actually love. Built for the chronically indecisive and the
+                Six questions. A pile of gifts they'll actually love. Built for the chronically indecisive and the
                 deeply caring.
               </p>
 

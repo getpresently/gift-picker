@@ -21,6 +21,7 @@ export function encodeAnswers(answers: Answers): string {
   if (answers.interests?.length) params.set("i", answers.interests.join(","));
   if (answers.vibe?.length) params.set("v", answers.vibe.join(","));
   if (typeof answers.budget === "number") params.set("b", String(answers.budget));
+  if (typeof answers.budgetMin === "number") params.set("bmin", String(answers.budgetMin));
   if (answers.gender && answers.gender !== "any") params.set("g", answers.gender);
   return params.toString();
 }
@@ -39,6 +40,11 @@ export function decodeAnswers(search: string): Answers | null {
   if (b !== null && b !== "") {
     const n = Number(b);
     if (Number.isFinite(n)) out.budget = n;
+  }
+  const bmin = params.get("bmin");
+  if (bmin !== null && bmin !== "") {
+    const n = Number(bmin);
+    if (Number.isFinite(n)) out.budgetMin = n;
   }
   return Object.keys(out).length ? out : null;
 }

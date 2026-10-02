@@ -211,7 +211,12 @@ export function Results() {
     genderLabel,
     occasionLabel,
     interestsLabel,
-    typeof budget === "number" ? `$${budget} budget` : null,
+    typeof budget === "number"
+      ? typeof answers.budgetMin === "number"
+        ? `$${answers.budgetMin}\u2013$${budget} budget`
+        : `$${budget} budget`
+      : null,
+    "hand-curated",
   ].filter((p): p is string => Boolean(p));
 
   const [hero, ...rest] = picks;
@@ -349,9 +354,8 @@ export function Results() {
                     height: 30,
                     borderRadius: "50%",
                     border: "none",
-                    background: "rgba(255,255,255,0.75)",
-                    boxShadow: "inset 0 1px 0 rgba(255,255,255,0.9), 0 3px 8px -2px rgba(80,30,30,0.2)",
-                    color: "#5A3F36",
+                    background: "transparent",
+                    color: "rgba(35,20,16,0.55)",
                     cursor: "pointer",
                     display: "inline-flex",
                     verticalAlign: "middle",
