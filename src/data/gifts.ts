@@ -244,11 +244,19 @@ function scoreBudget(gift: Gift, answers: Answers): number {
   if (gift.isYourChoice) return 10;
   if (gift.price <= 0) return 0;
 
-  // Hard cap is enforced in scoreGift (1.10×). Within that, score binary:
-  //  - at or under budget → full 10 pts
-  //  - over budget but within the 10% fuzz → partial 5 pts
-  if (gift.price <= answers.budget) return 10;
-  return 5;
+  // Both ends of the budget are fuzzy by 10%; the hard limits live in
+  // scoreGift. Inside the range → full 10 pts. Within the fuzz on either
+  // side (a little over the ceiling, or topping out a little under the
+  // floor) → partial 5 pts.
+  if (gift.price > answers.budget) return 5;
+  if (
+    typeof answers.budgetMin === "number" &&
+    !gift.priceOpen &&
+    Math.max(gift.price, gift.priceMax ?? 0) < answers.budgetMin
+  ) {
+    return 5;
+  }
+  return 10;
 }
 
 /** Interest coverage (hits / picks) pro-rated to 40 pts max, the dominant signal. */
