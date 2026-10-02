@@ -20,13 +20,17 @@ const RANGE_CSS = `
 .gp-range::-moz-range-thumb { pointer-events: auto; width: 32px; height: 32px; border-radius: 50%; cursor: pointer; background: transparent; border: none; }
 `;
 
+// Native thumbs are 32px wide, so their centers run from 16px to (width - 16px).
+// Visual thumbs and the fill use the same mapping, so what you see is what you grab.
+const at = (pct: number, offset = 0) => `calc(${pct / 100} * (100% - 32px) + ${16 + offset}px)`;
+
 function Thumb({ pct }: { pct: number }) {
   return (
     <div
       style={{
         position: "absolute",
         top: 0,
-        left: `calc(${pct}% - 14px)`,
+        left: at(pct, -14),
         width: 28,
         height: 28,
         borderRadius: "50%",
@@ -92,8 +96,8 @@ export function BudgetSlider({ value, onChange, minValue, onMinChange, min, max,
           style={{
             position: "absolute",
             top: 10,
-            left: `${floorPct}%`,
-            width: `${pct - floorPct}%`,
+            left: hasFloor ? at(floorPct) : 0,
+            width: hasFloor ? `calc(${(pct - floorPct) / 100} * (100% - 32px))` : at(pct),
             height: 8,
             borderRadius: 4,
             background: "linear-gradient(90deg, #FFD074 0%, #FF8C71 50%, #C4477E 100%)",
