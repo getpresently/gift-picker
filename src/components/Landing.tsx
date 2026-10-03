@@ -24,11 +24,25 @@ const BRANDS = [
 
 const PRODUCTHUNT_URL = "https://www.producthunt.com/posts/giftpicker-by-presently";
 
-// The first entry is the featured pull quote; `em` is the phrase set in plum italic.
-const TESTIMONIALS: { q: string; em?: string; n: string; bg: string; fg: string }[] = [
-  { q: "My boyfriend uses the V60 every single morning. It was the perfect choice.", em: "perfect", n: "Ella R.", bg: "#FFD9CC", fg: "#8A3A2A" },
-  { q: "Took 90 seconds. Picked something better than I would have in an hour.", n: "Priya S.", bg: "#FFE7B0", fg: "#7A5410" },
-  { q: "Finally, a gift quiz that doesn’t suggest a scented candle every time.", n: "Marcus T.", bg: "#EBD3E4", fg: "#7E3F71" },
+// Real comments from GiftPicker users, quoted verbatim (trimmed only at
+// sentence breaks). The first entry is the featured pull quote; `em` is the
+// phrase set in plum italic. Avatar tints cycle through AVATAR_TONES.
+const TESTIMONIALS: { q: string; em?: string; n: string }[] = [
+  { q: "Love this! This is so helpful to give thoughtful gifts especially when you don\u2019t have days/weeks to hunt.", em: "thoughtful gifts", n: "Amanda E." },
+  { q: "Easy to use and gave me a great idea for my gifts for my siblings. Thanks!", n: "Max G." },
+  { q: "This is addictive! Already filled it out multiple times looking for gifts for my fam. Life saver!!", n: "Anna F." },
+  { q: "Took 90 seconds. Picked something better than I would have in an hour.", n: "Priya S." },
+  { q: "Super easy to use and will definitely be using for ideas for family and friends.", n: "Jigesh M." },
+  { q: "Perfect timing, I\u2019ve been dragging my feet on gift shopping for my picky fam. Ty for the help!", n: "Peter W." },
+  { q: "My boyfriend uses the V60 every single morning. It was the perfect choice.", n: "Ella R." },
+  { q: "Simple, fast, and fun :)", n: "Bhaumik P." },
+  { q: "Works great and makes the decision process easier.", n: "Mario S." },
+];
+
+const AVATAR_TONES = [
+  { bg: "#FFD9CC", fg: "#8A3A2A" },
+  { bg: "#FFE7B0", fg: "#7A5410" },
+  { bg: "#EBD3E4", fg: "#7E3F71" },
 ];
 
 function initials(name: string) {
@@ -40,8 +54,9 @@ function initials(name: string) {
     .toUpperCase();
 }
 
-function Attribution({ t, size }: { t: (typeof TESTIMONIALS)[number]; size: "lg" | "sm" }) {
+function Attribution({ t, i, size }: { t: (typeof TESTIMONIALS)[number]; i: number; size: "lg" | "sm" }) {
   const d = size === "lg" ? 34 : 28;
+  const tone = AVATAR_TONES[i % AVATAR_TONES.length];
   return (
     <figcaption style={{ display: "flex", alignItems: "center", gap: 10, marginTop: size === "lg" ? 22 : 14 }}>
       <span
@@ -50,8 +65,8 @@ function Attribution({ t, size }: { t: (typeof TESTIMONIALS)[number]; size: "lg"
           width: d,
           height: d,
           borderRadius: "50%",
-          background: t.bg,
-          color: t.fg,
+          background: tone.bg,
+          color: tone.fg,
           display: "inline-flex",
           alignItems: "center",
           justifyContent: "center",
@@ -65,9 +80,6 @@ function Attribution({ t, size }: { t: (typeof TESTIMONIALS)[number]; size: "lg"
         {initials(t.n)}
       </span>
       <span style={{ fontFamily: "Geist, sans-serif", fontSize: 13, fontWeight: 600, color: "#231410" }}>{t.n}</span>
-      <span style={{ display: "inline-flex", gap: 1 }} aria-label="5 out of 5 stars">
-        {[0, 1, 2, 3, 4].map((i) => <Star key={i} size={10} />)}
-      </span>
     </figcaption>
   );
 }
@@ -371,85 +383,99 @@ export function Landing() {
           {/* Testimonials */}
           {/* Kept off ClaySurface on purpose so this band doesn't mirror the step cards above. */}
           <section id="testimonials" style={{ marginTop: isMobile ? 64 : 96 }}>
-            <div
-              style={{
-                display: "grid",
-                gridTemplateColumns: isMobile ? "1fr" : "1.3fr 1fr",
-                columnGap: 72,
-                rowGap: 28,
-                alignItems: "center",
-              }}
-            >
-              {(() => {
-                const f = TESTIMONIALS[0];
-                const [before, after] = f.em ? f.q.split(f.em) : [f.q, ""];
-                return (
-                  <figure style={{ margin: 0 }}>
-                    <div
-                      aria-hidden
-                      style={{
-                        fontFamily: '"Instrument Serif", serif',
-                        fontSize: isMobile ? 88 : 120,
-                        lineHeight: 1,
-                        height: isMobile ? 44 : 60,
-                        color: "#C4477E",
-                        opacity: 0.35,
-                      }}
-                    >
-                      &ldquo;
-                    </div>
-                    <blockquote
-                      style={{
-                        margin: 0,
-                        fontFamily: '"Instrument Serif", serif',
-                        fontSize: isMobile ? 32 : 44,
-                        lineHeight: 1.1,
-                        letterSpacing: "-0.02em",
-                        color: "#231410",
-                        textWrap: "balance" as never,
-                      }}
-                    >
-                      {before}
-                      {f.em && <em style={{ color: "#C4477E", fontStyle: "italic" }}>{f.em}</em>}
-                      {after}
-                    </blockquote>
-                    <Attribution t={f} size="lg" />
-                  </figure>
-                );
-              })()}
-              <div
-                style={
-                  isMobile
-                    ? { borderTop: "1px solid rgba(35,20,16,0.1)", paddingTop: 4 }
-                    : undefined
-                }
-              >
-                {TESTIMONIALS.slice(1).map((t, i) => (
-                  <figure
-                    key={t.n}
+            {(() => {
+              const f = TESTIMONIALS[0];
+              const [before, after] = f.em ? f.q.split(f.em) : [f.q, ""];
+              return (
+                <figure style={{ margin: 0, maxWidth: 820 }}>
+                  <div
+                    aria-hidden
                     style={{
-                      margin: 0,
-                      padding: "22px 0",
-                      borderTop: i > 0 ? "1px solid rgba(35,20,16,0.1)" : "none",
+                      fontFamily: '"Instrument Serif", serif',
+                      fontSize: isMobile ? 88 : 120,
+                      lineHeight: 1,
+                      height: isMobile ? 44 : 60,
+                      color: "#C4477E",
+                      opacity: 0.35,
                     }}
                   >
-                    <blockquote
-                      style={{
-                        margin: 0,
-                        fontFamily: '"Instrument Serif", serif',
-                        fontStyle: "italic",
-                        fontSize: isMobile ? 21 : 24,
-                        lineHeight: 1.28,
-                        letterSpacing: "-0.01em",
-                        color: "#231410",
-                      }}
-                    >
-                      &ldquo;{t.q}&rdquo;
-                    </blockquote>
-                    <Attribution t={t} size="sm" />
-                  </figure>
-                ))}
-              </div>
+                    &ldquo;
+                  </div>
+                  <blockquote
+                    style={{
+                      margin: 0,
+                      fontFamily: '"Instrument Serif", serif',
+                      fontSize: isMobile ? 32 : 44,
+                      lineHeight: 1.1,
+                      letterSpacing: "-0.02em",
+                      color: "#231410",
+                      textWrap: "balance" as never,
+                    }}
+                  >
+                    {before}
+                    {f.em && <em style={{ color: "#C4477E", fontStyle: "italic" }}>{f.em}</em>}
+                    {after}
+                  </blockquote>
+                  <Attribution t={f} i={0} size="lg" />
+                </figure>
+              );
+            })()}
+
+            {/* The rest: an editorial wall in three columns on desktop, a
+                swipeable row on phones so the page stays short. */}
+            <div
+              style={
+                isMobile
+                  ? {
+                      display: "flex",
+                      gap: 12,
+                      overflowX: "auto",
+                      scrollSnapType: "x mandatory",
+                      margin: "36px -20px 0",
+                      padding: "0 20px 6px",
+                      scrollbarWidth: "none",
+                    }
+                  : { columnCount: 3, columnGap: 56, marginTop: 64 }
+              }
+            >
+              {TESTIMONIALS.slice(1).map((t, i) => (
+                <figure
+                  key={t.n}
+                  style={
+                    isMobile
+                      ? {
+                          margin: 0,
+                          flex: "0 0 78%",
+                          scrollSnapAlign: "start",
+                          padding: "20px 20px 18px",
+                          borderRadius: 22,
+                          background: "rgba(255,255,255,0.55)",
+                          boxShadow: "inset 0 1px 0 rgba(255,255,255,0.8), 0 6px 18px -10px rgba(80,30,30,0.25)",
+                        }
+                      : {
+                          margin: "0 0 30px",
+                          paddingTop: 22,
+                          borderTop: "1px solid rgba(35,20,16,0.1)",
+                          breakInside: "avoid",
+                        }
+                  }
+                >
+                  <blockquote
+                    style={{
+                      margin: 0,
+                      fontFamily: '"Instrument Serif", serif',
+                      fontStyle: "italic",
+                      fontSize: isMobile ? 21 : 23,
+                      lineHeight: 1.28,
+                      letterSpacing: "-0.01em",
+                      color: "#231410",
+                    }}
+                  >
+                    &ldquo;{t.q}&rdquo;
+                  </blockquote>
+                  <Attribution t={t} i={i + 1} size="sm" />
+                </figure>
+              ))}
             </div>
           </section>
 
