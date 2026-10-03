@@ -1,4 +1,5 @@
 import type { Answers } from "./questions";
+import { buildSimilarity, productType } from "./similarity";
 
 /**
  * Clean, code-side Gift model.
@@ -545,6 +546,106 @@ const MATCH_STRICT = 60;
 const MATCH_LOOSE = 55;
 
 /**
+ * Kinds that bunch up in results without being duplicates: two cookbooks
+ * share few title words, so the similarity score alone misses them. Used
+ * only to space out results; the /review close matches are unchanged.
+ * Checked against the name; cookbooks are also caught by their description
+ * ("Snoop Dogg and E-40 share more than 65 recipes...").
+ */
+const COOKBOOK_DESCRIPTION = /\bcookbook\b|\b\d+ (\w+ )?recipes\b/;
+const SPACING_KINDS: [string, RegExp][] = [
+  ["cookbook", /\bcookbooks?\b|\brecipes?\b.*\bbook\b/],
+  ["gift-card", /\bgift card\b/],
+  ["vinyl", /\b(vinyl|lp|record player|turntable)\b/],
+  ["playing-cards", /\bplaying cards\b/],
+  ["game", /\b(board game|card game|game of|game)\b/],
+  ["journal", /\b(journal|planner|notebook|diary)\b/],
+  ["tea", /\btea\b/],
+  ["book", /\b(book(?! nook)|paperback|hardcover|novel)\b/],
+  ["subscription", /\b(subscription|of the month|monthly box)\b/],
+];
+
+/** What kind of product a gift is, for spacing out results; null when unknown. */
+export function giftKind(gift: Gift): string | null {
+  const name = gift.name.toLowerCase();
+  for (const [kind, re] of SPACING_KINDS) if (re.test(name)) return kind;
+  const description = (gift.description ?? "").toLowerCase().slice(0, 160);
+  if (COOKBOOK_DESCRIPTION.test(description)) return "cookbook";
+  return productType(gift.name, gift.description ?? "");
+}
+
+/**
+ * Similarity (see similarity.ts) at which two results are too alike to sit
+ * next to each other. Lower than the /review duplicate threshold (0.4):
+ * here a false alarm only swaps two near-equal results.
+ */
+export const NEAR_DUPLICATE = 0.3;
+
+/** How close (in score points) a later gift must be to move up for variety. */
+const SPREAD_TOLERANCE = 3;
+
+const similarityByCatalog = new WeakMap<Gift[], (a: string, b: string) => number>();
+
+/** True when two gifts are the same kind of thing or near-duplicates. */
+export function tooAlike(catalog: Gift[], a: Gift, b: Gift): boolean {
+  const kind = giftKind(a);
+  if (kind && kind === giftKind(b)) return true;
+  let similarity = similarityByCatalog.get(catalog);
+  if (!similarity) {
+    similarity = buildSimilarity(catalog);
+    similarityByCatalog.set(catalog, similarity);
+  }
+  return similarity(a.id, b.id) >= NEAR_DUPLICATE;
+}
+
+/**
+ * Which of the shopper's picked interests a gift mainly answers: the pick
+ * its primary interest matches, else the first pick a secondary tag
+ * matches. Best Sellers is a popularity flag, so it never leads.
+ */
+export function leadInterest(gift: Gift, picks: string[]): string | null {
+  const real = picks.filter((v) => v !== "best");
+  const byPrimary = gift.primaryInterest
+    ? real.find((v) => matchCount([gift.primaryInterest], INTEREST_LABELS[v] ?? []) > 0)
+    : undefined;
+  return byPrimary ?? real.find((v) => matchCount(gift.interests, INTEREST_LABELS[v] ?? []) > 0) ?? null;
+}
+
+/**
+ * Reorders an already-ranked list so near-equal results don't bunch up:
+ * no two of the same kind (or near-duplicates) back to back, no same brand
+ * back to back, and, when the shopper picked several interests, no three
+ * in a row answering the same one. A gift only moves up when it scores
+ * within SPREAD_TOLERANCE of the one it replaces, so a clearly better
+ * match is never pushed down, and the top pick never changes.
+ */
+function spreadOut<T extends { gift: Gift; score: number }>(list: T[], catalog: Gift[], picks: string[]): T[] {
+  const pool = list.slice();
+  const out: T[] = [];
+  const lead = new Map(pool.map((x) => [x, picks.length > 1 ? leadInterest(x.gift, picks) : null]));
+  const clashes = (x: T) => {
+    const prev = out[out.length - 1];
+    if (x.gift.brand && x.gift.brand === prev.gift.brand) return true;
+    if (tooAlike(catalog, x.gift, prev.gift)) return true;
+    const l = lead.get(x);
+    return !!l && out.length >= 2 && out.slice(-2).every((y) => lead.get(y) === l);
+  };
+  while (pool.length) {
+    let pick = 0;
+    if (out.length && clashes(pool[0])) {
+      for (let i = 1; i < pool.length && pool[0].score - pool[i].score <= SPREAD_TOLERANCE; i++) {
+        if (!clashes(pool[i])) {
+          pick = i;
+          break;
+        }
+      }
+    }
+    out.push(pool.splice(pick, 1)[0]);
+  }
+  return out;
+}
+
+/**
  * Rank gifts. Returns every gift that clears the threshold band sorted
  * by score desc with tiebreakers. No upper cap, the Results page
  * paginates the list 8 at a time via its "Load more" control, so the
@@ -571,9 +672,7 @@ export function rankGifts(gifts: Gift[], answers: Answers): RankedGift[] {
   };
 
   const finalize = (list: Scored[]): RankedGift[] =>
-    list
-      .sort(compare)
-      .map((s) => ({ ...s.gift, matchScore: s.score }));
+    spreadOut(list.sort(compare), gifts, answers.interests ?? []).map((s) => ({ ...s.gift, matchScore: s.score }));
 
   const above60 = scored.filter((s) => s.score >= MATCH_STRICT);
   if (above60.length > 5) return finalize(above60);

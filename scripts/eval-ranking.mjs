@@ -8,7 +8,8 @@
  *   node scripts/eval-ranking.mjs --base main     # any git revision
  *   node scripts/eval-ranking.mjs --refresh       # refetch the catalog
  *   node scripts/eval-ranking.mjs --drops         # also list gifts that stop showing
- *   node scripts/eval-ranking.mjs --runs          # longest same-kind run in the top 24
+ *   node scripts/eval-ranking.mjs --runs          # bunching in the top 24 (kind, interest, brand)
+ *   TOP_N=24 node scripts/eval-ranking.mjs        # print 24 rows per query instead of 8
  *
  * The catalog comes from https://giftpicker.io/api/gifts and is cached in the
  * OS temp dir for 12 hours. Rows go through the site's own adaptRow parser,
@@ -26,7 +27,7 @@ const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const CATALOG_URL = "https://giftpicker.io/api/gifts";
 const CACHE_FILE = path.join(os.tmpdir(), "giftpicker-gifts.json");
 const CACHE_MAX_AGE_MS = 12 * 60 * 60 * 1000;
-const TOP_N = 8;
+const TOP_N = Number(process.env.TOP_N) || 8; // rows printed per query
 
 const args = process.argv.slice(2);
 const argValue = (flag, fallback) => {
@@ -85,9 +86,8 @@ async function loadModules() {
     stdin: {
       contents: [
         'export { adaptRow } from "./src/data/giftsApi";',
-        'export { rankGifts as rankAfter, INTEREST_LABELS } from "./src/data/gifts";',
+        'export { rankGifts as rankAfter, INTEREST_LABELS, tooAlike, leadInterest } from "./src/data/gifts";',
         'export { rankGifts as rankBefore } from "baseline:gifts";',
-        'export { productType } from "./src/data/similarity";',
       ].join("\n"),
       resolveDir: ROOT,
       loader: "ts",
@@ -98,8 +98,8 @@ async function loadModules() {
     format: "esm",
     outfile,
     logLevel: "error",
-    // giftsApi reads a Vite env var at module load.
-    define: { "import.meta.env.VITE_GIFTS_ENDPOINT": "undefined" },
+    // giftsApi and affiliate read Vite env vars at module load.
+    define: { "import.meta.env": "{}" },
     plugins: [
       {
         name: "baseline-gifts",
@@ -180,6 +180,7 @@ out.push(`Before = ${BASE_REV}:src/data/gifts.ts   After = working tree`);
 out.push(`Columns: score | price | interest hits | name`);
 
 const summary = [];
+const runs = [];
 QUERIES.forEach((q, i) => {
   const before = mod.rankBefore(gifts, q);
   const after = mod.rankAfter(gifts, q);
@@ -193,16 +194,28 @@ QUERIES.forEach((q, i) => {
   out.push(`  AFTER:  ${sa.text}`);
   out.push(...topLines(after, q, labels));
   if (args.includes("--runs")) {
-    // Longest stretch of back-to-back gifts of the same kind in the first 24
-    // (same product type, or same primary interest when no type is known).
-    const kind = (g) => mod.productType(g.name, g.description || "") || `primary:${g.primaryInterest || "?"}`;
-    const top = after.slice(0, 24).map(kind);
-    let best = { len: 0, kind: "", at: 0 };
-    for (let i = 0, j = 0; i < top.length; i = j) {
-      for (j = i; j < top.length && top[j] === top[i]; j++);
-      if (j - i > best.len) best = { len: j - i, kind: top[i], at: i + 1 };
-    }
-    out.push(`  LONGEST RUN in top 24: ${best.len} x ${best.kind} starting at #${best.at}`);
+    // Bunching in the first 24, before -> after: back-to-back pairs of the
+    // same kind or near-duplicates, the longest run answering the same
+    // picked interest, and same-brand pairs.
+    const bunching = (list) => {
+      const top = list.slice(0, 24);
+      let alike = 0, brand = 0, run = 0, longest = 0;
+      top.forEach((g, k) => {
+        const prev = top[k - 1];
+        if (prev && mod.tooAlike(gifts, g, prev)) alike++;
+        if (prev && g.brand && g.brand === prev.brand) brand++;
+        const lead = mod.leadInterest(g, q.interests);
+        run = prev && lead && lead === mod.leadInterest(prev, q.interests) ? run + 1 : 1;
+        longest = Math.max(longest, run);
+      });
+      return { alike, brand, longest };
+    };
+    const b = bunching(before), a = bunching(after);
+    const moved = after.slice(0, 24).filter((g, k) => before[k]?.id !== g.id).length;
+    out.push(
+      `  TOP 24: alike pairs ${b.alike} -> ${a.alike}, same-interest run ${b.longest} -> ${a.longest}, same-brand pairs ${b.brand} -> ${a.brand}, positions changed ${moved}`,
+    );
+    runs.push({ b, a, multi: q.interests.filter((v) => v !== "best").length > 1 });
   }
   if (args.includes("--drops")) {
     // Gifts shown before but not after, with their old score.
@@ -223,5 +236,14 @@ for (const { n, d, sb, sa } of summary) {
   const counts = `${String(sb.count).padStart(4)} -> ${String(sa.count).padEnd(4)} (${pct >= 0 ? "+" : ""}${pct}%)`;
   const inv = `inv ${String(sb.inversions).padStart(4)} -> ${String(sa.inversions).padEnd(4)}`;
   out.push(`  Q${String(n).padEnd(3)} ${counts.padEnd(22)} ${inv}  ${d}`);
+}
+if (runs.length) {
+  const sum = (key, side) => runs.reduce((t, r) => t + r[side][key], 0);
+  out.push("");
+  out.push(
+    `Top-24 bunching across all queries (before -> after): alike pairs ${sum("alike", "b")} -> ${sum("alike", "a")}, ` +
+      `same-brand pairs ${sum("brand", "b")} -> ${sum("brand", "a")}, longest same-interest run (several interests picked) ` +
+      `${Math.max(...runs.filter((r) => r.multi).map((r) => r.b.longest))} -> ${Math.max(...runs.filter((r) => r.multi).map((r) => r.a.longest))}`,
+  );
 }
 console.log(out.join("\n"));

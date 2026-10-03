@@ -213,6 +213,43 @@ export type SimilarityResult = { count: number; top: SimilarMatch[] };
 type MatchableGift = Pick<Gift, "id" | "name" | "brand" | "description" | "price" | "interests" | "status">;
 
 /**
+ * Scores any pair of `gifts` (by index) from 0 to 1. Term rarity comes from
+ * the Live gifts only, so retired rows don't skew it.
+ */
+function buildPairScore(gifts: MatchableGift[], liveIndexes: number[]): (i: number, j: number) => number {
+  const nameTfs = gifts.map((g) => termFreq(tokenizeField(g.name, g.brand)));
+  const descTfs = gifts.map((g) => termFreq(tokenizeField(g.description, g.brand)));
+  const nameDf = docFreq(liveIndexes.map((i) => nameTfs[i]));
+  const descDf = docFreq(liveIndexes.map((i) => descTfs[i]));
+  const n = liveIndexes.length;
+  const nameVecs = gifts.map((_, i) => tfidfVector(nameTfs[i], nameDf, n));
+  const descVecs = gifts.map((_, i) => tfidfVector(descTfs[i], descDf, n));
+  const types = gifts.map((g) => productType(g.name, g.description));
+
+  return (i: number, j: number): number => {
+    const a = gifts[i];
+    const b = gifts[j];
+    let score = FIELD_WEIGHT_NAME * cosine(nameVecs[i], nameVecs[j]) + FIELD_WEIGHT_DESC * cosine(descVecs[i], descVecs[j]);
+    score += sharedInterestBonus(a.interests, b.interests);
+    if (types[i] && types[i] === types[j]) score += TYPE_MATCH_BONUS;
+    else if (types[i] && types[j] !== types[i]) score -= TYPE_MISMATCH_PENALTY;
+    if (a.price > 0 && b.price > 0) {
+      const ratio = Math.max(a.price, b.price) / Math.min(a.price, b.price);
+      if (ratio > PRICE_RATIO_LIMIT) score -= PRICE_PENALTY;
+    }
+    return Math.max(0, Math.min(1, score));
+  };
+}
+
+function liveIndexesOf(gifts: MatchableGift[]): number[] {
+  const out: number[] = [];
+  gifts.forEach((g, i) => {
+    if (isLiveStatus(g.status)) out.push(i);
+  });
+  return out;
+}
+
+/**
  * Build a similarity index over `gifts` and return a lookup function.
  * Only Live gifts are considered as candidate matches (and as the corpus
  * for term rarity), but any row id, live or not, can be queried, so the
@@ -222,20 +259,8 @@ export function buildMatcher(
   gifts: MatchableGift[],
   threshold: number = DEFAULT_THRESHOLD,
 ): (rowId: string) => SimilarityResult {
-  const liveIndexes: number[] = [];
-  gifts.forEach((g, i) => {
-    if (isLiveStatus(g.status)) liveIndexes.push(i);
-  });
-
-  const nameTfs = gifts.map((g) => termFreq(tokenizeField(g.name, g.brand)));
-  const descTfs = gifts.map((g) => termFreq(tokenizeField(g.description, g.brand)));
-  const nameDf = docFreq(liveIndexes.map((i) => nameTfs[i]));
-  const descDf = docFreq(liveIndexes.map((i) => descTfs[i]));
-  const n = liveIndexes.length;
-  const nameVecs = gifts.map((_, i) => tfidfVector(nameTfs[i], nameDf, n));
-  const descVecs = gifts.map((_, i) => tfidfVector(descTfs[i], descDf, n));
-
-  const types = gifts.map((g) => productType(g.name, g.description));
+  const liveIndexes = liveIndexesOf(gifts);
+  const pairScore = buildPairScore(gifts, liveIndexes);
 
   const indexById = new Map<string, number>();
   gifts.forEach((g, i) => indexById.set(g.id, i));
@@ -249,21 +274,11 @@ export function buildMatcher(
     const i = indexById.get(rowId);
     if (i === undefined) return { count: 0, top: [] };
 
-    const a = gifts[i];
     const scored: SimilarMatch[] = [];
     for (const j of liveIndexes) {
       if (j === i) continue;
-      const b = gifts[j];
-      let score = FIELD_WEIGHT_NAME * cosine(nameVecs[i], nameVecs[j]) + FIELD_WEIGHT_DESC * cosine(descVecs[i], descVecs[j]);
-      score += sharedInterestBonus(a.interests, b.interests);
-      if (types[i] && types[i] === types[j]) score += TYPE_MATCH_BONUS;
-      else if (types[i] && types[j] !== types[i]) score -= TYPE_MISMATCH_PENALTY;
-      if (a.price > 0 && b.price > 0) {
-        const ratio = Math.max(a.price, b.price) / Math.min(a.price, b.price);
-        if (ratio > PRICE_RATIO_LIMIT) score -= PRICE_PENALTY;
-      }
-      score = Math.max(0, Math.min(1, score));
-      if (score > 0) scored.push({ rowId: b.id, score });
+      const score = pairScore(i, j);
+      if (score > 0) scored.push({ rowId: gifts[j].id, score });
     }
     scored.sort((x, y) => y.score - x.score);
     const top = scored.slice(0, 5);
@@ -271,5 +286,21 @@ export function buildMatcher(
     const result = { count, top };
     cache.set(rowId, result);
     return result;
+  };
+}
+
+/**
+ * Similarity (0 to 1) between two gifts by id, with the same scoring as
+ * buildMatcher; 0 for an unknown id. Results use it to keep near-duplicates
+ * apart.
+ */
+export function buildSimilarity(gifts: MatchableGift[]): (a: string, b: string) => number {
+  const indexById = new Map<string, number>();
+  gifts.forEach((g, i) => indexById.set(g.id, i));
+  const pairScore = buildPairScore(gifts, liveIndexesOf(gifts));
+  return (a: string, b: string): number => {
+    const i = indexById.get(a);
+    const j = indexById.get(b);
+    return i === undefined || j === undefined ? 0 : pairScore(i, j);
   };
 }
