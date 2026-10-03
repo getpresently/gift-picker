@@ -458,6 +458,7 @@ function GiftCard({ gift, isMobile }: { gift: ReviewGift; isMobile: boolean }) {
             <TagRow label="Age" values={gift.ages} />
             <TagRow label="Relation" values={gift.relations} />
             <TagRow label="Type" values={gift.types} />
+            <TagRow label="Primary" values={gift.primaryInterest ? [gift.primaryInterest] : []} />
             <TagRow label="Interests" values={gift.interests} />
             <TagRow label="Occasion" values={gift.occasions} />
           </div>

@@ -110,6 +110,7 @@ export function adaptRow(row: RawRow): Gift {
     ages: splitCsv(row.Age as string | undefined),
     types: splitCsv(row.Type as string | undefined),
     interests: splitCsv(row.Interests as string | undefined),
+    primaryInterest: String(row["Primary interest"] ?? "").trim(),
     relations: splitCsv(row.Relation as string | undefined),
     occasions: splitCsv(row.Occasion as string | undefined),
     status: String(row.Status ?? ""),

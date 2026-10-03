@@ -32,6 +32,12 @@ export type Gift = {
   ages: string[];
   types: string[];
   interests: string[];
+  /**
+   * The one interest that says what the gift is (sheet column "Primary
+   * interest"). Matching it earns full interest credit; matching only one of
+   * the other tags earns SECONDARY_INTEREST_WEIGHT. "" until assigned.
+   */
+  primaryInterest: string;
   relations: string[];
   occasions: string[];
   status: string;
@@ -201,13 +207,25 @@ function matchCount(haystack: string[], candidates: string[]): number {
  * misses both the vibe and the occasion tag.
  * ------------------------------------------------------------------ */
 
-/** How many of the user's picked interests the gift carries (each pick counts once). */
+/** Credit for a pick that matches one of the gift's secondary interest tags. */
+const SECONDARY_INTEREST_WEIGHT = 0.5;
+
+/**
+ * Weighted count of the user's picked interests the gift matches. A pick
+ * that matches the gift's primary interest counts 1; a pick that matches
+ * only a secondary tag counts SECONDARY_INTEREST_WEIGHT, so a beanie tagged
+ * Self-Care & Beauty no longer ranks like a real self-care gift. "Best
+ * Sellers" is a popularity flag rather than a category, so it counts in
+ * full, and gifts with no primary assigned yet count every tag in full.
+ */
 function interestMatchCount(gift: Gift, answers: Answers): number {
   const picks = answers.interests ?? [];
+  const primary = gift.primaryInterest ? [gift.primaryInterest] : [];
   let hits = 0;
   for (const v of picks) {
     const labels = INTEREST_LABELS[v] ?? [];
-    if (matchCount(gift.interests, labels) > 0) hits++;
+    if (primary.length && matchCount(primary, labels) > 0) hits += 1;
+    else if (matchCount(gift.interests, labels) > 0) hits += !primary.length || v === "best" ? 1 : SECONDARY_INTEREST_WEIGHT;
   }
   return hits;
 }
