@@ -2,32 +2,6 @@
   "about": "Catalog edits the Apps Script applies when the catalog is read with ?tab=Gifts&edits=1 (applyPendingEdits_ in docs/apps-script.gs). Each edit applies once, by id. set: change one cell only if it still holds `expect` and the row's Gift is `gift`. note: append ' | text' to Feedback. append: add a new gift row (ID left blank, filled automatically). Results go to the Edit log tab.",
   "edits": [
     {
-      "id": "2026-10-03-01",
-      "op": "append",
-      "values": {
-        "Gift": "Bucket Towel Warmer CL1",
-        "Brand": "Keenray",
-        "Age": "Young Adult, Adult, Senior",
-        "Relation": "Partner, Parent, Grandparent, Friend, Sibling",
-        "Type": "Practical, Luxurious",
-        "Interests": "Self-Care & Beauty, Rest & Relaxation, Home & Decor",
-        "Occasion": "Birthday, Holiday, Wedding, Housewarming",
-        "Price": 89.99,
-        "PriceMax": "",
-        "BillingPeriod": "one-time",
-        "Description": "A 20-liter bucket that warms two oversized bath towels, a robe, or a blanket for a spa-style finish to a shower. It plugs into any outlet, has a wood-grain base and lid handle, and shuts off after 60 minutes.",
-        "PhotoAddress": "https://cdn.shopify.com/s/files/1/0431/4998/3906/files/1_7551fb40-7e5f-4f02-a0d6-93ccc342bc4a.jpg?v=1776063068&width=1200",
-        "Link": "https://www.keenray.com/products/keenray-extra-large-luxury-bucket-towel-warmer",
-        "AmazonAltLink": "https://www.amazon.com/dp/B08GCFWBHM",
-        "Status": "Live",
-        "Date updated": "2026-10-03",
-        "Review status": false,
-        "Feedback": "Added 10/3/26 to replace the Amba T-2536 (hardwired, not on Amazon) | Rating: 4.5 from 6,323 (Amazon); Bob Vila tested it Best Overall; seller: ships from Amazon (seller 100% positive), no Trustpilot or BBB profile found | Copycat of Brookstone: kept because popular in its own right: the most-rated towel warmer on Amazon (1K+ bought a month), while Brookstone's earlier bucket rates 4.0 and is no longer sold on brookstone.com | Note: brand-site price $146.99 entered; Amazon sold the same 20L CL1 for $89.99 on 10/3 | Price set to the Amazon price (Buy goes to Amazon first); keenray.com lists it at $146.99",
-        "Gender": "",
-        "Primary interest": "Self-Care & Beauty"
-      }
-    },
-    {
       "id": "2026-10-03-02",
       "op": "set",
       "row_id": "r355",
@@ -42,6 +16,48 @@
       "row_id": "r355",
       "gift": "Traditional Model T-2536 Heated Towel Rack",
       "text": "Retired 10/3/26 per Dalia: hardwired and not on Amazon (old amzn.to link carried the Presently tag); replaced by the Keenray towel warmer bucket"
+    },
+    {
+      "id": "2026-10-03-04",
+      "op": "append",
+      "values": {
+        "Gift": "BugView 5X Magnifier and Quick-Release Bug Catcher",
+        "Brand": "Carson",
+        "Age": "Child",
+        "Relation": "Friend, Sibling",
+        "Type": "Fun",
+        "Interests": "Nature & Outdoors, Learning",
+        "Occasion": "Birthday, Holiday, Just Because",
+        "Price": 14.99,
+        "PriceMax": "",
+        "BillingPeriod": "one-time",
+        "Description": "A one-handed bug catcher with a built-in 5X magnifier lets kids trap a beetle or spider, study it up close without touching it, and release it unharmed, which makes backyard bug hunts easy for small hands.",
+        "PhotoAddress": "https://i5.walmartimages.com/seo/Carson-BugView-5x-Magnifier-Quick-Release-Bug-Catching-Tool-STEM-Educational-Toy-for-Kids-and-Adults_e58c9c76-4f13-4466-90ca-0e37b9f90eaa.80c4188396ce48ff73c3124cb4c6f6bb.jpeg?odnHeight=1200&odnWidth=1200&odnBg=FFFFFF",
+        "Link": "https://www.carson.com/product/hu-10-en/",
+        "AmazonAltLink": "https://www.amazon.com/dp/B000JQ5AZK",
+        "Status": "Live",
+        "Date updated": "2026-10-03",
+        "Review status": false,
+        "Feedback": "Added 10/3/26 at Dalia's request (trending kids' magnifying glass) | Rating: 4.7 from 8,195 (Amazon), 4.87 from 31 (carson.com); seller: Carson Optical (NY optics maker, 30+ years), sold direct and at Amazon and Walmart; no BBB rating or Trustpilot page found | Best-reviewed kids' magnifier, proposed in place of the viral TikTok screen microscope, which sells only under generic house brands",
+        "Gender": "",
+        "Primary interest": "Nature & Outdoors"
+      }
+    },
+    {
+      "id": "2026-10-03-05",
+      "op": "set",
+      "row_id": "r715",
+      "gift": "Potholder Loom Plus Kit (7-Inch)",
+      "column": "Status",
+      "expect": "Live",
+      "value": "Retired"
+    },
+    {
+      "id": "2026-10-03-06",
+      "op": "note",
+      "row_id": "r715",
+      "gift": "Potholder Loom Plus Kit (7-Inch)",
+      "text": "Retired 10/3/26 per Dalia: the LapLoom (same maker) is the better weaving gift"
     }
   ]
 }
