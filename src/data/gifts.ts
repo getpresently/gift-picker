@@ -272,9 +272,8 @@ function scoreBudget(gift: Gift, answers: Answers): number {
   if (gift.price <= 0) return 0;
 
   // Both ends of the budget are fuzzy by 10%; the hard limits live in
-  // scoreGift. Inside the range → full 10 pts. Within the fuzz on either
-  // side (a little over the ceiling, or topping out a little under the
-  // floor) → partial 5 pts.
+  // scoreGift. Within the fuzz on either side (a little over the ceiling,
+  // or topping out a little under the floor) → partial 5 pts.
   if (gift.price > answers.budget) return 5;
   if (
     typeof answers.budgetMin === "number" &&
@@ -283,7 +282,15 @@ function scoreBudget(gift: Gift, answers: Answers): number {
   ) {
     return 5;
   }
-  return 10;
+  // Inside the range, points follow how much of the budget the gift uses
+  // (a range counts its top, capped at the budget): half or more → 10,
+  // a quarter to half → 7, less → 4. Enough to reorder close calls, never
+  // enough to outrank a gift that matches more of the shopper's interests.
+  if (gift.priceOpen) return 10;
+  const share = Math.min(Math.max(gift.price, gift.priceMax ?? 0), answers.budget) / answers.budget;
+  if (share >= 0.5) return 10;
+  if (share >= 0.25) return 7;
+  return 4;
 }
 
 /** Interest coverage (hits / picks) pro-rated to 40 pts max, the dominant signal. */
