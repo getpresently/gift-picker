@@ -344,6 +344,1122 @@
         "Gender": "",
         "Primary interest": "Creativity"
       }
+    },
+    {
+      "id": "2026-10-03-amz-001",
+      "op": "set",
+      "row_id": "r37",
+      "gift": "Baby Book",
+      "column": "AmazonAltLink",
+      "expect": "",
+      "value": "https://www.amazon.com/dp/1786033372"
+    },
+    {
+      "id": "2026-10-03-amz-002",
+      "op": "set",
+      "row_id": "r52",
+      "gift": "Etta Gift Set",
+      "column": "AmazonAltLink",
+      "expect": "",
+      "value": "https://www.amazon.com/dp/B0HC8G2H9X"
+    },
+    {
+      "id": "2026-10-03-amz-003",
+      "op": "set",
+      "row_id": "r55",
+      "gift": "Cross Training Bike",
+      "column": "AmazonAltLink",
+      "expect": "",
+      "value": "https://www.amazon.com/dp/B0FLQNKJMN"
+    },
+    {
+      "id": "2026-10-03-amz-004",
+      "op": "set",
+      "row_id": "r103",
+      "gift": "Edibles Cookbook",
+      "column": "AmazonAltLink",
+      "expect": "",
+      "value": "https://www.amazon.com/dp/1452170444"
+    },
+    {
+      "id": "2026-10-03-amz-005",
+      "op": "set",
+      "row_id": "r165",
+      "gift": "Retro-Style Personal Blender",
+      "column": "AmazonAltLink",
+      "expect": "",
+      "value": "https://www.amazon.com/dp/B0BWLF6BLJ"
+    },
+    {
+      "id": "2026-10-03-amz-006",
+      "op": "set",
+      "row_id": "r331",
+      "gift": "Cuddle Me Cozy Candle",
+      "column": "AmazonAltLink",
+      "expect": "",
+      "value": "https://www.amazon.com/dp/B0GDS5T2Q2"
+    },
+    {
+      "id": "2026-10-03-amz-007",
+      "op": "set",
+      "row_id": "r343",
+      "gift": "Fi Series 3+",
+      "column": "AmazonAltLink",
+      "expect": "",
+      "value": "https://www.amazon.com/dp/B0HJ3VTQYF"
+    },
+    {
+      "id": "2026-10-03-amz-008",
+      "op": "set",
+      "row_id": "r355",
+      "gift": "Traditional Model T-2536 Heated Towel Rack",
+      "column": "AmazonAltLink",
+      "expect": "",
+      "value": "https://www.amazon.com/dp/B0DJ9B9DSX"
+    },
+    {
+      "id": "2026-10-03-amz-009",
+      "op": "set",
+      "row_id": "r362",
+      "gift": "Online Classes Gift Membership (1 Year)",
+      "column": "AmazonAltLink",
+      "expect": "",
+      "value": "https://www.amazon.com/dp/B0FYFDRWLX"
+    },
+    {
+      "id": "2026-10-03-amz-010",
+      "op": "set",
+      "row_id": "r370",
+      "gift": "AT-LP3XBT Turntable",
+      "column": "AmazonAltLink",
+      "expect": "",
+      "value": "https://www.amazon.com/dp/B0BBWJGPHC"
+    },
+    {
+      "id": "2026-10-03-amz-011",
+      "op": "set",
+      "row_id": "r372",
+      "gift": "RENPHO Shiatsu Foot Massager",
+      "column": "AmazonAltLink",
+      "expect": "",
+      "value": "https://www.amazon.com/dp/B07JKS3HXS"
+    },
+    {
+      "id": "2026-10-03-amz-012",
+      "op": "set",
+      "row_id": "r373",
+      "gift": "MEATER Pro Smart Meat Thermometer",
+      "column": "AmazonAltLink",
+      "expect": "",
+      "value": "https://www.amazon.com/dp/B0CP8BPXKR"
+    },
+    {
+      "id": "2026-10-03-amz-013",
+      "op": "set",
+      "row_id": "r379",
+      "gift": "Koji Kondo's Super Mario Bros. Soundtrack (33 1/3 series)",
+      "column": "AmazonAltLink",
+      "expect": "",
+      "value": "https://www.amazon.com/dp/1628928530"
+    },
+    {
+      "id": "2026-10-03-amz-014",
+      "op": "set",
+      "row_id": "r381",
+      "gift": "Fortnite Playing Cards",
+      "column": "AmazonAltLink",
+      "expect": "",
+      "value": "https://www.amazon.com/dp/B0GZ9688ZM"
+    },
+    {
+      "id": "2026-10-03-amz-015",
+      "op": "set",
+      "row_id": "r382",
+      "gift": "Red Monarch Playing Cards",
+      "column": "AmazonAltLink",
+      "expect": "",
+      "value": "https://www.amazon.com/dp/B00MAPOHYI"
+    },
+    {
+      "id": "2026-10-03-amz-016",
+      "op": "set",
+      "row_id": "r383",
+      "gift": "The Crew: Mission Deep Sea",
+      "column": "AmazonAltLink",
+      "expect": "",
+      "value": "https://www.amazon.com/dp/B08TX1GGSH"
+    },
+    {
+      "id": "2026-10-03-amz-017",
+      "op": "set",
+      "row_id": "r385",
+      "gift": "SET: The Family Game of Visual Perception",
+      "column": "AmazonAltLink",
+      "expect": "",
+      "value": "https://www.amazon.com/dp/B00000IV34"
+    },
+    {
+      "id": "2026-10-03-amz-018",
+      "op": "set",
+      "row_id": "r388",
+      "gift": "The Night Sky Planisphere (Large, 40-50 N)",
+      "column": "AmazonAltLink",
+      "expect": "",
+      "value": "https://www.amazon.com/dp/0961320745"
+    },
+    {
+      "id": "2026-10-03-amz-019",
+      "op": "set",
+      "row_id": "r394",
+      "gift": "Ultimate 2C Wired Controller",
+      "column": "AmazonAltLink",
+      "expect": "",
+      "value": "https://www.amazon.com/dp/B0D6BF3DCG"
+    },
+    {
+      "id": "2026-10-03-amz-020",
+      "op": "set",
+      "row_id": "r398",
+      "gift": "Creator 3in1 Retro Camera (31147)",
+      "column": "AmazonAltLink",
+      "expect": "",
+      "value": "https://www.amazon.com/dp/B0CGY3FHDR"
+    },
+    {
+      "id": "2026-10-03-amz-021",
+      "op": "set",
+      "row_id": "r400",
+      "gift": "Jaipur",
+      "column": "AmazonAltLink",
+      "expect": "",
+      "value": "https://www.amazon.com/dp/B07SRMXRZB"
+    },
+    {
+      "id": "2026-10-03-amz-022",
+      "op": "set",
+      "row_id": "r401",
+      "gift": "Lost Cities Card Game (with 6th Expedition)",
+      "column": "AmazonAltLink",
+      "expect": "",
+      "value": "https://www.amazon.com/dp/B07KLWPHFF"
+    },
+    {
+      "id": "2026-10-03-amz-023",
+      "op": "set",
+      "row_id": "r402",
+      "gift": "Targi",
+      "column": "AmazonAltLink",
+      "expect": "",
+      "value": "https://www.amazon.com/dp/B07B7TTRDF"
+    },
+    {
+      "id": "2026-10-03-amz-024",
+      "op": "set",
+      "row_id": "r403",
+      "gift": "EXIT: The Abandoned Cabin",
+      "column": "AmazonAltLink",
+      "expect": "",
+      "value": "https://www.amazon.com/dp/B06WP2G52Z"
+    },
+    {
+      "id": "2026-10-03-amz-025",
+      "op": "set",
+      "row_id": "r405",
+      "gift": "Codenames: Duet",
+      "column": "AmazonAltLink",
+      "expect": "",
+      "value": "https://www.amazon.com/dp/B0FJMNPGXM"
+    },
+    {
+      "id": "2026-10-03-amz-026",
+      "op": "set",
+      "row_id": "r406",
+      "gift": "We're Not Really Strangers: Couples Edition",
+      "column": "AmazonAltLink",
+      "expect": "",
+      "value": "https://www.amazon.com/dp/B0B7V56B7H"
+    },
+    {
+      "id": "2026-10-03-amz-027",
+      "op": "set",
+      "row_id": "r407",
+      "gift": "The Mystic Maze 1000 Piece Puzzle",
+      "column": "AmazonAltLink",
+      "expect": "",
+      "value": "https://www.amazon.com/dp/B08NDXDR84"
+    },
+    {
+      "id": "2026-10-03-amz-028",
+      "op": "set",
+      "row_id": "r421",
+      "gift": "Sugarmaker's Cut Organic Maple Syrup (375 ml)",
+      "column": "AmazonAltLink",
+      "expect": "",
+      "value": "https://www.amazon.com/dp/B01ITMJUPQ"
+    },
+    {
+      "id": "2026-10-03-amz-029",
+      "op": "set",
+      "row_id": "r429",
+      "gift": "Tasman II Slipper",
+      "column": "AmazonAltLink",
+      "expect": "",
+      "value": "https://www.amazon.com/dp/B0DPJKQ7NS"
+    },
+    {
+      "id": "2026-10-03-amz-030",
+      "op": "set",
+      "row_id": "r432",
+      "gift": "Get Lean Weighted Jump Rope Set",
+      "column": "AmazonAltLink",
+      "expect": "",
+      "value": "https://www.amazon.com/dp/B0CCSX6NNF"
+    },
+    {
+      "id": "2026-10-03-amz-031",
+      "op": "set",
+      "row_id": "r441",
+      "gift": "Honey Infused Hair Oil (50ml)",
+      "column": "AmazonAltLink",
+      "expect": "",
+      "value": "https://www.amazon.com/dp/B08MBWGWBQ"
+    },
+    {
+      "id": "2026-10-03-amz-032",
+      "op": "set",
+      "row_id": "r444",
+      "gift": "Mini Cocotte with Gold Heart Knob",
+      "column": "AmazonAltLink",
+      "expect": "",
+      "value": "https://www.amazon.com/dp/B08QW6XJQ2"
+    },
+    {
+      "id": "2026-10-03-amz-033",
+      "op": "set",
+      "row_id": "r446",
+      "gift": "Ektar H35N Half Frame Film Camera",
+      "column": "AmazonAltLink",
+      "expect": "",
+      "value": "https://www.amazon.com/dp/B0CBBVMHGK"
+    },
+    {
+      "id": "2026-10-03-amz-034",
+      "op": "set",
+      "row_id": "r450",
+      "gift": "Fur Bebe Pet Shampoo",
+      "column": "AmazonAltLink",
+      "expect": "",
+      "value": "https://www.amazon.com/dp/B08ZJYBN9Y"
+    },
+    {
+      "id": "2026-10-03-amz-035",
+      "op": "set",
+      "row_id": "r453",
+      "gift": "Bites 2 Lite Treat Tossing Pet Camera",
+      "column": "AmazonAltLink",
+      "expect": "",
+      "value": "https://www.amazon.com/dp/B08XXKJGKH"
+    },
+    {
+      "id": "2026-10-03-amz-036",
+      "op": "set",
+      "row_id": "r457",
+      "gift": "PlayStation Portal Remote Player",
+      "column": "AmazonAltLink",
+      "expect": "",
+      "value": "https://www.amazon.com/dp/B0DSLTZ6M3"
+    },
+    {
+      "id": "2026-10-03-amz-037",
+      "op": "set",
+      "row_id": "r461",
+      "gift": "Maxwell 2 Wireless Gaming Headset",
+      "column": "AmazonAltLink",
+      "expect": "",
+      "value": "https://www.amazon.com/dp/B0G98TB4ZF"
+    },
+    {
+      "id": "2026-10-03-amz-038",
+      "op": "set",
+      "row_id": "r463",
+      "gift": "One Mobile Controller (USB-C, 2nd Gen)",
+      "column": "AmazonAltLink",
+      "expect": "",
+      "value": "https://www.amazon.com/dp/B0CCT2LWT8"
+    },
+    {
+      "id": "2026-10-03-amz-039",
+      "op": "set",
+      "row_id": "r467",
+      "gift": "SLUSHi Professional Frozen Drink Maker",
+      "column": "AmazonAltLink",
+      "expect": "",
+      "value": "https://www.amazon.com/dp/B0D2LZYQ2M"
+    },
+    {
+      "id": "2026-10-03-amz-040",
+      "op": "set",
+      "row_id": "r471",
+      "gift": "Mini Audio Player (2024 Edition)",
+      "column": "AmazonAltLink",
+      "expect": "",
+      "value": "https://www.amazon.com/dp/B0D541M5C6"
+    },
+    {
+      "id": "2026-10-03-amz-041",
+      "op": "set",
+      "row_id": "r472",
+      "gift": "JuniorJams-Plus Volume-Limited Kids Bluetooth Headphones",
+      "column": "AmazonAltLink",
+      "expect": "",
+      "value": "https://www.amazon.com/dp/B0CHLG6FKH"
+    },
+    {
+      "id": "2026-10-03-amz-042",
+      "op": "set",
+      "row_id": "r477",
+      "gift": "Maps (Oversized Illustrated Atlas)",
+      "column": "AmazonAltLink",
+      "expect": "",
+      "value": "https://www.amazon.com/dp/0763668966"
+    },
+    {
+      "id": "2026-10-03-amz-043",
+      "op": "set",
+      "row_id": "r481",
+      "gift": "Kids Bath Time Trio",
+      "column": "AmazonAltLink",
+      "expect": "",
+      "value": "https://www.amazon.com/dp/B0FPR7JKQS"
+    },
+    {
+      "id": "2026-10-03-amz-044",
+      "op": "set",
+      "row_id": "r482",
+      "gift": "Rainbow of Bubbles Bath Bundle",
+      "column": "AmazonAltLink",
+      "expect": "",
+      "value": "https://www.amazon.com/dp/B09JDHLCMV"
+    },
+    {
+      "id": "2026-10-03-amz-045",
+      "op": "set",
+      "row_id": "r500",
+      "gift": "Fusion Plus Reusable Smart Notebook",
+      "column": "AmazonAltLink",
+      "expect": "",
+      "value": "https://www.amazon.com/dp/B0BNWCYG86"
+    },
+    {
+      "id": "2026-10-03-amz-046",
+      "op": "set",
+      "row_id": "r503",
+      "gift": "Open Circuits: The Inner Beauty of Electronic Components",
+      "column": "AmazonAltLink",
+      "expect": "",
+      "value": "https://www.amazon.com/dp/1718502346"
+    },
+    {
+      "id": "2026-10-03-amz-047",
+      "op": "set",
+      "row_id": "r504",
+      "gift": "Foldscope 2.0 Explorer Kit",
+      "column": "AmazonAltLink",
+      "expect": "",
+      "value": "https://www.amazon.com/dp/B0CKJMJMTT"
+    },
+    {
+      "id": "2026-10-03-amz-048",
+      "op": "set",
+      "row_id": "r505",
+      "gift": "Small Tech Pouch",
+      "column": "AmazonAltLink",
+      "expect": "",
+      "value": "https://www.amazon.com/dp/B0D31VHDL8"
+    },
+    {
+      "id": "2026-10-03-amz-049",
+      "op": "set",
+      "row_id": "r506",
+      "gift": "PO-33 K.O! Pocket Operator Micro Sampler",
+      "column": "AmazonAltLink",
+      "expect": "",
+      "value": "https://www.amazon.com/dp/B079M56Z4G"
+    },
+    {
+      "id": "2026-10-03-amz-050",
+      "op": "set",
+      "row_id": "r507",
+      "gift": "Pro 3 Bluetooth Gamepad",
+      "column": "AmazonAltLink",
+      "expect": "",
+      "value": "https://www.amazon.com/dp/B0FFGJ3TWP"
+    },
+    {
+      "id": "2026-10-03-amz-051",
+      "op": "set",
+      "row_id": "r509",
+      "gift": "Magnetic Table Game (2 Player)",
+      "column": "AmazonAltLink",
+      "expect": "",
+      "value": "https://www.amazon.com/dp/B07PKJZQ9G"
+    },
+    {
+      "id": "2026-10-03-amz-052",
+      "op": "set",
+      "row_id": "r510",
+      "gift": "It Takes Two (Nintendo Switch)",
+      "column": "AmazonAltLink",
+      "expect": "",
+      "value": "https://www.amazon.com/dp/B0BDTF3NK4"
+    },
+    {
+      "id": "2026-10-03-amz-053",
+      "op": "set",
+      "row_id": "r511",
+      "gift": "Cloud III Wired Gaming Headset",
+      "column": "AmazonAltLink",
+      "expect": "",
+      "value": "https://www.amazon.com/dp/B0C3BV19Q3"
+    },
+    {
+      "id": "2026-10-03-amz-054",
+      "op": "set",
+      "row_id": "r513",
+      "gift": "C418 Minecraft Volume Alpha Vinyl LP (Green)",
+      "column": "AmazonAltLink",
+      "expect": "",
+      "value": "https://www.amazon.com/dp/B00ZVUQMS8"
+    },
+    {
+      "id": "2026-10-03-amz-055",
+      "op": "set",
+      "row_id": "r516",
+      "gift": "Maison Dark and Milk Chocolate Gift Box (40 Pieces)",
+      "column": "AmazonAltLink",
+      "expect": "",
+      "value": "https://www.amazon.com/dp/B09KMFSN76"
+    },
+    {
+      "id": "2026-10-03-amz-056",
+      "op": "set",
+      "row_id": "r526",
+      "gift": "QuietComfort Ultra Headphones (2nd Gen)",
+      "column": "AmazonAltLink",
+      "expect": "",
+      "value": "https://www.amazon.com/dp/B0FDKR293G"
+    },
+    {
+      "id": "2026-10-03-amz-057",
+      "op": "set",
+      "row_id": "r529",
+      "gift": "FreeSip Insulated Bottle",
+      "column": "AmazonAltLink",
+      "expect": "",
+      "value": "https://www.amazon.com/dp/B085DTZQNZ"
+    },
+    {
+      "id": "2026-10-03-amz-058",
+      "op": "set",
+      "row_id": "r530",
+      "gift": "Koda 2 Gas Pizza Oven",
+      "column": "AmazonAltLink",
+      "expect": "",
+      "value": "https://www.amazon.com/dp/B0F44216HP"
+    },
+    {
+      "id": "2026-10-03-amz-059",
+      "op": "set",
+      "row_id": "r531",
+      "gift": "Titanium Always Pan Pro 10.5\"",
+      "column": "AmazonAltLink",
+      "expect": "",
+      "value": "https://www.amazon.com/dp/B0DYNZJ3G1"
+    },
+    {
+      "id": "2026-10-03-amz-060",
+      "op": "set",
+      "row_id": "r532",
+      "gift": "Stagg EKG Pro Electric Kettle",
+      "column": "AmazonAltLink",
+      "expect": "",
+      "value": "https://www.amazon.com/dp/B0BF7NKK81"
+    },
+    {
+      "id": "2026-10-03-amz-061",
+      "op": "set",
+      "row_id": "r533",
+      "gift": "Bonfire 2.0 Fire Pit with Stand",
+      "column": "AmazonAltLink",
+      "expect": "",
+      "value": "https://www.amazon.com/dp/B0B7BFJ5Y6"
+    },
+    {
+      "id": "2026-10-03-amz-062",
+      "op": "set",
+      "row_id": "r534",
+      "gift": "Hopper Flip 12 Soft Cooler",
+      "column": "AmazonAltLink",
+      "expect": "",
+      "value": "https://www.amazon.com/dp/B0D9QW5Y3K"
+    },
+    {
+      "id": "2026-10-03-amz-063",
+      "op": "set",
+      "row_id": "r536",
+      "gift": "Forest Lantern",
+      "column": "AmazonAltLink",
+      "expect": "",
+      "value": "https://www.amazon.com/dp/B09QQ7QVZM"
+    },
+    {
+      "id": "2026-10-03-amz-064",
+      "op": "set",
+      "row_id": "r537",
+      "gift": "Clock",
+      "column": "AmazonAltLink",
+      "expect": "",
+      "value": "https://www.amazon.com/dp/B0CLKSBN1C"
+    },
+    {
+      "id": "2026-10-03-amz-065",
+      "op": "set",
+      "row_id": "r538",
+      "gift": "Restore 3",
+      "column": "AmazonAltLink",
+      "expect": "",
+      "value": "https://www.amazon.com/dp/B0DLLSCVZW"
+    },
+    {
+      "id": "2026-10-03-amz-066",
+      "op": "set",
+      "row_id": "r540",
+      "gift": "CozyChic Throw",
+      "column": "AmazonAltLink",
+      "expect": "",
+      "value": "https://www.amazon.com/dp/B0158O9W2O"
+    },
+    {
+      "id": "2026-10-03-amz-067",
+      "op": "set",
+      "row_id": "r545",
+      "gift": "737 Power Bank (PowerCore 24K)",
+      "column": "AmazonAltLink",
+      "expect": "",
+      "value": "https://www.amazon.com/dp/B09VPHVT2Z"
+    },
+    {
+      "id": "2026-10-03-amz-068",
+      "op": "set",
+      "row_id": "r546",
+      "gift": "AirTag (2nd generation) 4 Pack",
+      "column": "AmazonAltLink",
+      "expect": "",
+      "value": "https://www.amazon.com/dp/B0GJTXVN9Z"
+    },
+    {
+      "id": "2026-10-03-amz-069",
+      "op": "set",
+      "row_id": "r547",
+      "gift": "Era 100 Smart Speaker",
+      "column": "AmazonAltLink",
+      "expect": "",
+      "value": "https://www.amazon.com/dp/B0BW34LCB8"
+    },
+    {
+      "id": "2026-10-03-amz-070",
+      "op": "set",
+      "row_id": "r548",
+      "gift": "CATAN Board Game (6th Edition)",
+      "column": "AmazonAltLink",
+      "expect": "",
+      "value": "https://www.amazon.com/dp/B0DYK1ZH2D"
+    },
+    {
+      "id": "2026-10-03-amz-071",
+      "op": "set",
+      "row_id": "r549",
+      "gift": "Toniebox 2 Starter Set (Playtime Puppy)",
+      "column": "AmazonAltLink",
+      "expect": "",
+      "value": "https://www.amazon.com/dp/B0FJ3S78NR"
+    },
+    {
+      "id": "2026-10-03-amz-072",
+      "op": "set",
+      "row_id": "r551",
+      "gift": "Classic 32-Piece Set",
+      "column": "AmazonAltLink",
+      "expect": "",
+      "value": "https://www.amazon.com/dp/B000CBSNKQ"
+    },
+    {
+      "id": "2026-10-03-amz-073",
+      "op": "set",
+      "row_id": "r553",
+      "gift": "Dream Sock",
+      "column": "AmazonAltLink",
+      "expect": "",
+      "value": "https://www.amazon.com/dp/B09YVSYGDW"
+    },
+    {
+      "id": "2026-10-03-amz-074",
+      "op": "set",
+      "row_id": "r554",
+      "gift": "Wrap Carrier (Spelt)",
+      "column": "AmazonAltLink",
+      "expect": "",
+      "value": "https://www.amazon.com/dp/B0DBMTQJY4"
+    },
+    {
+      "id": "2026-10-03-amz-075",
+      "op": "set",
+      "row_id": "r555",
+      "gift": "Hannah the Bunny Hand-Knit Doll (Little, 13 in)",
+      "column": "AmazonAltLink",
+      "expect": "",
+      "value": "https://www.amazon.com/dp/B0992NQVS4"
+    },
+    {
+      "id": "2026-10-03-amz-076",
+      "op": "set",
+      "row_id": "r557",
+      "gift": "Original Wayfarer Classic Sunglasses",
+      "column": "AmazonAltLink",
+      "expect": "",
+      "value": "https://www.amazon.com/dp/B016DEKFVK"
+    },
+    {
+      "id": "2026-10-03-amz-077",
+      "op": "set",
+      "row_id": "r561",
+      "gift": "Wave Plus Multi-Tool",
+      "column": "AmazonAltLink",
+      "expect": "",
+      "value": "https://www.amazon.com/dp/B079MJBP21"
+    },
+    {
+      "id": "2026-10-03-amz-078",
+      "op": "set",
+      "row_id": "r565",
+      "gift": "2-Slice Retro Toaster (TSF01)",
+      "column": "AmazonAltLink",
+      "expect": "",
+      "value": "https://www.amazon.com/dp/B011SJYTI0"
+    },
+    {
+      "id": "2026-10-03-amz-079",
+      "op": "set",
+      "row_id": "r566",
+      "gift": "Explorian E310 Blender",
+      "column": "AmazonAltLink",
+      "expect": "",
+      "value": "https://www.amazon.com/dp/B0758JHZM3"
+    },
+    {
+      "id": "2026-10-03-amz-080",
+      "op": "set",
+      "row_id": "r567",
+      "gift": "Pro Solar Smart Bird Feeder",
+      "column": "AmazonAltLink",
+      "expect": "",
+      "value": "https://www.amazon.com/dp/B0DHY6B9GY"
+    },
+    {
+      "id": "2026-10-03-amz-081",
+      "op": "set",
+      "row_id": "r568",
+      "gift": "Bangles Wrist & Ankle Weights",
+      "column": "AmazonAltLink",
+      "expect": "",
+      "value": "https://www.amazon.com/dp/B0DDRFMZVF"
+    },
+    {
+      "id": "2026-10-03-amz-082",
+      "op": "set",
+      "row_id": "r569",
+      "gift": "Allpa 35L Travel Pack",
+      "column": "AmazonAltLink",
+      "expect": "",
+      "value": "https://www.amazon.com/dp/B0CQ5L6RV3"
+    },
+    {
+      "id": "2026-10-03-amz-083",
+      "op": "set",
+      "row_id": "r573",
+      "gift": "Undaria Algae Body Oil (5 fl oz)",
+      "column": "AmazonAltLink",
+      "expect": "",
+      "value": "https://www.amazon.com/dp/B004L17FKC"
+    },
+    {
+      "id": "2026-10-03-amz-084",
+      "op": "set",
+      "row_id": "r574",
+      "gift": "Stone Diffuser",
+      "column": "AmazonAltLink",
+      "expect": "",
+      "value": "https://www.amazon.com/dp/B0CZ5DBL4Y"
+    },
+    {
+      "id": "2026-10-03-amz-085",
+      "op": "set",
+      "row_id": "r575",
+      "gift": "Ring 5",
+      "column": "AmazonAltLink",
+      "expect": "",
+      "value": "https://www.amazon.com/dp/B0GRKBVZNQ"
+    },
+    {
+      "id": "2026-10-03-amz-086",
+      "op": "set",
+      "row_id": "r576",
+      "gift": "Watch SE 3",
+      "column": "AmazonAltLink",
+      "expect": "",
+      "value": "https://www.amazon.com/dp/B0FQFW7M9H"
+    },
+    {
+      "id": "2026-10-03-amz-087",
+      "op": "set",
+      "row_id": "r582",
+      "gift": "2 Pruner",
+      "column": "AmazonAltLink",
+      "expect": "",
+      "value": "https://www.amazon.com/dp/B00023RYS6"
+    },
+    {
+      "id": "2026-10-03-amz-088",
+      "op": "set",
+      "row_id": "r583",
+      "gift": "ENO DoubleNest Hammock",
+      "column": "AmazonAltLink",
+      "expect": "",
+      "value": "https://www.amazon.com/dp/B001DDPGNO"
+    },
+    {
+      "id": "2026-10-03-amz-089",
+      "op": "set",
+      "row_id": "r586",
+      "gift": "Ultimate Rub Collection (12 Mini Rub Jars)",
+      "column": "AmazonAltLink",
+      "expect": "",
+      "value": "https://www.amazon.com/dp/B07M65JH53"
+    },
+    {
+      "id": "2026-10-03-amz-090",
+      "op": "set",
+      "row_id": "r588",
+      "gift": "PupRug Faux Fur Orthopedic Dog Bed (Curve White)",
+      "column": "AmazonAltLink",
+      "expect": "",
+      "value": "https://www.amazon.com/dp/B07DFTGHPT"
+    },
+    {
+      "id": "2026-10-03-amz-091",
+      "op": "set",
+      "row_id": "r590",
+      "gift": "SoundLink Flex Portable Speaker (2nd Gen)",
+      "column": "AmazonAltLink",
+      "expect": "",
+      "value": "https://www.amazon.com/dp/B0D6WD2QSQ"
+    },
+    {
+      "id": "2026-10-03-amz-092",
+      "op": "set",
+      "row_id": "r593",
+      "gift": "Powerbeats Fit",
+      "column": "AmazonAltLink",
+      "expect": "",
+      "value": "https://www.amazon.com/dp/B0FPGQZTFB"
+    },
+    {
+      "id": "2026-10-03-amz-093",
+      "op": "set",
+      "row_id": "r597",
+      "gift": "Pitcher PureVis",
+      "column": "AmazonAltLink",
+      "expect": "",
+      "value": "https://www.amazon.com/dp/B00CWY0CY6"
+    },
+    {
+      "id": "2026-10-03-amz-094",
+      "op": "set",
+      "row_id": "r604",
+      "gift": "Tungsten 2-Person Tent",
+      "column": "AmazonAltLink",
+      "expect": "",
+      "value": "https://www.amazon.com/dp/B0B6D52NTG"
+    },
+    {
+      "id": "2026-10-03-amz-095",
+      "op": "set",
+      "row_id": "r605",
+      "gift": "Flash Java 1.0L Fast Boil System",
+      "column": "AmazonAltLink",
+      "expect": "",
+      "value": "https://www.amazon.com/dp/B0DXQ9ZF64"
+    },
+    {
+      "id": "2026-10-03-amz-096",
+      "op": "set",
+      "row_id": "r607",
+      "gift": "Forerunner 70 GPS Running Watch",
+      "column": "AmazonAltLink",
+      "expect": "",
+      "value": "https://www.amazon.com/dp/B0H1FBRQD9"
+    },
+    {
+      "id": "2026-10-03-amz-097",
+      "op": "set",
+      "row_id": "r608",
+      "gift": "Smart Swim 2 Goggles",
+      "column": "AmazonAltLink",
+      "expect": "",
+      "value": "https://www.amazon.com/dp/B0FFW24T7G"
+    },
+    {
+      "id": "2026-10-03-amz-098",
+      "op": "set",
+      "row_id": "r610",
+      "gift": "MOMENTUM True Wireless 5 Earbuds",
+      "column": "AmazonAltLink",
+      "expect": "",
+      "value": "https://www.amazon.com/dp/B0HBGKNJ75"
+    },
+    {
+      "id": "2026-10-03-amz-099",
+      "op": "set",
+      "row_id": "r611",
+      "gift": "Baby Deluxe Keepsake Box",
+      "column": "AmazonAltLink",
+      "expect": "",
+      "value": "https://www.amazon.com/dp/B01GM345U4"
+    },
+    {
+      "id": "2026-10-03-amz-100",
+      "op": "set",
+      "row_id": "r612",
+      "gift": "Daily Ritual Flower Tea Set",
+      "column": "AmazonAltLink",
+      "expect": "",
+      "value": "https://www.amazon.com/dp/B0GYYQL2VP"
+    },
+    {
+      "id": "2026-10-03-amz-101",
+      "op": "set",
+      "row_id": "r613",
+      "gift": "Smart Garden 3",
+      "column": "AmazonAltLink",
+      "expect": "",
+      "value": "https://www.amazon.com/dp/B01MRVMKQH"
+    },
+    {
+      "id": "2026-10-03-amz-102",
+      "op": "set",
+      "row_id": "r621",
+      "gift": "Switch 2",
+      "column": "AmazonAltLink",
+      "expect": "",
+      "value": "https://www.amazon.com/dp/B0F3GWXLTS"
+    },
+    {
+      "id": "2026-10-03-amz-103",
+      "op": "set",
+      "row_id": "r622",
+      "gift": "Meta (Gen 2) Wayfarer AI Glasses",
+      "column": "AmazonAltLink",
+      "expect": "",
+      "value": "https://www.amazon.com/dp/B0FRN9L85M"
+    },
+    {
+      "id": "2026-10-03-amz-104",
+      "op": "set",
+      "row_id": "r623",
+      "gift": "NotePin S AI Voice Recorder",
+      "column": "AmazonAltLink",
+      "expect": "",
+      "value": "https://www.amazon.com/dp/B0DL9WQ4Z4"
+    },
+    {
+      "id": "2026-10-03-amz-105",
+      "op": "set",
+      "row_id": "r625",
+      "gift": "CREAMi 7-in-1 Ice Cream Maker",
+      "column": "AmazonAltLink",
+      "expect": "",
+      "value": "https://www.amazon.com/dp/B08QXB9BH5"
+    },
+    {
+      "id": "2026-10-03-amz-106",
+      "op": "set",
+      "row_id": "r630",
+      "gift": "SmartGoggles (2nd Gen)",
+      "column": "AmazonAltLink",
+      "expect": "",
+      "value": "https://www.amazon.com/dp/B0DD1K3HD6"
+    },
+    {
+      "id": "2026-10-03-amz-107",
+      "op": "set",
+      "row_id": "r639",
+      "gift": "CD-60S Dreadnought Pack V2",
+      "column": "AmazonAltLink",
+      "expect": "",
+      "value": "https://www.amazon.com/dp/B07G4YKLHF"
+    },
+    {
+      "id": "2026-10-03-amz-108",
+      "op": "set",
+      "row_id": "r642",
+      "gift": "Reaction Ball",
+      "column": "AmazonAltLink",
+      "expect": "",
+      "value": "https://www.amazon.com/dp/B0042XALSC"
+    },
+    {
+      "id": "2026-10-03-amz-109",
+      "op": "set",
+      "row_id": "r651",
+      "gift": "KATI Steeping Cup & Infuser",
+      "column": "AmazonAltLink",
+      "expect": "",
+      "value": "https://www.amazon.com/dp/B0GM2RHVF2"
+    },
+    {
+      "id": "2026-10-03-amz-110",
+      "op": "set",
+      "row_id": "r660",
+      "gift": "Ms. Pac-Man & Galaga Class of '81 Deluxe Arcade Machine",
+      "column": "AmazonAltLink",
+      "expect": "",
+      "value": "https://www.amazon.com/dp/B0BYQ7S68P"
+    },
+    {
+      "id": "2026-10-03-amz-111",
+      "op": "set",
+      "row_id": "r677",
+      "gift": "SILK Sleep Mask",
+      "column": "AmazonAltLink",
+      "expect": "",
+      "value": "https://www.amazon.com/dp/B0DJCM7G6T"
+    },
+    {
+      "id": "2026-10-03-amz-112",
+      "op": "set",
+      "row_id": "r681",
+      "gift": "Travel Puffy Blanket",
+      "column": "AmazonAltLink",
+      "expect": "",
+      "value": "https://www.amazon.com/dp/B0GJ12WSV3"
+    },
+    {
+      "id": "2026-10-03-amz-113",
+      "op": "set",
+      "row_id": "r687",
+      "gift": "Carryout Soft Cooler Tote 20 L",
+      "column": "AmazonAltLink",
+      "expect": "",
+      "value": "https://www.amazon.com/dp/B0GFFRQGK6"
+    },
+    {
+      "id": "2026-10-03-amz-114",
+      "op": "set",
+      "row_id": "r694",
+      "gift": "Pro Water Bouncing Ball",
+      "column": "AmazonAltLink",
+      "expect": "",
+      "value": "https://www.amazon.com/dp/B0DYPKDPRS"
+    },
+    {
+      "id": "2026-10-03-amz-115",
+      "op": "set",
+      "row_id": "r720",
+      "gift": "Learn to Play Concert Ukulele Starter Kit",
+      "column": "AmazonAltLink",
+      "expect": "",
+      "value": "https://www.amazon.com/dp/B0B9FMC595"
+    },
+    {
+      "id": "2026-10-03-amz-116",
+      "op": "set",
+      "row_id": "r145",
+      "gift": "Hello Nature: Activity Book",
+      "column": "AmazonAltLink",
+      "expect": "",
+      "value": "https://www.amazon.com/dp/1780677359"
+    },
+    {
+      "id": "2026-10-03-amz-117",
+      "op": "set",
+      "row_id": "r214",
+      "gift": "Pantone: Box of Color",
+      "column": "AmazonAltLink",
+      "expect": "",
+      "value": "https://www.amazon.com/dp/1419704192"
+    },
+    {
+      "id": "2026-10-03-amz-118",
+      "op": "set",
+      "row_id": "r241",
+      "gift": "Java G25 Coffee Grinder",
+      "column": "AmazonAltLink",
+      "expect": "",
+      "value": "https://www.amazon.com/dp/B0CQRW1RC2"
+    },
+    {
+      "id": "2026-10-03-amz-119",
+      "op": "set",
+      "row_id": "r283",
+      "gift": "Storytime Chess for Kids",
+      "column": "AmazonAltLink",
+      "expect": "",
+      "value": "https://www.amazon.com/dp/B0FP3HQNQ5"
+    },
+    {
+      "id": "2026-10-03-amz-120",
+      "op": "set",
+      "row_id": "r466",
+      "gift": "Game Boy (72046)",
+      "column": "AmazonAltLink",
+      "expect": "",
+      "value": "https://www.amazon.com/dp/B0DX3J6MT7"
+    },
+    {
+      "id": "2026-10-03-amz-121",
+      "op": "set",
+      "row_id": "r475",
+      "gift": "Zoom Tube 8x32 Monocular",
+      "column": "AmazonAltLink",
+      "expect": "",
+      "value": "https://www.amazon.com/dp/B09MR7NYYL"
+    },
+    {
+      "id": "2026-10-03-amz-122",
+      "op": "set",
+      "row_id": "r484",
+      "gift": "Elmar Teddy Bear (13 in)",
+      "column": "AmazonAltLink",
+      "expect": "",
+      "value": "https://www.amazon.com/dp/B0025KVG7E"
+    },
+    {
+      "id": "2026-10-03-amz-123",
+      "op": "set",
+      "row_id": "r512",
+      "gift": "ATH-M40x Professional Studio Monitor Headphones",
+      "column": "AmazonAltLink",
+      "expect": "",
+      "value": "https://www.amazon.com/dp/B00HVLUR54"
+    },
+    {
+      "id": "2026-10-03-amz-124",
+      "op": "set",
+      "row_id": "r309",
+      "gift": "Airbnb Gift Card",
+      "column": "AmazonAltLink",
+      "expect": "",
+      "value": "https://www.amazon.com/dp/B0FQMXSDKH"
     }
   ]
 }
