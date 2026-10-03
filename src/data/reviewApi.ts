@@ -114,6 +114,7 @@ function clearStoredSecret(): void {
 
 export type ReviewErrorCode =
   | "unauthorized"
+  | "locked"
   | "not_configured"
   | "row_moved"
   | "bad_row"

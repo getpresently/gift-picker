@@ -49,6 +49,41 @@ const PUBLIC_TABS = ["Gifts"];
 // Values the review tool may write into the Gifts "Status" column.
 const REVIEW_STATUSES = ["Live", "Rejected", "Retired", "Dead", "OOS", "Draft"];
 
+/* ------------------------------------------------------------------ *
+ * Abuse limits. Bots can call this endpoint directly, so limits live
+ * here rather than on the page. Counters use the script cache and are
+ * approximate, which is fine for slowing bots down.
+ * ------------------------------------------------------------------ */
+const REVIEW_MAX_FAILS = 10;            // wrong passwords allowed per window
+const REVIEW_LOCK_SECONDS = 15 * 60;    // then every password check is refused this long
+const WRITES_PER_CLIENT_PER_HOUR = 30;  // feedback, requests, opt-ins, brand forms
+const WRITES_PER_HOUR = 300;            // across everyone, the backstop for faked clientIds
+
+function reviewLocked_() {
+  return CacheService.getScriptCache().get("review_lock") === "1";
+}
+
+function noteReviewFail_() {
+  const cache = CacheService.getScriptCache();
+  const fails = Number(cache.get("review_fails") || 0) + 1;
+  if (fails >= REVIEW_MAX_FAILS) {
+    cache.put("review_lock", "1", REVIEW_LOCK_SECONDS);
+    cache.remove("review_fails");
+  } else {
+    cache.put("review_fails", String(fails), REVIEW_LOCK_SECONDS);
+  }
+}
+
+/** True when this write is within the hourly limits (and counts it). */
+function allowWrite_(clientId) {
+  const cache = CacheService.getScriptCache();
+  const keys = ["writes_all", "writes_" + String(clientId || "anon").slice(0, 80)];
+  const counts = keys.map((k) => Number(cache.get(k) || 0));
+  if (counts[0] >= WRITES_PER_HOUR || counts[1] >= WRITES_PER_CLIENT_PER_HOUR) return false;
+  keys.forEach((k, i) => cache.put(k, String(counts[i] + 1), 3600));
+  return true;
+}
+
 function doGet(e) {
   try {
     const tab = (e && e.parameter && e.parameter.tab) || "Gifts";
@@ -78,11 +113,15 @@ function doPost(e) {
       : {};
     const type = String(body.type || "").toLowerCase();
 
+    if (type === "review")   return jsonOut_(handleReview_(body));
+    // Over the limit: answer as if it worked, so a bot learns nothing.
+    if (["feedback", "request", "notify", "brand"].indexOf(type) !== -1 && !allowWrite_(body.clientId)) {
+      return jsonOut_({ ok: true });
+    }
     if (type === "feedback") return jsonOut_(handleFeedback_(body));
     if (type === "request")  return jsonOut_(handleRequest_(body));
     if (type === "notify")   return jsonOut_(handleNotify_(body));
     if (type === "brand")    return jsonOut_(handleBrand_(body));
-    if (type === "review")   return jsonOut_(handleReview_(body));
     return jsonOut_({ error: "Unknown type: " + type });
   } catch (err) {
     return jsonOut_({ error: String(err) });
@@ -271,7 +310,11 @@ function handleBrand_(p) {
 function handleReview_(p) {
   const secret = PropertiesService.getScriptProperties().getProperty("REVIEW_SECRET");
   if (!secret) return { ok: false, error: "not_configured" };
+  // After too many wrong guesses, refuse every check (even a right one)
+  // until the lock expires, so guessing at scale goes nowhere.
+  if (reviewLocked_()) return { ok: false, error: "locked" };
   if (!p.secret || String(p.secret) !== secret) {
+    noteReviewFail_();
     Utilities.sleep(500);  // slows down password guessing
     return { ok: false, error: "unauthorized" };
   }

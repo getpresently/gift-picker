@@ -139,6 +139,8 @@ function errorMessage(code: ReviewErrorCode): string {
       return "That change wasn't accepted by the server.";
     case "unauthorized":
       return "That password stopped working. Sign out and sign in again.";
+    case "locked":
+      return "Too many wrong passwords were tried, so sign-in is paused for 15 minutes.";
     case "not_configured":
       return "The review password isn't set up on the server yet.";
     case "endpoint_missing":
