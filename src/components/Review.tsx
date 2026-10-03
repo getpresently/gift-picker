@@ -138,7 +138,7 @@ function errorMessage(code: ReviewErrorCode): string {
     case "bad_value":
       return "That change wasn't accepted by the server.";
     case "unauthorized":
-      return "That password stopped working. Lock and unlock again.";
+      return "That password stopped working. Sign out and sign in again.";
     case "not_configured":
       return "The review password isn't set up on the server yet.";
     case "endpoint_missing":
@@ -292,7 +292,7 @@ function PasswordGate({ unlock }: { unlock: UnlockState }) {
               )}
               <div style={{ marginTop: 18 }}>
                 <Pillow tone="coral" size="md" fullWidth onClick={submit} disabled={submitting || !value.trim()}>
-                  {submitting ? "Checking…" : "Unlock"}
+                  {submitting ? "Checking…" : "Sign in"}
                 </Pillow>
               </div>
               </>
@@ -1059,7 +1059,7 @@ function ReviewTool({ unlock }: { unlock: UnlockState }) {
             {tally.approved} approved, {tally.rejected} rejected{tally.dead ? `, ${tally.dead} dead` : ""}
           </span>
           <Pillow tone="ink" size="sm" onClick={unlock.lock}>
-            Lock
+            Sign out
           </Pillow>
         </SiteHeader>
 
