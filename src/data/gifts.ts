@@ -284,13 +284,13 @@ function scoreBudget(gift: Gift, answers: Answers): number {
     return 5;
   }
   // Inside the range, points follow how much of the budget the gift uses
-  // (a range counts its top, capped at the budget): half or more → 10,
-  // a quarter to half → 7, less → 4. Enough to reorder close calls, never
+  // (a range counts its top, capped at the budget): a third or more → 10,
+  // a sixth to a third → 7, less → 4. Enough to reorder close calls, never
   // enough to outrank a gift that matches more of the shopper's interests.
   if (gift.priceOpen) return 10;
   const share = Math.min(Math.max(gift.price, gift.priceMax ?? 0), answers.budget) / answers.budget;
-  if (share >= 0.5) return 10;
-  if (share >= 0.25) return 7;
+  if (share >= 1 / 3) return 10;
+  if (share >= 1 / 6) return 7;
   return 4;
 }
 
@@ -332,12 +332,18 @@ function scoreVibe(gift: Gift, answers: Answers): number {
  * silently bypasses all occasion-based scoring. That's intentional: a typed
  * occasion like "Bar Mitzvah" can't be mapped to the sheet's Occasions column.
  */
+const BROAD_OCCASIONS = ["Birthday", "Holiday", "Just Because"];
+
 function scoreOccasionAdjustment(gift: Gift, answers: Answers, coverage: number): number {
   const occLabel = answers.occasion ? OCCASION_LABELS[answers.occasion] : undefined;
   if (!occLabel) return 0;
   // If the gift isn't tagged for this occasion (column empty or doesn't include
-  // the user's pick), skip occasion scoring for this gift entirely.
-  if (!tolerantIncludes(gift.occasions, occLabel)) return 0;
+  // the user's pick), skip occasion scoring for this gift entirely. Birthday,
+  // Holiday, and Just Because suit nearly any gift, so a gift tagged for any
+  // of the three counts for all of them; a missing tag on a general gift (a
+  // personalized cutting board without "Birthday") no longer costs points.
+  const broad = BROAD_OCCASIONS.includes(occLabel) && BROAD_OCCASIONS.some((o) => tolerantIncludes(gift.occasions, o));
+  if (!broad && !tolerantIncludes(gift.occasions, occLabel)) return 0;
   const { bonus, penalty } = occasionRule(gift, answers, occLabel);
   return Math.round(bonus * coverage) - penalty;
 }
