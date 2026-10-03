@@ -144,7 +144,7 @@ Dalia asked to "deprioritize 1-2 of the no-name or less top tier brands" in crow
 
 ### Sheet columns (since 10/3/26)
 
-A ID, B Gift, C Brand, D Age, E Relation, F Type, G Primary interest, H Interests, I Occasion, J Gender, K Price, L PriceMax, M BillingPeriod, N Description, O PhotoAddress, P Link, Q AmazonAltLink, R Status, S Date updated, T Review status, U Feedback (ID added 10/3/26; before setupIdColumn() runs, everything sits one column to the left).
+A ID, B Gift, C Brand, D Age, E Relation, F Type, G Primary interest, H Interests, I Occasion, J Gender, K Price, L PriceMax, M BillingPeriod, N Description, O PhotoAddress, P Link, Q AmazonAltLink, R Status, S Date updated, T Review status, U Feedback (ID added 10/3/26).
 
 Dalia had Primary interest moved next to Interests and Gender moved after Occasion. The site, the edge cache, /review, and the Apps Script all read columns by header name, so column moves are safe for them. Scratch scripts and Name Box edits use letters and must be updated after any move.
 

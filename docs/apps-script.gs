@@ -92,27 +92,24 @@ function allowWrite_(clientId) {
  * always had (their old row number); new gifts get the next free number
  * the next time the catalog is read (every 10 minutes). Never copy an ID
  * into a new row: leave it blank and it is filled in.
- * Run setupIdColumn() once from the editor (Run button) to create it.
+ * The column was created 10/3/26 (one-time setup, since removed).
  * ------------------------------------------------------------------ */
 const ID_HEADER = "ID";
 
-function setupIdColumn() {
-  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("Gifts");
-  const headers = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0].map(String);
-  if (headers.indexOf(ID_HEADER) === -1) {
-    const giftCol = headers.indexOf("Gift");  // before the insert
-    const last = sheet.getLastRow();
-    const gifts = last >= 2 ? sheet.getRange(2, giftCol + 1, last - 1, 1).getValues() : [];
-    sheet.insertColumnBefore(1);
-    sheet.getRange(1, 1).setValue(ID_HEADER);
-    if (gifts.length) {
-      // Each existing gift keeps the id it already had: its row number.
-      sheet.getRange(2, 1, gifts.length, 1).setValues(
-        gifts.map(function (g, i) { return [String(g[0]).trim() ? "r" + (i + 2) : ""]; })
-      );
-    }
-  }
-  assignMissingIds_(sheet);
+/** True when some gift row lacks a valid ID or repeats one (no lock, no writes). */
+function idsNeedFixing_(values) {
+  const headers = values[0].map(String);
+  const idCol = headers.indexOf(ID_HEADER);
+  const giftCol = headers.indexOf("Gift");
+  if (idCol === -1 || giftCol === -1) return false;
+  const seen = {};
+  return values.slice(1).some(function (row) {
+    if (String(row[giftCol]).trim() === "") return false;
+    const id = String(row[idCol]).trim();
+    if (!/^r\d+$/.test(id) || seen[id]) return true;
+    seen[id] = true;
+    return false;
+  });
 }
 
 /**
@@ -210,19 +207,26 @@ function applyPendingEdits_(sheet) {
     const log = ensureSheet_("Edit log", EDIT_LOG_HEADERS);
     const headers = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0].map(String);
     const giftCol = headers.indexOf("Gift") + 1;
+    const brandIdx = headers.indexOf("Brand");
     const noteCol = headers.indexOf("Feedback") + 1;
     const now = new Date().toISOString();
+    const pairKey = function (gift, brand) { return String(gift || "").trim() + "\u0000" + String(brand || "").trim(); };
+    const existing = {};
+    if (sheet.getLastRow() >= 2) {
+      sheet.getRange(2, 1, sheet.getLastRow() - 1, headers.length).getValues().forEach(function (r) {
+        existing[pairKey(r[giftCol - 1], r[brandIdx])] = true;
+      });
+    }
     pending.forEach(function (e) {
       let before = "", after = "", result;
       try {
         if (e.op === "append") {
           const v = e.values || {};
-          const dup = sheet.getLastRow() >= 2 && sheet.getRange(2, 1, sheet.getLastRow() - 1, headers.length).getValues()
-            .some(function (r) { return String(r[giftCol - 1]).trim() === String(v.Gift || "").trim() && String(r[headers.indexOf("Brand")]).trim() === String(v.Brand || "").trim(); });
           if (!v.Gift) result = "skipped: no Gift";
-          else if (dup) result = "skipped: already in the sheet";
+          else if (existing[pairKey(v.Gift, v.Brand)]) result = "skipped: already in the sheet";
           else {
             sheet.appendRow(headers.map(function (h) { return h === ID_HEADER ? "" : (v[h] === undefined ? "" : v[h]); }));
+            existing[pairKey(v.Gift, v.Brand)] = true;
             after = v.Gift;
             result = "appended";
           }
@@ -266,13 +270,15 @@ function doGet(e) {
     const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(tab);
     if (!sheet) return jsonOut_({ error: "Sheet not found: " + tab });
 
-    if (tab === "Gifts") {
-      // Edits are applied only on request (?edits=1, sent right after a new
-      // list is published), never on the regular 10-minute catalog read.
-      if (e.parameter.edits === "1") applyPendingEdits_(sheet);
-      assignMissingIds_(sheet);
+    // Edits are applied only on request (?edits=1, sent right after a new
+    // list is published), never on the regular 10-minute catalog read.
+    if (tab === "Gifts" && e.parameter.edits === "1") applyPendingEdits_(sheet);
+    let values = sheet.getDataRange().getValues();
+    // One read per request; the lock and writes happen only when a new row
+    // still needs an ID.
+    if (tab === "Gifts" && values.length > 1 && idsNeedFixing_(values) && assignMissingIds_(sheet)) {
+      values = sheet.getDataRange().getValues();
     }
-    const values = sheet.getDataRange().getValues();
     if (values.length < 2) return jsonOut_({ data: [] });
 
     const headers = values[0].map(String);
