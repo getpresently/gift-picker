@@ -4,10 +4,9 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import { AmbientGlow } from "./clay/AmbientGlow";
 import { ClaySurface } from "./clay/ClaySurface";
 import { FooterLinks } from "./clay/FooterLinks";
-import { PresentlyMark } from "./clay/PresentlyMark";
+import { FooterBrand } from "./clay/FooterBrand";
 import { Pillow } from "./clay/Pillow";
 import { SiteHeader } from "./clay/SiteHeader";
-import { Wordmark } from "./clay/Wordmark";
 import { useIsMobile } from "../hooks/useIsMobile";
 import { track } from "../data/analytics";
 import { BRAND_EMAIL, brandMailto, submitBrand, type BrandSubmission, type Placement } from "../data/brandApi";
@@ -27,9 +26,9 @@ const PLACEMENTS: { v: Placement; title: string; price: string; body: string }[]
   {
     v: "sponsored",
     title: "Sponsored placement",
-    price: "Paid",
+    price: "$99 for 1 year",
     body:
-      "Once a product passes review, a sponsored placement gives it more visibility in the results it matches. Sponsored gifts are always labeled and only appear for shoppers whose answers they fit. We'll reply with rates.",
+      "Once a product passes review, sponsored placement gives it more visibility in the results it matches for a full year. Sponsored gifts are always labeled and only appear for shoppers whose answers they fit.",
   },
 ];
 
@@ -46,7 +45,7 @@ const EMPTY: Omit<BrandSubmission, "placement"> = {
 };
 
 type Field = keyof typeof EMPTY;
-const REQUIRED: Field[] = ["brand", "contactName", "email", "product", "productUrl", "price"];
+const REQUIRED: Field[] = ["brand", "website", "contactName", "email", "product", "productUrl", "price"];
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 const withScheme = (u: string) => (u && !/^https?:\/\//i.test(u) ? `https://${u}` : u);
@@ -129,18 +128,6 @@ export function BrandsPage() {
           }}
         >
           <div style={{ maxWidth: 640 }}>
-            <div
-              style={{
-                fontFamily: SANS,
-                fontSize: 12,
-                letterSpacing: "0.14em",
-                color: "rgba(35,20,16,0.55)",
-                textTransform: "uppercase",
-                marginBottom: 12,
-              }}
-            >
-              For brands
-            </div>
             <h1
               style={{
                 fontFamily: SERIF,
@@ -156,9 +143,8 @@ export function BrandsPage() {
               Get your product in front of <em style={{ color: "#C4477E", fontStyle: "italic" }}>gift shoppers</em>.
             </h1>
             <p style={{ fontFamily: SANS, fontSize: isMobile ? 16 : 17, lineHeight: 1.6, color: "rgba(35,20,16,0.68)", margin: "18px 0 0" }}>
-              GiftPicker matches people to gifts from a hand-curated catalog of more than 500 products across 300+ brands.
-              Shoppers arrive knowing who they're buying for, the occasion, and their budget, so the right product reaches
-              them when they're ready to buy.
+              Shoppers tell GiftPicker who they're buying for, the occasion, and their budget, and we match them to gifts
+              from 300+ brands.
             </p>
           </div>
 
@@ -241,8 +227,7 @@ export function BrandsPage() {
                   Thanks, we have it.
                 </h2>
                 <p style={{ fontFamily: SANS, fontSize: 15, lineHeight: 1.6, color: "rgba(35,20,16,0.68)", margin: "10px auto 0", maxWidth: 440 }}>
-                  We'll review {form.product.trim() || "your product"} and reply to {form.email.trim() || "you"}
-                  {placement === "sponsored" ? " with next steps and rates." : "."}
+                  We'll review {form.product.trim() || "your product"} and reply to {form.email.trim() || "you"}.
                 </p>
                 <div style={{ display: "flex", gap: 12, justifyContent: "center", marginTop: 24, flexWrap: "wrap" }}>
                   <Pillow tone="cream" size="md" onClick={reset}>
@@ -255,16 +240,22 @@ export function BrandsPage() {
               </div>
             ) : (
               <form onSubmit={onSubmit} noValidate>
-                <h2 style={{ fontFamily: SERIF, fontWeight: 400, fontSize: isMobile ? 28 : 32, color: INK, margin: "0 0 4px" }}>
+                <h2 style={{ fontFamily: SERIF, fontWeight: 400, fontSize: isMobile ? 28 : 32, color: INK, margin: "0 0 20px" }}>
                   Submit a product
                 </h2>
-                <p style={{ fontFamily: SANS, fontSize: 14, color: "rgba(35,20,16,0.6)", margin: "0 0 24px" }}>
-                  Applying for {placement === "sponsored" ? "sponsored placement" : "editorial review"}. Fields marked * are required.
-                </p>
 
                 <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", columnGap: colGap, rowGap: 16 }}>
                   <Input label="Brand name" required value={form.brand} onChange={set("brand")} invalid={invalid("brand")} autoComplete="organization" />
-                  <Input label="Brand website" value={form.website} onChange={set("website")} placeholder="yourbrand.com" inputMode="url" autoComplete="url" />
+                  <Input
+                    label="Brand website"
+                    required
+                    value={form.website}
+                    onChange={set("website")}
+                    invalid={invalid("website")}
+                    placeholder="yourbrand.com"
+                    inputMode="url"
+                    autoComplete="url"
+                  />
                   <Input label="Your name" required value={form.contactName} onChange={set("contactName")} invalid={invalid("contactName")} autoComplete="name" />
                   <Input
                     label="Work email"
@@ -333,32 +324,10 @@ export function BrandsPage() {
                   </Notice>
                 )}
 
-                <div
-                  style={{
-                    display: "flex",
-                    alignItems: isMobile ? "stretch" : "center",
-                    flexDirection: isMobile ? "column" : "row",
-                    gap: isMobile ? 14 : 20,
-                    marginTop: 24,
-                  }}
-                >
+                <div style={{ display: "flex", flexDirection: isMobile ? "column" : "row", marginTop: 24 }}>
                   <Pillow tone="coral" size="lg" type="submit" disabled={status === "sending"}>
                     {status === "sending" ? "Sending…" : "Submit for review"}
                   </Pillow>
-                  <p style={{ fontFamily: SANS, fontSize: 12, lineHeight: 1.5, color: "rgba(35,20,16,0.5)", margin: 0, maxWidth: 360 }}>
-                    We use these details only to reply about your submission. See our{" "}
-                    <a
-                      href="/privacy"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        navigate("/privacy");
-                      }}
-                      style={{ color: "inherit", textUnderlineOffset: 2 }}
-                    >
-                      Privacy Policy
-                    </a>
-                    .
-                  </p>
                 </div>
               </form>
             )}
@@ -376,11 +345,8 @@ export function BrandsPage() {
               gap: 16,
             }}
           >
-            <Wordmark size="sm" />
-            <div style={{ display: "flex", alignItems: "center", gap: 14, flexWrap: "wrap" }}>
-              <PresentlyMark />
-              <FooterLinks />
-            </div>
+            <FooterBrand />
+            <FooterLinks />
           </footer>
         </div>
       </div>

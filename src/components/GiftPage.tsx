@@ -5,7 +5,6 @@ import { ClaySurface } from "./clay/ClaySurface";
 import { GiftBox3D } from "./clay/GiftBox3D";
 import { Pillow } from "./clay/Pillow";
 import { PriceDisplay } from "./clay/PriceDisplay";
-import { Wordmark } from "./clay/Wordmark";
 import { useIsMobile } from "../hooks/useIsMobile";
 import { useImageFallback } from "../hooks/useImageFallback";
 import { useGifts } from "../data/giftsApi";
@@ -14,7 +13,7 @@ import { isAmazonUrl, openBuyLink as openExternal } from "../data/affiliate";
 import { AffiliateDisclosure } from "./clay/AffiliateDisclosure";
 import { SiteHeader } from "./clay/SiteHeader";
 import { FooterLinks } from "./clay/FooterLinks";
-import { PresentlyMark } from "./clay/PresentlyMark";
+import { FooterBrand } from "./clay/FooterBrand";
 import { GiftCard } from "./clay/GiftCard";
 import { SECONDARY_TONES } from "../data/gifts";
 import { relatedGifts } from "../data/related";
@@ -409,11 +408,8 @@ export function GiftPage() {
               gap: 16,
             }}
           >
-            <Wordmark size="sm" />
-            <div style={{ display: "flex", alignItems: "center", gap: 14, flexWrap: "wrap" }}>
-              <PresentlyMark />
-              <FooterLinks />
-            </div>
+            <FooterBrand />
+            <FooterLinks />
             {gift && (gift.amazonLink || isAmazonUrl(gift.link)) && <AffiliateDisclosure />}
           </footer>
         </div>

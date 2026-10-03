@@ -5,7 +5,6 @@ import { GiftCard } from "./clay/GiftCard";
 import { Hero } from "./clay/Hero";
 import { Pillow } from "./clay/Pillow";
 import { ProductModal } from "./clay/ProductModal";
-import { Wordmark } from "./clay/Wordmark";
 import { useIsMobile } from "../hooks/useIsMobile";
 import { clearAnswers, GENDER_OPTIONS, loadAnswers, QUESTIONS, saveAnswers, scoringAnswers, type Answers } from "../data/questions";
 import { buildMatchReasons, rankGifts, SECONDARY_TONES, type RankedGift } from "../data/gifts";
@@ -19,7 +18,7 @@ import { AffiliateDisclosure } from "./clay/AffiliateDisclosure";
 import { isAmazonUrl } from "../data/affiliate";
 import { SiteHeader } from "./clay/SiteHeader";
 import { FooterLinks } from "./clay/FooterLinks";
-import { PresentlyMark } from "./clay/PresentlyMark";
+import { FooterBrand } from "./clay/FooterBrand";
 import { RefineModal } from "./clay/RefineModal";
 
 export function Results() {
@@ -548,11 +547,8 @@ export function Results() {
               gap: 16,
             }}
           >
-            <Wordmark size="sm" />
-            <div style={{ display: "flex", alignItems: "center", gap: 14, flexWrap: "wrap" }}>
-              <PresentlyMark />
-              <FooterLinks />
-            </div>
+            <FooterBrand />
+            <FooterLinks />
             {picks.some((g) => g.amazonLink || isAmazonUrl(g.link)) && <AffiliateDisclosure />}
           </footer>
         </div>

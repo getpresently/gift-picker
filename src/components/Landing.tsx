@@ -3,13 +3,12 @@ import { AmbientGlow } from "./clay/AmbientGlow";
 import { ClaySurface, type Tint } from "./clay/ClaySurface";
 import { GiftBox3D } from "./clay/GiftBox3D";
 import { Pillow } from "./clay/Pillow";
-import { Wordmark } from "./clay/Wordmark";
 import { useIsMobile } from "../hooks/useIsMobile";
 import { track } from "../data/analytics";
 import { SiteHeader } from "./clay/SiteHeader";
 import { FooterLinks } from "./clay/FooterLinks";
 import { TestimonialCarousel } from "./clay/TestimonialCarousel";
-import { PresentlyMark } from "./clay/PresentlyMark";
+import { FooterBrand } from "./clay/FooterBrand";
 
 const HOW_STEPS: { n: string; title: string; body: string; tint: Tint }[] = [
   { n: "01", title: "Tell us about them", body: "Closeness, vibes, budget. Six questions, no account.", tint: "rose" },
@@ -404,11 +403,8 @@ export function Landing() {
               gap: 16,
             }}
           >
-            <Wordmark size="sm" />
-            <div style={{ display: "flex", alignItems: "center", gap: 14, flexWrap: "wrap" }}>
-              <PresentlyMark />
-              <FooterLinks />
-            </div>
+            <FooterBrand />
+            <FooterLinks />
           </footer>
         </div>
       </div>
