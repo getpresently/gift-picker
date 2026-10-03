@@ -220,6 +220,14 @@ Examples: "Added 10/3/26 for user request #25"; "Fixed 10/3/26: renamed from "Gi
 
 Every gift has a permanent ID in column A (Dalia approved 10/3/26), such as `r495`. Existing gifts kept the number they already had (their old row number), so no URL changed. Gift pages (`/gift/r495`), shared links, and /review all use the ID, so rows can now be sorted or moved, and non-live gifts could move to another tab. New rows get the next free ID automatically within 10 minutes (the catalog read fills blanks). Never type or copy an ID into a new row; if a copied ID appears twice, the later row is renumbered.
 
+### Writing to the sheet: the edit queue (preferred, 10/3/26)
+
+Edits no longer need a browser tab. Add entries to `public/sheet-edits.json` in the repo and deploy (`npx wrangler deploy`); the Apps Script fetches giftpicker.io/sheet-edits.json on its next read of the Gifts tab (every 10 minutes, or immediately when anything reads the catalog feed) and applies each entry once:
+- `{"id": "2026-10-03-01", "op": "set", "row_id": "r355", "gift": "<exact Gift name>", "column": "AmazonAltLink", "expect": "<exact current value>", "value": "<new value>"}` changes one cell only if it still holds `expect` and the row's Gift matches.
+- `{"id": "...", "op": "note", "row_id": "r355", "gift": "<exact Gift name>", "text": "Retired 10/3/26: ..."}` appends ` | text` to Feedback.
+- `{"id": "...", "op": "append", "values": {"Gift": "...", "Brand": "...", ...}}` adds a gift row (keys are column headers; leave ID out). Skipped if the same Gift and Brand already exist.
+Ids must be unique forever. Results land in the "Edit log" tab. The ID column can't be edited, and at most 50 edits apply per run.
+
 ### Writing to the sheet (for agents with browser access)
 
 - Type a tab-qualified range in the Name Box (`Gifts!F2`) and confirm the URL ends in `#gid=0`. On 9/21 a paste meant for Gifts overwrote a Requests column.
