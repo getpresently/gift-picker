@@ -68,6 +68,19 @@ async function handleEvent(event) {
     return serveGiftsApi();
   }
 
+  // Pending catalog edits for the Apps Script to apply (applyPendingEdits_
+  // in docs/apps-script.gs). Never cached, so a new list is picked up on
+  // the next catalog read.
+  if (url.pathname === "/sheet-edits.json") {
+    const headers = { "Content-Type": "application/json; charset=utf-8", "Cache-Control": "no-store" };
+    try {
+      const asset = await getAssetFromKV(event, { cacheControl: { bypassCache: true } });
+      return new Response(asset.body, { headers });
+    } catch (e) {
+      return new Response(JSON.stringify({ edits: [] }), { headers });
+    }
+  }
+
   let options = {};
 
   /**

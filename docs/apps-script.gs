@@ -170,6 +170,94 @@ function findGiftRow_(sheet, rowId) {
   return -1;
 }
 
+/* ------------------------------------------------------------------ *
+ * Catalog edits published at giftpicker.io/sheet-edits.json, so edits
+ * never depend on someone typing in a browser tab. Applied on each read
+ * of the Gifts tab (the site reads it every 10 minutes). Each edit has a
+ * unique id and applies once. "set" only changes a cell that still holds
+ * the expected value, on the row whose Gift matches, so a stale or wrong
+ * edit is skipped rather than written. The ID column is never edited.
+ * Every result is recorded in the "Edit log" tab.
+ * Run applyPendingEditsNow() once from the editor to grant the
+ * "connect to an external service" permission this needs.
+ * ------------------------------------------------------------------ */
+const EDITS_URL = "https://giftpicker.io/sheet-edits.json";
+const MAX_EDITS_PER_RUN = 50;
+const EDIT_LOG_HEADERS = ["at", "edit_id", "op", "row_id", "column", "before", "after", "result"];
+
+function applyPendingEditsNow() {
+  applyPendingEdits_(SpreadsheetApp.getActiveSpreadsheet().getSheetByName("Gifts"));
+}
+
+function applyPendingEdits_(sheet) {
+  let edits;
+  try {
+    const res = UrlFetchApp.fetch(EDITS_URL + "?t=" + Date.now(), { muteHttpExceptions: true });
+    if (res.getResponseCode() !== 200) return;
+    edits = JSON.parse(res.getContentText()).edits || [];
+  } catch (err) {
+    return;
+  }
+  const props = PropertiesService.getScriptProperties();
+  const done = JSON.parse(props.getProperty("APPLIED_EDITS") || "[]");
+  const pending = edits.filter(function (e) { return e && e.id && done.indexOf(e.id) === -1; }).slice(0, MAX_EDITS_PER_RUN);
+  if (!pending.length) return;
+
+  const lock = LockService.getScriptLock();
+  lock.waitLock(20000);
+  try {
+    const log = ensureSheet_("Edit log", EDIT_LOG_HEADERS);
+    const headers = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0].map(String);
+    const giftCol = headers.indexOf("Gift") + 1;
+    const noteCol = headers.indexOf("Feedback") + 1;
+    const now = new Date().toISOString();
+    pending.forEach(function (e) {
+      let before = "", after = "", result;
+      try {
+        if (e.op === "append") {
+          const v = e.values || {};
+          const dup = sheet.getLastRow() >= 2 && sheet.getRange(2, 1, sheet.getLastRow() - 1, headers.length).getValues()
+            .some(function (r) { return String(r[giftCol - 1]).trim() === String(v.Gift || "").trim() && String(r[headers.indexOf("Brand")]).trim() === String(v.Brand || "").trim(); });
+          if (!v.Gift) result = "skipped: no Gift";
+          else if (dup) result = "skipped: already in the sheet";
+          else {
+            sheet.appendRow(headers.map(function (h) { return h === ID_HEADER ? "" : (v[h] === undefined ? "" : v[h]); }));
+            after = v.Gift;
+            result = "appended";
+          }
+        } else {
+          const row = findGiftRow_(sheet, e.row_id);
+          if (row === -1) result = "skipped: no such id";
+          else if (String(sheet.getRange(row, giftCol).getValue()).trim() !== String(e.gift || "").trim()) result = "skipped: gift name differs";
+          else if (e.op === "set") {
+            const col = headers.indexOf(e.column) + 1;
+            if (!col || e.column === ID_HEADER) result = "skipped: bad column";
+            else {
+              const cell = sheet.getRange(row, col);
+              before = String(cell.getValue());
+              if (before !== String(e.expect === undefined ? "" : e.expect)) result = "skipped: cell changed";
+              else { cell.setValue(e.value === undefined ? "" : e.value); after = String(e.value || ""); result = "applied"; }
+            }
+          } else if (e.op === "note" && noteCol) {
+            const cell = sheet.getRange(row, noteCol);
+            before = String(cell.getValue() || "").trim();
+            after = before ? before + " | " + e.text : String(e.text || "");
+            cell.setValue(after);
+            result = "applied";
+          } else result = "skipped: bad op";
+        }
+      } catch (err) {
+        result = "error: " + String(err).slice(0, 120);
+      }
+      done.push(e.id);
+      log.appendRow([now, e.id, e.op || "", e.row_id || "", e.column || "", before.slice(0, 500), after.slice(0, 500), result]);
+    });
+    props.setProperty("APPLIED_EDITS", JSON.stringify(done.slice(-400)));
+  } finally {
+    lock.releaseLock();
+  }
+}
+
 function doGet(e) {
   try {
     const tab = (e && e.parameter && e.parameter.tab) || "Gifts";
@@ -177,7 +265,10 @@ function doGet(e) {
     const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(tab);
     if (!sheet) return jsonOut_({ error: "Sheet not found: " + tab });
 
-    if (tab === "Gifts") assignMissingIds_(sheet);
+    if (tab === "Gifts") {
+      applyPendingEdits_(sheet);
+      assignMissingIds_(sheet);
+    }
     const values = sheet.getDataRange().getValues();
     if (values.length < 2) return jsonOut_({ data: [] });
 
