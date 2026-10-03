@@ -78,7 +78,7 @@ export const QUESTIONS: Question[] = [
     options: [
       { v: "partner",     l: "Partner",          e: "💞" },
       { v: "parent",      l: "Parent",           e: "🌿" },
-      { v: "child",       l: "Child",            e: "🌱", hint: "any kid in your life" },
+      { v: "child",       l: "Child",            e: "🌱" },
       { v: "grandparent", l: "Grandparent",      e: "🌻" },
       { v: "sibling",     l: "Sibling",          e: "🎈" },
       { v: "friend",      l: "Friend",           e: "🫶" },
