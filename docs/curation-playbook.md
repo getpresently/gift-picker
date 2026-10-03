@@ -357,7 +357,7 @@ Anything else gets no occasion scoring. Every typed occasion is still logged to 
 |---|---|
 | Relation | 25 if the gift's Relation includes the recipient. "Treat myself" matches any gift with any Relation tag. |
 | Age | 10 if the gift's Age includes the picked age (New baby also counts Baby). |
-| Budget | Inside the range, by how much of the budget the gift uses (a range counts its top, capped at the budget): half or more 10, a quarter to half 7, less 4 (Dalia 10/3/26: bigger budgets should favor fuller gifts, and gifts that fall below the cutoff should drop out). 5 in either fuzz zone (up to 10% over the ceiling, or topping out just under the floor); 10 for "Your choice" gift cards and open-ended prices. |
+| Budget | Inside the range, by how much of the budget the gift uses (a range counts its top, capped at the budget): a third or more 10, a sixth to a third 7, less 4 (Dalia 10/3/26: bigger budgets should favor fuller gifts, and gifts that fall below the cutoff should drop out; the cutoffs were lowered from half and a quarter the same day after a $50 fondue pot ranked below a $110 fondue set on a $125 budget). 5 in either fuzz zone (up to 10% over the ceiling, or topping out just under the floor); 10 for "Your choice" gift cards and open-ended prices. |
 | Interests | Up to 40: round(coverage × 40). |
 | Vibe | Up to 10: round(matching vibes ÷ picked vibes × 10). One of two is 5. |
 | Occasion | Bonus × coverage, minus any penalty (below). |
@@ -372,7 +372,7 @@ The total is clamped to 0 to 100.
 | 2 | 20 | 30 | | 10 |
 | 3 | 13 | 20 | 27 | 7 |
 
-**Occasion adjustment.** Applies only when the gift's Occasion includes the shopper's occasion. The bonus is multiplied by coverage, so a gift that misses every picked interest gets no bonus; the penalty applies in full. With no interests picked, coverage counts as 1 here.
+**Occasion adjustment.** Applies only when the gift's Occasion includes the shopper's occasion. Birthday, Holiday, and Just Because count as one family: a gift tagged for any of them qualifies for all three (10/3/26, after a personalized record cutting board without a Birthday tag ranked below cookbooks), while event occasions (Wedding, New Baby, Housewarming, Anniversary, Appreciation, Thank You, New Job) still need their own tag. The bonus is multiplied by coverage, so a gift that misses every picked interest gets no bonus; the penalty applies in full. With no interests picked, coverage counts as 1 here.
 
 | Occasion | Bonus | Penalty |
 |---|---|---|
