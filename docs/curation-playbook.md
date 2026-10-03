@@ -197,7 +197,7 @@ The maker's name: "Geo F. Trumper" for a body wash that Maggard Razors sells. A 
 
 | Status | Meaning |
 |---|---|
-| `Live` | On the site. New rows go in as Live with Review status FALSE. |
+| `Live` | On the site once Review status is TRUE (Dalia, 10/4: a gift shows only when it is both Live and approved). New rows go in as Live with Review status FALSE, so they stay hidden until she approves them in /review. |
 | `Rejected` | Dalia's taste call (or a first-pass reject she let stand). Treat as permanent. |
 | `Retired` | Removed by a curator: overlap, duplicate, quality, or the brand closed. |
 | `Dead` | Link broken or product discontinued everywhere. |

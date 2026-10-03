@@ -127,6 +127,18 @@ export function adaptRow(row: RawRow): Gift {
 
 type Result = { data: Gift[]; loading: boolean; error: string | null };
 
+/**
+ * A gift appears on the site only when its Status is Live AND its Review
+ * status is TRUE, meaning Dalia approved it in /review. The edge cache
+ * already filters this way; this repeats it for the direct Apps Script
+ * fallback, which returns every row.
+ */
+export function isShownOnSite(row: RawRow): boolean {
+  const review: unknown = row["Review status"]; // the sheet sends a real boolean
+  const reviewed = review === true || String(review ?? "").trim().toUpperCase() === "TRUE";
+  return String(row.Status ?? "").trim().toLowerCase() === "live" && reviewed;
+}
+
 async function fetchRows(): Promise<RawRow[]> {
   try {
     const r = await fetch(EDGE_GIFTS_URL);
@@ -150,7 +162,7 @@ export function useGifts(): Result {
     let cancelled = false;
     fetchRows()
       .then((rows) => {
-        if (!cancelled) setState({ data: rows.map(adaptRow), loading: false, error: null });
+        if (!cancelled) setState({ data: rows.filter(isShownOnSite).map(adaptRow), loading: false, error: null });
       })
       .catch((err: unknown) => {
         if (!cancelled) setState({ data: [], loading: false, error: String(err) });

@@ -157,8 +157,10 @@ async function handleEvent(event) {
   }
 }
 
+/** Shown on the site: Status Live AND Review status TRUE (Dalia approved it in /review). */
 function isLive(row) {
-  return String(row.Status || "").trim().toLowerCase() === "live";
+  const reviewed = row["Review status"] === true || String(row["Review status"] || "").trim().toUpperCase() === "TRUE";
+  return String(row.Status || "").trim().toLowerCase() === "live" && reviewed;
 }
 
 /**
