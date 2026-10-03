@@ -31,11 +31,11 @@ function splitCsv(raw: string | number | undefined): string[] {
     .filter(Boolean);
 }
 
-/** Format a number for display: drop trailing zeros, add thousands separator. */
+/** Format a number for display: whole dollars drop the cents, anything else shows two decimals. */
 function fmt(n: number): string {
   if (!Number.isFinite(n)) return "0";
   if (Number.isInteger(n)) return n.toLocaleString("en-US");
-  return n.toLocaleString("en-US", { maximumFractionDigits: 2 });
+  return n.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 }
 
 /** Parse "$1,240" / "103" / "$80.50" → number; returns null for empty / "open" / unparseable. */
