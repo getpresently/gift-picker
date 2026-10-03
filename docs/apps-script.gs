@@ -172,8 +172,9 @@ function findGiftRow_(sheet, rowId) {
 
 /* ------------------------------------------------------------------ *
  * Catalog edits published at giftpicker.io/sheet-edits.json, so edits
- * never depend on someone typing in a browser tab. Applied on each read
- * of the Gifts tab (the site reads it every 10 minutes). Each edit has a
+ * never depend on someone typing in a browser tab. Applied only when the
+ * catalog is read with ?edits=1 (sent right after a new list is published),
+ * so nothing runs in the background. Each edit has a
  * unique id and applies once. "set" only changes a cell that still holds
  * the expected value, on the row whose Gift matches, so a stale or wrong
  * edit is skipped rather than written. The ID column is never edited.
@@ -266,7 +267,9 @@ function doGet(e) {
     if (!sheet) return jsonOut_({ error: "Sheet not found: " + tab });
 
     if (tab === "Gifts") {
-      applyPendingEdits_(sheet);
+      // Edits are applied only on request (?edits=1, sent right after a new
+      // list is published), never on the regular 10-minute catalog read.
+      if (e.parameter.edits === "1") applyPendingEdits_(sheet);
       assignMissingIds_(sheet);
     }
     const values = sheet.getDataRange().getValues();

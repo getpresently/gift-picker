@@ -222,7 +222,7 @@ Every gift has a permanent ID in column A (Dalia approved 10/3/26), such as `r49
 
 ### Writing to the sheet: the edit queue (preferred, 10/3/26)
 
-Edits no longer need a browser tab. Add entries to `public/sheet-edits.json` in the repo and deploy (`npx wrangler deploy`); the Apps Script fetches giftpicker.io/sheet-edits.json on its next read of the Gifts tab (every 10 minutes, or immediately when anything reads the catalog feed) and applies each entry once:
+Edits no longer need a browser tab. Add entries to `public/sheet-edits.json` in the repo and deploy (`npx wrangler deploy`); then trigger it by reading the catalog feed with `?tab=Gifts&edits=1`. The Apps Script then fetches giftpicker.io/sheet-edits.json and applies each entry once (it never checks on its own):
 - `{"id": "2026-10-03-01", "op": "set", "row_id": "r355", "gift": "<exact Gift name>", "column": "AmazonAltLink", "expect": "<exact current value>", "value": "<new value>"}` changes one cell only if it still holds `expect` and the row's Gift matches.
 - `{"id": "...", "op": "note", "row_id": "r355", "gift": "<exact Gift name>", "text": "Retired 10/3/26: ..."}` appends ` | text` to Feedback.
 - `{"id": "...", "op": "append", "values": {"Gift": "...", "Brand": "...", ...}}` adds a gift row (keys are column headers; leave ID out). Skipped if the same Gift and Brand already exist.

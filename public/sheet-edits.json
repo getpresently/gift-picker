@@ -1,4 +1,4 @@
 {
-  "about": "Catalog edits the Apps Script applies on its next read of the Gifts tab (applyPendingEdits_ in docs/apps-script.gs). Each edit applies once, by id. set: change one cell only if it still holds `expect` and the row's Gift is `gift`. note: append ' | text' to Feedback. append: add a new gift row (ID left blank, filled automatically). Results go to the Edit log tab.",
+  "about": "Catalog edits the Apps Script applies when the catalog is read with ?tab=Gifts&edits=1 (applyPendingEdits_ in docs/apps-script.gs). Each edit applies once, by id. set: change one cell only if it still holds `expect` and the row's Gift is `gift`. note: append ' | text' to Feedback. append: add a new gift row (ID left blank, filled automatically). Results go to the Edit log tab.",
   "edits": []
 }
