@@ -255,41 +255,48 @@ function PasswordGate({ unlock }: { unlock: UnlockState }) {
                 margin: "0 0 20px",
               }}
             >
-              {autoChecking ? "Checking your saved session." : "Enter the review password to continue."}
+              {autoChecking ? "Signing you in with your saved session…" : "Enter the review password to continue."}
             </p>
-            <input
-              type="password"
-              value={value}
-              onChange={(e) => setValue(e.target.value)}
-              onKeyDown={(e) => {
-                if (e.key === "Enter") submit();
-              }}
-              placeholder="Password"
-              autoFocus
-              style={{
-                width: "100%",
-                boxSizing: "border-box",
-                padding: "12px 14px",
-                borderRadius: 12,
-                border: "none",
-                background: "rgba(35,20,16,0.05)",
-                boxShadow: "inset 0 0 0 1.5px rgba(35,20,16,0.1)",
-                fontFamily: "Geist, sans-serif",
-                fontSize: 15,
-                color: "#231410",
-                outline: "none",
-              }}
-            />
-            {unlock.error && !autoChecking && (
-              <p style={{ fontFamily: "Geist, sans-serif", fontSize: 13, color: "#A82E2A", margin: "10px 0 0" }}>
-                {errorMessage(unlock.error)}
-              </p>
+            {/* A saved session is verified with the server first (Apps Script
+                can take several seconds), so the password form only appears
+                once there is no session or the check fails. */}
+            {!autoChecking && (
+              <>
+              <input
+                type="password"
+                value={value}
+                onChange={(e) => setValue(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") submit();
+                }}
+                placeholder="Password"
+                autoFocus
+                style={{
+                  width: "100%",
+                  boxSizing: "border-box",
+                  padding: "12px 14px",
+                  borderRadius: 12,
+                  border: "none",
+                  background: "rgba(35,20,16,0.05)",
+                  boxShadow: "inset 0 0 0 1.5px rgba(35,20,16,0.1)",
+                  fontFamily: "Geist, sans-serif",
+                  fontSize: 15,
+                  color: "#231410",
+                  outline: "none",
+                }}
+              />
+              {unlock.error && !autoChecking && (
+                <p style={{ fontFamily: "Geist, sans-serif", fontSize: 13, color: "#A82E2A", margin: "10px 0 0" }}>
+                  {errorMessage(unlock.error)}
+                </p>
+              )}
+              <div style={{ marginTop: 18 }}>
+                <Pillow tone="coral" size="md" fullWidth onClick={submit} disabled={submitting || !value.trim()}>
+                  {submitting ? "Checking…" : "Unlock"}
+                </Pillow>
+              </div>
+              </>
             )}
-            <div style={{ marginTop: 18 }}>
-              <Pillow tone="coral" size="md" fullWidth onClick={submit} disabled={submitting || !value.trim()}>
-                {submitting ? "Checking…" : "Unlock"}
-              </Pillow>
-            </div>
           </ClaySurface>
         </div>
       </div>
