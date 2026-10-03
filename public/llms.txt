@@ -1,6 +1,6 @@
 # GiftPicker
 
-> GiftPicker (giftpicker.io) is a free 30-second gift-recommendation quiz by Presently. Users answer six questions about the recipient (relationship, age, occasion, interests, vibe, budget) and receive ranked, personalized gift picks from a hand-curated catalog of about 560 gifts from 200+ brands, with direct buy links to the brand's site or Amazon. No account required.
+> GiftPicker (giftpicker.io) is a free 30-second gift-recommendation quiz by Presently. Users answer six questions about the recipient (relationship, age, occasion, interests, vibe, budget) and receive ranked, personalized gift picks from a hand-curated catalog of more than 500 gifts from 300+ brands, with direct buy links to the brand's site or Amazon. No account required.
 
 ## What it does
 
@@ -10,11 +10,11 @@
 - Vibes: Fun, Practical, Sentimental, Luxurious.
 - Every gift in the catalog is hand-curated by the GiftPicker team, then matched to the quiz answers by a weighted scoring algorithm (interests weighted heaviest, then relationship, then budget fit, age fit, and vibe, with occasion adjustments). Only strong matches are shown, scored 0-100.
 - Results pages can be shared via URL; the link reproduces the same picks.
-- Gifts are hand-curated from 200+ brands including Apple, Lululemon, Patagonia, Pottery Barn, Anthropologie, Peloton, Aesop, Le Creuset, Diptyque, Hario, MUJI, and Allbirds.
+- Gifts are hand-curated from 300+ brands including Apple, Lululemon, Patagonia, Pottery Barn, Anthropologie, Peloton, Aesop, Le Creuset, Diptyque, Le Labo, Smeg, and Bose.
 
 ## Gift pages
 
-Every gift has a permanent, indexable page at https://giftpicker.io/gift/{id} (about 560 live pages, listed in the sitemap). Each page contains the gift's name and brand, a description, its price or price range, a product photo, a direct buy link (to the brand's site or Amazon, tagged as an affiliate link where applicable), and schema.org Product structured data (name, description, image, brand, and price where available).
+Every gift has a permanent, indexable page at https://giftpicker.io/gift/{id} (more than 500 live pages, listed in the sitemap). Each page contains the gift's name and brand, a description, its price or price range, a product photo, a direct buy link (to the brand's site or Amazon, tagged as an affiliate link where applicable), and schema.org Product structured data (name, description, image, brand, and price where available).
 
 ## Key pages
 

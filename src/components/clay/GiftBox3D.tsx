@@ -116,11 +116,15 @@ export function GiftBox3D({ size = 200, color = "coral", rotate = -8, ribbonColo
 
         {/* bow, centered where the ribbons cross */}
         <g transform={`translate(${cx - 100} ${cy - 66})`}>
-          {/* tails draped toward the front */}
-          <path d="M 97 69 L 85 90 L 81 100 L 88 96 L 92 99 L 101 72 Z" fill={ribbonColor} />
-          <path d="M 97 69 L 85 90 L 81 100 L 88 96 L 92 99 L 101 72 Z" fill="rgba(40,15,10,0.10)" />
-          <path d="M 103 69 L 115 90 L 119 100 L 112 96 L 108 99 L 99 72 Z" fill={ribbonColor} />
-          <path d="M 103 69 L 115 90 L 119 100 L 112 96 L 108 99 L 99 72 Z" fill="rgba(40,15,10,0.18)" />
+          {/* tails: long, curved, dovetail-cut, and a touch uneven, the way
+              satin ribbon falls. Each gets a fold shadow along its inner edge. */}
+          <path d="M 95 70 C 91 84, 83 98, 71 111 L 80.5 107.5 L 85 117 C 91 102, 97 87, 103 72 Z" fill={ribbonColor} />
+          <path d="M 95 70 C 91 84, 83 98, 71 111 L 80.5 107.5 L 85 117 C 91 102, 97 87, 103 72 Z" fill="rgba(40,15,10,0.10)" />
+          <path d="M 99 72 C 94 87, 89 101, 85 117 C 91 102, 97 87, 103 72 Z" fill="rgba(40,15,10,0.10)" />
+          <path d="M 105 70 C 110 85, 119 100, 131 115 L 121.5 111.5 L 116 121 C 110 105, 103 89, 97 72 Z" fill={ribbonColor} />
+          <path d="M 105 70 C 110 85, 119 100, 131 115 L 121.5 111.5 L 116 121 C 110 105, 103 89, 97 72 Z" fill="rgba(40,15,10,0.18)" />
+          <path d="M 101 72 C 106 88, 112 104, 116 121 C 110 105, 103 89, 97 72 Z" fill="rgba(40,15,10,0.10)" />
+          <path d="M 94 76 C 90 88, 84 99, 76 108" fill="none" stroke="rgba(255,255,255,0.32)" strokeWidth="0.9" strokeLinecap="round" />
           {/* loops */}
           <path d="M 100 66 C 80 40, 50 42, 53 58 C 55 70, 78 72, 100 68 Z" fill={`url(#${id("loop")})`} stroke="rgba(40,15,10,0.16)" strokeWidth="0.6" />
           <path d="M 100 66 C 88 63, 76 61, 70 58 C 76 64, 90 67, 100 68 Z" fill="rgba(40,15,10,0.18)" />

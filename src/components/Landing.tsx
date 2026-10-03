@@ -19,7 +19,7 @@ const HOW_STEPS: { n: string; title: string; body: string; tint: Tint }[] = [
 // 12 brands → renders cleanly as 6×2 on desktop, 3×4 on mobile.
 const BRANDS = [
   "Apple", "Lululemon", "Patagonia", "Pottery Barn", "Anthropologie", "Peloton",
-  "Aesop", "Le Creuset", "Diptyque", "Hario", "MUJI", "Allbirds",
+  "Aesop", "Le Creuset", "Diptyque", "Le Labo", "Smeg", "Bose",
 ];
 
 const PRODUCTHUNT_URL = "https://www.producthunt.com/posts/giftpicker-by-presently";
@@ -173,7 +173,7 @@ export function Landing() {
                   maxWidth: 460,
                 }}
               >
-                Six questions. A pile of gifts they'll actually love. Built for the chronically indecisive and the
+                Six questions. A shortlist of gifts they'll actually love. Built for the chronically indecisive and the
                 deeply caring.
               </p>
 
@@ -331,7 +331,7 @@ export function Landing() {
                   marginBottom: 18,
                 }}
               >
-                Curated from 200+ brands · including
+                Curated from 300+ brands · including
               </div>
               {/* 6×2 grid on desktop, 3×4 on mobile, even rows, consistent
                   serif treatment so the strip reads as one cohesive band. */}

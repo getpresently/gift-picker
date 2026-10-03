@@ -210,8 +210,9 @@ export async function postRequest(answers: Answers): Promise<void> {
  * note when gifts for that request are added. The Apps Script writes it onto
  * their Requests row ("notify" handler). Keep NOTIFY_OPT_IN_LIVE false until
  * the updated script is deployed, or emails would be silently dropped.
+ * (Script with the notify handler deployed 10/3/26.)
  */
-export const NOTIFY_OPT_IN_LIVE = false;
+export const NOTIFY_OPT_IN_LIVE = true;
 
 export async function postNotify(answers: Answers, email: string): Promise<void> {
   return postEvent({

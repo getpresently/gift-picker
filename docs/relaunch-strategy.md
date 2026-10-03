@@ -28,7 +28,7 @@ First, #3 for the day with 211 upvotes is a respectable result, not a dormant li
 
 Second, the product page lists launches individually, each with its own date and upvote count, and Product Hunt describes the product page as the place that displays "your product's historical launches, reviews, awards, news, team information, and job listings" ([days after launch](https://www.producthunt.com/launch/days-after-launch)). So the 211 upvotes stay as history on the product page. They do not transfer into a new launch, which starts its own count.
 
-Third, the 2021 tagline is the weakest asset you are carrying forward. "Easy gifting quiz for personalized gift recommendations" says nothing a reader could not guess and contains no claim worth clicking on. The curated catalogue is the thing that differentiates this now, and the tagline should carry it.
+Third, the 2021 tagline is the weakest asset you are carrying forward. "Easy gifting quiz for personalized gift recommendations" says nothing a reader could not guess and contains no claim worth clicking on. The new matching and the hand-checked catalogue are what differentiate it now, and the tagline should carry one of them.
 
 Fourth, the recipient-takes-the-quiz suggestion from 2021 is still unbuilt, and the commenter who asked for it is a specific person you could reply to on the old post. That is a real thread to pick up rather than a marketing gesture.
 
@@ -40,7 +40,7 @@ Quoting the help centre and Product Hunt's own launch guides.
 
 The second gate is not moot: "there also needs to be a significant update to the product." The article gives the standard as "A significant launch might be a new mobile app or a complete product redesign with new functionality", and rules out the easy answer: "New UIs, pricing plan changes, etc. are not considered significant updates."
 
-Read that carefully, because a redesign on its own does not qualify. The things that do carry weight in your case, all shipped during 2026 according to the repository history: a rebuilt matching engine, per-gift shareable pages that are individually indexable, a Cloudflare-backed catalogue pipeline with a human review tool behind it, the /brands programme with free editorial review and paid sponsored placement, and the move to affiliate monetisation with legal pages. The honest framing is a rebuilt product with a new brand-facing side, not a new coat of paint.
+Read that carefully, because a redesign on its own does not qualify. The case for this relaunch rests on the new functionality that shipped alongside the redesign. It is set out in "The significant-update case" below, with a draft of the email.
 
 The article also says what to do if you are unsure: "email us at hello@producthunt.com to discuss before you start to put in the work." Do that. It costs you one email and removes the risk of building a launch that gets rejected. And note the caveat: "Having a relaunch approved does not guarantee it will be featured on the homepage."
 
@@ -62,57 +62,104 @@ Ranking itself is deliberately opaque. Product Hunt says the leaderboard "change
 
 **One pre-launch tool is gone.** Product Hunt discontinued Coming Soon and teaser pages. Mike Kerzhner of Product Hunt, in [Product Hunt's own forum](https://www.producthunt.com/p/general/product-hunt-discontinued-coming-soon-teaser-pages-did-they-work-for-you): "No plans to revamp Coming Soon. This was a very old surface area that was quite buggy", alongside "We are very much thinking of alternatives to Coming Soon!" I could not verify that a replacement exists. Plan without one: you cannot assemble a notify-me list on Product Hunt before launch day.
 
+## The significant-update case
+
+Product Hunt's bar, quoted above, is "a complete product redesign with new functionality", and the same article rules out "New UIs" on their own. GiftPicker has a new visual design this year, so the relaunch has to rest on what the product now does differently. These are the verified facts as of 3 October; the catalogue numbers come from the gift sheet.
+
+**What changed**
+
+- **Matching.** The recommendation algorithm was rewritten. Every gift is scored from 0 to 100 on recipient, age, budget, interests, and vibe, with occasion fit added on top. Interest coverage is the dominant signal. Each gift now has a primary interest that counts in full, and its secondary interest tags count half. Occasion tags score in proportion to how well the gift fits the person's interests, and ties go to the gift priced nearest the budget.
+- **Quiz inputs.** The quiz has new interest categories and new occasion types, such as New Job. Shoppers can also type their own occasion, and typed holidays such as Christmas are recognised.
+- **Budget.** Budget is now a range with a floor and a ceiling. Matching is fuzzy at both ends, so a gift just under the floor or just over the ceiling still earns partial budget credit.
+- **Catalogue.** The gift sheet grew from 372 rows in September 2026 to 693 rows today, with 538 gifts live. Every live gift was checked for a working product page, a current price, and a photo, and outdated products were moved to their current models, for example AirPods Pro 3, Apple Watch Series 12, and Switch 2. You review every row by hand.
+- **New features.** Each gift has its own page with a "More gifts like this" row. Share links reproduce a shopper's results for whoever opens them. Shoppers can request more gifts when their results are thin. A /brands page lets brands submit gifts for editorial review or for sponsored placement, and sponsored placements are always labelled and held to the same review bar as every other gift.
+
+**How to frame it for the rule.** Lead with the matching and the catalogue, because together they change what a shopper gets back from the same six questions. Then list the new inputs and features as evidence of new functionality. Mention the redesign once, as something that happened alongside the rest, since it is the one change the rule says does not count. Leave out the hosting, the catalogue pipeline, and the affiliate setup; they took real work, but they fall outside what the rule asks about.
+
+**Draft email to hello@producthunt.com.** Send it on Monday 5 October, with the gift count checked against the live site that morning. It is under 150 words.
+
+Subject: Relaunch check for GiftPicker, first launched November 2021
+
+> Hi Product Hunt team,
+>
+> I'm Dalia Katan, maker of GiftPicker (giftpicker.io). We launched as "GiftPicker by Presently" on 19 November 2021: https://www.producthunt.com/posts/giftpicker-by-presently
+>
+> I'd like to relaunch on 19 November 2026 and want to confirm it counts as a significant update. Since 2021:
+>
+> - The recommendation algorithm was rewritten. Every gift is scored 0 to 100 against the shopper's answers, led by interest fit.
+> - New interest categories and occasions, custom typed occasions, and a budget range with a floor and a ceiling.
+> - The catalogue grew to 538 live gifts, each checked by hand for a working page, current price, and photo.
+> - Gift pages with similar gifts, share links that reproduce results, and a /brands page for brand submissions.
+>
+> The site also has a new design, which I understand does not count on its own. Does this qualify?
+>
+> Thanks,
+> Dalia
+
 ## Product Hunt plan, dated
 
-Recommended launch: **Sunday 8 November 2026, 12:01 am Pacific.**
+Recommended launch: **Thursday 19 November 2026, 12:01 am Pacific**, five years to the day after the 2021 launch.
 
-Why that date. Gift traffic peaks between mid-November and mid-December, and Black Friday 2026 falls on 27 November. Launching on 8 November puts the launch and its two-week promotion window entirely before the peak, which is what you want if the goal is quiz completions and affiliate clicks rather than a badge. Why Sunday: Product Hunt's own figure, that weekend launches get 15 percent more Visit clicks, points the same way as your goal, and weekend competition from large company launches is lighter. The tradeoff is honest: weekends have fewer people on the site, so comment volume and total upvotes are usually lower, and a day ranking is less of a trophy. If you would rather have the badge and the comment traffic, launch **Tuesday 10 November** instead and accept more competition. Do not pick a date later than about 17 November, because the two-week promotion window would then run into the week of Thanksgiving when attention is elsewhere.
+**Why that date.** The holiday shopping window decides most of it. Thanksgiving is Thursday 26 November and Black Friday is Friday 27 November, which is peak gift-search season. A launch on 19 November reaches people the week before. The two weeks after launch day, during which Product Hunt says you can keep promoting the launch page, run to Thursday 3 December and cover Black Friday and Cyber Monday (30 November). If the goal is quiz completions and affiliate clicks, those are the weeks when that traffic is worth most. An earlier version of this plan recommended Sunday 8 November so that the launch would finish before the peak, and warned against letting the promotion window run into Thanksgiving week. For a gift product the overlap is useful. Product Hunt's own audience will probably be quieter that week, but the people you share the link with on your own channels will be shopping for gifts.
 
-### Monday 5 October to Friday 9 October: decide and clear the gates
+**What it costs.** Thursday is a weekday, so more people are on Product Hunt and more products compete for them. Product Hunt's own figure, that weekend launches get 15 percent more Visit clicks, points away from Thursday. If Visit clicks matter more to you than comments and ranking, launch on **Sunday 22 November** instead. It keeps the shopping window and the weekend advantage, and gives up the anniversary. Do not go later than 22 November, because a launch in Thanksgiving week puts the launch day itself in the holiday.
 
-1. Email hello@producthunt.com. Say the product last launched 19 November 2021, list what has changed since (rebuilt matching, per-gift indexable pages, human-reviewed catalogue of 505 gifts, the /brands editorial and sponsored programme, affiliate monetisation), and ask whether that clears the significant-update bar. Keep it to one short paragraph.
+**The anniversary.** It is a small, true detail that gives the maker comment an easy first line. Use it there and in your reply on the 2021 post, and keep it out of the tagline, the description, and the gallery.
+
+**Lead time for the email.** Product Hunt does not publish how long it takes to answer a relaunch question; the relaunch article only says to email "before you start to put in the work". Sending on Monday 5 October leaves about six and a half weeks. If there is no reply by Monday 19 October, send one short follow-up in the same thread. Treat Friday 6 November as the deadline for an answer, which leaves two weeks to schedule the launch, adjust the copy if Product Hunt asks for changes, or decide not to launch there. If there is still no answer on 6 November, the choice is between launching without written confirmation and running only the Reddit plan this season. An approved relaunch is still not guaranteed a place on the homepage.
+
+The steps below count back from Thursday 19 November.
+
+### Monday 5 October to Friday 9 October: send the email and clear the gates
+
+1. Check the live gift count, put it in the draft email from "The significant-update case", and send the email to hello@producthunt.com on Monday.
 2. Log in and check you can manage https://www.producthunt.com/products/giftpicker-by-presently. Product Hunt's guidance is to click "Claim this page" or request access if you have not already. If the page is unclaimed, claim it now rather than on launch day.
-3. Fix the two factual problems on the site, listed in the section "Facts to fix before you launch" below. Do these before anything with a screenshot in it gets made.
+3. Work through "Facts to fix before you launch" below. Do this before anything with a screenshot in it gets made.
 4. Decide the goal in one sentence and write it down. "Quiz completions in November" and "Product of the Day" lead to different choices on day, copy, and effort.
+5. Start the Reddit groundwork described in the Reddit plan. It has to start now because two of the four viable subreddits gate posting on in-subreddit history.
 
-### Monday 12 October to Friday 23 October: assets and copy
+### Monday 12 October to Friday 30 October: assets and copy
 
-5. Thumbnail at 240x240, under 3MB. The gift-box mark on a flat brand colour reads at that size. Avoid text in it.
-6. Gallery images, at least two at 1270x760, and five is better. The honest sequence for this product: one quiz question as it actually looks, the results page with the top pick visible, a single gift card with price and the buy link, a shot that conveys the size and range of the catalogue, and the /brands page. No fabricated device mockups, and no overlapping floating cards.
-7. Optional YouTube video. A 30-second screen recording of one real quiz run start to finish is worth more than an animated logo. Only YouTube links are supported, and full URLs rather than shortened ones.
-8. Write the tagline, description, and first maker comment from the drafts below, in your own words. Pick three topics.
-9. Decide whether to launch anything new on the day. A relaunch lands better with one visible new thing. The 2021 comment asking for a recipient-takes-the-quiz mode is the obvious candidate, and a shareable quiz link is close to what the per-gift share pages already do. If that is too much, the /brands programme is the new thing, and it is genuinely new.
+6. If Product Hunt has not replied by Monday 19 October, send one short follow-up in the same thread.
+7. Thumbnail at 240x240, under 3MB. The gift-box mark on a flat brand colour reads at that size. Avoid text in it.
+8. Gallery images, at least two at 1270x760, and five is better. The honest sequence for this product: one quiz question as it actually looks, the results page with the top pick visible, a single gift card with price and the buy link, a shot that conveys the size and range of the catalogue, and a "what's new since 2021" image. The last one holds the upgrades that are not in the tagline or description: gift pages with "More gifts like this", share links that reproduce results, request more when results are thin, the new interest categories, and /brands, with a note that sponsored placements are labelled. Make it a plain list in the site's own type. No fabricated device mockups, and no overlapping floating cards.
+9. Optional YouTube video. A 30-second screen recording of one real quiz run start to finish is worth more than an animated logo. Only YouTube links are supported, and full URLs rather than shortened ones.
+10. Write the tagline, description, and first maker comment from the drafts below, in your own words. Pick three topics.
+11. Decide whether to build anything else before the day. The significant-update case does not depend on it. The 2021 comment asking for a recipient-takes-the-quiz mode is still the obvious candidate. Share links are related, since a shopper can send their results to someone, but they do not let the recipient take the quiz. If that build is too much for November, skip it.
 
-### Monday 26 October to Friday 6 November: schedule and prepare the room
+### Monday 2 November to Friday 6 November: get Product Hunt's answer and schedule
 
-10. Schedule the launch in the Product Hunt dashboard for 8 November, 12:01 am Pacific.
-11. Write the list of people you will tell, and write what you will say to them. The message asks them to take the quiz and leave an honest comment. It does not mention upvotes, voting, or supporting the launch. Write it once, now, when you are not tired, because the version written at 6 am on launch day is the version that breaks the rule.
-12. Draft the three or four replies you already know you will need: how the catalogue is curated, how it makes money, whether there is an app, and what happens if nothing matches.
-13. Run the Reddit groundwork described in the Reddit plan. It has to start now because two of the four viable subreddits gate posting on in-subreddit history.
+12. Friday 6 November is the deadline for Product Hunt's answer. If it is yes, schedule the launch in the dashboard for Thursday 19 November, 12:01 am Pacific. If Product Hunt asks for changes, make them this week. If there is no answer, make the call described under "Lead time for the email" above.
 
-### Saturday 7 November: final checks
+### Monday 9 November to Tuesday 17 November: prepare the room
 
-14. Take the quiz on a phone, on a laptop, and in a private window. Click five buy links and confirm they land on live product pages at the stated price.
-15. Confirm the site holds up to a traffic spike, and confirm the API serving the catalogue responds.
-16. Check the og and twitter share images render, since every share of the launch pulls them.
-17. Go to bed early. You are getting up at midnight Pacific.
+13. Write the list of people you will tell, and write what you will say to them. The message asks them to take the quiz and leave an honest comment. It does not mention upvotes, voting, or supporting the launch. Write it once, now, when you are not tired, because the version written at 6 am on launch day is the version that breaks the rule.
+14. Draft the replies you already know you will need. The reply on how the ranking works is where the detail from the significant-update case belongs: the 0 to 100 score, the primary interest counting in full and secondary tags half, occasion tags scaling with interest fit, and ties going to gifts priced near the budget. Also draft how the catalogue is checked and kept current, how the site makes money (affiliate links, plus /brands and how sponsored placements are labelled), whether there is an app, and what happens if nothing matches, which is where request more comes in.
 
-### Sunday 8 November, launch day, all times Pacific
+### Wednesday 18 November: final checks
+
+15. Take the quiz on a phone, on a laptop, and in a private window. Click five buy links and confirm they land on live product pages at the stated price.
+16. Check the live gift count, and update the number in the tagline, description, and maker comment if it has changed.
+17. Confirm the site holds up to a traffic spike, and confirm the API serving the catalogue responds.
+18. Check the og and twitter share images render, since every share of the launch pulls them.
+19. Work out what 12:01 am Pacific is where you will be, and plan your sleep around it. The launch-day times below are Pacific.
+
+### Thursday 19 November, launch day, all times Pacific
 
 - **12:01 am.** The launch goes live. Read your own page as a stranger would. Fix typos now, because the first comment and tagline are what early visitors judge.
 - **12:10 am.** Post the first maker comment. Do not wait.
-- **12:15 am to 1:00 am.** Send the messages you drafted on 26 October, unchanged. Post to your own social accounts with the launch link and a request for feedback.
+- **12:15 am to 1:00 am.** Send the messages you drafted in the week of 9 November, unchanged. Post to your own social accounts with the launch link and a request for feedback.
 - **1:00 am to 7:00 am.** Sleep. Set an alarm. Nothing you do at 4 am beats being coherent at 8 am.
 - **7:00 am to 9:00 am.** Reply to every comment individually and specifically. Generic thanks reads as automated. If someone names a gift category you do not cover, say so plainly and say whether you will add it.
 - **9:00 am to 12:00 pm.** Post the r/SideProject post, if you have decided to use it, and watch it separately from Product Hunt. Keep answering Product Hunt comments within the hour.
-- **12:00 pm to 6:00 pm.** Keep replying. Add the Product Hunt badge from the launch dashboard to the site footer, which is Product Hunt's own suggested way to send traffic back to the launch.
+- **12:00 pm to 6:00 pm.** Keep replying. Reply on the 2021 post to the commenter who asked for the recipient-takes-the-quiz version, and say what you did or did not build. Add the Product Hunt badge from the launch dashboard to the site footer, which is Product Hunt's own suggested way to send traffic back to the launch.
 - **6:00 pm to 9:00 pm.** Last push on your own channels. Still no upvote asks.
 - **11:59 pm.** The window closes. Write down the numbers: upvotes, comments, Visit clicks from the dashboard, quiz starts, quiz completions, and outbound buy-link clicks from your own analytics. The last three matter more to you than the first two.
 
-### Monday 9 November to Sunday 22 November
+### Friday 20 November to Thursday 3 December
 
-- Reply to late comments for a week. Product Hunt says you can "promote your Launch Page for two weeks after launch day", so the link stays useful.
-- Reply to the 2021 commenter who asked for the recipient-takes-the-quiz version, on the old post, and say what you did or did not build.
+- Reply to late comments for a week. Product Hunt says you can "promote your Launch Page for two weeks after launch day", so the link stays useful through 3 December.
+- That window covers Thanksgiving on 26 November, Black Friday on 27 November, and Cyber Monday on 30 November. Share the launch link again on your own channels that week, written for people who are shopping: ask them to try it for someone on their list and tell you what it got wrong. The upvote rule still applies.
 - Ask the people who actually used it for a review on the product page, which is separate from upvotes and is not covered by the upvote rule. People who upvoted your launch become product page followers, so the follower count is worth checking after the day.
 - Run the Reddit sequence below on its own schedule.
 
@@ -133,47 +180,54 @@ The borderline case to be careful about: "check out my launch and let me know wh
 
 ## Draft Product Hunt copy
 
+All three pieces lead with what a shopper gets, then name the upgrades. Four upgrades carry the copy, because they change what a shopper sees from the same six questions: the rewritten matching, the budget range, occasions you can type yourself, and the re-checked catalogue. The rest go in the "what's new" gallery image and in your replies in the comment thread: gift pages with "More gifts like this", share links, request more, the new interest categories, and /brands.
+
 ### Tagline, 60 characters maximum
 
-Primary, 52 characters:
+Primary, 56 characters:
 
-> A six-question gift quiz with 505 hand-checked picks
+> Gift picks ranked to fit their interests and your budget
+
+It leads with the result and carries the new matching and the budget range.
 
 Alternatives:
 
-> Gift quiz with 505 hand-checked picks and live buy links
+> Gifts ranked for one person, from 538 hand-checked picks
 
-(56 characters.)
+(56 characters.) This one carries the catalogue. The number is specific and checkable, so it has to match the live site on the day.
 
-> Free gift quiz. Every one of the 505 gifts is checked
+> A gift quiz for any occasion, ranked by their interests
 
-(53 characters.)
+(55 characters.) This one carries typed occasions and the matching. It is the closest to the 2021 tagline in form, which makes it the weakest of the three at signalling a relaunch.
 
-The number is the point. It is specific, it is verifiable, and it separates you from generated gift lists without needing an adjective. If the catalogue count changes before launch, change the tagline.
+On 3 October the gift sheet showed 538 live gifts and the live API returned 534. Wherever a number appears in the copy, use the count the live site returns on the morning of launch.
 
 ### Description, written to 260 characters
 
-> Answer six questions about the person: relationship, age, occasion, up to three interests, the vibe, and your budget. GiftPicker returns ranked matches with a top pick, a short note on each, the price, and a buy link. Every gift is reviewed by a person first.
+> Answer six questions about the person and get gifts ranked by how well they fit. New this year: matching led by their interests, a budget range, and occasions you can type yourself. All 538 gifts were checked by hand for a live page, current price, and photo.
 
-(259 characters, which fits the 260 limit with one character to spare. If you edit it, count again.)
+(259 characters, which fits the 260 limit. If you edit it or the count changes, count again.)
 
 ### First maker comment
 
-Written to be yours, not a press release. Edit freely, and in particular replace the second paragraph with what is actually true on the day.
+Edit this into your own words before you post it.
 
-> Hi Product Hunt. I am Dalia, and I first posted GiftPicker here in November 2021. It came third that day, which I still think about, and then I left it alone for a long time while the links quietly rotted.
+> Hi Product Hunt, I'm Dalia. GiftPicker asks six questions about the person you're shopping for (who they are to you, their age, the occasion, their interests, the vibe, and your budget) and gives you a ranked list of gifts, each with a current price and a link to buy it.
 >
-> I spent this year rebuilding it. The quiz is still six questions: who it is for, their age, the occasion, up to three interests, the vibe you are going for, and your budget. What changed is underneath. There are now 505 gifts in the catalogue, and a person has looked at every one of them. That means a live product page, the current price, and a photo that loads. When a price moves or a product disappears, it comes out. I built a small review tool for myself because doing that by hand was the part that kept breaking.
+> Five years ago today we launched the first version here, and this year I rebuilt most of it. These are the changes you would notice as a shopper:
 >
-> That curation is the whole argument for this thing. A model can produce a list of gift ideas in two seconds, and most of those lists contain items that are out of stock, mispriced, or do not exist. I would rather have 505 gifts that are real than 5,000 that are plausible.
+> - The matching is new. Every gift is scored from 0 to 100 against your answers, and their interests count the most, so the top pick is the gift that best fits what they care about.
+> - Your budget is a range with a floor and a ceiling. A gift just outside it still gets partial credit, so a strong match slightly over your limit can still appear.
+> - You can type your own occasion. Holidays like Christmas are recognised, and a new job is now one of the built-in options.
+> - There are 538 gifts live, and I checked every one for a working product page, current price, and photo. Older products were updated to their current models, such as AirPods Pro 3 and Switch 2.
 >
-> It is free, there is no login, and there is no email capture. It makes money through Amazon Associates links, which means GiftPicker earns a commission on qualifying purchases at no extra cost to you, and that is disclosed on the results. There is also a page at /brands where a brand can submit a product for free editorial review, or pay for a labelled sponsored placement. Sponsored gifts only ever appear for shoppers whose answers they actually fit.
+> It's free and there's no login. GiftPicker earns a commission through Amazon affiliate links, which is disclosed on the results. Brands can also apply for sponsored placement; sponsored gifts are always labelled and go through the same review as everything else.
 >
-> What I would find most useful from you: take it for someone real and difficult, and then tell me whether the top pick was defensible. I am specifically looking for the gaps. If you answer honestly and the results are bad, that is the comment I want. The categories I know are thin are men over 60, kids under 5, and anything over 500 dollars.
+> What would help me most: take it for someone real and hard to shop for, and tell me whether the top pick made sense for what you entered. I'm looking for the gaps, and the categories I suspect are thin are men over 60, kids under 5, and anything over 500 dollars.
 >
-> One request from the 2021 launch is still unbuilt: someone suggested letting the recipient take the quiz themselves so the gift stays a surprise. I would like to know whether people still want that.
+> One request from the 2021 launch is still open: someone suggested letting the recipient take the quiz themselves, so the gift stays a surprise. I'd like to know whether people still want that.
 
-That comment asks for feedback and not upvotes, discloses the affiliate relationship, names the weaknesses, and gives commenters something concrete to do. The named weak categories are a guess from the catalogue structure; check them against the real data and replace them with the true ones before you post.
+That comment leads with what a shopper gets, uses the anniversary once, names four upgrades, discloses the affiliate and sponsored arrangements, and asks for feedback with no mention of upvotes. Three things to check before you post it. The weak categories are a guess from the catalogue structure, so replace them with the true ones. If you launch on Sunday 22 November, change "Five years ago today" to "Five years ago this week". The earlier draft said there was no email capture; that line is left out because the optional email after request more is already built and switched off, and it could be on by launch day.
 
 ## Reddit: what the sitewide rules actually say
 
@@ -356,18 +410,18 @@ Three independent walls: self-promotional posts banned, affiliate URLs banned by
 
 The sequence matters more than any individual post. Two of the four viable destinations gate on in-subreddit history, and the ones that do not will still judge a one-week-old account harshly.
 
-**Phase 1, Monday 5 October to Friday 30 October: be a member.** Use one real account, the one with the longest history. No posts about GiftPicker in this phase at all.
+**Phase 1, Monday 5 October to Friday 13 November: be a member.** Use one real account, the one with the longest history. No posts about GiftPicker in this phase at all.
 
 - r/Gifts: answer four or five gift-request posts a week with specific, genuinely good suggestions and direct non-affiliate product links. You have a 505-item catalogue in your head, which makes you unusually good at this. This is not a tactic you abandon later; it is the thing that makes the subreddit worth being in.
 - r/Entrepreneur: comment thoughtfully until you have cleared 10 comment karma inside that subreddit. Answer questions about curation, marketplaces, affiliate economics, and small-team shipping. Do not mention your site.
 - r/SideProject: comment on other people's projects. Give the kind of feedback you would want.
 - While you are there, read each subreddit's live rules page and correct anything in this document that has changed.
 
-**Phase 2, Sunday 8 November, launch day: r/SideProject.** One post, in the requested title format, timed for mid-morning Pacific. Draft below.
+**Phase 2, Thursday 19 November, launch day: r/SideProject.** One post, in the requested title format, timed for mid-morning Pacific. Draft below.
 
-**Phase 3, Thursday 12 November or Thursday 19 November: r/Entrepreneur Thank You Thursday.** A comment in the pinned thread, not a post. Draft below. Only if you cleared the 10 comment karma gate.
+**Phase 3, Thursday 26 November or Thursday 3 December: r/Entrepreneur Thank You Thursday.** A comment in the pinned thread, not a post. Draft below. Only if you cleared the 10 comment karma gate.
 
-**Phase 4, week of Monday 16 November: r/Gifts.** Not a post about the tool. A post that is itself a useful gift idea, with the site mentioned once and the affiliate relationship disclosed in the title. Draft below. Flair it.
+**Phase 4, week of Monday 23 November: r/Gifts.** Not a post about the tool. A post that is itself a useful gift idea, with the site mentioned once and the affiliate relationship disclosed in the title. Draft below. Flair it.
 
 **Phase 5, Tuesday 1 December: r/SomebodyMakeThis Creator Showcase.** The monthly thread goes up on the first of the month. Read its restrictions, then comment. No affiliate links.
 
@@ -409,7 +463,7 @@ Body:
 >
 > Happy to answer anything about the economics of a hand-curated affiliate catalogue in the replies, including the parts that do not work.
 
-### r/Gifts, week of 16 November
+### r/Gifts, week of 23 November
 
 This is deliberately not a post about the site. It is a gift post that happens to come from someone who runs one, with the affiliate relationship declared in the title because the subreddit's rules require a warning in the title or comment.
 
@@ -456,21 +510,21 @@ Reddit:
 
 ## Facts to fix before you launch
 
-Three things I found while verifying the product, all of which should be fixed before any screenshot is taken or any link is posted.
+Found while verifying the product, and rechecked on 3 October against the repository and the live API. Fix or confirm each one before any screenshot is taken or any link is posted.
 
-**The catalogue count on /brands is wrong.** The live API at giftpicker.io/api/gifts returns 505 items. The /brands page says "a hand-curated catalog of more than 560 products across 200+ brands" (src/components/Brands.tsx). That overstates the catalogue by 55 items, and the number is the central claim of the launch. Either fix it to 505, or use a form that stays true as the catalogue changes. If a journalist or a commenter checks and finds a number that does not hold, the whole curation argument weakens.
+**Check that the live catalogue matches the launch copy.** The copy says 538 live gifts, all checked by hand, which is the count in the gift sheet. On 3 October the live API at giftpicker.io/api/gifts returned 534 live gifts, and 15 of them did not have the "Review status" flag set. The gap may only be the API lagging the sheet. Before launch day, confirm the live count and make sure every live gift is marked reviewed, because "checked by hand" is the claim a commenter is most likely to test.
 
 **The homepage carries no affiliate disclosure.** The disclosure component renders on the results page, on individual gift pages, and in the legal pages, but not on the landing page (it is not imported in src/components/Landing.tsx). Every Reddit and Product Hunt link you post lands people on the homepage. The FTC's endorsement guidance says "You should disclose your relationship to the retailer clearly and conspicuously on your site, so readers can decide how much weight to give your endorsement", and "The closer the disclosure is to your recommendation, the better" ([FTC endorsement guides FAQ](https://www.ftc.gov/business-guidance/resources/ftcs-endorsement-guides-what-people-are-asking)). It also says that the bare phrase "affiliate link" may not be enough, because readers may not understand the payment arrangement. Your existing wording, "As an Amazon Associate, GiftPicker earns from qualifying purchases", is good. Put it in the homepage footer too.
 
-**Verify the "200+ brands" claim** the same way, since it appears in the homepage copy, the meta description, the og and twitter descriptions, and the structured data. I did not check it against the live catalogue.
+**The "200+ brands" claim is true but now understated.** It appears in the homepage copy, the meta description, the og and twitter descriptions, and the structured data. The live API returned 376 distinct brand names on 3 October, counted before any cleanup of near-duplicate spellings, so "200+" holds. It no longer matches /brands, which says "more than 500 products across 300+ brands" (src/components/Brands.tsx). Pick one figure and use it in both places. The /brands product count, which overstated the catalogue when this document was first drafted, is now correct.
 
 ## Open questions and decisions only you can make
 
 1. **What is the launch for?** Product of the Day, or quiz completions in November. The honest answer changes the launch day, how hard you push, and whether the weekend tradeoff is worth taking.
-2. **Sunday 8 November or Tuesday 10 November.** Sunday follows Product Hunt's own Visit-click data and faces less competition. Tuesday gets more people and more comments, and a better shot at a badge.
-3. **Is there a new feature on the day?** The recipient-takes-the-quiz mode was requested by a real commenter in 2021 and would make the relaunch legible as a relaunch rather than a repost. It is also the only thing that would make r/alphaandbetausers honestly usable. Decide now, because it changes the build schedule, not just the copy.
-4. **Does the relaunch clear Product Hunt's significant-update bar?** My read is yes, on the strength of the rebuilt matching, the per-gift indexable pages, and the /brands programme, and not on the redesign. But Product Hunt decides, and their help centre invites the email. Send it this week.
-5. **Which Reddit account, and what is its history?** If the only account is new or has little karma, the October groundwork phase is not optional and may need to be longer than four weeks. r/Gifts removes submissions from new or low-karma accounts by rule.
+2. **Thursday 19 November or Sunday 22 November.** Thursday is the anniversary and gets more people and more comments. Sunday follows Product Hunt's own Visit-click data and faces less competition. Both land in the week before Thanksgiving.
+3. **Is there a new feature on the day?** The significant-update case no longer depends on one. The recipient-takes-the-quiz mode was requested by a real commenter in 2021, and it is also the only thing that would make r/alphaandbetausers honestly usable. Decide by Friday 30 October, because it affects the build schedule as well as the copy.
+4. **Does the relaunch clear Product Hunt's significant-update bar?** My read is yes, on the strength of the rewritten matching, the new quiz inputs and budget range, the larger re-checked catalogue, and the new features. The redesign does not count toward it. Product Hunt decides, and their help centre invites the email. Send it on Monday 5 October.
+5. **Which Reddit account, and what is its history?** If the only account is new or has little karma, the October groundwork phase is not optional and may need to be longer than six weeks. r/Gifts removes submissions from new or low-karma accounts by rule.
 6. **Are you willing to be a regular in r/Gifts?** Not a campaign, a habit. If the answer is no, drop r/Gifts from the plan, because the 10 percent ratio and the "unique gift ideas only" rule make a one-off promotional visit worse than nothing.
 7. **Will you write the real r/Gifts gift list?** It is the single highest-value Reddit post available to you and it is also several hours of work. If not, say so now and cut phase 4.
 8. **Do you want an email list before the launch?** There is none today. A Product Hunt launch and a few Reddit posts will produce a one-time traffic spike that you currently cannot capture, Product Hunt no longer offers a Coming Soon page to collect followers in advance, and next year you would be starting from zero again. This is the one piece of product work that would change the value of the launch most, and it conflicts with the "no login, no email capture" line that currently reads as a feature.

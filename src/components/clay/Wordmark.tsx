@@ -8,13 +8,13 @@ type Props = {
   onClick?: () => void;
 };
 
-// `lift` raises the mark so its red box body, not the light bow above it,
-// lines up with the x-height of the wordmark. Centering the whole SVG left
-// the body (and its drop shadow) reading about 2px low at lg.
+// `lift` raises the mark so the red box sits on the wordmark's baseline with
+// the bow just above the x-height. Centering the whole SVG left the box (and
+// its drop shadow) hanging below the letters; 2px was still visibly low.
 const sizes: Record<Size, { gap: number; logo: number; font: number; lift: number }> = {
-  sm: { gap: 6, logo: 22, font: 15, lift: 1 },
-  md: { gap: 8, logo: 28, font: 18, lift: 1.5 },
-  lg: { gap: 10, logo: 36, font: 22, lift: 2 },
+  sm: { gap: 6, logo: 22, font: 15, lift: 2.5 },
+  md: { gap: 8, logo: 28, font: 18, lift: 3 },
+  lg: { gap: 10, logo: 36, font: 22, lift: 4 },
 };
 
 export function Wordmark({ size = "md", light = false, onClick }: Props) {
