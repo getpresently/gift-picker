@@ -175,16 +175,45 @@ export function RefineModal({ open, answers, isMobile, onClose, onApply }: Props
                   <ChipChoice key={o.v} option={o} selected={draft.recipient === o.v} atMax={false} onClick={() => set({ recipient: o.v })} />
                 ))}
             </div>
-            <div style={{ ...grid(3), marginTop: 8 }} role="radiogroup" aria-label="Gift is for">
-              {GENDER_OPTIONS.map((g) => (
-                <ChipChoice
-                  key={g.v}
-                  option={{ v: g.v, l: g.l }}
-                  selected={(draft.gender ?? "any") === g.v}
-                  atMax={false}
-                  onClick={() => setDraft((d) => ({ ...d, gender: g.v }))}
-                />
-              ))}
+            {/* A compact switch, styled apart from the recipient chips above
+                so the two choices don't read as one pile of pills. */}
+            <div style={{ display: "flex", alignItems: "center", gap: 10, marginTop: 14 }}>
+              <span style={{ fontFamily: "Geist, sans-serif", fontSize: 12, fontWeight: 600, color: "rgba(35,20,16,0.55)" }}>
+                Gift for
+              </span>
+              <div
+                role="radiogroup"
+                aria-label="Gift for"
+                style={{ display: "inline-flex", padding: 3, borderRadius: 999, background: "rgba(35,20,16,0.06)" }}
+              >
+                {GENDER_OPTIONS.map((g) => {
+                  const on = (draft.gender ?? "any") === g.v;
+                  return (
+                    <button
+                      key={g.v}
+                      type="button"
+                      role="radio"
+                      aria-checked={on}
+                      onClick={() => setDraft((d) => ({ ...d, gender: g.v }))}
+                      style={{
+                        border: "none",
+                        borderRadius: 999,
+                        padding: "6px 14px",
+                        fontFamily: "Geist, sans-serif",
+                        fontSize: 13,
+                        fontWeight: 600,
+                        cursor: "pointer",
+                        background: on ? "#FFFCF7" : "transparent",
+                        color: on ? "#231410" : "rgba(35,20,16,0.6)",
+                        boxShadow: on ? "0 1px 3px rgba(80,30,30,0.18)" : "none",
+                        transition: "background 150ms ease, color 150ms ease",
+                      }}
+                    >
+                      {g.v === "any" ? "Anyone" : g.v === "him" ? "Him" : "Her"}
+                    </button>
+                  );
+                })}
+              </div>
             </div>
           </Section>
 

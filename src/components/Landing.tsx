@@ -382,7 +382,7 @@ export function Landing() {
                   color: "#231410",
                 }}
               >
-                Make something people love to give? Submit it for review or ask about sponsored placement.
+                Make something people love to give? Submit it for review.
               </div>
             </div>
             <Pillow tone="cream" size="md" onClick={() => navigate("/brands")} style={{ flexShrink: 0 }}>

@@ -168,34 +168,24 @@ function findGiftRow_(sheet, rowId) {
 }
 
 /* ------------------------------------------------------------------ *
- * Catalog edits published at giftpicker.io/sheet-edits.json, so edits
- * never depend on someone typing in a browser tab. Applied only when the
- * catalog is read with ?edits=1 (sent right after a new list is published),
- * so nothing runs in the background. Each edit has a
- * unique id and applies once. "set" only changes a cell that still holds
- * the expected value, on the row whose Gift matches, so a stale or wrong
- * edit is skipped rather than written. The ID column is never edited.
- * Every result is recorded in the "Edit log" tab.
- * Run applyPendingEditsNow() once from the editor to grant the
- * "connect to an external service" permission this needs.
+ * Catalog edits. PENDING_EDITS (in edits.gs, pushed with clasp) lists
+ * changes to make; they are applied when the catalog is read with
+ * ?edits=1 (sent right after a push), never on the regular read. Each
+ * edit has a unique id and applies once. "set" only changes a cell that
+ * still holds the expected value, on the row whose Gift matches, so a
+ * stale or wrong edit is skipped rather than written. The ID column is
+ * never edited. Every result is recorded in the "Edit log" tab.
  * ------------------------------------------------------------------ */
-const EDITS_URL = "https://giftpicker.io/sheet-edits.json";
-const MAX_EDITS_PER_RUN = 50;
+const MAX_EDITS_PER_RUN = 200;
 const EDIT_LOG_HEADERS = ["at", "edit_id", "op", "row_id", "column", "before", "after", "result"];
 
+/** Run from the editor to apply pending edits by hand. */
 function applyPendingEditsNow() {
   applyPendingEdits_(SpreadsheetApp.getActiveSpreadsheet().getSheetByName("Gifts"));
 }
 
 function applyPendingEdits_(sheet) {
-  let edits;
-  try {
-    const res = UrlFetchApp.fetch(EDITS_URL + "?t=" + Date.now(), { muteHttpExceptions: true });
-    if (res.getResponseCode() !== 200) return;
-    edits = JSON.parse(res.getContentText()).edits || [];
-  } catch (err) {
-    return;
-  }
+  const edits = typeof PENDING_EDITS === "undefined" ? [] : PENDING_EDITS;
   const props = PropertiesService.getScriptProperties();
   const done = JSON.parse(props.getProperty("APPLIED_EDITS") || "[]");
   const pending = edits.filter(function (e) { return e && e.id && done.indexOf(e.id) === -1; }).slice(0, MAX_EDITS_PER_RUN);
@@ -270,8 +260,8 @@ function doGet(e) {
     const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(tab);
     if (!sheet) return jsonOut_({ error: "Sheet not found: " + tab });
 
-    // Edits are applied only on request (?edits=1, sent right after a new
-    // list is published), never on the regular 10-minute catalog read.
+    // Edits are applied only on request (?edits=1, sent right after a push),
+    // never on the regular 10-minute catalog read.
     if (tab === "Gifts" && e.parameter.edits === "1") applyPendingEdits_(sheet);
     let values = sheet.getDataRange().getValues();
     // One read per request; the lock and writes happen only when a new row
