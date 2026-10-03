@@ -235,6 +235,10 @@ function interestMatchCount(gift: Gift, answers: Answers): number {
   return hits;
 }
 
+/** A gift tagged only Self is something people buy for themselves. */
+const isSelfOnly = (gift: Gift) =>
+  gift.relations.length > 0 && gift.relations.every((r) => tolerantIncludes([r], "Self"));
+
 function scoreRelation(gift: Gift, answers: Answers): number {
   if (!answers.recipient) return 0;
   if (answers.recipient === "self") {
@@ -442,6 +446,10 @@ export function scoreGift(gift: Gift, answers: Answers): number {
   ) {
     return -1;
   }
+
+  // Hard filter: a gift tagged only Self is for treating yourself, never
+  // for someone else.
+  if (answers.recipient && answers.recipient !== "self" && isSelfOnly(gift)) return -1;
 
   // Hard filter: age tags both specified, no overlap.
   if (gift.ages.length > 0) {
