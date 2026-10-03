@@ -70,9 +70,18 @@ Low budgets pull sourcing toward commodity items. Under about $50, every pick ne
 
 ### Prefer the original over a copycat (binding, Dalia 10/3/26)
 
-Before proposing a product, search whether it copies an original brand that created the category or the design. Prefer the original. A copycat is acceptable only if it is genuinely better (quality, reviews, or value) or is separately very popular in its own right. Say which applies in the Feedback note.
+Before proposing a product, search whether it copies an original brand that created the category or the design. Prefer the original. A copycat is acceptable only if it is genuinely better (quality, reviews, or value), is separately very popular in its own right, or is meaningfully easier for US shoppers to get (Neso over Otentik). Say which applies in the Feedback note.
 
-Dalia's example: she believes Otentik is the original of the sandbag-anchored stretch beach shade that Neso sells. Neso 1 Beach Shade (r682) is getting this check (10/3).
+Dalia's example: she believes Otentik is the original of the sandbag-anchored stretch beach shade that Neso sells. Otentik did come first (2011, versus Neso's 2014 Kickstarter), but it ships from Israel ($29 shipping, 5 to 12 business days, possible import duties) and is unavailable on Amazon US, so Dalia kept Neso: "availability matters too."
+
+### Dalia's rulings of 10/3/26 (binding)
+
+- **Everyday items need something special.** A plain or everyday item qualifies only with one of: a well-known, respected brand; personalization; working exceptionally well (the best of its kind); or a distinctive design. Otherwise skip it.
+- **Basic clothing is out.** No plain apparel basics (tees, hoodies, socks, beanies, plain robes, simple sneakers or flats).
+- **No groceries** unless the item is a specialty or novelty product (small-batch, a curated sampler, a notable maker, a giftable presentation).
+- **No pure utility tools.** If someone wants it, they buy it for the utility; it is not a hobby and reads as a strange gift. Dalia rejected the iFixit Minnow and Mako driver kits for this reason.
+- **More than one gift per slot is fine when they are clearly distinct** in design or use case. Two near-identical items (same type, similar look, same use) are a duplicate even across brands.
+- **Availability counts.** A gift that is hard for US shoppers to get (ships from abroad, long waits, import duties, Amazon listings unavailable) loses to a readily available equivalent. Dalia kept the Neso beach shade over Otentik, the original, because Neso ships in the US and is on Amazon.
 
 ### Gifts at $20 or under (binding, Dalia 10/3/26)
 
