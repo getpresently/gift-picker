@@ -193,7 +193,20 @@ export function Results() {
     if (!q || q.type === "slider") return val;
     return q.options.find((o) => o.v === val)?.l ?? val;
   };
-  const recipientLabel = labelFor("recipient", answers.recipient)?.toLowerCase() ?? "them";
+  // Headline "For your <em>sibling</em>, with love." Some recipients need
+  // their own wording: "Treat myself" is the shopper, a Child is often a
+  // niece, a nephew, or a friend's kid rather than their own, and the
+  // Mentor / Teacher option reads better as one word.
+  const RECIPIENT_HEADLINE: Record<string, [string, string, string]> = {
+    self: ["For ", "you", ", with love."],
+    child: ["For the ", "kid", " in your life, with love."],
+    mentor: ["For your ", "mentor", ", with love."],
+  };
+  const [headlinePre, headlineEm, headlinePost] = RECIPIENT_HEADLINE[answers.recipient ?? ""] ?? [
+    "For your ",
+    labelFor("recipient", answers.recipient)?.toLowerCase() ?? "them",
+    ", with love.",
+  ];
   // When the user typed a free-text occasion, show their wording in the
   // breadcrumb instead of the literal "Other" label.
   const occasionLabel =
@@ -368,7 +381,9 @@ export function Results() {
                 textWrap: "balance" as never,
               }}
             >
-              For your <em style={{ color: "#C4477E", fontStyle: "italic" }}>{recipientLabel}</em>, with love.
+              {headlinePre}
+              <em style={{ color: "#C4477E", fontStyle: "italic" }}>{headlineEm}</em>
+              {headlinePost}
             </h1>
             <p style={{ fontFamily: "Geist, sans-serif", fontSize: 15, lineHeight: 1.7, color: "rgba(35,20,16,0.55)", margin: "14px 0 0" }}>
               {summaryParts.slice(0, -1).map((part) => `${part} · `).join("")}

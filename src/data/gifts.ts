@@ -139,10 +139,10 @@ export const RECIPIENT_EXCLUDED_AGES: Record<string, string[]> = {
   // The user filling out the quiz isn't shopping for a literal child for
   // themselves. (They could be a teen, though, so don't exclude that.)
   self: ["Baby", "Child"],
-  // Friends, siblings, and children can be any age.
+  // Friends and siblings can be any age; a kid in your life is never a senior.
   friend: [],
   sibling: [],
-  child: [],
+  child: ["Senior"],
 };
 
 export const OCCASION_LABELS: Record<string, string> = {
