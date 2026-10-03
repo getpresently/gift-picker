@@ -35,6 +35,20 @@ export function Quiz() {
   // True only between a tap on an auto-advance option and the move to the
   // next question, so "advancing…" never shows for a remembered answer.
   const [advancing, setAdvancing] = useState(false);
+  // Whether the page is taller than the screen, i.e. answers can scroll
+  // under the pinned Next button and need the fade behind it.
+  const [pageScrolls, setPageScrolls] = useState(false);
+  useEffect(() => {
+    const check = () => setPageScrolls(document.documentElement.scrollHeight > window.innerHeight + 4);
+    check();
+    const ro = new ResizeObserver(check);
+    ro.observe(document.body);
+    window.addEventListener("resize", check);
+    return () => {
+      ro.disconnect();
+      window.removeEventListener("resize", check);
+    };
+  }, []);
 
   const activeQuestions: Question[] = getActiveQuestions(answers);
   // Clamp step if the active list shrinks (e.g., recipient changed to grandparent → age skipped).
@@ -99,7 +113,7 @@ export function Quiz() {
   // Initialize slider default once on landing on a slider question.
   useEffect(() => {
     if (q.type === "slider" && answers[q.id] === undefined) {
-      setAnswers((a) => ({ ...a, [q.id]: q.defaultValue }));
+      setAnswers((a) => ({ ...a, [q.id]: q.defaultValue, budgetMin: a.budgetMin ?? q.defaultMin }));
     }
   }, [step]); // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -274,6 +288,7 @@ export function Quiz() {
               >
                 {q.label}
               </h1>
+              {(q.helper || q.type === "multi") && (
               <p
                 style={{
                   fontFamily: "Geist, sans-serif",
@@ -295,19 +310,33 @@ export function Quiz() {
                   </span>
                 )}
               </p>
+              )}
             </div>
 
             {q.type === "choice" && (
               <>
-                <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: 12 }}>
+                <div
+                  style={{
+                    display: "grid",
+                    // Occasions are short words, so they fit three across on
+                    // desktop and two on phones instead of one long column.
+                    gridTemplateColumns:
+                      q.id === "occasion"
+                        ? `repeat(${isMobile ? 2 : 3}, minmax(0, 1fr))`
+                        : isMobile
+                          ? "1fr"
+                          : "1fr 1fr",
+                    gap: 12,
+                  }}
+                >
                   {activeOptions.map((opt) => {
                     // The "Other" tile on the occasion question morphs into
                     // an inline text input when selected, see
                     // OccasionOtherTile for the input-in-tile behavior.
                     if (q.id === "occasion" && opt.v === "other") {
                       return (
+                        <div key={opt.v} style={{ display: "grid", gridColumn: value === opt.v ? "1 / -1" : undefined }}>
                         <OccasionOtherTile
-                          key={opt.v}
                           option={opt}
                           selected={value === opt.v}
                           value={answers.occasionOther ?? ""}
@@ -320,6 +349,7 @@ export function Quiz() {
                           }}
                           big
                         />
+                        </div>
                       );
                     }
                     return (
@@ -422,14 +452,35 @@ export function Quiz() {
 
           {/* Next button area */}
           <div
+            // Pinned to the bottom of the screen so Next is always in reach;
+            // when answers scroll underneath, a soft fade keeps them from
+            // crowding the button.
             style={{
               marginTop: "auto",
+              position: "sticky",
+              bottom: 0,
+              zIndex: 2,
               paddingTop: isMobile ? 28 : 36,
+              paddingBottom: "max(16px, env(safe-area-inset-bottom))",
               display: "flex",
               justifyContent: "center",
               minHeight: 64,
             }}
           >
+            <div
+              aria-hidden
+              style={{
+                position: "absolute",
+                inset: "0 -48px",
+                zIndex: -1,
+                pointerEvents: "none",
+                background: "linear-gradient(to bottom, rgba(251,241,225,0) 0%, rgba(251,241,225,0.94) 45%)",
+                WebkitMaskImage: "linear-gradient(to right, transparent, #000 18%, #000 82%, transparent)",
+                maskImage: "linear-gradient(to right, transparent, #000 18%, #000 82%, transparent)",
+                opacity: pageScrolls ? 1 : 0,
+                transition: "opacity 200ms ease",
+              }}
+            />
             {/* Choice questions auto-advance and only show a status hint.
                 Exceptions get a Next button: "Other" on the occasion
                 question (after typing), and a choice already answered on an

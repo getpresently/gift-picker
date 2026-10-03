@@ -51,9 +51,21 @@ export function Results() {
   }, [ranked, feedbackById]);
 
   const [modalIndex, setModalIndex] = useState<number | null>(null);
-  const openModal = (i: number) => setModalIndex(i);
+  // Every time a gift's details are shown, so GA4 can count gift opens
+  // per gift alongside gift_buy_click.
+  const trackOpen = (i: number, source: string) => {
+    const g = picks[i];
+    if (g) track("gift_open", { gift_id: g.id, gift_name: g.name, brand: g.brand, price: g.price, position: i + 1, source });
+  };
+  const openModal = (i: number) => {
+    setModalIndex(i);
+    trackOpen(i, i === 0 ? "top_pick" : "grid");
+  };
   const closeModal = () => setModalIndex(null);
-  const navigateModal = (i: number) => setModalIndex(i);
+  const navigateModal = (i: number) => {
+    setModalIndex(i);
+    trackOpen(i, "modal_nav");
+  };
 
   const modalReasons = useMemo(() => {
     if (modalIndex === null || !picks[modalIndex]) return [];
@@ -346,19 +358,21 @@ export function Results() {
                 <button
                   type="button"
                   onClick={() => setRefineOpen(true)}
-                  aria-label="Adjust your answers"
-                  title="Adjust your answers"
                   style={{
-                    width: 30,
                     height: 30,
-                    borderRadius: "50%",
+                    padding: "0 10px 0 8px",
+                    gap: 6,
+                    borderRadius: 999,
                     border: "none",
-                    background: "transparent",
-                    color: "rgba(35,20,16,0.55)",
+                    background: "rgba(35,20,16,0.05)",
+                    color: "rgba(35,20,16,0.65)",
+                    fontFamily: "Geist, sans-serif",
+                    fontSize: 13,
+                    fontWeight: 500,
                     cursor: "pointer",
                     display: "inline-flex",
                     verticalAlign: "middle",
-                    marginLeft: 8,
+                    marginLeft: 10,
                     position: "relative",
                     top: -1,
                     alignItems: "center",
@@ -372,6 +386,7 @@ export function Results() {
                     <circle cx="5.5" cy="8" r="1.8" />
                     <circle cx="12" cy="12" r="1.8" />
                   </svg>
+                  Edit answers
                 </button>
               </span>
             </p>

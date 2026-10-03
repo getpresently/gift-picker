@@ -34,6 +34,8 @@ export type SliderQuestion = {
   max: number;
   step: number;
   defaultValue: number;
+  /** Starting position of the floor handle; dragging it down to `min` removes the floor. */
+  defaultMin?: number;
 };
 
 export type Question = ChoiceQuestion | MultiQuestion | SliderQuestion;
@@ -70,7 +72,7 @@ export const QUESTIONS: Question[] = [
   {
     id: "recipient",
     label: "Who's this for?",
-    helper: "Pick one. We won't tell.",
+    helper: "",
     type: "choice",
     autoAdvance: true,
     options: [
@@ -126,7 +128,7 @@ export const QUESTIONS: Question[] = [
   {
     id: "interests",
     label: "What are they into?",
-    helper: "Up to 3. They're not that complicated.",
+    helper: "Up to 3.",
     type: "multi",
     max: 3,
     showMoreAfter: 12,
@@ -159,7 +161,7 @@ export const QUESTIONS: Question[] = [
   {
     id: "vibe",
     label: "What's the vibe?",
-    helper: "Up to 2. Pick the truer ones.",
+    helper: "Up to 2.",
     type: "multi",
     max: 2,
     bigTiles: true,
@@ -176,12 +178,13 @@ export const QUESTIONS: Question[] = [
   {
     id: "budget",
     label: "What's your budget?",
-    helper: "No judgment. Drag to dial it in.",
+    helper: "Drag to dial it in.",
     type: "slider",
     min: 10,
     max: 500,
     step: 5,
     defaultValue: 120,
+    defaultMin: 20,
   },
 ];
 

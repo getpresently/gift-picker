@@ -11,7 +11,7 @@ import { useImageFallback } from "../../hooks/useImageFallback";
 import { track } from "../../data/analytics";
 import type { Gift } from "../../data/gifts";
 import { isDemoting, type FeedbackOption, type FeedbackRecord } from "../../data/feedback";
-import { openBuyLink as openExternal } from "../../data/affiliate";
+import { isAmazonUrl, openBuyLink as openExternal } from "../../data/affiliate";
 
 /** Cards may receive a ranked gift; matchScore is optional for non-ranked uses. */
 type CardGift = Gift & { matchScore?: number };
@@ -356,9 +356,10 @@ export function GiftCard(props: Props) {
           size={hero ? "md" : "sm"}
           onClick={(e) => {
             e?.stopPropagation?.();
-            // Fall back to Amazon when there's no brand-direct link (some
-            // catalog rows are Amazon-only) so the button is never dead.
-            const destination = gift.link ? "brand" : "amazon";
+            // Amazon first (Dalia's default, matching the top pick), then
+            // the brand's own page when the gift isn't sold on Amazon.
+            const url = gift.amazonLink || gift.link;
+            const destination = isAmazonUrl(url) ? "amazon" : "brand";
             track("gift_buy_click", {
               gift_id: gift.id,
               gift_name: gift.name,
@@ -367,7 +368,7 @@ export function GiftCard(props: Props) {
               source: hero ? "hero_card" : "card",
               destination,
             });
-            openExternal(gift.link || gift.amazonLink);
+            openExternal(url);
           }}
         >
           {hero ? "Buy gift →" : "Buy →"}
