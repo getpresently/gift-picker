@@ -32,6 +32,9 @@ export function Quiz() {
   const [answers, setAnswers] = useState<Answers>(() => loadAnswers());
   const [showAllInterests, setShowAllInterests] = useState(false);
   const advanceTimerRef = useRef<number | null>(null);
+  // True only between a tap on an auto-advance option and the move to the
+  // next question, so "advancing…" never shows for a remembered answer.
+  const [advancing, setAdvancing] = useState(false);
 
   const activeQuestions: Question[] = getActiveQuestions(answers);
   // Clamp step if the active list shrinks (e.g., recipient changed to grandparent → age skipped).
@@ -90,6 +93,7 @@ export function Quiz() {
       window.clearTimeout(advanceTimerRef.current);
       advanceTimerRef.current = null;
     }
+    setAdvancing(false);
   }, [step]);
 
   // Initialize slider default once on landing on a slider question.
@@ -156,6 +160,7 @@ export function Quiz() {
     setAnswers(newAnswers);
     if (q.type === "choice" && q.autoAdvance && !pickingOccasionOther) {
       if (advanceTimerRef.current !== null) window.clearTimeout(advanceTimerRef.current);
+      setAdvancing(true);
       advanceTimerRef.current = window.setTimeout(() => goTo(safeStep + 1, newAnswers), 320);
     }
   };
@@ -426,9 +431,10 @@ export function Quiz() {
             }}
           >
             {/* Choice questions auto-advance and only show a status hint.
-                Exception: "Other" on the occasion question needs an
-                explicit Next click after the free-text input is filled. */}
-            {(q.type !== "choice" || isOccasionOtherSelected) && (
+                Exceptions get a Next button: "Other" on the occasion
+                question (after typing), and a choice already answered on an
+                earlier visit, so the visitor can keep it without re-tapping. */}
+            {(q.type !== "choice" || isOccasionOtherSelected || (value !== undefined && !advancing)) && (
               <Pillow
                 tone={canAdvance ? "coral" : "cream"}
                 size="lg"
@@ -443,7 +449,7 @@ export function Quiz() {
                 {isLast ? "Reveal my picks ✨" : "Next →"}
               </Pillow>
             )}
-            {q.type === "choice" && !isOccasionOtherSelected && (
+            {q.type === "choice" && !isOccasionOtherSelected && (value === undefined || advancing) && (
               <div
                 style={{
                   fontFamily: "Geist, sans-serif",
@@ -452,7 +458,7 @@ export function Quiz() {
                   letterSpacing: "0.04em",
                 }}
               >
-                {value !== undefined ? "advancing…" : "tap an option to continue"}
+                {advancing ? "advancing…" : "tap an option to continue"}
               </div>
             )}
           </div>
