@@ -8,6 +8,7 @@ import { useIsMobile } from "../hooks/useIsMobile";
 import { track } from "../data/analytics";
 import { SiteHeader } from "./clay/SiteHeader";
 import { FooterLinks } from "./clay/FooterLinks";
+import { TestimonialCarousel } from "./clay/TestimonialCarousel";
 import { PresentlyMark } from "./clay/PresentlyMark";
 
 const HOW_STEPS: { n: string; title: string; body: string; tint: Tint }[] = [
@@ -23,74 +24,6 @@ const BRANDS = [
 ];
 
 const PRODUCTHUNT_URL = "https://www.producthunt.com/posts/giftpicker-by-presently";
-
-// Real comments from GiftPicker users, quoted verbatim (trimmed only at
-// sentence breaks). The first entry is the featured pull quote; `em` is the
-// phrase set in plum italic. Avatar tints cycle through AVATAR_TONES.
-const TESTIMONIALS: { q: string; em?: string; n: string }[] = [
-  { q: "Love this! This is so helpful to give thoughtful gifts especially when you don\u2019t have days/weeks to hunt.", em: "thoughtful gifts", n: "Amanda E." },
-  { q: "Easy to use and gave me a great idea for my gifts for my siblings. Thanks!", n: "Max G." },
-  { q: "This is addictive! Already filled it out multiple times looking for gifts for my fam. Life saver!!", n: "Anna F." },
-  { q: "Took 90 seconds. Picked something better than I would have in an hour.", n: "Priya S." },
-  { q: "Super easy to use and will definitely be using for ideas for family and friends.", n: "Jigesh M." },
-  { q: "Perfect timing, I\u2019ve been dragging my feet on gift shopping for my picky fam. Ty for the help!", n: "Peter W." },
-  { q: "My boyfriend uses the V60 every single morning. It was the perfect choice.", n: "Ella R." },
-  { q: "Simple, fast, and fun :)", n: "Bhaumik P." },
-  { q: "Works great and makes the decision process easier.", n: "Mario S." },
-];
-
-const AVATAR_TONES = [
-  { bg: "#FFD9CC", fg: "#8A3A2A" },
-  { bg: "#FFE7B0", fg: "#7A5410" },
-  { bg: "#EBD3E4", fg: "#7E3F71" },
-];
-
-// Desktop wall columns, balanced by hand by quote length (browser column
-// balancing left the third column short).
-const WALL_COLUMNS = [
-  ["Max G.", "Anna F.", "Bhaumik P."],
-  ["Jigesh M.", "Peter W."],
-  ["Priya S.", "Ella R.", "Mario S."],
-];
-
-function initials(name: string) {
-  return name
-    .split(/\s+/)
-    .map((p) => p[0])
-    .join("")
-    .replace(/[^A-Z]/gi, "")
-    .toUpperCase();
-}
-
-function Attribution({ t, i, size }: { t: (typeof TESTIMONIALS)[number]; i: number; size: "lg" | "sm" }) {
-  const d = size === "lg" ? 34 : 28;
-  const tone = AVATAR_TONES[i % AVATAR_TONES.length];
-  return (
-    <figcaption style={{ display: "flex", alignItems: "center", gap: 10, marginTop: size === "lg" ? 22 : 14 }}>
-      <span
-        aria-hidden
-        style={{
-          width: d,
-          height: d,
-          borderRadius: "50%",
-          background: tone.bg,
-          color: tone.fg,
-          display: "inline-flex",
-          alignItems: "center",
-          justifyContent: "center",
-          fontFamily: "Geist, sans-serif",
-          fontSize: size === "lg" ? 12 : 11,
-          fontWeight: 600,
-          letterSpacing: "0.02em",
-          boxShadow: "inset 0 1px 0 rgba(255,255,255,0.7), 0 2px 6px -1px rgba(80,30,30,0.16)",
-        }}
-      >
-        {initials(t.n)}
-      </span>
-      <span style={{ fontFamily: "Geist, sans-serif", fontSize: 13, fontWeight: 600, color: "#231410" }}>{t.n}</span>
-    </figcaption>
-  );
-}
 
 function Star({ size = 14 }: { size?: number }) {
   return (
@@ -391,111 +324,7 @@ export function Landing() {
           {/* Testimonials */}
           {/* Kept off ClaySurface on purpose so this band doesn't mirror the step cards above. */}
           <section id="testimonials" style={{ marginTop: isMobile ? 64 : 96 }}>
-            {(() => {
-              const f = TESTIMONIALS[0];
-              const [before, after] = f.em ? f.q.split(f.em) : [f.q, ""];
-              return (
-                <figure style={{ margin: 0, maxWidth: 820 }}>
-                  <div
-                    aria-hidden
-                    style={{
-                      fontFamily: '"Instrument Serif", serif',
-                      fontSize: isMobile ? 88 : 120,
-                      lineHeight: 1,
-                      height: isMobile ? 44 : 60,
-                      color: "#C4477E",
-                      opacity: 0.35,
-                    }}
-                  >
-                    &ldquo;
-                  </div>
-                  <blockquote
-                    style={{
-                      margin: 0,
-                      fontFamily: '"Instrument Serif", serif',
-                      fontSize: isMobile ? 32 : 44,
-                      lineHeight: 1.1,
-                      letterSpacing: "-0.02em",
-                      color: "#231410",
-                      textWrap: "balance" as never,
-                    }}
-                  >
-                    {before}
-                    {f.em && <em style={{ color: "#C4477E", fontStyle: "italic" }}>{f.em}</em>}
-                    {after}
-                  </blockquote>
-                  <Attribution t={f} i={0} size="lg" />
-                </figure>
-              );
-            })()}
-
-            {/* The rest: an editorial wall in three columns on desktop, a
-                swipeable row on phones so the page stays short. */}
-            {(() => {
-              const card = (t: (typeof TESTIMONIALS)[number]) => {
-                const i = TESTIMONIALS.indexOf(t);
-                return (
-                  <figure
-                    key={t.n}
-                    style={
-                      isMobile
-                        ? {
-                            margin: 0,
-                            flex: "0 0 78%",
-                            scrollSnapAlign: "start",
-                            padding: "20px 20px 18px",
-                            borderRadius: 22,
-                            background: "rgba(255,255,255,0.55)",
-                            boxShadow: "inset 0 1px 0 rgba(255,255,255,0.8), 0 6px 18px -10px rgba(80,30,30,0.25)",
-                          }
-                        : { margin: 0, paddingTop: 22, borderTop: "1px solid rgba(35,20,16,0.1)" }
-                    }
-                  >
-                    <blockquote
-                      style={{
-                        margin: 0,
-                        fontFamily: '"Instrument Serif", serif',
-                        fontStyle: "italic",
-                        fontSize: isMobile ? 21 : 23,
-                        lineHeight: 1.28,
-                        letterSpacing: "-0.01em",
-                        color: "#231410",
-                      }}
-                    >
-                      &ldquo;{t.q}&rdquo;
-                    </blockquote>
-                    <Attribution t={t} i={i} size="sm" />
-                  </figure>
-                );
-              };
-              const byName = (n: string) => TESTIMONIALS.find((t) => t.n === n)!;
-              return isMobile ? (
-                // The rest as a swipeable row on phones, so the page stays short.
-                <div
-                  style={{
-                    display: "flex",
-                    gap: 12,
-                    overflowX: "auto",
-                    scrollSnapType: "x mandatory",
-                    scrollPadding: "0 20px",
-                    margin: "36px -20px 0",
-                    padding: "0 20px 6px",
-                    scrollbarWidth: "none",
-                  }}
-                >
-                  {TESTIMONIALS.slice(1).map(card)}
-                </div>
-              ) : (
-                // The rest as an editorial wall in three columns.
-                <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", columnGap: 56, marginTop: 64, alignItems: "start" }}>
-                  {WALL_COLUMNS.map((col) => (
-                    <div key={col[0]} style={{ display: "flex", flexDirection: "column", gap: 30 }}>
-                      {col.map((n) => card(byName(n)))}
-                    </div>
-                  ))}
-                </div>
-              );
-            })()}
+            <TestimonialCarousel isMobile={isMobile} />
           </section>
 
           {/* Closing CTA */}
