@@ -13,6 +13,19 @@ export const AMAZON_TAG =
 
 const ASIN_RE = /\/(?:dp|gp\/product|gp\/aw\/d|exec\/obidos\/ASIN|o\/ASIN)\/([A-Z0-9]{10})(?:[/?&#]|$)/i;
 
+/**
+ * Amazon short links (amzn.to, a.co) hide the product and carry whatever
+ * affiliate tag was baked in when they were made (two old ones carried the
+ * Presently tag), so the site never uses them as buy links.
+ */
+export function isAmazonShortLink(url: string): boolean {
+  try {
+    return /(^|\.)(amzn\.to|a\.co|amzn\.com|amzn\.eu)$/i.test(new URL(url).hostname);
+  } catch {
+    return false;
+  }
+}
+
 export function isAmazonUrl(url: string): boolean {
   try {
     return /(^|\.)amazon\.com$/i.test(new URL(url).hostname);

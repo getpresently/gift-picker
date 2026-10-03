@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import type { BillingPeriod, Gift } from "./gifts";
+import { isAmazonShortLink } from "./affiliate";
 
 /**
  * Live gift database. Served by the same Google Apps Script web app
@@ -95,6 +96,9 @@ export function adaptRow(row: RawRow): Gift {
   const priceMax = priceOpen ? null : parseMoney(priceMaxRaw);
   const billingPeriod = normalizeBillingPeriod(row.BillingPeriod);
   const priceLabel = buildPriceLabel(price, priceMax, priceOpen, billingPeriod, isYourChoice);
+  // Short links are dropped: they hide the product and may carry an old tag.
+  const amazonAltRaw = String(row.AmazonAltLink ?? "").trim();
+  const amazonAlt = isAmazonShortLink(amazonAltRaw) ? "" : amazonAltRaw;
 
   return {
     id: String(row.row_id ?? row.rowId ?? row.id ?? ""),
@@ -109,7 +113,7 @@ export function adaptRow(row: RawRow): Gift {
     priceLabel,
     image: String(row.PhotoAddress ?? ""),
     link: String(row.Link ?? ""),
-    amazonLink: String(row.AmazonAltLink ?? "").trim(),
+    amazonLink: amazonAlt,
     ages: splitCsv(row.Age as string | undefined),
     types: splitCsv(row.Type as string | undefined),
     interests: splitCsv(row.Interests as string | undefined),
