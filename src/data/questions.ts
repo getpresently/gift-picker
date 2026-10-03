@@ -78,9 +78,10 @@ export const QUESTIONS: Question[] = [
     options: [
       { v: "partner",     l: "Partner",          e: "💞" },
       { v: "parent",      l: "Parent",           e: "🌿" },
+      { v: "child",       l: "Child",            e: "🌱", hint: "any kid in your life" },
       { v: "grandparent", l: "Grandparent",      e: "🌻" },
-      { v: "friend",      l: "Friend",           e: "🫶" },
       { v: "sibling",     l: "Sibling",          e: "🎈" },
+      { v: "friend",      l: "Friend",           e: "🫶" },
       { v: "coworker",    l: "Coworker",         e: "☕️" },
       { v: "mentor",      l: "Mentor / Teacher", e: "📚" },
       { v: "self",        l: "Treat myself",     e: "✨" },

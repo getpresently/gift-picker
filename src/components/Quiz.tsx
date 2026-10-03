@@ -267,7 +267,8 @@ export function Quiz() {
           <div
             key={safeStep}
             style={{
-              maxWidth: q.type === "multi" ? 640 : 540,
+              // Three-across occasions get the same width as the interests grid.
+              maxWidth: q.type === "multi" || q.id === "occasion" ? 640 : 540,
               margin: "0 auto",
               width: "100%",
               animation: "qslide 360ms cubic-bezier(.22,1.4,.4,1)",
@@ -318,14 +319,15 @@ export function Quiz() {
                 <div
                   style={{
                     display: "grid",
-                    // Occasions are short words, so they fit three across on
-                    // desktop and two on phones instead of one long column.
+                    // Occasions and recipients are short words, so they fit
+                    // two across on phones instead of one long column (and
+                    // occasions three across on desktop).
                     gridTemplateColumns:
                       q.id === "occasion"
                         ? `repeat(${isMobile ? 2 : 3}, minmax(0, 1fr))`
-                        : isMobile
+                        : isMobile && q.id !== "recipient"
                           ? "1fr"
-                          : "1fr 1fr",
+                          : "repeat(2, minmax(0, 1fr))",
                     gap: 12,
                   }}
                 >

@@ -112,6 +112,10 @@ export const RECIPIENT_LABELS: Record<string, string[]> = {
   coworker:    ["Coworker"],
   mentor:      ["Mentor/Teacher"],
   self:        [], // matches any relation (handled specially in score)
+  // "Child" covers any kid in the shopper's life (their own, a niece or
+  // nephew, a grandkid) at any age. Kids' gifts are tagged Friend and
+  // Sibling by convention, so it matches those; the age answer does the rest.
+  child:       ["Friend", "Sibling"],
 };
 
 /**
@@ -134,9 +138,10 @@ export const RECIPIENT_EXCLUDED_AGES: Record<string, string[]> = {
   // The user filling out the quiz isn't shopping for a literal child for
   // themselves. (They could be a teen, though, so don't exclude that.)
   self: ["Baby", "Child"],
-  // Friends and siblings can be any age.
+  // Friends, siblings, and children can be any age.
   friend: [],
   sibling: [],
+  child: [],
 };
 
 export const OCCASION_LABELS: Record<string, string> = {
