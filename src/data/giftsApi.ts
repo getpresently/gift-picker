@@ -31,11 +31,14 @@ function splitCsv(raw: string | number | undefined): string[] {
     .filter(Boolean);
 }
 
-/** Format a number for display: whole dollars drop the cents, anything else shows two decimals. */
-function fmt(n: number): string {
+/**
+ * Format a price for display: rounded to the nearest whole dollar with a
+ * thousands separator ($29.99 shows as $30). Dalia's call (10/3/26): cents
+ * look cheap on a gift site. Scoring and structured data keep exact prices.
+ */
+export function fmt(n: number): string {
   if (!Number.isFinite(n)) return "0";
-  if (Number.isInteger(n)) return n.toLocaleString("en-US");
-  return n.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  return Math.round(n).toLocaleString("en-US");
 }
 
 /** Parse "$1,240" / "103" / "$80.50" → number; returns null for empty / "open" / unparseable. */
@@ -69,7 +72,7 @@ function buildPriceLabel(
   if (price <= 0 && !priceMax && !priceOpen) return "";
   let base: string;
   if (priceOpen) base = `$${fmt(price)}+`;
-  else if (priceMax !== null && priceMax > price) base = `$${fmt(price)}–$${fmt(priceMax)}`;
+  else if (priceMax !== null && Math.round(priceMax) > Math.round(price)) base = `$${fmt(price)}–$${fmt(priceMax)}`;
   else base = `$${fmt(price)}`;
   if (billing === "monthly") return `${base}/mo`;
   if (billing === "weekly") return `${base}/wk`;

@@ -238,10 +238,12 @@ function escapeHtml(s) {
     .replace(/'/g, "&#39;");
 }
 
-/** Human price label from the raw sheet row (best-effort, display only). */
+/** Human price label from the raw sheet row (display only), rounded to whole
+ *  dollars like the app; the JSON-LD offer below keeps the exact price. */
 function priceLabel(row) {
-  const price = Number(row.Price);
-  if (!Number.isFinite(price) || price <= 0) return "";
+  const exact = Number(row.Price);
+  if (!Number.isFinite(exact) || exact <= 0) return "";
+  const price = Math.round(exact);
   const per =
     String(row.BillingPeriod || "").trim() === "monthly"
       ? "/mo"
@@ -250,7 +252,7 @@ function priceLabel(row) {
         : "";
   const max = row.PriceMax;
   if (String(max).trim().toLowerCase() === "open") return `$${price}+${per}`;
-  const maxNum = Number(max);
+  const maxNum = Math.round(Number(max));
   if (Number.isFinite(maxNum) && maxNum > price) return `$${price}-$${maxNum}${per}`;
   return `$${price}${per}`;
 }

@@ -1,4 +1,5 @@
 import type { BillingPeriod, Gift } from "../../data/gifts";
+import { fmt } from "../../data/giftsApi";
 
 type Variant = "card" | "hero" | "modal";
 
@@ -21,19 +22,12 @@ const SUFFIX_SIZE: Record<Variant, number> = {
   hero: 16,
 };
 
-/** Format a number for display with thousands separators; whole dollars drop the cents, anything else shows two decimals. */
-function fmt(n: number): string {
-  if (!Number.isFinite(n)) return "0";
-  if (Number.isInteger(n)) return n.toLocaleString("en-US");
-  return n.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-}
-
 /** Amount portion: "Your choice", "$58–$295", "$123+", or "$80". */
 function amountText(gift: Gift): string {
   if (gift.isYourChoice) return "Your choice";
   if (gift.price <= 0) return "";
   if (gift.priceOpen) return `$${fmt(gift.price)}+`;
-  if (gift.priceMax !== null && gift.priceMax > gift.price) {
+  if (gift.priceMax !== null && Math.round(gift.priceMax) > Math.round(gift.price)) {
     return `$${fmt(gift.price)}–$${fmt(gift.priceMax)}`;
   }
   return `$${fmt(gift.price)}`;
