@@ -581,9 +581,6 @@ export function giftKind(gift: Gift): string | null {
  */
 export const NEAR_DUPLICATE = 0.3;
 
-/** How close (in score points) a later gift must be to move up for variety. */
-const SPREAD_TOLERANCE = 3;
-
 const similarityByCatalog = new WeakMap<Gift[], (a: string, b: string) => number>();
 
 /** True when two gifts are the same kind of thing or near-duplicates. */
@@ -599,41 +596,23 @@ export function tooAlike(catalog: Gift[], a: Gift, b: Gift): boolean {
 }
 
 /**
- * Which of the shopper's picked interests a gift mainly answers: the pick
- * its primary interest matches, else the first pick a secondary tag
- * matches. Best Sellers is a popularity flag, so it never leads.
+ * Reorders an already-ranked list so equal-scoring results don't bunch up:
+ * no two of the same kind (or near-duplicates) back to back, and no same
+ * brand back to back. Gifts only trade places with gifts of the same score,
+ * so the match % shown on the cards never goes up as you scroll, and the
+ * top pick never changes.
  */
-export function leadInterest(gift: Gift, picks: string[]): string | null {
-  const real = picks.filter((v) => v !== "best");
-  const byPrimary = gift.primaryInterest
-    ? real.find((v) => matchCount([gift.primaryInterest], INTEREST_LABELS[v] ?? []) > 0)
-    : undefined;
-  return byPrimary ?? real.find((v) => matchCount(gift.interests, INTEREST_LABELS[v] ?? []) > 0) ?? null;
-}
-
-/**
- * Reorders an already-ranked list so near-equal results don't bunch up:
- * no two of the same kind (or near-duplicates) back to back, no same brand
- * back to back, and, when the shopper picked several interests, no three
- * in a row answering the same one. A gift only moves up when it scores
- * within SPREAD_TOLERANCE of the one it replaces, so a clearly better
- * match is never pushed down, and the top pick never changes.
- */
-function spreadOut<T extends { gift: Gift; score: number }>(list: T[], catalog: Gift[], picks: string[]): T[] {
+function spreadOut<T extends { gift: Gift; score: number }>(list: T[], catalog: Gift[]): T[] {
   const pool = list.slice();
   const out: T[] = [];
-  const lead = new Map(pool.map((x) => [x, picks.length > 1 ? leadInterest(x.gift, picks) : null]));
   const clashes = (x: T) => {
     const prev = out[out.length - 1];
-    if (x.gift.brand && x.gift.brand === prev.gift.brand) return true;
-    if (tooAlike(catalog, x.gift, prev.gift)) return true;
-    const l = lead.get(x);
-    return !!l && out.length >= 2 && out.slice(-2).every((y) => lead.get(y) === l);
+    return (!!x.gift.brand && x.gift.brand === prev.gift.brand) || tooAlike(catalog, x.gift, prev.gift);
   };
   while (pool.length) {
     let pick = 0;
     if (out.length && clashes(pool[0])) {
-      for (let i = 1; i < pool.length && pool[0].score - pool[i].score <= SPREAD_TOLERANCE; i++) {
+      for (let i = 1; i < pool.length && pool[i].score === pool[0].score; i++) {
         if (!clashes(pool[i])) {
           pick = i;
           break;
@@ -672,7 +651,7 @@ export function rankGifts(gifts: Gift[], answers: Answers): RankedGift[] {
   };
 
   const finalize = (list: Scored[]): RankedGift[] =>
-    spreadOut(list.sort(compare), gifts, answers.interests ?? []).map((s) => ({ ...s.gift, matchScore: s.score }));
+    spreadOut(list.sort(compare), gifts).map((s) => ({ ...s.gift, matchScore: s.score }));
 
   const above60 = scored.filter((s) => s.score >= MATCH_STRICT);
   if (above60.length > 5) return finalize(above60);

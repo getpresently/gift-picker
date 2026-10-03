@@ -86,7 +86,7 @@ async function loadModules() {
     stdin: {
       contents: [
         'export { adaptRow } from "./src/data/giftsApi";',
-        'export { rankGifts as rankAfter, INTEREST_LABELS, tooAlike, leadInterest } from "./src/data/gifts";',
+        'export { rankGifts as rankAfter, INTEREST_LABELS, tooAlike } from "./src/data/gifts";',
         'export { rankGifts as rankBefore } from "baseline:gifts";',
       ].join("\n"),
       resolveDir: ROOT,
@@ -129,6 +129,13 @@ function interestHits(gift, picks, labels) {
   return picks.filter((code) =>
     (labels[code] ?? []).some((l) => tags.some((t) => t === norm(l) || t.includes(norm(l)) || norm(l).includes(t))),
   );
+}
+
+/** The picked interest a gift mainly answers: its primary's match, else its first tag match. */
+function leadInterest(gift, picks, labels) {
+  const real = picks.filter((v) => v !== "best");
+  const hits = (tags) => real.find((code) => interestHits({ interests: tags }, [code], labels).length);
+  return (gift.primaryInterest && hits([gift.primaryInterest])) || hits(gift.interests) || null;
 }
 
 function describe(q) {
@@ -204,8 +211,8 @@ QUERIES.forEach((q, i) => {
         const prev = top[k - 1];
         if (prev && mod.tooAlike(gifts, g, prev)) alike++;
         if (prev && g.brand && g.brand === prev.brand) brand++;
-        const lead = mod.leadInterest(g, q.interests);
-        run = prev && lead && lead === mod.leadInterest(prev, q.interests) ? run + 1 : 1;
+        const lead = leadInterest(g, q.interests, labels);
+        run = prev && lead && lead === leadInterest(prev, q.interests, labels) ? run + 1 : 1;
         longest = Math.max(longest, run);
       });
       return { alike, brand, longest };
