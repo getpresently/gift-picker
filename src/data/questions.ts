@@ -200,7 +200,8 @@ const HIDE_BABY_FOR = new Set(["partner", "parent", "coworker", "mentor", "self"
 const HIDE_KID_FOR = new Set(["partner", "parent", "coworker", "mentor", "self"]);
 const HIDE_TEEN_FOR = new Set(["parent", "coworker", "mentor"]); // partners and self can be teens
 const HIDE_YOUNG_ADULT_FOR = new Set(["parent"]); // your parent is older than 20-something
-const HIDE_SENIOR_FOR = new Set(["child"]); // a kid in your life is never 60+
+const HIDE_ADULT_FOR = new Set(["child"]); // a kid in your life tops out at young adult
+const HIDE_SENIOR_FOR = new Set(["child"]);
 
 // Per-age occasion-option hides. Babies, children, and teens don't have
 // weddings, housewarmings, anniversaries, or new-baby gifts of their own.
@@ -250,6 +251,7 @@ export function getActiveOptions(q: Question, answers: Answers): Option[] {
       if (o.v === "kid" && HIDE_KID_FOR.has(r)) return false;
       if (o.v === "teen" && HIDE_TEEN_FOR.has(r)) return false;
       if (o.v === "twenty" && HIDE_YOUNG_ADULT_FOR.has(r)) return false;
+      if (o.v === "adult" && HIDE_ADULT_FOR.has(r)) return false;
       if (o.v === "senior" && HIDE_SENIOR_FOR.has(r)) return false;
       return true;
     });

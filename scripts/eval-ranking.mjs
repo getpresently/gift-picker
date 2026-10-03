@@ -52,6 +52,9 @@ const QUERIES = [
   ["friend", "twenty", "housewarm", "home,food", "fun", 50],
   ["coworker", "adult", "thank", "food", "practical", 25],
   ["partner", "adult", "bday", "cooking,home,food", "sentimental", 150],
+  ["child", "kid", "bday", "toys,creative,learn", "fun", 50],
+  ["child", "kid", "bday", "tech,gaming,music", "fun", 80],
+  ["child", "kid", "holi", "outdoors,food,creative", "fun", 60],
 ].map(([recipient, age, occasion, interests, vibe, budget]) => ({
   recipient,
   age,
