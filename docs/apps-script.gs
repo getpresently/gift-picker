@@ -5,7 +5,8 @@
  * When updating, edit the EXISTING deployment and pick "New version" so the
  * /exec URL (hardcoded in the site) stays the same.
  *
- *   GET  /exec?tab=Gifts  -> { data: [...] }  rows with a synthetic row_id ("r<row>").
+ *   GET  /exec?tab=Gifts  -> { data: [...] }  rows with row_id = the gift's permanent ID
+ *                                              (column "ID"; "r<row>" until that column exists).
  *        Only tabs in PUBLIC_TABS are served; Brands holds contact details.
  *   POST /exec  JSON body routed on `type`:
  *     "feedback" -> append to Feedback
@@ -84,6 +85,91 @@ function allowWrite_(clientId) {
   return true;
 }
 
+/* ------------------------------------------------------------------ *
+ * Permanent gift IDs. Column "ID" (column A) holds a fixed id per gift,
+ * like "r495", so rows can be sorted or moved without breaking gift
+ * URLs, shared links, or review writes. Existing gifts keep the id they
+ * always had (their old row number); new gifts get the next free number
+ * the next time the catalog is read (every 10 minutes). Never copy an ID
+ * into a new row: leave it blank and it is filled in.
+ * Run setupIdColumn() once from the editor (Run button) to create it.
+ * ------------------------------------------------------------------ */
+const ID_HEADER = "ID";
+
+function setupIdColumn() {
+  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("Gifts");
+  const headers = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0].map(String);
+  if (headers.indexOf(ID_HEADER) === -1) {
+    const giftCol = headers.indexOf("Gift");  // before the insert
+    const last = sheet.getLastRow();
+    const gifts = last >= 2 ? sheet.getRange(2, giftCol + 1, last - 1, 1).getValues() : [];
+    sheet.insertColumnBefore(1);
+    sheet.getRange(1, 1).setValue(ID_HEADER);
+    if (gifts.length) {
+      // Each existing gift keeps the id it already had: its row number.
+      sheet.getRange(2, 1, gifts.length, 1).setValues(
+        gifts.map(function (g, i) { return [String(g[0]).trim() ? "r" + (i + 2) : ""]; })
+      );
+    }
+  }
+  assignMissingIds_(sheet);
+}
+
+/**
+ * Gives every gift row without an ID the next free number, and renumbers
+ * later copies of a duplicated ID (the first row keeps it). Returns true
+ * when it changed the sheet.
+ */
+function assignMissingIds_(sheet) {
+  const lock = LockService.getScriptLock();
+  lock.waitLock(10000);
+  try {
+    const values = sheet.getDataRange().getValues();
+    const headers = values[0].map(String);
+    const idCol = headers.indexOf(ID_HEADER);
+    const giftCol = headers.indexOf("Gift");
+    if (idCol === -1 || giftCol === -1) return false;
+    let max = 0;
+    values.slice(1).forEach(function (row) {
+      const m = /^r(\d+)$/.exec(String(row[idCol]).trim());
+      if (m) max = Math.max(max, Number(m[1]));
+    });
+    const seen = {};
+    let changed = false;
+    const ids = values.slice(1).map(function (row) {
+      let id = String(row[idCol]).trim();
+      const hasGift = String(row[giftCol]).trim() !== "";
+      if (hasGift && (!/^r\d+$/.test(id) || seen[id])) {
+        id = "r" + (++max);
+        changed = true;
+      }
+      if (id) seen[id] = true;
+      return [id];
+    });
+    if (changed) sheet.getRange(2, idCol + 1, ids.length, 1).setValues(ids);
+    return changed;
+  } finally {
+    lock.releaseLock();
+  }
+}
+
+/** Sheet row of the gift with this id, or -1. Falls back to row numbers until the ID column exists. */
+function findGiftRow_(sheet, rowId) {
+  const id = String(rowId || "").trim();
+  if (!/^r\d+$/.test(id)) return -1;
+  const headers = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0].map(String);
+  const idCol = headers.indexOf(ID_HEADER);
+  const last = sheet.getLastRow();
+  if (idCol === -1) {
+    const n = Number(id.slice(1));
+    return n >= 2 && n <= last ? n : -1;
+  }
+  if (last < 2) return -1;
+  const ids = sheet.getRange(2, idCol + 1, last - 1, 1).getValues();
+  for (let i = 0; i < ids.length; i++) if (String(ids[i][0]).trim() === id) return i + 2;
+  return -1;
+}
+
 function doGet(e) {
   try {
     const tab = (e && e.parameter && e.parameter.tab) || "Gifts";
@@ -91,12 +177,15 @@ function doGet(e) {
     const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(tab);
     if (!sheet) return jsonOut_({ error: "Sheet not found: " + tab });
 
+    if (tab === "Gifts") assignMissingIds_(sheet);
     const values = sheet.getDataRange().getValues();
     if (values.length < 2) return jsonOut_({ data: [] });
 
     const headers = values[0].map(String);
+    const idCol = tab === "Gifts" ? headers.indexOf(ID_HEADER) : -1;
     const data = values.slice(1).map(function (row, i) {
-      const obj = { row_id: "r" + (i + 2) };
+      const fixedId = idCol === -1 ? "" : String(row[idCol]).trim();
+      const obj = { row_id: fixedId || "r" + (i + 2) };
       headers.forEach(function (h, c) { obj[h] = row[c]; });
       return obj;
     });
@@ -169,11 +258,10 @@ function registerOwnerDevice_(clientId) {
  * way the review tool does, after checking the row still holds that gift.
  */
 function rejectFromOwnerFeedback_(p) {
-  const m = /^r(\d+)$/.exec(String(p.giftId || ""));
   const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("Gifts");
-  if (!m || !sheet) return;
-  const row = Number(m[1]);
-  if (row < 2 || row > sheet.getLastRow()) return;
+  if (!sheet) return;
+  const row = findGiftRow_(sheet, p.giftId);
+  if (row === -1) return;
   const headers = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0].map(String);
   const giftCol = headers.indexOf("Gift") + 1;
   const statusCol = headers.indexOf("Status") + 1;
@@ -322,11 +410,10 @@ function handleReview_(p) {
   if (p.action === "ping") return { ok: true };
   if (p.action !== "set") return { ok: false, error: "bad_action" };
 
-  const m = /^r(\d+)$/.exec(String(p.rowId || ""));
   const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("Gifts");
-  if (!m || !sheet) return { ok: false, error: "bad_row" };
-  const row = Number(m[1]);
-  if (row < 2 || row > sheet.getLastRow()) return { ok: false, error: "bad_row" };
+  if (!sheet) return { ok: false, error: "bad_row" };
+  const row = findGiftRow_(sheet, p.rowId);
+  if (row === -1) return { ok: false, error: "bad_row" };
 
   if (p.status !== undefined && REVIEW_STATUSES.indexOf(p.status) === -1) {
     return { ok: false, error: "bad_value" };

@@ -81,13 +81,14 @@ Dalia's example: she believes Otentik is the original of the sandbag-anchored st
 - **No groceries** unless the item is a specialty or novelty product (small-batch, a curated sampler, a notable maker, a giftable presentation).
 - **No pure utility tools.** If someone wants it, they buy it for the utility; it is not a hobby and reads as a strange gift. Dalia rejected the iFixit Minnow and Mako driver kits for this reason.
 - **More than one gift per slot is fine when they are clearly distinct** in design or use case. Two near-identical items (same type, similar look, same use) are a duplicate even across brands.
+- **No collectibles.** Skip gifts whose appeal depends on the recipient already collecting that line (designer figurines like Kay Bojesen, collectible series, limited editions sold to collectors). Shoppers can't know who collects what, and decorative figures read as kids' toys. Dalia rejected the Kay Bojesen monkey and retired the songbird for this (10/3/26).
 - **Availability counts.** A gift that is hard for US shoppers to get (ships from abroad, long waits, import duties, Amazon listings unavailable) loses to a readily available equivalent. Dalia kept the Neso beach shade over Otentik, the original, because Neso ships in the US and is on Amazon.
 
 ### Ratings and seller reputation (binding, Dalia 10/3/26)
 
 Nothing poorly rated, and no seller with a bad reputation:
 - **Product rating:** at least 4.3 stars from at least 50 ratings on the brand site, Amazon, or a major retailer. If the product has fewer ratings, it needs at least 4.5 stars or must come from an established, well-reviewed brand. Experiences and gift cards skip this check, but the seller check still applies.
-- **Seller reputation:** no BBB "F" rating, and no pattern of complaints about orders never arriving, counterfeits, or refused refunds. Where Trustpilot has meaningful volume, the seller needs 3.5 or higher. Page 1 Books was retired for exactly this.
+- **Seller reputation:** no pattern of complaints about orders never arriving, damaged or dead deliveries, counterfeits, no-shows, or refused refunds (Page 1 Books, Insect Lore, Cozymeal, and Hand & Stone were removed for this). A BBB "F" alone is not disqualifying, because many direct-to-consumer brands get one for unanswered complaints; it fails a gift only when the complaints show one of those patterns or a safety problem. Trustpilot counts only for small or direct-to-consumer sellers with meaningful volume (3.5 or higher); ignore it for big brands and major retailers (Target, Barnes & Noble, KitchenAid), whose Trustpilot pages skew negative.
 - **Write it down:** record what you found in the Feedback note, for example `Rating: 4.7 from 2,300 (Amazon); seller: Trustpilot 4.4, BBB A+`. If you can't find ratings at all, say so, and the gift must have another strong reason to be trusted (a respected maker, or a major retailer as the seller).
 
 ### Gifts at $20 or under (binding, Dalia 10/3/26)
@@ -143,7 +144,7 @@ Dalia asked to "deprioritize 1-2 of the no-name or less top tier brands" in crow
 
 ### Sheet columns (since 10/3/26)
 
-A Gift, B Brand, C Age, D Relation, E Type, F Primary interest, G Interests, H Occasion, I Gender, J Price, K PriceMax, L BillingPeriod, M Description, N PhotoAddress, O Link, P AmazonAltLink, Q Status, R Date updated, S Review status, T Feedback.
+A ID, B Gift, C Brand, D Age, E Relation, F Type, G Primary interest, H Interests, I Occasion, J Gender, K Price, L PriceMax, M BillingPeriod, N Description, O PhotoAddress, P Link, Q AmazonAltLink, R Status, S Date updated, T Review status, U Feedback (ID added 10/3/26; before setupIdColumn() runs, everything sits one column to the left).
 
 Dalia had Primary interest moved next to Interests and Gender moved after Occasion. The site, the edge cache, /review, and the Apps Script all read columns by header name, so column moves are safe for them. Scratch scripts and Name Box edits use letters and must be updated after any move.
 
@@ -217,7 +218,7 @@ Examples: "Added 10/3/26 for user request #25"; "Fixed 10/3/26: renamed from "Gi
 
 ### Row ids and gift URLs
 
-`row_id` is "r" plus the sheet row number, computed when the sheet is read. Gift pages (`/gift/r123`) and shared links depend on it. Renaming a gift is safe. Inserting, deleting, or sorting rows breaks every link below that point, so only append new rows at the first empty row. A permanent ID column was offered and not yet approved (section 9).
+Every gift has a permanent ID in column A (Dalia approved 10/3/26), such as `r495`. Existing gifts kept the number they already had (their old row number), so no URL changed. Gift pages (`/gift/r495`), shared links, and /review all use the ID, so rows can now be sorted or moved, and non-live gifts could move to another tab. New rows get the next free ID automatically within 10 minutes (the catalog read fills blanks). Never type or copy an ID into a new row; if a copied ID appears twice, the later row is renumbered.
 
 ### Writing to the sheet (for agents with browser access)
 

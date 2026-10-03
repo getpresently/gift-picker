@@ -67,13 +67,14 @@ Commodity items fail. Her example: a Discraft ultimate disc, "if someone wants a
 - **No groceries** unless the item is a specialty or novelty product (small-batch, a curated sampler, a notable maker, a giftable presentation).
 - **No pure utility tools.** If someone wants it, they buy it for the utility; it is not a hobby and reads as a strange gift. Dalia rejected the iFixit Minnow and Mako driver kits for this reason.
 - **More than one gift per slot is fine when they are clearly distinct** in design or use case. Two near-identical items (same type, similar look, same use) are a duplicate even across brands.
+- **No collectibles.** Skip gifts whose appeal depends on the recipient already collecting that line (designer figurines like Kay Bojesen, collectible series, limited editions sold to collectors). Shoppers can't know who collects what, and decorative figures read as kids' toys. Dalia rejected the Kay Bojesen monkey and retired the songbird for this (10/3/26).
 - **Availability counts.** A gift that is hard for US shoppers to get (ships from abroad, long waits, import duties, Amazon listings unavailable) loses to a readily available equivalent. Dalia kept the Neso beach shade over Otentik, the original, because Neso ships in the US and is on Amazon.
 
 ### Ratings and seller reputation (binding, Dalia 10/3/26)
 
 Nothing poorly rated, and no seller with a bad reputation:
 - **Product rating:** at least 4.3 stars from at least 50 ratings on the brand site, Amazon, or a major retailer. If the product has fewer ratings, it needs at least 4.5 stars or must come from an established, well-reviewed brand. Experiences and gift cards skip this check, but the seller check still applies.
-- **Seller reputation:** no BBB "F" rating, and no pattern of complaints about orders never arriving, counterfeits, or refused refunds. Where Trustpilot has meaningful volume, the seller needs 3.5 or higher. Page 1 Books was retired for exactly this.
+- **Seller reputation:** no pattern of complaints about orders never arriving, damaged or dead deliveries, counterfeits, no-shows, or refused refunds (Page 1 Books, Insect Lore, Cozymeal, and Hand & Stone were removed for this). A BBB "F" alone is not disqualifying, because many direct-to-consumer brands get one for unanswered complaints; it fails a gift only when the complaints show one of those patterns or a safety problem. Trustpilot counts only for small or direct-to-consumer sellers with meaningful volume (3.5 or higher); ignore it for big brands and major retailers (Target, Barnes & Noble, KitchenAid), whose Trustpilot pages skew negative.
 - **Write it down:** record what you found in the Feedback note, for example `Rating: 4.7 from 2,300 (Amazon); seller: Trustpilot 4.4, BBB A+`. If you can't find ratings at all, say so, and the gift must have another strong reason to be trusted (a respected maker, or a major retailer as the seller).
 
 ### Prefer the original over a copycat (Dalia 10/3/26)
@@ -131,7 +132,7 @@ Empty unless the item is obviously only for men or only for women (`Men` / `Wome
 
 ## 5. Output row format
 
-TSV, no header, exactly 20 columns per row, no tabs or newlines inside fields. **This is the order your file uses.** The sheet itself is ordered differently (A Gift, B Brand, C Age, D Relation, E Type, F Primary interest, G Interests, H Occasion, I Gender, J Price, K PriceMax, L BillingPeriod, M Description, N PhotoAddress, O Link, P AmazonAltLink, Q Status, R Date updated, S Review status, T Feedback); whoever pastes your file maps it by column name.
+TSV, no header, exactly 20 columns per row, no tabs or newlines inside fields. **This is the order your file uses.** The sheet itself is ordered differently (A ID, B Gift, C Brand, D Age, E Relation, F Type, G Primary interest, H Interests, I Occasion, J Gender, K Price, L PriceMax, M BillingPeriod, N Description, O PhotoAddress, P Link, Q AmazonAltLink, R Status, S Date updated, T Review status, U Feedback, once the ID column is set up; before that, drop the ID and shift left by one); whoever pastes your file maps it by column name. Never write an ID: new rows get one automatically.
 
 1. **Gift:** the product name without the brand. Name the specific model ("Instax Mini 13," "Ooni Koda 2"). If the price buys a set, say so ("Long Distance Friendship Lamps (Set of 2)"). Subscriptions say what is inside ("Coffee Gift Subscription," "Cheese of the Month Club," "Book Club Gift Membership"); a bare "Gift Subscription" was renamed for that reason. Gift cards are the one place the brand leads: "<Brand> Gift Card" ("Hipcamp Gift Card," "Lululemon Gift Card").
 2. **Brand:** the maker, in its official spelling. A retailer's name goes here only if it is also the maker.
