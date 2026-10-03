@@ -45,6 +45,14 @@ const AVATAR_TONES = [
   { bg: "#EBD3E4", fg: "#7E3F71" },
 ];
 
+// Desktop wall columns, balanced by hand by quote length (browser column
+// balancing left the third column short).
+const WALL_COLUMNS = [
+  ["Max G.", "Anna F.", "Bhaumik P."],
+  ["Jigesh M.", "Peter W."],
+  ["Priya S.", "Ella R.", "Mario S."],
+];
+
 function initials(name: string) {
   return name
     .split(/\s+/)
@@ -423,60 +431,70 @@ export function Landing() {
 
             {/* The rest: an editorial wall in three columns on desktop, a
                 swipeable row on phones so the page stays short. */}
-            <div
-              style={
-                isMobile
-                  ? {
-                      display: "flex",
-                      gap: 12,
-                      overflowX: "auto",
-                      scrollSnapType: "x mandatory",
-                      margin: "36px -20px 0",
-                      padding: "0 20px 6px",
-                      scrollbarWidth: "none",
+            {(() => {
+              const card = (t: (typeof TESTIMONIALS)[number]) => {
+                const i = TESTIMONIALS.indexOf(t);
+                return (
+                  <figure
+                    key={t.n}
+                    style={
+                      isMobile
+                        ? {
+                            margin: 0,
+                            flex: "0 0 78%",
+                            scrollSnapAlign: "start",
+                            padding: "20px 20px 18px",
+                            borderRadius: 22,
+                            background: "rgba(255,255,255,0.55)",
+                            boxShadow: "inset 0 1px 0 rgba(255,255,255,0.8), 0 6px 18px -10px rgba(80,30,30,0.25)",
+                          }
+                        : { margin: 0, paddingTop: 22, borderTop: "1px solid rgba(35,20,16,0.1)" }
                     }
-                  : { columnCount: 3, columnGap: 56, marginTop: 64 }
-              }
-            >
-              {TESTIMONIALS.slice(1).map((t, i) => (
-                <figure
-                  key={t.n}
-                  style={
-                    isMobile
-                      ? {
-                          margin: 0,
-                          flex: "0 0 78%",
-                          scrollSnapAlign: "start",
-                          padding: "20px 20px 18px",
-                          borderRadius: 22,
-                          background: "rgba(255,255,255,0.55)",
-                          boxShadow: "inset 0 1px 0 rgba(255,255,255,0.8), 0 6px 18px -10px rgba(80,30,30,0.25)",
-                        }
-                      : {
-                          margin: "0 0 30px",
-                          paddingTop: 22,
-                          borderTop: "1px solid rgba(35,20,16,0.1)",
-                          breakInside: "avoid",
-                        }
-                  }
-                >
-                  <blockquote
-                    style={{
-                      margin: 0,
-                      fontFamily: '"Instrument Serif", serif',
-                      fontStyle: "italic",
-                      fontSize: isMobile ? 21 : 23,
-                      lineHeight: 1.28,
-                      letterSpacing: "-0.01em",
-                      color: "#231410",
-                    }}
                   >
-                    &ldquo;{t.q}&rdquo;
-                  </blockquote>
-                  <Attribution t={t} i={i + 1} size="sm" />
-                </figure>
-              ))}
-            </div>
+                    <blockquote
+                      style={{
+                        margin: 0,
+                        fontFamily: '"Instrument Serif", serif',
+                        fontStyle: "italic",
+                        fontSize: isMobile ? 21 : 23,
+                        lineHeight: 1.28,
+                        letterSpacing: "-0.01em",
+                        color: "#231410",
+                      }}
+                    >
+                      &ldquo;{t.q}&rdquo;
+                    </blockquote>
+                    <Attribution t={t} i={i} size="sm" />
+                  </figure>
+                );
+              };
+              const byName = (n: string) => TESTIMONIALS.find((t) => t.n === n)!;
+              return isMobile ? (
+                // The rest as a swipeable row on phones, so the page stays short.
+                <div
+                  style={{
+                    display: "flex",
+                    gap: 12,
+                    overflowX: "auto",
+                    scrollSnapType: "x mandatory",
+                    margin: "36px -20px 0",
+                    padding: "0 20px 6px",
+                    scrollbarWidth: "none",
+                  }}
+                >
+                  {TESTIMONIALS.slice(1).map(card)}
+                </div>
+              ) : (
+                // The rest as an editorial wall in three columns.
+                <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", columnGap: 56, marginTop: 64, alignItems: "start" }}>
+                  {WALL_COLUMNS.map((col) => (
+                    <div key={col[0]} style={{ display: "flex", flexDirection: "column", gap: 30 }}>
+                      {col.map((n) => card(byName(n)))}
+                    </div>
+                  ))}
+                </div>
+              );
+            })()}
           </section>
 
           {/* Closing CTA */}
