@@ -348,7 +348,7 @@ Anything else gets no occasion scoring. Every typed occasion is still logged to 
 |---|---|
 | Relation | 25 if the gift's Relation includes the recipient. "Treat myself" matches any gift with any Relation tag. |
 | Age | 10 if the gift's Age includes the picked age (New baby also counts Baby). |
-| Budget | 10 inside the range; 5 in either fuzz zone (up to 10% over the ceiling, or topping out just under the floor); 10 for "Your choice" gift cards. |
+| Budget | Inside the range, by how much of the budget the gift uses (a range counts its top, capped at the budget): half or more 10, a quarter to half 7, less 4 (Dalia 10/3/26: bigger budgets should favor fuller gifts, and gifts that fall below the cutoff should drop out). 5 in either fuzz zone (up to 10% over the ceiling, or topping out just under the floor); 10 for "Your choice" gift cards and open-ended prices. |
 | Interests | Up to 40: round(coverage × 40). |
 | Vibe | Up to 10: round(matching vibes ÷ picked vibes × 10). One of two is 5. |
 | Occasion | Bonus × coverage, minus any penalty (below). |
