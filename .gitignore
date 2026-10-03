@@ -28,5 +28,3 @@ yarn.lock
 # local tooling
 /.claude/
 /.design-ref/
-apps-script/src/Code.js
-apps-script/src/edits.js

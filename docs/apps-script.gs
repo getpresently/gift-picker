@@ -5,8 +5,7 @@
  * When updating, edit the EXISTING deployment and pick "New version" so the
  * /exec URL (hardcoded in the site) stays the same.
  *
- *   GET  /exec?tab=Gifts  -> { data: [...] }  rows with row_id = the gift's permanent ID
- *                                              (column "ID"; "r<row>" until that column exists).
+ *   GET  /exec?tab=Gifts  -> { data: [...] }  rows with row_id = the gift's permanent ID (column "ID").
  *        Only tabs in PUBLIC_TABS are served; Brands holds contact details.
  *   POST /exec  JSON body routed on `type`:
  *     "feedback" -> append to Feedback
@@ -150,107 +149,20 @@ function assignMissingIds_(sheet) {
   }
 }
 
-/** Sheet row of the gift with this id, or -1. Falls back to row numbers until the ID column exists. */
+/** Header names of a sheet's first row. */
+function headers_(sheet) {
+  return sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0].map(String);
+}
+
+/** Sheet row of the gift with this id, or -1. */
 function findGiftRow_(sheet, rowId) {
   const id = String(rowId || "").trim();
-  if (!/^r\d+$/.test(id)) return -1;
-  const headers = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0].map(String);
-  const idCol = headers.indexOf(ID_HEADER);
+  const idCol = headers_(sheet).indexOf(ID_HEADER);
   const last = sheet.getLastRow();
-  if (idCol === -1) {
-    const n = Number(id.slice(1));
-    return n >= 2 && n <= last ? n : -1;
-  }
-  if (last < 2) return -1;
+  if (!/^r\d+$/.test(id) || idCol === -1 || last < 2) return -1;
   const ids = sheet.getRange(2, idCol + 1, last - 1, 1).getValues();
   for (let i = 0; i < ids.length; i++) if (String(ids[i][0]).trim() === id) return i + 2;
   return -1;
-}
-
-/* ------------------------------------------------------------------ *
- * Catalog edits. PENDING_EDITS (in edits.gs, pushed with clasp) lists
- * changes to make; they are applied when the catalog is read with
- * ?edits=1 (sent right after a push), never on the regular read. Each
- * edit has a unique id and applies once. "set" only changes a cell that
- * still holds the expected value, on the row whose Gift matches, so a
- * stale or wrong edit is skipped rather than written. The ID column is
- * never edited. Every result is recorded in the "Edit log" tab.
- * ------------------------------------------------------------------ */
-const MAX_EDITS_PER_RUN = 200;
-const EDIT_LOG_HEADERS = ["at", "edit_id", "op", "row_id", "column", "before", "after", "result"];
-
-/** Run from the editor to apply pending edits by hand. */
-function applyPendingEditsNow() {
-  applyPendingEdits_(SpreadsheetApp.getActiveSpreadsheet().getSheetByName("Gifts"));
-}
-
-function applyPendingEdits_(sheet) {
-  const edits = typeof PENDING_EDITS === "undefined" ? [] : PENDING_EDITS;
-  const props = PropertiesService.getScriptProperties();
-  const done = JSON.parse(props.getProperty("APPLIED_EDITS") || "[]");
-  const pending = edits.filter(function (e) { return e && e.id && done.indexOf(e.id) === -1; }).slice(0, MAX_EDITS_PER_RUN);
-  if (!pending.length) return;
-
-  const lock = LockService.getScriptLock();
-  lock.waitLock(20000);
-  try {
-    const log = ensureSheet_("Edit log", EDIT_LOG_HEADERS);
-    const headers = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0].map(String);
-    const giftCol = headers.indexOf("Gift") + 1;
-    const brandIdx = headers.indexOf("Brand");
-    const noteCol = headers.indexOf("Feedback") + 1;
-    const now = new Date().toISOString();
-    const pairKey = function (gift, brand) { return String(gift || "").trim() + "\u0000" + String(brand || "").trim(); };
-    const existing = {};
-    if (sheet.getLastRow() >= 2) {
-      sheet.getRange(2, 1, sheet.getLastRow() - 1, headers.length).getValues().forEach(function (r) {
-        existing[pairKey(r[giftCol - 1], r[brandIdx])] = true;
-      });
-    }
-    pending.forEach(function (e) {
-      let before = "", after = "", result;
-      try {
-        if (e.op === "append") {
-          const v = e.values || {};
-          if (!v.Gift) result = "skipped: no Gift";
-          else if (existing[pairKey(v.Gift, v.Brand)]) result = "skipped: already in the sheet";
-          else {
-            sheet.appendRow(headers.map(function (h) { return h === ID_HEADER ? "" : (v[h] === undefined ? "" : v[h]); }));
-            existing[pairKey(v.Gift, v.Brand)] = true;
-            after = v.Gift;
-            result = "appended";
-          }
-        } else {
-          const row = findGiftRow_(sheet, e.row_id);
-          if (row === -1) result = "skipped: no such id";
-          else if (String(sheet.getRange(row, giftCol).getValue()).trim() !== String(e.gift || "").trim()) result = "skipped: gift name differs";
-          else if (e.op === "set") {
-            const col = headers.indexOf(e.column) + 1;
-            if (!col || e.column === ID_HEADER) result = "skipped: bad column";
-            else {
-              const cell = sheet.getRange(row, col);
-              before = String(cell.getValue());
-              if (before !== String(e.expect === undefined ? "" : e.expect)) result = "skipped: cell changed";
-              else { cell.setValue(e.value === undefined ? "" : e.value); after = String(e.value || ""); result = "applied"; }
-            }
-          } else if (e.op === "note" && noteCol) {
-            const cell = sheet.getRange(row, noteCol);
-            before = String(cell.getValue() || "").trim();
-            after = before ? before + " | " + e.text : String(e.text || "");
-            cell.setValue(after);
-            result = "applied";
-          } else result = "skipped: bad op";
-        }
-      } catch (err) {
-        result = "error: " + String(err).slice(0, 120);
-      }
-      done.push(e.id);
-      log.appendRow([now, e.id, e.op || "", e.row_id || "", e.column || "", before.slice(0, 500), after.slice(0, 500), result]);
-    });
-    props.setProperty("APPLIED_EDITS", JSON.stringify(done.slice(-400)));
-  } finally {
-    lock.releaseLock();
-  }
 }
 
 function doGet(e) {
@@ -260,9 +172,6 @@ function doGet(e) {
     const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(tab);
     if (!sheet) return jsonOut_({ error: "Sheet not found: " + tab });
 
-    // Edits are applied only on request (?edits=1, sent right after a push),
-    // never on the regular 10-minute catalog read.
-    if (tab === "Gifts" && e.parameter.edits === "1") applyPendingEdits_(sheet);
     let values = sheet.getDataRange().getValues();
     // One read per request; the lock and writes happen only when a new row
     // still needs an ID.
@@ -352,7 +261,7 @@ function rejectFromOwnerFeedback_(p) {
   if (!sheet) return;
   const row = findGiftRow_(sheet, p.giftId);
   if (row === -1) return;
-  const headers = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0].map(String);
+  const headers = headers_(sheet);
   const giftCol = headers.indexOf("Gift") + 1;
   const statusCol = headers.indexOf("Status") + 1;
   const reviewCol = headers.indexOf("Review status") + 1;
@@ -512,7 +421,7 @@ function handleReview_(p) {
     return { ok: false, error: "bad_value" };
   }
 
-  const headers = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0].map(String);
+  const headers = headers_(sheet);
   const giftCol = headers.indexOf("Gift") + 1;
   const statusCol = headers.indexOf("Status") + 1;
   const reviewCol = headers.indexOf("Review status") + 1;

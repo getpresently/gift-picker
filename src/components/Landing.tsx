@@ -11,7 +11,7 @@ import { TestimonialCarousel } from "./clay/TestimonialCarousel";
 import { FooterBrand } from "./clay/FooterBrand";
 
 const HOW_STEPS: { n: string; title: string; body: string; tint: Tint }[] = [
-  { n: "01", title: "Tell us about them", body: "Closeness, vibes, budget. Six questions, no account.", tint: "rose" },
+  { n: "01", title: "Tell us about them", body: "Closeness, vibes, budget. Five questions, no account.", tint: "rose" },
   { n: "02", title: "We do the thinking", body: "Every gift is hand-curated by our team, then matched to your answers.", tint: "butter" },
   { n: "03", title: "Show up looking great", body: "Send the link or just buy it yourself.", tint: "sage" },
 ];
@@ -126,7 +126,7 @@ export function Landing() {
                   textWrap: "pretty" as never,
                 }}
               >
-                Six questions. A shortlist of gifts they'll actually love. Built for the indecisive and the deeply
+                Five questions. A shortlist of gifts they'll actually love. Built for the indecisive and the deeply
                 caring.
               </p>
 

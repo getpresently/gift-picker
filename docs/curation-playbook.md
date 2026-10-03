@@ -220,15 +220,15 @@ Examples: "Added 10/3/26 for user request #25"; "Fixed 10/3/26: renamed from "Gi
 
 Every gift has a permanent ID in column A (Dalia approved 10/3/26), such as `r495`. Existing gifts kept the number they already had (their old row number), so no URL changed. Gift pages (`/gift/r495`), shared links, and /review all use the ID, so rows can now be sorted or moved, and non-live gifts could move to another tab. New rows get the next free ID automatically within 10 minutes (the catalog read fills blanks). Never type or copy an ID into a new row; if a copied ID appears twice, the later row is renumbered.
 
-### Writing to the sheet: the edit queue (preferred, 10/3/26)
-
-Edits no longer need a browser tab. Add entries to `public/sheet-edits.json` in the repo and deploy (`npx wrangler deploy`); then trigger it by reading the catalog feed with `?tab=Gifts&edits=1`. The Apps Script then fetches giftpicker.io/sheet-edits.json and applies each entry once (it never checks on its own):
-- `{"id": "2026-10-03-01", "op": "set", "row_id": "r355", "gift": "<exact Gift name>", "column": "AmazonAltLink", "expect": "<exact current value>", "value": "<new value>"}` changes one cell only if it still holds `expect` and the row's Gift matches.
-- `{"id": "...", "op": "note", "row_id": "r355", "gift": "<exact Gift name>", "text": "Retired 10/3/26: ..."}` appends ` | text` to Feedback.
-- `{"id": "...", "op": "append", "values": {"Gift": "...", "Brand": "...", ...}}` adds a gift row (keys are column headers; leave ID out). Skipped if the same Gift and Brand already exist.
-Ids must be unique forever. Results land in the "Edit log" tab. The ID column can't be edited, and at most 50 edits apply per run.
-
 ### Writing to the sheet (for agents with browser access)
+
+Sheet edits go straight into Dalia's sheet tab in Chrome; there is no edit queue (one was tried on 10/3 and removed the same day as more machinery than an every-few-weeks task needs). Every slip on 10/3 came from bending these rules:
+
+- Use one sheet tab only, and never let a background agent use it. A second sheet tab replayed queued keystrokes later: "Gifts!N722" landed in A710, and a stray click opened Google Admin.
+- Before any keystroke, check that the sheet tab is visible (`document.visibilityState === "visible"`); it does not need window focus. If it is hidden, wait. Keys sent to a hidden tab queue up and land wherever the cursor is later.
+- Click the Name Box with a real click (never focus it from JavaScript), then confirm the Name Box shows the target cell and the formula bar shows the value you expect to replace before typing or pasting. A JS-focused Name Box sent a paste into U714.
+- Never read the whole sheet from inside the tab (gviz, export URLs); it froze the tab. Verify through the public feed (`/exec?tab=Gifts`) instead.
+- Bulk changes go in as one guarded paste per column or row block, not cell-by-cell typing.
 
 - Type a tab-qualified range in the Name Box (`Gifts!F2`) and confirm the URL ends in `#gid=0`. On 9/21 a paste meant for Gifts overwrote a Requests column.
 - Load long pastes from a file with `LC_CTYPE=UTF-8 pbcopy < file`. Plain `pbcopy` corrupted "®" into "¬Æ" across 68 rows.
@@ -256,7 +256,7 @@ Never add a tag to raise a score. Agents briefed on the scoring formula on 10/3 
 - The Interests cell lists the primary first, then secondary tags, then Best Sellers last.
 - Use only the 22 quiz labels plus Best Sellers. Labels the quiz does not offer (24 gifts had ones like Fragrance, Subscriptions & Memberships, Kids & Parenting) never matched anything and were removed on 10/3.
 
-### Primary interest (column F)
+### Primary interest (column G)
 
 The one label that says what the gift is: the interest a shopper would pick if this gift is exactly what they hoped to find. Never Best Sellers, which is a popularity flag. When torn, pick the label that describes the object itself. A primary match earns full credit in the ranking; a secondary match earns half (section 6).
 

@@ -1,10 +1,10 @@
 # GiftPicker
 
-> GiftPicker (giftpicker.io) is a free 30-second gift-recommendation quiz by Presently. Users answer six questions about the recipient (relationship, age, occasion, interests, vibe, budget) and receive ranked, personalized gift picks from a hand-curated catalog of more than 500 gifts from 300+ brands, with direct buy links to the brand's site or Amazon. No account required.
+> GiftPicker (giftpicker.io) is a free 30-second gift-recommendation quiz by Presently. Users answer five questions about the recipient (relationship and age, occasion, interests, vibe, budget) and receive ranked, personalized gift picks from a hand-curated catalog of more than 500 gifts from 300+ brands, with direct buy links to the brand's site or Amazon. No account required.
 
 ## What it does
 
-- Six-question quiz: who the gift is for (partner, parent, grandparent, friend, sibling, coworker, mentor, or treat yourself), their age (6 tiers: baby, little one, teenager, young adult, adult, senior), the occasion (10 options, see below), up to 3 interests, up to 2 vibes, and a budget slider.
+- Five-question quiz: who the gift is for (partner, parent, grandparent, friend, sibling, coworker, mentor, or treat yourself) and their age (6 tiers: baby, little one, teenager, young adult, adult, senior), the occasion (10 options, see below), up to 3 interests, up to 2 vibes, and a budget slider.
 - Occasions covered: Birthday, Anniversary, Holiday, Wedding, Just Because, New Baby, Housewarming, Appreciation, Thank You, or Other, which reveals a free-text field for a custom occasion.
 - Interest categories: Apparel and Accessories, Cooking, Creativity, Experiences, Fitness, Food and Drinks, Gaming, Health and Wellness, Home and Decor, Learning, Music, Nature and Outdoors, Organization, Personalization, Pets, Rest and Relaxation, Seasonal Gifts, Self-Care and Beauty, Sustainability, Tech and Electronics, Toys and Games, Travel.
 - Vibes: Fun, Practical, Sentimental, Luxurious.
@@ -19,7 +19,7 @@ Every gift has a permanent, indexable page at https://giftpicker.io/gift/{id} (m
 ## Key pages
 
 - [Home](https://giftpicker.io/): product overview and quiz entry point.
-- [Quiz](https://giftpicker.io/quiz): the six-question gift finder.
+- [Quiz](https://giftpicker.io/quiz): the five-question gift finder.
 - [For brands](https://giftpicker.io/brands): how brands submit a product for free editorial review or request a sponsored placement. Sponsored gifts pass the same review, only appear in results they match, and are always labeled.
 - [Sitemap](https://giftpicker.io/sitemap.xml): every indexable page, meaning the home page and every live gift page.
 
