@@ -123,7 +123,7 @@ type NotifyPayload = {
  * Falls back gracefully if localStorage is unavailable (private mode, SSR).
  */
 const CLIENT_ID_KEY = "gp_client_id";
-function getClientId(): string {
+export function getClientId(): string {
   if (typeof window === "undefined") return "ssr";
   try {
     let id = window.localStorage.getItem(CLIENT_ID_KEY);

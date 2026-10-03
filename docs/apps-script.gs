@@ -17,6 +17,11 @@
  * The review password is NOT in this file. Set it once under
  * Project Settings > Script Properties as REVIEW_SECRET.
  *
+ * Owner devices: every browser that unlocks the review tool registers its
+ * anonymous clientId in the Script Property OWNER_CLIENT_IDS. When one of
+ * those browsers marks a gift "Don't like" on the live site, the gift is
+ * rejected (Status Rejected, Review status TRUE) with a note.
+ *
  * Free-text "Other" occasions land in the Requests sheet with the occasion
  * column prefixed "NEW: ". Filter on that to see what new categories users
  * are asking for.
@@ -97,7 +102,60 @@ function handleFeedback_(p) {
     safeJson_(p.answers),
     p.clientId || "",
   ]);
+  if (p.reason === "dont" && isOwnerDevice_(p.clientId)) rejectFromOwnerFeedback_(p);
   return { ok: true };
+}
+
+/** Owner devices, stored as a comma list in Script Properties. */
+function ownerDevices_() {
+  const raw = PropertiesService.getScriptProperties().getProperty("OWNER_CLIENT_IDS") || "";
+  return raw.split(",").map(function (s) { return s.trim(); }).filter(String);
+}
+
+function isOwnerDevice_(clientId) {
+  const id = String(clientId || "").trim();
+  return !!id && ownerDevices_().indexOf(id) !== -1;
+}
+
+/** Called after a correct review password, so only the owner's browsers land here. */
+function registerOwnerDevice_(clientId) {
+  const id = String(clientId || "").trim().slice(0, 80);
+  if (!id || id === "ssr" || id === "no-storage" || isOwnerDevice_(id)) return;
+  const ids = ownerDevices_().concat([id]).slice(-20);
+  PropertiesService.getScriptProperties().setProperty("OWNER_CLIENT_IDS", ids.join(","));
+}
+
+/**
+ * The owner marked a gift "Don't like" on the live site: reject it the same
+ * way the review tool does, after checking the row still holds that gift.
+ */
+function rejectFromOwnerFeedback_(p) {
+  const m = /^r(\d+)$/.exec(String(p.giftId || ""));
+  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("Gifts");
+  if (!m || !sheet) return;
+  const row = Number(m[1]);
+  if (row < 2 || row > sheet.getLastRow()) return;
+  const headers = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0].map(String);
+  const giftCol = headers.indexOf("Gift") + 1;
+  const statusCol = headers.indexOf("Status") + 1;
+  const reviewCol = headers.indexOf("Review status") + 1;
+  const noteCol = headers.indexOf("Feedback") + 1;
+  if (!giftCol || !statusCol || !reviewCol) return;
+  const lock = LockService.getScriptLock();
+  lock.waitLock(10000);
+  try {
+    if (String(sheet.getRange(row, giftCol).getValue()).trim() !== String(p.giftName || "").trim()) return;
+    sheet.getRange(row, statusCol).setValue("Rejected");
+    sheet.getRange(row, reviewCol).setValue(true);
+    if (noteCol) {
+      const cell = sheet.getRange(row, noteCol);
+      const old = String(cell.getValue() || "").trim();
+      const note = "Rejected " + Utilities.formatDate(new Date(), "America/New_York", "M/d/yy") + ": owner marked Don't like on the site.";
+      cell.setValue(old ? old + " | " + note : note);
+    }
+  } finally {
+    lock.releaseLock();
+  }
 }
 
 function handleRequest_(p) {
@@ -217,6 +275,7 @@ function handleReview_(p) {
     Utilities.sleep(500);  // slows down password guessing
     return { ok: false, error: "unauthorized" };
   }
+  registerOwnerDevice_(p.clientId);
   if (p.action === "ping") return { ok: true };
   if (p.action !== "set") return { ok: false, error: "bad_action" };
 

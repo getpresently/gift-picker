@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { API_ENDPOINT, adaptRow } from "./giftsApi";
 import type { Gift } from "./gifts";
+import { getClientId } from "./feedback";
 
 /**
  * Data + write layer for the internal /review tool. Reuses API_ENDPOINT
@@ -172,7 +173,9 @@ async function postReview<T extends object = Record<string, never>>(
 }
 
 export function pingReview(secret: string): Promise<ReviewResult> {
-  return postReview({ type: "review", secret, action: "ping" });
+  // Sending this browser's anonymous id lets the script recognize the owner's
+  // devices, so her "Don't like" clicks on the live site reject the gift.
+  return postReview({ type: "review", secret, action: "ping", clientId: getClientId() });
 }
 
 export type SetRowInput = {
