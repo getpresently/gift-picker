@@ -26,7 +26,7 @@ const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const CATALOG_URL = "https://giftpicker.io/api/gifts";
 const CACHE_FILE = path.join(os.tmpdir(), "giftpicker-gifts.json");
 const CACHE_MAX_AGE_MS = 12 * 60 * 60 * 1000;
-const TOP_N = 8;
+const TOP_N = Number(process.env.TOP_N || 8);
 
 const args = process.argv.slice(2);
 const argValue = (flag, fallback) => {
@@ -88,6 +88,7 @@ async function loadModules() {
         'export { rankGifts as rankAfter, INTEREST_LABELS } from "./src/data/gifts";',
         'export { rankGifts as rankBefore } from "baseline:gifts";',
         'export { productType } from "./src/data/similarity";',
+        'export { giftKind } from "./src/data/gifts";',
       ].join("\n"),
       resolveDir: ROOT,
       loader: "ts",
@@ -195,14 +196,19 @@ QUERIES.forEach((q, i) => {
   if (args.includes("--runs")) {
     // Longest stretch of back-to-back gifts of the same kind in the first 24
     // (same product type, or same primary interest when no type is known).
-    const kind = (g) => mod.productType(g.name, g.description || "") || `primary:${g.primaryInterest || "?"}`;
-    const top = after.slice(0, 24).map(kind);
-    let best = { len: 0, kind: "", at: 0 };
-    for (let i = 0, j = 0; i < top.length; i = j) {
-      for (j = i; j < top.length && top[j] === top[i]; j++);
-      if (j - i > best.len) best = { len: j - i, kind: top[i], at: i + 1 };
-    }
-    out.push(`  LONGEST RUN in top 24: ${best.len} x ${best.kind} starting at #${best.at}`);
+    // Same product kind (giftKind), or same primary interest when no kind is known.
+    const kind = (g) => mod.giftKind(g) || `primary:${g.primaryInterest || "?"}`;
+    const longest = (list) => {
+      const top = list.slice(0, 24).map(kind);
+      let best = { len: 0, kind: "", at: 0 };
+      for (let i = 0, j = 0; i < top.length; i = j) {
+        for (j = i; j < top.length && top[j] === top[i]; j++);
+        if (j - i > best.len) best = { len: j - i, kind: top[i], at: i + 1 };
+      }
+      return `${best.len} x ${best.kind} at #${best.at}`;
+    };
+    const brandRepeats = (list) => list.slice(0, 24).filter((g, i, a) => i > 0 && g.brand && a[i - 1].brand === g.brand).length;
+    out.push(`  RUNS in top 24: before ${longest(before)}, brand repeats ${brandRepeats(before)} | after ${longest(after)}, brand repeats ${brandRepeats(after)}`);
   }
   if (args.includes("--drops")) {
     // Gifts shown before but not after, with their old score.

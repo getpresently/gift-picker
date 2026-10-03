@@ -1,4 +1,5 @@
 import type { Answers } from "./questions";
+import { productType } from "./similarity";
 
 /**
  * Clean, code-side Gift model.
@@ -551,6 +552,67 @@ const MATCH_LOOSE = 55;
  * full set of qualified matches is available to the user. Returned
  * gifts carry their 0–100 `matchScore` for display in the UI.
  */
+/**
+ * Kinds that tend to cluster in results, checked against the gift name.
+ * Used only to space out near-equal results (see spreadOut); the /review
+ * close-match types in similarity.ts are separate and unchanged.
+ */
+const EXTRA_KINDS: [string, RegExp][] = [
+  ["cookbook", /\bcookbooks?\b|\brecipes?\b.*\bbook\b/],
+  ["gift-card", /\bgift card\b/],
+  ["vinyl", /\b(vinyl|lp\b|record player|turntable)\b/],
+  ["playing-cards", /\bplaying cards\b/],
+  ["game", /\b(board game|card game|game of|\bgame\b)\b/],
+  ["journal", /\b(journal|planner|notebook|diary)\b/],
+  ["tea", /\btea\b/],
+  ["book", /\b(book|paperback|hardcover|novel)\b/],
+  ["subscription", /\b(subscription|of the month|monthly box)\b/],
+];
+
+/** What kind of product a gift is, for spacing out results; null when unknown. */
+export function giftKind(gift: Gift): string | null {
+  const name = gift.name.toLowerCase();
+  for (const [kind, re] of EXTRA_KINDS) if (re.test(name)) return kind;
+  return productType(gift.name, gift.description ?? "");
+}
+
+/** How close (in score points) a later gift must be to move up for variety. */
+const SPREAD_TOLERANCE = 3;
+
+/**
+ * Reorders an already-ranked list so near-equal results don't bunch up:
+ * never three of the same kind in a row, and never the same brand twice in
+ * a row. A gift only moves up past others when it scores within
+ * SPREAD_TOLERANCE of the one it replaces, so a clearly better match is
+ * never pushed down. The first result (the top pick) never changes.
+ */
+function spreadOut<T>(list: T[], scoreOf: (x: T) => number, giftOf: (x: T) => Gift): T[] {
+  const pool = list.slice();
+  const out: T[] = [];
+  // Known product kind first; otherwise the gift's primary interest, so
+  // three of one interest in a row also get spaced out.
+  const kinds = new Map<T, string | null>(
+    pool.map((x) => [x, giftKind(giftOf(x)) ?? (giftOf(x).primaryInterest ? `primary:${giftOf(x).primaryInterest}` : null)]),
+  );
+  const clashes = (x: T) => {
+    const k = kinds.get(x);
+    const lastTwo = out.slice(-2);
+    const kindRun = !!k && lastTwo.length === 2 && lastTwo.every((y) => kinds.get(y) === k);
+    const prev = out[out.length - 1];
+    const sameBrand = !!prev && !!giftOf(x).brand && giftOf(prev).brand === giftOf(x).brand;
+    return kindRun || sameBrand;
+  };
+  while (pool.length) {
+    let pick = 0;
+    if (out.length && clashes(pool[0])) {
+      const j = pool.findIndex((x, i) => i > 0 && scoreOf(pool[0]) - scoreOf(x) <= SPREAD_TOLERANCE && !clashes(x));
+      if (j > 0) pick = j;
+    }
+    out.push(pool.splice(pick, 1)[0]);
+  }
+  return out;
+}
+
 export function rankGifts(gifts: Gift[], answers: Answers): RankedGift[] {
   type Scored = { gift: Gift; score: number; interestHits: number; bestSeller: boolean; budgetFit: number };
   const scored: Scored[] = gifts
@@ -571,9 +633,7 @@ export function rankGifts(gifts: Gift[], answers: Answers): RankedGift[] {
   };
 
   const finalize = (list: Scored[]): RankedGift[] =>
-    list
-      .sort(compare)
-      .map((s) => ({ ...s.gift, matchScore: s.score }));
+    spreadOut(list.sort(compare), (s) => s.score, (s) => s.gift).map((s) => ({ ...s.gift, matchScore: s.score }));
 
   const above60 = scored.filter((s) => s.score >= MATCH_STRICT);
   if (above60.length > 5) return finalize(above60);
