@@ -192,6 +192,7 @@ export function BrandsPage() {
                         letterSpacing: "0.04em",
                         padding: "4px 10px",
                         borderRadius: 999,
+                        whiteSpace: "nowrap",
                         background: p.v === "sponsored" ? "rgba(196,71,126,0.12)" : "rgba(92,122,78,0.14)",
                         color: p.v === "sponsored" ? "#9A2F62" : "#3F5A33",
                       }}
