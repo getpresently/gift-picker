@@ -33,6 +33,7 @@ function reconcile(a: Answers): Answers {
     delete next.occasionOther;
   }
   if (next.occasion !== "other") delete next.occasionOther;
+  if (!active.includes("vibe")) delete next.vibe;
   return next;
 }
 
@@ -277,7 +278,7 @@ export function RefineModal({ open, answers, isMobile, onClose, onApply }: Props
             </Section>
           )}
 
-          {vibeQ.type === "multi" && (
+          {vibeQ.type === "multi" && activeIds.includes("vibe") && (
             <Section title="Vibe" hint={`up to ${vibeQ.max}`}>
               <div style={grid(4)}>
                 {vibeQ.options.map((o) => {

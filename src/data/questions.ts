@@ -119,6 +119,9 @@ export const QUESTIONS: Question[] = [
       { v: "appreciate", l: "Appreciation", e: "🌷" },
       { v: "thank",      l: "Thank you",    e: "🙏" },
       { v: "newjob",     l: "New job",      e: "💼" },
+      // Sympathy shows only gifts hand-tagged for it and skips the vibe
+      // question (see getActiveQuestions and scoreGift).
+      { v: "sympathy",   l: "Sympathy",     e: "🕊️" },
       // Picking Other reveals a free-text input under the tiles (no
       // auto-advance). The typed value is stored as `occasionOther`,
       // bypasses occasion-based scoring, and gets logged to the
@@ -204,12 +207,13 @@ const HIDE_ADULT_FOR = new Set(["child"]);
 const HIDE_SENIOR_FOR = new Set(["child"]);
 
 // Per-age occasion-option hides. Babies, children, and teens don't have
-// weddings, housewarmings, anniversaries, or new-baby gifts of their own.
+// weddings, housewarmings, anniversaries, or new-baby gifts of their own,
+// and the sympathy gifts are chosen for grown-ups.
 // Teens keep "New job" (first jobs happen); babies and kids don't.
 const HIDE_OCCASIONS_FOR_AGE: Record<string, Set<string>> = {
-  baby: new Set(["housewarm", "wed", "baby", "anni", "newjob"]),
-  kid:  new Set(["housewarm", "wed", "baby", "anni", "newjob"]),
-  teen: new Set(["housewarm", "wed", "baby", "anni"]),
+  baby: new Set(["housewarm", "wed", "baby", "anni", "newjob", "sympathy"]),
+  kid:  new Set(["housewarm", "wed", "baby", "anni", "newjob", "sympathy"]),
+  teen: new Set(["housewarm", "wed", "baby", "anni", "sympathy"]),
 };
 
 // Typed "Other" occasions that mean an occasion we already offer. The
@@ -237,6 +241,8 @@ export function scoringAnswers(answers: Answers): Answers {
 export function getActiveQuestions(answers: Answers): Question[] {
   return QUESTIONS.filter((q) => {
     if (q.id === "age" && answers.recipient && SKIP_AGE_RECIPIENTS.has(answers.recipient)) return false;
+    // A sympathy gift isn't about vibe (Dalia, 10/4), so that question is skipped.
+    if (q.id === "vibe" && answers.occasion === "sympathy") return false;
     return true;
   });
 }

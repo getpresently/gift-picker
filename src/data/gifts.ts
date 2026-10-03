@@ -156,6 +156,7 @@ export const OCCASION_LABELS: Record<string, string> = {
   appreciate: "Appreciation",
   thank: "Thank You",
   newjob: "New Job",
+  sympathy: "Sympathy",
 };
 
 /* ------------------------------------------------------------------ *
@@ -300,6 +301,7 @@ function scoreInterests(coverage: number): number {
 }
 
 function scoreVibe(gift: Gift, answers: Answers): number {
+  if (answers.occasion === "sympathy") return 0; // the vibe question is skipped for sympathy
   const userPicks = answers.vibe ?? [];
   if (!userPicks.length) return 0;
   let hits = 0;
@@ -460,6 +462,13 @@ export function scoreGift(gift: Gift, answers: Answers): number {
   ) {
     return -1;
   }
+
+  // Hard filter: Sympathy shows only gifts hand-tagged for it, and a gift
+  // tagged for Sympathy alone (a grief book, a memorial chime) never shows
+  // for any other occasion.
+  const forSympathy = tolerantIncludes(gift.occasions, "Sympathy");
+  if (answers.occasion === "sympathy" && !forSympathy) return -1;
+  if (answers.occasion !== "sympathy" && forSympathy && gift.occasions.length === 1) return -1;
 
   // Hard filter: a gift tagged only Self is for treating yourself, never
   // for someone else.
@@ -659,6 +668,10 @@ export function rankGifts(gifts: Gift[], answers: Answers): RankedGift[] {
   const finalize = (list: Scored[]): RankedGift[] =>
     spreadOut(list.sort(compare), gifts).map((s) => ({ ...s.gift, matchScore: s.score }));
 
+  // Sympathy draws on a small hand-tagged set and has no vibe points, so
+  // every tagged gift that passes the hard filters is shown, best first.
+  if (answers.occasion === "sympathy") return finalize(scored);
+
   const above60 = scored.filter((s) => s.score >= MATCH_STRICT);
   if (above60.length > 5) return finalize(above60);
   const above55 = scored.filter((s) => s.score >= MATCH_LOOSE);
@@ -687,7 +700,7 @@ export function buildMatchReasons(gift: Gift, answers: Answers): string[] {
     bullets.push(`From ${gift.brand}`);
   }
 
-  const matchedVibes = (answers.vibe ?? [])
+  const matchedVibes = (answers.occasion === "sympathy" ? [] : answers.vibe ?? [])
     .flatMap((v) => VIBE_LABELS[v] ?? [])
     .filter((label) => gift.types.some((t) => lc(t).includes(lc(label)) || lc(label).includes(lc(t))));
   if (matchedVibes.length) {
