@@ -282,25 +282,15 @@ function scoreBudget(gift: Gift, answers: Answers): number {
   ) {
     return 5;
   }
-  return 10;
-}
-
-/**
- * Ranking-only adjustment for how much of the budget an in-range gift uses
- * (a range counts its top, capped at the budget): half or more 0, a quarter
- * to half -3, less -6. It reorders results but never decides which gifts
- * show, so a big budget gets the same list with the fuller gifts first.
- * Too small to outrank a gift that matches more of the shopper's interests.
- */
-function budgetUseAdjustment(gift: Gift, answers: Answers): number {
-  if (typeof answers.budget !== "number" || answers.budget <= 0) return 0;
-  if (gift.isYourChoice || gift.priceOpen || gift.price <= 0 || gift.price > answers.budget) return 0;
-  const top = Math.max(gift.price, gift.priceMax ?? 0);
-  if (typeof answers.budgetMin === "number" && top < answers.budgetMin) return 0; // floor fuzz already scored 5
-  const share = Math.min(top, answers.budget) / answers.budget;
-  if (share >= 0.5) return 0;
-  if (share >= 0.25) return -3;
-  return -6;
+  // Inside the range, points follow how much of the budget the gift uses
+  // (a range counts its top, capped at the budget): half or more → 10,
+  // a quarter to half → 7, less → 4. Enough to reorder close calls, never
+  // enough to outrank a gift that matches more of the shopper's interests.
+  if (gift.priceOpen) return 10;
+  const share = Math.min(Math.max(gift.price, gift.priceMax ?? 0), answers.budget) / answers.budget;
+  if (share >= 0.5) return 10;
+  if (share >= 0.25) return 7;
+  return 4;
 }
 
 /** Interest coverage (hits / picks) pro-rated to 40 pts max, the dominant signal. */
@@ -562,25 +552,19 @@ const MATCH_LOOSE = 55;
  * gifts carry their 0–100 `matchScore` for display in the UI.
  */
 export function rankGifts(gifts: Gift[], answers: Answers): RankedGift[] {
-  // `score` decides which gifts show (the thresholds below); `rank` orders
-  // them, adding the budget-use adjustment.
-  type Scored = { gift: Gift; score: number; rank: number; interestHits: number; bestSeller: boolean; budgetFit: number };
+  type Scored = { gift: Gift; score: number; interestHits: number; bestSeller: boolean; budgetFit: number };
   const scored: Scored[] = gifts
-    .map((g) => {
-      const score = scoreGift(g, answers);
-      return {
-        gift: g,
-        score,
-        rank: Math.max(0, score + budgetUseAdjustment(g, answers)),
-        interestHits: interestMatchCount(g, answers),
-        bestSeller: isBestSeller(g),
-        budgetFit: budgetFit(g, answers),
-      };
-    })
+    .map((g) => ({
+      gift: g,
+      score: scoreGift(g, answers),
+      interestHits: interestMatchCount(g, answers),
+      bestSeller: isBestSeller(g),
+      budgetFit: budgetFit(g, answers),
+    }))
     .filter((s) => s.score >= 0);
 
   const compare = (a: Scored, b: Scored) => {
-    if (b.rank !== a.rank) return b.rank - a.rank;
+    if (b.score !== a.score) return b.score - a.score;
     if (b.interestHits !== a.interestHits) return b.interestHits - a.interestHits;
     if (a.bestSeller !== b.bestSeller) return a.bestSeller ? -1 : 1;
     return b.budgetFit - a.budgetFit;
@@ -589,7 +573,7 @@ export function rankGifts(gifts: Gift[], answers: Answers): RankedGift[] {
   const finalize = (list: Scored[]): RankedGift[] =>
     list
       .sort(compare)
-      .map((s) => ({ ...s.gift, matchScore: s.rank }));
+      .map((s) => ({ ...s.gift, matchScore: s.score }));
 
   const above60 = scored.filter((s) => s.score >= MATCH_STRICT);
   if (above60.length > 5) return finalize(above60);

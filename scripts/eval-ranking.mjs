@@ -7,6 +7,7 @@
  *   node scripts/eval-ranking.mjs                 # baseline = HEAD
  *   node scripts/eval-ranking.mjs --base main     # any git revision
  *   node scripts/eval-ranking.mjs --refresh       # refetch the catalog
+ *   node scripts/eval-ranking.mjs --drops         # also list gifts that stop showing
  *
  * The catalog comes from https://giftpicker.io/api/gifts and is cached in the
  * OS temp dir for 12 hours. Rows go through the site's own adaptRow parser,
@@ -189,6 +190,16 @@ QUERIES.forEach((q, i) => {
   out.push(...topLines(before, q, labels));
   out.push(`  AFTER:  ${sa.text}`);
   out.push(...topLines(after, q, labels));
+  if (args.includes("--drops")) {
+    // Gifts shown before but not after, with their old score.
+    const kept = new Set(after.map((g) => g.id));
+    const dropped = before.filter((g) => !kept.has(g.id));
+    out.push(`  DROPPED (${dropped.length}):`);
+    for (const g of dropped) {
+      const hits = interestHits(g, q.interests, labels);
+      out.push(`    ${String(g.matchScore).padStart(3)} | ${(g.priceLabel || "$0").padEnd(13)} | ${`${hits.length}/${q.interests.length}`.padEnd(4)} | ${g.name}`);
+    }
+  }
 });
 
 out.push("");

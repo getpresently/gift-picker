@@ -69,6 +69,13 @@ Commodity items fail. Her example: a Discraft ultimate disc, "if someone wants a
 - **More than one gift per slot is fine when they are clearly distinct** in design or use case. Two near-identical items (same type, similar look, same use) are a duplicate even across brands.
 - **Availability counts.** A gift that is hard for US shoppers to get (ships from abroad, long waits, import duties, Amazon listings unavailable) loses to a readily available equivalent. Dalia kept the Neso beach shade over Otentik, the original, because Neso ships in the US and is on Amazon.
 
+### Ratings and seller reputation (binding, Dalia 10/3/26)
+
+Nothing poorly rated, and no seller with a bad reputation:
+- **Product rating:** at least 4.3 stars from at least 50 ratings on the brand site, Amazon, or a major retailer. If the product has fewer ratings, it needs at least 4.5 stars or must come from an established, well-reviewed brand. Experiences and gift cards skip this check, but the seller check still applies.
+- **Seller reputation:** no BBB "F" rating, and no pattern of complaints about orders never arriving, counterfeits, or refused refunds. Where Trustpilot has meaningful volume, the seller needs 3.5 or higher. Page 1 Books was retired for exactly this.
+- **Write it down:** record what you found in the Feedback note, for example `Rating: 4.7 from 2,300 (Amazon); seller: Trustpilot 4.4, BBB A+`. If you can't find ratings at all, say so, and the gift must have another strong reason to be trusted (a respected maker, or a major retailer as the seller).
+
 ### Prefer the original over a copycat (Dalia 10/3/26)
 
 Before proposing a product, search whether it copies an original brand that created the category or the design (her example: she believes Otentik is the original of the sandbag-anchored stretch beach shade that Neso sells). Prefer the original. A copycat is acceptable only if it is genuinely better (quality, reviews, or value), is separately very popular in its own right, or is meaningfully easier for US shoppers to get (Neso over Otentik). When you propose a copycat, say which applies in the Feedback note (format in section 5).
