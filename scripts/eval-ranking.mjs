@@ -8,6 +8,7 @@
  *   node scripts/eval-ranking.mjs --base main     # any git revision
  *   node scripts/eval-ranking.mjs --refresh       # refetch the catalog
  *   node scripts/eval-ranking.mjs --drops         # also list gifts that stop showing
+ *   node scripts/eval-ranking.mjs --runs          # longest same-kind run in the top 24
  *
  * The catalog comes from https://giftpicker.io/api/gifts and is cached in the
  * OS temp dir for 12 hours. Rows go through the site's own adaptRow parser,
@@ -86,6 +87,7 @@ async function loadModules() {
         'export { adaptRow } from "./src/data/giftsApi";',
         'export { rankGifts as rankAfter, INTEREST_LABELS } from "./src/data/gifts";',
         'export { rankGifts as rankBefore } from "baseline:gifts";',
+        'export { productType } from "./src/data/similarity";',
       ].join("\n"),
       resolveDir: ROOT,
       loader: "ts",
@@ -190,6 +192,18 @@ QUERIES.forEach((q, i) => {
   out.push(...topLines(before, q, labels));
   out.push(`  AFTER:  ${sa.text}`);
   out.push(...topLines(after, q, labels));
+  if (args.includes("--runs")) {
+    // Longest stretch of back-to-back gifts of the same kind in the first 24
+    // (same product type, or same primary interest when no type is known).
+    const kind = (g) => mod.productType(g.name, g.description || "") || `primary:${g.primaryInterest || "?"}`;
+    const top = after.slice(0, 24).map(kind);
+    let best = { len: 0, kind: "", at: 0 };
+    for (let i = 0, j = 0; i < top.length; i = j) {
+      for (j = i; j < top.length && top[j] === top[i]; j++);
+      if (j - i > best.len) best = { len: j - i, kind: top[i], at: i + 1 };
+    }
+    out.push(`  LONGEST RUN in top 24: ${best.len} x ${best.kind} starting at #${best.at}`);
+  }
   if (args.includes("--drops")) {
     // Gifts shown before but not after, with their old score.
     const kept = new Set(after.map((g) => g.id));
