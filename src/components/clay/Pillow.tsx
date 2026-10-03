@@ -68,7 +68,7 @@ export function Pillow({
   const shadow = pressed
     ? `inset 0 1px 0 rgba(255,255,255,0.4), 0 2px 6px -2px rgba(${t.shadow}, 0.4), inset 0 -1px 0 rgba(0,0,0,0.15)`
     : hovered
-      ? `inset 0 1.4px 0 rgba(255,255,255,0.5), 0 8px 14px -4px rgba(${t.shadow}, 0.45), 0 2px 0 rgba(0,0,0,0.12), inset 0 -2px 0 rgba(0,0,0,0.15), 0 0 0 4px rgba(${t.shadow}, 0.18), 0 0 30px 0 rgba(${t.shadow}, 0.35)`
+      ? `inset 0 1.4px 0 rgba(255,255,255,0.5), 0 12px 20px -6px rgba(${t.shadow}, 0.5), 0 2px 0 rgba(0,0,0,0.12), inset 0 -2px 0 rgba(0,0,0,0.15)`
       : `inset 0 1.4px 0 rgba(255,255,255,0.5), 0 8px 14px -4px rgba(${t.shadow}, 0.45), 0 2px 0 rgba(0,0,0,0.12), inset 0 -2px 0 rgba(0,0,0,0.15)`;
 
   return (
@@ -98,7 +98,9 @@ export function Pillow({
         cursor: disabled ? "not-allowed" : "pointer",
         opacity: disabled ? 0.5 : 1,
         width: fullWidth ? "100%" : "auto",
-        transform: pressed ? "translateY(2px)" : "translateY(0)",
+        // Hover lifts the pillow and deepens the shadow beneath it; no halo,
+        // which read as a grey smudge around the dark buttons.
+        transform: pressed ? "translateY(2px)" : hovered && !disabled ? "translateY(-1px)" : "translateY(0)",
         boxShadow: shadow,
         transition: "transform 140ms cubic-bezier(.22,1.4,.4,1), box-shadow 200ms ease, background 200ms ease",
         outline: "none",

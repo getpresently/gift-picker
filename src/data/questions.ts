@@ -178,7 +178,7 @@ export const QUESTIONS: Question[] = [
     label: "What's your budget?",
     helper: "No judgment. Drag to dial it in.",
     type: "slider",
-    min: 15,
+    min: 10,
     max: 500,
     step: 5,
     defaultValue: 120,

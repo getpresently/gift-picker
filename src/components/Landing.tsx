@@ -26,7 +26,7 @@ const PRODUCTHUNT_URL = "https://www.producthunt.com/posts/giftpicker-by-present
 
 // The first entry is the featured pull quote; `em` is the phrase set in plum italic.
 const TESTIMONIALS: { q: string; em?: string; n: string; bg: string; fg: string }[] = [
-  { q: "My boyfriend uses the V60 every single morning. I look like a genius.", em: "genius", n: "Ella R.", bg: "#FFD9CC", fg: "#8A3A2A" },
+  { q: "My boyfriend uses the V60 every single morning. It was the perfect choice.", em: "perfect", n: "Ella R.", bg: "#FFD9CC", fg: "#8A3A2A" },
   { q: "Took 90 seconds. Picked something better than I would have in an hour.", n: "Priya S.", bg: "#FFE7B0", fg: "#7A5410" },
   { q: "Finally, a gift quiz that doesn’t suggest a scented candle every time.", n: "Marcus T.", bg: "#EBD3E4", fg: "#7E3F71" },
 ];
@@ -171,10 +171,11 @@ export function Landing() {
                   color: "rgba(35,20,16,0.65)",
                   marginTop: 20,
                   maxWidth: 460,
+                  textWrap: "pretty" as never,
                 }}
               >
-                Six questions. A shortlist of gifts they'll actually love. Built for the chronically indecisive and the
-                deeply caring.
+                Six questions. A shortlist of gifts they'll actually love. Built for the indecisive and the deeply
+                caring.
               </p>
 
               <div style={{ display: "flex", gap: 12, marginTop: 28, flexWrap: "wrap" }}>
