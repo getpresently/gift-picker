@@ -1205,13 +1205,15 @@ function ReviewTool({ unlock }: { unlock: UnlockState }) {
             <div
               style={{
                 display: "grid",
-                gridTemplateColumns: isMobile ? "1fr" : "2fr 1fr",
+                // minmax(0, ...) keeps the 2:1 split fixed; plain fr columns grow
+                // to fit their widest content, so a long match name squeezed the card.
+                gridTemplateColumns: isMobile ? "minmax(0, 1fr)" : "minmax(0, 2fr) minmax(0, 1fr)",
                 gap: isMobile ? 20 : 24,
                 alignItems: "start",
               }}
             >
               <GiftCard gift={currentGift} isMobile={isMobile} />
-              <div>
+              <div style={{ minWidth: 0 }}>
                 {!isMobile && (
                   <ActionBar
                     isMobile={false}
