@@ -225,9 +225,11 @@ Every gift has a permanent ID in column A (Dalia approved 10/3/26), such as `r49
 Sheet edits go straight into Dalia's sheet tab in Chrome; there is no edit queue (one was tried on 10/3 and removed the same day as more machinery than an every-few-weeks task needs). Every slip on 10/3 came from bending these rules:
 
 - Use one sheet tab only, and never let a background agent use it. A second sheet tab replayed queued keystrokes later: "Gifts!N722" landed in A710, and a stray click opened Google Admin.
-- Before any keystroke, check that the sheet tab is visible (`document.visibilityState === "visible"`); it does not need window focus. If it is hidden, wait. Keys sent to a hidden tab queue up and land wherever the cursor is later.
-- Click the Name Box with a real click (never focus it from JavaScript), then confirm the Name Box shows the target cell and the formula bar shows the value you expect to replace before typing or pasting. A JS-focused Name Box sent a paste into U714.
-- Never read the whole sheet from inside the tab (gviz, export URLs); it froze the tab. Verify through the public feed (`/exec?tab=Gifts`) instead.
+- The tab does not need to be visible, in front, or focused (confirmed 10/4 with the tab hidden: Name Box jumps and full-column pastes landed correctly). The 10/3 slips came from a second sheet tab and from focusing the Name Box with JavaScript, not from the tab being hidden. Avoid long setTimeout loops in a hidden tab; they are throttled and the tool times out.
+- The clipboard check lives in Bash, right before each paste: `LC_CTYPE=UTF-8 pbpaste | shasum -a 256` must match the file you copied (plain pbpaste mangles non-ASCII). `navigator.clipboard.readText()` returns nothing when Chrome is not the focused app.
+- Click the Name Box with a real click (never focus it from JavaScript) and confirm `document.activeElement.id` is `t-name-box`; type the tab-qualified cell (`Gifts!D2`), Return, then confirm the Name Box shows that cell and the target cells hold the values you expect to replace before Cmd+V. A JS-focused Name Box sent a paste into U714.
+- Never read the whole sheet repeatedly from inside the tab; it froze the tab once. Small gviz reads (one or two columns anchored on column A, for example `range=A2:U740&tq=select A, D`) are fine for the before-check, but gviz lags the server by minutes after an edit, so check the result through the public feed (`/exec?tab=Gifts`).
+- Double-check every run (Dalia 10/4): after each batch, re-read the whole sheet from the public feed and diff it against what you intended, every column of every row. Zero unexpected differences, or fix it before moving on.
 - Bulk changes go in as one guarded paste per column or row block, not cell-by-cell typing.
 
 - Type a tab-qualified range in the Name Box (`Gifts!F2`) and confirm the URL ends in `#gid=0`. On 9/21 a paste meant for Gifts overwrote a Requests column.
