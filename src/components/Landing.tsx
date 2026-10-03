@@ -477,6 +477,7 @@ export function Landing() {
                     gap: 12,
                     overflowX: "auto",
                     scrollSnapType: "x mandatory",
+                    scrollPadding: "0 20px",
                     margin: "36px -20px 0",
                     padding: "0 20px 6px",
                     scrollbarWidth: "none",
