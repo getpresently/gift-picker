@@ -27,15 +27,10 @@ export function Results() {
   const { data: allGifts, loading, error } = useGifts();
   const [saved, setSaved] = useState<Set<string>>(() => loadSaved());
 
-  // Answers come from sessionStorage by default; fall back to share-URL
-  // params so a recipient can land on /results?r=partner&... and see the
-  // same picks without taking the quiz themselves.
-  const [answers, setAnswers] = useState<Answers>(() => {
-    const stored = loadAnswers();
-    if (Object.keys(stored).length) return stored;
-    const hydrated = hydrateAnswersFromShareUrl();
-    return hydrated ?? stored;
-  });
+  // A share link (/results?r=partner&...) wins over answers this tab saved
+  // earlier, so opening someone's shared picks never shows your own. With no
+  // share params, answers come from sessionStorage.
+  const [answers, setAnswers] = useState<Answers>(() => hydrateAnswersFromShareUrl() ?? loadAnswers());
   // Scoring sees typed occasions it recognizes (Christmas, a promotion) as
   // the built-in occasion; the header keeps the shopper's own wording.
   const scoring = useMemo(() => scoringAnswers(answers), [answers]);

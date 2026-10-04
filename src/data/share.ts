@@ -56,15 +56,17 @@ export function buildShareUrl(answers: Answers): string {
 }
 
 /**
- * If sessionStorage is empty and the current URL has share params, hydrate
- * the answers from those params and persist them. Returns the hydrated
- * answers (or null if there was nothing to hydrate).
+ * If the current URL has share params, persist those answers and drop the
+ * params from the address bar, so later edits in the Adjust panel survive a
+ * reload. Returns the hydrated answers (or null if there was nothing to
+ * hydrate).
  */
 export function hydrateAnswersFromShareUrl(): Answers | null {
   if (typeof window === "undefined") return null;
   const fromUrl = decodeAnswers(window.location.search);
   if (!fromUrl) return null;
   saveAnswers(fromUrl);
+  window.history.replaceState(window.history.state, "", window.location.pathname);
   return fromUrl;
 }
 
