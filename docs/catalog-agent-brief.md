@@ -70,6 +70,17 @@ Commodity items fail. Her example: a Discraft ultimate disc, "if someone wants a
 - **No collectibles.** Skip gifts whose appeal depends on the recipient already collecting that line (designer figurines like Kay Bojesen, collectible series, limited editions sold to collectors). Shoppers can't know who collects what, and decorative figures read as kids' toys. Dalia rejected the Kay Bojesen monkey and retired the songbird for this (10/3/26).
 - **Availability counts.** A gift that is hard for US shoppers to get (ships from abroad, long waits, import duties, Amazon listings unavailable) loses to a readily available equivalent. Dalia kept the Neso beach shade over Otentik, the original, because Neso ships in the US and is on Amazon.
 
+### Dalia's rulings of 10/4/26 (binding)
+
+- **On the site means Live AND approved.** A gift shows only when Status is `Live` and Review status is TRUE. New rows go in as Live with FALSE and stay hidden until Dalia approves them in /review.
+- **Don't drop an interesting gift on soft grounds.** A weak or packaging photo means find a better photo; thin ratings mean find a better-rated version of the same idea. She asked for the paella kit, the Opinel mushroom knife, and the cheesemaking kit back after they were dropped for exactly that (the better-rated La Tienda mini kit, the Opinel with sheath, and Standing Stone Farms replaced them).
+- **"Utility tools" means basic tools,** like screwdriver kits. A hobby tool with a story (a foraging knife) is fine.
+- **Self only** (Relation is exactly `Self`, so the gift never shows for anyone else): things people buy for themselves, including tactical sports gear. Her picks: Leatherman Wave Plus, Bala Bangles, lululemon Everywhere Belt Bag, Synapse 140 sport kite, MSR Evo snowshoes, Opinel mushroom knife. A "treat myself" gift that also suits others is different: it keeps its other recipients.
+- **No flowers.** Venus et Fleur preserved roses were rejected on 10/4. The LEGO flower kits stay in the catalog, but flowers, real or LEGO, never appear in marketing images.
+- **Kids:** see Age in section 4. Recipient Child means 17 or younger, and `Child` age goes only on gifts a 3 to 12 year old would want.
+- **Some gifts read as for seniors only:** the Kitchen Linens Bundle and the Classic Personalized Apron are tagged Senior only.
+- **Tags must survive a shopper's eye:** celebrity cookbooks are Cooking, not Music (they outranked real music gifts); a wind chime is Home & Decor, not Music; astronomy binoculars are Nature & Outdoors, not Learning; the Tivoli radio is Home & Decor first, Music second.
+
 ### Ratings and seller reputation (binding, Dalia 10/3/26)
 
 Nothing poorly rated, and no seller with a bad reputation:
@@ -117,10 +128,12 @@ Add an interest tag only if a shopper who picked that interest would be glad, an
 - Tag every age the gift honestly suits; a missing age hides the gift from shoppers who pick that age.
 - **Alcohol and cannabis exclude Young Adult and younger** (Young Adult is 18 to 25). Barware without alcohol may include Young Adult.
 - **Trendy beauty is teen-only** (Summer Fridays, Dior lip oil, Sol de Janeiro and the like): tag Teenager only.
+- **Kids' gifts** are Age `Child` (3 to 12), plus Teenager only when teens truly want them, never Young Adult, Adult, or Senior. Never put `Child` on a grown-up gift.
+- **Sympathy gifts** carry Occasion `Sympathy`; never Fun, never celebratory occasions on a memorial piece, no plants or flowers.
 
 ### Relation, Type, Occasion
 
-- **Relation:** only relationships where the gift makes sense; it is the heaviest single factor in ranking. For "treat myself" requests include at least `Friend, Sibling, Partner`, plus whatever else genuinely fits. A cookbook is fine for coworkers and mentors; Dalia overruled a reviewer on that.
+- **Relation:** only relationships where the gift makes sense; it is the heaviest single factor in ranking. For "treat myself" requests include at least `Friend, Sibling, Partner`, plus whatever else genuinely fits, unless the gift is something people only buy for themselves, which is `Self` alone (see the 10/4 rulings). Kids' gifts are `Friend, Sibling`. A cookbook is fine for coworkers and mentors; Dalia overruled a reviewer on that.
 - **Type:** what the gift feels like (Fun, Practical, Sentimental, Luxurious).
 - **Occasion:** every occasion a thoughtful giver would choose it for. New Job covers desk, commute, and work-bag items, coffee or tea at work, focus headphones, celebratory treats, and learning memberships. Leave it off kids' toys, baby items, furniture, and wedding-type gifts.
 

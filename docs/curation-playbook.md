@@ -84,6 +84,17 @@ Dalia's example: she believes Otentik is the original of the sandbag-anchored st
 - **No collectibles.** Skip gifts whose appeal depends on the recipient already collecting that line (designer figurines like Kay Bojesen, collectible series, limited editions sold to collectors). Shoppers can't know who collects what, and decorative figures read as kids' toys. Dalia rejected the Kay Bojesen monkey and retired the songbird for this (10/3/26).
 - **Availability counts.** A gift that is hard for US shoppers to get (ships from abroad, long waits, import duties, Amazon listings unavailable) loses to a readily available equivalent. Dalia kept the Neso beach shade over Otentik, the original, because Neso ships in the US and is on Amazon.
 
+### Dalia's rulings of 10/4/26 (binding)
+
+- **On the site means Live AND approved.** A gift shows only when Status is `Live` and Review status is TRUE. New rows go in as Live with FALSE and stay hidden until Dalia approves them in /review.
+- **Don't drop an interesting gift on soft grounds.** A weak or packaging photo means find a better photo; thin ratings mean find a better-rated version of the same idea. She asked for the paella kit, the Opinel mushroom knife, and the cheesemaking kit back after they were dropped for exactly that (the better-rated La Tienda mini kit, the Opinel with sheath, and Standing Stone Farms replaced them).
+- **"Utility tools" means basic tools,** like screwdriver kits. A hobby tool with a story (a foraging knife) is fine.
+- **Self only** (Relation is exactly `Self`, so the gift never shows for anyone else): things people buy for themselves, including tactical sports gear. Her picks: Leatherman Wave Plus, Bala Bangles, lululemon Everywhere Belt Bag, Synapse 140 sport kite, MSR Evo snowshoes, Opinel mushroom knife. A "treat myself" gift that also suits others is different: it keeps its other recipients.
+- **No flowers.** Venus et Fleur preserved roses were rejected on 10/4. The LEGO flower kits stay in the catalog, but flowers, real or LEGO, never appear in marketing images.
+- **Kids:** see Age in section 4. Recipient Child means 17 or younger, and `Child` age goes only on gifts a 3 to 12 year old would want.
+- **Some gifts read as for seniors only:** the Kitchen Linens Bundle and the Classic Personalized Apron are tagged Senior only.
+- **Tags must survive a shopper's eye:** celebrity cookbooks are Cooking, not Music (they outranked real music gifts); a wind chime is Home & Decor, not Music; astronomy binoculars are Nature & Outdoors, not Learning; the Tivoli radio is Home & Decor first, Music second.
+
 ### Ratings and seller reputation (binding, Dalia 10/3/26)
 
 Nothing poorly rated, and no seller with a bad reputation:
@@ -231,6 +242,11 @@ Sheet edits go straight into Dalia's sheet tab in Chrome; there is no edit queue
 - Never read the whole sheet repeatedly from inside the tab; it froze the tab once. Small gviz reads (one or two columns anchored on column A, for example `range=A2:U740&tq=select A, D`) are fine for the before-check, but gviz lags the server by minutes after an edit, so check the result through the public feed (`/exec?tab=Gifts`).
 - Double-check every run (Dalia 10/4): after each batch, re-read the whole sheet from the public feed and diff it against what you intended, every column of every row. Zero unexpected differences, or fix it before moving on.
 - Bulk changes go in as one guarded paste per column or row block, not cell-by-cell typing.
+- The clipboard check runs on its own, BEFORE the paste, and must match exactly; never run it in parallel with the paste. If any time passes, check again. On 10/4 a check ran alongside the paste while Dalia had copied a gift name, which went into a cell editor at B760 and was undone with Cmd+Z.
+- After the Name Box jump, press Escape and confirm the formula bar is empty (not in cell-edit mode) before Cmd+V; otherwise the paste lands as text inside one cell. A good paste leaves the Name Box showing the whole range (for example B780:U800).
+- A screenshot of a hidden tab forces a frame and flushes a stuck "Saving…" (10/4: 19 rows sat unsaved for 20 minutes until two screenshots).
+- Click coordinates follow the frame of the most recent screenshot, which changes with the window. Read the Name Box rectangle with JavaScript, take a screenshot, and scale: frame = CSS × frame width ÷ innerWidth.
+- After a session restart the old tab handle is gone: open one new sheet tab and keep using only that one.
 
 - Type a tab-qualified range in the Name Box (`Gifts!F2`) and confirm the URL ends in `#gid=0`. On 9/21 a paste meant for Gifts overwrote a Requests column.
 - Load long pastes from a file with `LC_CTYPE=UTF-8 pbcopy < file`. Plain `pbcopy` corrupted "®" into "¬Æ" across 68 rows.
@@ -295,11 +311,13 @@ Reserved for proven, widely loved hits: AirPods, Kindle Paperwhite, Owala FreeSi
 - **Alcohol and cannabis exclude Young Adult and younger.** Young Adult is 18 to 25, which includes people under 21. Hard Kombucha Subscription is Adult only; the virtual wine tasting is Adult and Senior. Barware without alcohol (cocktail glasses, a decanter) may include Young Adult.
 - **Trendy beauty is teen-only** (Dalia 9/21): "beauty products like that are okay to gift to teens but not to adults." Summer Fridays Neapolitan Lip Trio, Dior Addict Lip Glow Oil, and both Sol de Janeiro sets are tagged Teenager only.
 - Tag every age the gift honestly suits. When a shopper picks an age the gift is not tagged for, the gift is hidden entirely (section 6), so a missing age costs more than a missing interest.
+- **Kids (Dalia 10/4).** `Child` (3 to 12) goes only on gifts a kid that age would want; kids' gifts carry Relation `Friend, Sibling` by convention and add Teenager only if teens truly want them. Grown-up gifts lose Child: the Airbnb card, nostalgic chocolate bars, camping voucher, Hope Cards, felt letter board, and pocket projector did on 10/4. Dalia kept Child on the ice cream makers, the Belgian waffle maker, the scratch-off travel map, and PlantWave, which she called great kid gifts. Kid-first gifts lose adult ages, so they stop showing in adult searches: the MicroBrite microscope and Foldscope kit are Child and Teenager, the Alice pop-up book is Child only, and the kid-and-adult yoga mats are Child. Only about 70 gifts were kid-specific on 10/4, thin in gaming, tech, music, and creativity, so a batch of 21 was added.
 
 ### Relation, Type, and Occasion
 
 - **Relation** is worth 25 points, the largest single factor. Tag only relationships where the gift makes sense. For "Treat myself" gifts include at least Friend, Sibling, and Partner, plus whatever else genuinely fits. Use `Mentor/Teacher` exactly as written.
 - **Type** (Fun, Practical, Sentimental, Luxurious): tag what the gift feels like. Occasion rules read it: Anniversary rewards Sentimental or Luxurious; Just Because rewards Fun and docks Luxurious.
+- **Sympathy (added 10/4).** The Sympathy occasion shows ONLY gifts tagged `Sympathy`, skips the vibe question, and is hidden for babies, little ones, and teens. A gift tagged Sympathy alone (a grief book, a memorial chime) never shows for any other occasion; a general comfort gift (a robe, a frame, a weighted blanket) can carry Sympathy alongside its usual occasions. Never Fun, never celebratory, no plants and no flowers (Dalia: plants aren't a good sympathy gift). Good directions: meals and practical help, comfort items, memorial keepsakes, respected grief books, pet-loss pieces, and charity gifts.
 - **Occasion**: tag every occasion a thoughtful giver would choose it for. New Job was added on 10/3, and 52 existing gifts were tagged for it: things for the desk, the commute, or the work bag; coffee or tea at work; focus headphones; celebratory treats; learning memberships. Skip kids' toys, baby items, furniture, and wedding-type gifts for New Job.
 
 ### Gender (column I)
@@ -318,6 +336,7 @@ Binding since 10/3/26, for every new gift. Dalia rejected the Shuttle Art marker
 - **The photo shows what is sold.** A shopper could not tell what they were buying when the CB2 Stud Decanter photo showed seven pieces and the whiskey glass photo showed three glasses. Nine photos were swapped for single-item shots on 10/3 (decanter, whiskey glass, Barefoot Dreams ABC Blanket, Crate & Kids Toy Bin, Beverage Tub, Le Creuset round oven, Anthropologie mirror, Pottery Barn baby blanket). When the price really buys a set, rename the gift instead.
 - **Browse the whole gallery,** and other reputable retailers selling the same product, before choosing. Aim for 700 to 1500 px. If no attractive photo exists anywhere, choose a different gift.
 - **Look at every photo before it goes in the sheet.** Build a contact sheet (PIL is installed) and view it. On 9/21 an agent set the Williams Sonoma apron to a Halloween candy photo. Williams Sonoma sites block automation; Bing Images exposes their real `assets.wsimgs.com` files.
+- **A weak photo is never a reason to drop a gift** (Dalia 10/4): look for a better photo first; only skip the gift if no usable photo exists anywhere.
 - **The rule governs new gifts only.** On 10/3 the Boku-Undo marbling set was retired for having only box photos after Dalia had approved it. She said "i liked the marbling, keep," and it went back to Live with its box photo. For an approved gift with a weak photo, look for a better one or flag it; never retire it.
 
 ---
@@ -328,11 +347,11 @@ Code: `src/data/gifts.ts` (scoring and ranking), `src/data/questions.ts` (quiz, 
 
 ### The quiz
 
-1. **Who's it for:** Partner, Parent, Grandparent, Friend, Sibling, Coworker, Mentor / Teacher, Treat myself.
-2. **Age:** Baby (0 to 2), Little one (3 to 12), Teenager (13 to 17), Young adult (18 to 25), Adult (late 20s to 50s), Senior (60+). Grandparent skips this question. Baby and Little one are hidden for Partner, Parent, Coworker, Mentor, and Treat myself; Teenager for Parent, Coworker, and Mentor; Young adult for Parent.
-3. **Occasion:** Birthday, Anniversary, Holiday, Wedding, Just because, New baby, Housewarming, Appreciation, Thank you, New job, Other (free text). For Baby and Little one, Housewarming, Wedding, New baby, Anniversary, and New job are hidden. Teenagers keep New job.
+1. **Who's it for:** Partner, Parent, Grandparent, Child, Friend, Sibling, Coworker, Mentor/Teacher, Treat myself. Child covers any kid in the shopper's life (a niece, a friend's kid), and its results read "For the kid in your life, with love"; Treat myself reads "For you, with love."
+2. **Age:** Baby (0 to 2), Little one (3 to 12), Teenager (13 to 17), Young adult (18 to 25), Adult (late 20s to 50s), Senior (60+). Grandparent skips this question. Baby and Little one are hidden for Partner, Parent, Coworker, Mentor, and Treat myself; Teenager for Parent, Coworker, and Mentor; Young adult for Parent; Young adult, Adult, and Senior for Child (17 or younger, 10/4). The Adjust panel on the results page uses the same rules.
+3. **Occasion:** Birthday, Anniversary, Holiday, Wedding, Just because, New baby, Housewarming, Appreciation, Thank you, New job, Sympathy, Other (free text). For Baby and Little one, Housewarming, Wedding, New baby, Anniversary, New job, and Sympathy are hidden. Teenagers keep New job but not Sympathy.
 4. **Interests:** up to 3 of the 22 labels plus Best Sellers.
-5. **Vibe:** up to 2 of Fun, Practical, Sentimental, Luxurious.
+5. **Vibe:** up to 2 of Fun, Practical, Sentimental, Luxurious. Skipped for Sympathy.
 6. **Budget:** slider from $10 to $500 in $5 steps, default $120, with an optional floor handle. Presets: Under $25, $25 to $50, $50 to $100, $100 to $200, $200+. Each preset sets both handles; Under $25 sets no floor.
 
 The results page can refine every answer and add For him or For her.
@@ -345,13 +364,15 @@ Anything else gets no occasion scoring. Every typed occasion is still logged to 
 
 ### Hard filters (the gift is dropped)
 
-- Status is anything but `Live`.
+- Status is anything but `Live`, or Review status is not TRUE (Dalia 10/4; enforced in the edge cache and the direct fallback).
+- Sympathy: when the shopper picks Sympathy, any gift not tagged Sympathy is dropped; for any other occasion, a gift tagged Sympathy alone is dropped.
+- A gift whose Relation is only `Self` is dropped for every recipient except Treat myself.
 - For him hides gifts tagged Women; For her hides gifts tagged Men. Blank never hides.
 - Price is more than 10% over the budget (Price > budget × 1.10). Gift cards priced "Your choice" are exempt.
 - With a floor set: the top of the gift's price (PriceMax, or Price when there is no range) is below floor ÷ 1.10. Open-ended prices and "Your choice" cards are exempt.
 - Age, when the gift has age tags:
   - If the shopper picked an age, the gift must carry it (New baby also accepts Baby).
-  - If no age was picked, the gift is dropped when every one of its age tags is impossible for the recipient: Grandparent allows only Senior; Parent excludes Baby through Young Adult; Partner and Treat myself exclude Baby and Child; Coworker and Mentor exclude Baby, Child, and Teenager.
+  - If no age was picked, the gift is dropped when every one of its age tags is impossible for the recipient: Grandparent allows only Senior; Parent excludes Baby through Young Adult; Partner and Treat myself exclude Baby and Child; Coworker and Mentor exclude Baby, Child, and Teenager; Child excludes Young Adult, Adult, and Senior.
 
 ### Score, 0 to 100
 
@@ -389,7 +410,8 @@ Two of these rules (Just Because and New Baby) never fired before 10/3 because o
 
 ### Which gifts show, and in what order
 
-- If more than 5 gifts score 60 or higher, only those show. Otherwise every gift at 55 or higher shows. Nothing under 55 ever shows. Results load 8 at a time.
+- If more than 5 gifts score 60 or higher, only those show. Otherwise every gift at 55 or higher shows. Nothing under 55 ever shows. Results load 8 at a time. Sympathy is the exception: its small hand-tagged set has no vibe points, so every tagged gift that passes the hard filters shows, best first.
+- Spacing: among gifts with the same score only, no two of a kind (or near-duplicates) and no same brand back to back, so the match % never rises as you scroll (10/3).
 - Ties break on: (1) weighted interest hits, (2) Best Sellers first, (3) price closest to the budget. Closeness is price ÷ budget at or under budget; a range uses its top up to the budget; open prices and "Your choice" count as 1; over budget it is budget ÷ price.
 
 ### A worked example
