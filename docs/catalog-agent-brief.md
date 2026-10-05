@@ -135,7 +135,7 @@ Add an interest tag only if a shopper who picked that interest would be glad, an
 
 - Grandparent always means Senior: the quiz skips the age question for grandparents, so a gift tagged Grandparent must also carry Senior in Age, or it never shows for them.
 - Kids' gifts carry Relation `Friend, Sibling`; the Child recipient reads those two, and a `Child` value in Relation matches nothing.
-- Tactical sports and hobby gear (a sport kite, snowshoes, a fly rod outfit, a climbing chalk bag, a garden knife) is Relation `Self` only.
+- Tactical sports and hobby gear that someone already in the sport picks for themselves (a sport kite, snowshoes, a climbing chalk bag, a garden knife) is Relation `Self` only. A complete starter outfit that introduces the hobby is different: Dalia called the Orvis fly rod outfit "like gifting a hobby" (10/5), so it keeps its other recipients.
 
 - **Relation:** only relationships where the gift makes sense; it is the heaviest single factor in ranking. For "treat myself" requests include at least `Friend, Sibling, Partner`, plus whatever else genuinely fits, unless the gift is something people only buy for themselves, which is `Self` alone (see the 10/4 rulings). Kids' gifts are `Friend, Sibling`. A cookbook is fine for coworkers and mentors; Dalia overruled a reviewer on that.
 - **Type:** what the gift feels like (Fun, Practical, Sentimental, Luxurious).
