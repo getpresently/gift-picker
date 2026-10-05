@@ -231,9 +231,15 @@ Examples: "Added 10/3/26 for user request #25"; "Fixed 10/3/26: renamed from "Gi
 
 Every gift has a permanent ID in column A (Dalia approved 10/3/26), such as `r495`. Existing gifts kept the number they already had (their old row number), so no URL changed. Gift pages (`/gift/r495`), shared links, and /review all use the ID, so rows can now be sorted or moved, and non-live gifts could move to another tab. New rows get the next free ID automatically within 10 minutes (the catalog read fills blanks). Never type or copy an ID into a new row; if a copied ID appears twice, the later row is renumbered.
 
-### The Google Sheets connector reads but cannot write (10/5/26)
+### Writing to the sheet: the Google Sheets connector first (10/5/26)
 
-The Google Sheets connector can read the Gift Database (`get_values` works), which is handy for a quick look at a range. Every `update_values` call returned "Permission denied for document", so writes still go through the browser method below. Nothing lands from a denied call, but confirm with a feed diff anyway.
+When the session has the Google Sheets connector, write through it instead of the browser. Writes started working on 10/5/26 once Dalia added the sheet to the connector's Google account; before that, reads worked and every `update_values` returned "Permission denied for document".
+
+1. `get_values` the exact target range right before writing, and confirm it holds what you expect: the right gift name in column B and the old value for edits, blank cells for new rows.
+2. `update_values` to that exact A1 range (for example `Gifts!E498` or `Gifts!A802:U830`).
+3. Re-read the whole sheet from the public feed and diff it: only the intended cells may change.
+
+There is no clipboard and no Name Box, so nothing Dalia copies can land in a cell. The connector parses input like the Sheets UI: send numbers as numbers and booleans as booleans, keep anything that looks like a number or date but must stay text behind a leading apostrophe, and never send a value that starts with `=`, `+`, `-`, or `@` unless it is meant to be a formula. If the connector is missing or denied, fall back to the browser method below.
 
 ### Writing to the sheet (for agents with browser access)
 
