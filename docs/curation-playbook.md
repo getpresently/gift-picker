@@ -149,6 +149,17 @@ Dalia asked to "deprioritize 1-2 of the no-name or less top tier brands" in crow
 - **Upgrade to the current model** when a newer one ships (her example: "if jbl4 released a jbl5"). Note it as "Model updated <date>: <old> to <new>." A clean upgrade with a verified page, price, and photo keeps Review status TRUE. Examples: Charge 5 to Charge 6, Instax Mini 12 to Mini 13, AirPods Pro to AirPods Pro 3, Switch to Switch 2.
 - **Never retire an approved gift over a weak photo.** Flag the photo instead (section 5).
 
+### Filling coverage gaps (10/5/26)
+
+Dalia asked to map the most common quiz paths and fill the ones without enough good results. How it was done, so the next round can repeat it:
+
+- **Measure, then source.** Run every single-interest quiz path (151,938 on 10/5) through `rankGifts` on the live, approved catalog. A path is short when it returns fewer than 8 gifts, and weak when fewer than 4 of its results score 80% or more (half the first page). Rank pairs of answers (recipient and interest, budget and interest, and so on) by how often they are weak, weighted toward the common choices (Birthday, Holiday, partners, parents, friends, the default budget), and source for the biggest ones.
+- **Give each agent its own lane** (an interest and a price band), because parallel agents cannot see each other's picks. Even so, two agents both found Wingspan, two found the Audible membership, and three Scrabble editions came back. Before writing, check every batch against the sheet including the rows just written; keep one gift per slot, merge the tags of a duplicate into the row already there, and keep the better-rated edition when two editions are near duplicates.
+- **Write batches one at a time** and diff the whole sheet after each.
+- **Retags count too.** Seven gifts were tagged Grandparent without Senior, so they never showed for grandparents (Grandparent always means Senior, section 6); adding Senior fixed them. Senior-tagged gifts that suit grandparents got Grandparent.
+- **Agents come back short rather than pad.** Round 2 asked for about 145 and got about 100; that is the right trade.
+- **Re-run the map after Dalia approves** a round in /review; pending gifts do not count on the site.
+
 ---
 
 ## 3. Naming and data rules
@@ -322,6 +333,8 @@ Reserved for proven, widely loved hits: AirPods, Kindle Paperwhite, Owala FreeSi
 - **Alcohol and cannabis exclude Young Adult and younger.** Young Adult is 18 to 25, which includes people under 21. Hard Kombucha Subscription is Adult only; the virtual wine tasting is Adult and Senior. Barware without alcohol (cocktail glasses, a decanter) may include Young Adult.
 - **Trendy beauty is teen-only** (Dalia 9/21): "beauty products like that are okay to gift to teens but not to adults." Summer Fridays Neapolitan Lip Trio, Dior Addict Lip Glow Oil, and both Sol de Janeiro sets are tagged Teenager only.
 - Tag every age the gift honestly suits. When a shopper picks an age the gift is not tagged for, the gift is hidden entirely (section 6), so a missing age costs more than a missing interest.
+- **Grandparent means Senior.** The quiz skips the age question for grandparents and treats them as Senior, so a gift tagged Grandparent without Senior never shows for them. On 10/5 the fondue pot, charcuterie board, stemware, Roku, Serenity spa box, wine-box truffles, and The Crew card game all had this gap.
+- **The Child recipient reads Relation `Friend, Sibling`.** A `Child` value in Relation matches nothing; kids' gifts carry `Friend, Sibling`.
 - **Kids (Dalia 10/4).** `Child` (3 to 12) goes only on gifts a kid that age would want; kids' gifts carry Relation `Friend, Sibling` by convention and add Teenager only if teens truly want them. Grown-up gifts lose Child: the Airbnb card, nostalgic chocolate bars, camping voucher, Hope Cards, felt letter board, and pocket projector did on 10/4. Dalia kept Child on the ice cream makers, the Belgian waffle maker, the scratch-off travel map, and PlantWave, which she called great kid gifts. Kid-first gifts lose adult ages, so they stop showing in adult searches: the MicroBrite microscope and Foldscope kit are Child and Teenager, the Alice pop-up book is Child only, and the kid-and-adult yoga mats are Child. Only about 70 gifts were kid-specific on 10/4, thin in gaming, tech, music, and creativity, so a batch of 21 was added.
 
 ### Relation, Type, and Occasion
@@ -347,6 +360,7 @@ Binding since 10/3/26, for every new gift. Dalia rejected the Shuttle Art marker
 - **The photo shows what is sold.** A shopper could not tell what they were buying when the CB2 Stud Decanter photo showed seven pieces and the whiskey glass photo showed three glasses. Nine photos were swapped for single-item shots on 10/3 (decanter, whiskey glass, Barefoot Dreams ABC Blanket, Crate & Kids Toy Bin, Beverage Tub, Le Creuset round oven, Anthropologie mirror, Pottery Barn baby blanket). When the price really buys a set, rename the gift instead.
 - **Browse the whole gallery,** and other reputable retailers selling the same product, before choosing. Aim for 700 to 1500 px. If no attractive photo exists anywhere, choose a different gift.
 - **Look at every photo before it goes in the sheet.** Build a contact sheet (PIL is installed) and view it. On 9/21 an agent set the Williams Sonoma apron to a Halloween candy photo. Williams Sonoma sites block automation; Bing Images exposes their real `assets.wsimgs.com` files.
+- **The photo host must load from outside.** On 10/5 jomalone.com returned 403 for every product image, including the one an agent picked, which also had flowers in it; the Jo Malone engraved cologne was held back until a photo from a host that loads turns up. Department stores blocked scripted checks too.
 - **A weak photo is never a reason to drop a gift** (Dalia 10/4): look for a better photo first; only skip the gift if no usable photo exists anywhere.
 - **The rule governs new gifts only.** On 10/3 the Boku-Undo marbling set was retired for having only box photos after Dalia had approved it. She said "i liked the marbling, keep," and it went back to Live with its box photo. For an approved gift with a weak photo, look for a better one or flag it; never retire it.
 

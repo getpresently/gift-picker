@@ -133,6 +133,10 @@ Add an interest tag only if a shopper who picked that interest would be glad, an
 
 ### Relation, Type, Occasion
 
+- Grandparent always means Senior: the quiz skips the age question for grandparents, so a gift tagged Grandparent must also carry Senior in Age, or it never shows for them.
+- Kids' gifts carry Relation `Friend, Sibling`; the Child recipient reads those two, and a `Child` value in Relation matches nothing.
+- Tactical sports and hobby gear (a sport kite, snowshoes, a fly rod outfit, a climbing chalk bag, a garden knife) is Relation `Self` only.
+
 - **Relation:** only relationships where the gift makes sense; it is the heaviest single factor in ranking. For "treat myself" requests include at least `Friend, Sibling, Partner`, plus whatever else genuinely fits, unless the gift is something people only buy for themselves, which is `Self` alone (see the 10/4 rulings). Kids' gifts are `Friend, Sibling`. A cookbook is fine for coworkers and mentors; Dalia overruled a reviewer on that.
 - **Type:** what the gift feels like (Fun, Practical, Sentimental, Luxurious).
 - **Occasion:** every occasion a thoughtful giver would choose it for. New Job covers desk, commute, and work-bag items, coffee or tea at work, focus headphones, celebratory treats, and learning memberships. Leave it off kids' toys, baby items, furniture, and wedding-type gifts.
@@ -177,6 +181,8 @@ TSV, no header, exactly 20 columns per row, no tabs or newlines inside fields. *
 - **Photo aesthetics (binding since 10/3/26).** Every new gift's photo must look good on a warm, editorial gift site. Prefer, in order: (1) a styled lifestyle photo of the product in use or in a real setting; (2) a clean, well-lit shot of the product alone on a plain background. Never packaging, blister packs, boxes with printed text, infographic panels, collages, size charts, or marketing text over the image, unless the packaging itself is the beautiful part of the gift. Dalia rejected a marker-set packaging collage and a lino cutter shown as a box with loose parts.
 - **The photo shows exactly what is sold.** One glass if one glass is sold. A seven-piece barware photo on a single decanter confused shoppers. If the listing really is a set, name it as a set.
 - Browse the seller's whole gallery and other reputable retailers selling the same product to find the best image. Aim for 700 to 1500 px. If no attractive photo exists anywhere, pick a different gift.
+- The photo URL must load for an outside visitor (a plain GET returns 200 and an image type). Some brand hosts, such as jomalone.com, return 403; pick a host that loads or a different gift.
+- Other agents may be sourcing in parallel. Stay in the interests and price band you were given, and check the live catalog and any rows the task lists as just added.
 - Before writing your file, build a contact sheet of your chosen photos (PIL is installed) and look at it with your image-reading tool to confirm each photo shows the right product and is attractive. A past agent set a Williams Sonoma apron to a Halloween candy photo. Williams Sonoma sites block automation; Bing Images results expose their real `assets.wsimgs.com` image URLs.
 
 ---
