@@ -247,6 +247,9 @@ function scoreRelation(gift: Gift, answers: Answers): number {
     // "Treat myself", matches any gift that has any Relation tag at all
     return gift.relations.length > 0 ? 25 : 0;
   }
+  // A New baby gift is for the whole household, so whoever the shopper
+  // names (a friend, a sister, a new grandparent) the gift fits.
+  if (answers.occasion === "baby" && tolerantIncludes(gift.occasions, "New Baby")) return 25;
   const wanted = RECIPIENT_LABELS[answers.recipient] ?? [];
   if (!wanted.length) return 0;
   return matchCount(gift.relations, wanted) > 0 ? 25 : 0;
@@ -470,6 +473,12 @@ export function scoreGift(gift: Gift, answers: Answers): number {
   if (answers.occasion === "sympathy" && !forSympathy) return -1;
   if (answers.occasion !== "sympathy" && forSympathy && gift.occasions.length === 1) return -1;
 
+  // Hard filter: a gift tagged for New Baby alone is gear for the new
+  // parents (a carrier, a monitor, a hospital bag), so it never shows for a
+  // baby's birthday or any other occasion.
+  const newBabyOnly = gift.occasions.length === 1 && tolerantIncludes(gift.occasions, "New Baby");
+  if (answers.occasion !== "baby" && newBabyOnly) return -1;
+
   // Hard filter: a gift tagged only Self is for treating yourself, never
   // for someone else.
   if (answers.recipient && answers.recipient !== "self" && isSelfOnly(gift)) return -1;
@@ -485,7 +494,11 @@ export function scoreGift(gift: Gift, answers: Answers): number {
       // No explicit age but the recipient implies one (e.g. grandparent =
       // Senior; partner != kid). Exclude when every gift age tag is on
       // the recipient's denied list.
-      const denied = RECIPIENT_EXCLUDED_AGES[answers.recipient];
+      // A New baby gift is for the household, so baby items stay in even
+      // for a recipient who can't be a baby (a new grandparent).
+      const denied = RECIPIENT_EXCLUDED_AGES[answers.recipient].filter(
+        (d) => answers.occasion !== "baby" || d !== "Baby",
+      );
       const allDenied = gift.ages.every((ageTag) =>
         denied.some((d) => {
           const na = normalize(ageTag);

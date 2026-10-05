@@ -395,18 +395,19 @@ Anything else gets no occasion scoring. Every typed occasion is still logged to 
 - Status is anything but `Live`, or Review status is not TRUE (Dalia 10/4; enforced in the edge cache and the direct fallback).
 - Sympathy: when the shopper picks Sympathy, any gift not tagged Sympathy is dropped; for any other occasion, a gift tagged Sympathy alone is dropped.
 - A gift whose Relation is only `Self` is dropped for every recipient except Treat myself.
+- New Baby (10/5): a gift whose Occasion is only `New Baby` is dropped for every other occasion. That is how gear for the new parents (a carrier, a monitor, a hospital bag) stays out of a baby's birthday while still showing when someone just had a baby. Things the baby will use past the newborn months (toys, books, blankets) also carry Birthday and Holiday.
 - For him hides gifts tagged Women; For her hides gifts tagged Men. Blank never hides.
 - Price is more than 10% over the budget (Price > budget × 1.10). Gift cards priced "Your choice" are exempt.
 - With a floor set: the top of the gift's price (PriceMax, or Price when there is no range) is below floor ÷ 1.10. Open-ended prices and "Your choice" cards are exempt.
 - Age, when the gift has age tags:
   - If the shopper picked an age, the gift must carry it (New baby also accepts Baby).
-  - If no age was picked, the gift is dropped when every one of its age tags is impossible for the recipient: Grandparent allows only Senior; Parent excludes Baby through Young Adult; Partner and Treat myself exclude Baby and Child; Coworker and Mentor exclude Baby, Child, and Teenager; Child excludes Young Adult, Adult, and Senior.
+  - If no age was picked, the gift is dropped when every one of its age tags is impossible for the recipient: Grandparent allows only Senior; Parent excludes Baby through Young Adult; Partner and Treat myself exclude Baby and Child; Coworker and Mentor exclude Baby, Child, and Teenager; Child excludes Young Adult, Adult, and Senior. With New baby picked, Baby is never excluded (a new grandparent sees baby gifts; before 10/5 that search returned 2 gifts).
 
 ### Score, 0 to 100
 
 | Part | Points |
 |---|---|
-| Relation | 25 if the gift's Relation includes the recipient. "Treat myself" matches any gift with any Relation tag. |
+| Relation | 25 if the gift's Relation includes the recipient. "Treat myself" matches any gift with any Relation tag. With New baby picked, any gift tagged New Baby matches every recipient, because the gift is for the household (10/5; before that a grandparent never matched baby gifts, which are tagged Friend and Sibling). |
 | Age | 10 if the gift's Age includes the picked age (New baby also counts Baby). |
 | Budget | Inside the range, by how much of the budget the gift uses (a range counts its top, capped at the budget): a third or more 10, a sixth to a third 7, less 4 (Dalia 10/3/26: bigger budgets should favor fuller gifts, and gifts that fall below the cutoff should drop out; the cutoffs were lowered from half and a quarter the same day after a $50 fondue pot ranked below a $110 fondue set on a $125 budget). 5 in either fuzz zone (up to 10% over the ceiling, or topping out just under the floor); 10 for "Your choice" gift cards and open-ended prices. |
 | Interests | Up to 40: round(coverage × 40). |
