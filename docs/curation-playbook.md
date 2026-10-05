@@ -231,6 +231,10 @@ Examples: "Added 10/3/26 for user request #25"; "Fixed 10/3/26: renamed from "Gi
 
 Every gift has a permanent ID in column A (Dalia approved 10/3/26), such as `r495`. Existing gifts kept the number they already had (their old row number), so no URL changed. Gift pages (`/gift/r495`), shared links, and /review all use the ID, so rows can now be sorted or moved, and non-live gifts could move to another tab. New rows get the next free ID automatically within 10 minutes (the catalog read fills blanks). Never type or copy an ID into a new row; if a copied ID appears twice, the later row is renumbered.
 
+### Writing to the sheet: the Google Sheets connector first (10/5/26)
+
+When the session has the Google Sheets connector, write through it instead of the browser: `get_values` the exact target range, confirm it holds what you expect (blank for new rows; the old value and the right gift name for edits), then `update_values` to that exact A1 range (for example `Gifts!B802:U830`), then re-read the whole sheet from the public feed and diff it. No clipboard and no Name Box, so nothing Dalia copies can land in a cell. The connector parses input like the Sheets UI: send numbers as numbers and booleans as booleans, keep anything that looks like a number or date but must stay text behind a leading apostrophe, and never send a value that starts with `=`, `+`, `-`, or `@` unless it is meant to be a formula. The browser method below is the fallback.
+
 ### Writing to the sheet (for agents with browser access)
 
 Sheet edits go straight into Dalia's sheet tab in Chrome; there is no edit queue (one was tried on 10/3 and removed the same day as more machinery than an every-few-weeks task needs). Every slip on 10/3 came from bending these rules:
