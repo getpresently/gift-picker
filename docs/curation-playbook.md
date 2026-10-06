@@ -348,7 +348,7 @@ Reserved for proven, widely loved hits: AirPods, Kindle Paperwhite, Owala FreeSi
 
 ### Gender (column I)
 
-Tag `Men` or `Women` only when the item is obviously gendered (Dalia 9/21: "shavers, hair clips"). Kids' items stay neutral: "for kids, try not to gender too much where it may be neutral. like star realms could be boys or girls." Blank never excludes anything. Today 15 live gifts are Women and 1 is Men.
+Tag `Men` or `Women` only when the item is obviously gendered (Dalia 9/21: "shavers, hair clips"). Kids' items stay neutral: "for kids, try not to gender too much where it may be neutral. like star realms could be boys or girls." Blank never excludes anything. On 10/7 21 live gifts were Women and 2 Men; the 10/7 check of the past week's additions found one untagged (the Little Words Project bracelet, now Women). /review shows a Gender tag on any gift that has one.
 
 ---
 
