@@ -133,6 +133,7 @@ Add an interest tag only if a shopper who picked that interest would be glad, an
 
 ### Relation, Type, Occasion
 
+- Never tag Coworker or Mentor/Teacher on intimate gifts: bath and shower products, body care, facial tools, or sleepwear (Dalia 10/7).
 - Grandparent always means Senior: the quiz skips the age question for grandparents, so a gift tagged Grandparent must also carry Senior in Age, or it never shows for them.
 - Kids' gifts carry Relation `Friend, Sibling`; the Child recipient reads those two, and a `Child` value in Relation matches nothing.
 - Tactical sports and hobby gear that someone already in the sport picks for themselves (a sport kite, snowshoes, a climbing chalk bag, a garden knife) is Relation `Self` only. A complete starter outfit that introduces the hobby is different: Dalia called the Orvis fly rod outfit "like gifting a hobby" (10/5), so it keeps its other recipients.
