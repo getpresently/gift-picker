@@ -184,17 +184,17 @@ All three pieces lead with what a shopper gets, then name the upgrades. Four upg
 
 ### Tagline, 60 characters maximum
 
-Primary, 56 characters:
+Primary, 58 characters (Dalia, 10/11: the gift database is now 4x the size it was at the 2021 launch, and the copy should say so):
 
-> Gift picks ranked to fit their interests and your budget
+> Now 4x the gifts, ranked to fit their interests and budget
 
-It leads with the result and carries the new matching and the budget range.
+It leads with the growth since 2021, then the new matching and the budget range. The earlier primary, without the 4x, was "Gift picks ranked to fit their interests and your budget" (56 characters).
 
 Alternatives:
 
 > Gifts ranked for one person, from 538 hand-checked picks
 
-(56 characters.) This one carries the catalogue. The number is specific and checkable, so it has to match the live site on the day.
+(56 characters.) This one carries the catalogue as a count. The 4x primary now does that job without a number that goes stale, so prefer it; if you use this one, the count has to match the live site on the day (735 live on 11 October).
 
 > A gift quiz for any occasion, ranked by their interests
 
@@ -204,9 +204,9 @@ On 3 October the gift sheet showed 538 live gifts and the live API returned 534.
 
 ### Description, written to 260 characters
 
-> Answer six questions about the person and get gifts ranked by how well they fit. New this year: matching led by their interests, a budget range, and occasions you can type yourself. All 538 gifts were checked by hand for a live page, current price, and photo.
+> Answer six questions about the person and get gifts ranked by how well they fit. New this year: 4x the gifts we launched with in 2021, matching led by their interests, a budget range, and typed occasions. Every gift is hand-checked for a live page and price.
 
-(259 characters, which fits the 260 limit. If you edit it or the count changes, count again.)
+(258 characters, which fits the 260 limit. If you edit it, count again.)
 
 ### First maker comment
 
@@ -219,7 +219,7 @@ Edit this into your own words before you post it.
 > - The matching is new. Every gift is scored from 0 to 100 against your answers, and their interests count the most, so the top pick is the gift that best fits what they care about.
 > - Your budget is a range with a floor and a ceiling. A gift just outside it still gets partial credit, so a strong match slightly over your limit can still appear.
 > - You can type your own occasion. Holidays like Christmas are recognised, and a new job is now one of the built-in options.
-> - There are 538 gifts live, and I checked every one for a working product page, current price, and photo. Older products were updated to their current models, such as AirPods Pro 3 and Switch 2.
+> - The gift database is 4x the size it was when we launched in 2021, and I checked every gift for a working product page, current price, and photo. Older products were updated to their current models, such as AirPods Pro 3 and Switch 2.
 >
 > It's free and there's no login. GiftPicker earns a commission through Amazon affiliate links, which is disclosed on the results. Brands can also apply for sponsored placement; sponsored gifts are always labelled and go through the same review as everything else.
 >
