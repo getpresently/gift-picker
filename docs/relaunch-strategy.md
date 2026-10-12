@@ -204,30 +204,30 @@ On 3 October the gift sheet showed 538 live gifts and the live API returned 534.
 
 ### Description, written to 260 characters
 
-> Answer six questions about the person and get gifts ranked by how well they fit. New this year: 4x the gifts we launched with in 2021, matching led by their interests, a budget range, and typed occasions. Every gift is hand-checked for a live page and price.
+> Answer five questions about the person and get gifts ranked by how well they fit. New this year: 4x the gifts we launched with in 2021, matching led by their interests, a budget range, and typed occasions. Every gift is hand-checked for a live page and price.
 
-(258 characters, which fits the 260 limit. If you edit it, count again.)
+(259 characters, which fits the 260 limit. "Five questions" matches the site and the gallery. If you edit it, count again.)
 
 ### First maker comment
 
 Edit this into your own words before you post it.
 
-> Hi Product Hunt, I'm Dalia. GiftPicker asks six questions about the person you're shopping for (who they are to you, their age, the occasion, their interests, the vibe, and your budget) and gives you a ranked list of gifts, each with a current price and a link to buy it.
+> Hi Product Hunt, I'm Dalia. GiftPicker asks five quick questions about the person you're shopping for (who they are to you, the occasion, their interests, the vibe, and your budget, plus their age when it matters) and gives you a ranked list of gifts, each with a current price and a link to buy it.
 >
 > Five years ago today we launched the first version here, and this year I rebuilt most of it. These are the changes you would notice as a shopper:
 >
 > - The matching is new. Every gift is scored from 0 to 100 against your answers, and their interests count the most, so the top pick is the gift that best fits what they care about.
 > - Your budget is a range with a floor and a ceiling. A gift just outside it still gets partial credit, so a strong match slightly over your limit can still appear.
-> - You can type your own occasion. Holidays like Christmas are recognised, and a new job is now one of the built-in options.
+> - You can type your own occasion. Holidays like Christmas are recognised, and a new job and sympathy are now built-in options.
 > - The gift database is 4x the size it was when we launched in 2021, and I checked every gift for a working product page, current price, and photo. Older products were updated to their current models, such as AirPods Pro 3 and Switch 2.
 >
 > It's free and there's no login. GiftPicker earns a commission through Amazon affiliate links, which is disclosed on the results. Brands can also apply for sponsored placement; sponsored gifts are always labelled and go through the same review as everything else.
 >
-> What would help me most: take it for someone real and hard to shop for, and tell me whether the top pick made sense for what you entered. I'm looking for the gaps, and the categories I suspect are thin are men over 60, kids under 5, and anything over 500 dollars.
+> What would help me most: take it for someone real and hard to shop for, and tell me whether the top pick made sense for what you entered. I'm looking for the gaps, and the thinnest areas right now are gifts for babies, sustainable gifts, and gifts under $25.
 >
 > One request from the 2021 launch is still open: someone suggested letting the recipient take the quiz themselves, so the gift stays a surprise. I'd like to know whether people still want that.
 
-That comment leads with what a shopper gets, uses the anniversary once, names four upgrades, discloses the affiliate and sponsored arrangements, and asks for feedback with no mention of upvotes. Three things to check before you post it. The weak categories are a guess from the catalogue structure, so replace them with the true ones. If you launch on Sunday 22 November, change "Five years ago today" to "Five years ago this week". The earlier draft said there was no email capture; that line is left out because the optional email after request more is already built and switched off, and it could be on by launch day.
+That comment leads with what a shopper gets, uses the anniversary once, names four upgrades, discloses the affiliate and sponsored arrangements, and asks for feedback with no mention of upvotes. Three things to check before you post it. The thin areas named in the comment come from the 10/11 coverage map (babies, Sustainability, and under $25); update them if a sourcing round fills them first. If you launch on Sunday 22 November, change "Five years ago today" to "Five years ago this week". The earlier draft said there was no email capture; that line is left out because the optional email after request more is already built and switched off, and it could be on by launch day.
 
 ## Reddit: what the sitewide rules actually say
 
