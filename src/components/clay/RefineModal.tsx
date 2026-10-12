@@ -34,6 +34,10 @@ function reconcile(a: Answers): Answers {
   }
   if (next.occasion !== "other") delete next.occasionOther;
   if (!active.includes("vibe")) delete next.vibe;
+  if (next.interests) {
+    const allowed = new Set(getActiveOptions(q("interests"), next).map((o) => o.v));
+    next.interests = next.interests.filter((v) => allowed.has(v));
+  }
   return next;
 }
 
@@ -262,7 +266,7 @@ export function RefineModal({ open, answers, isMobile, onClose, onApply }: Props
           {interestsQ.type === "multi" && (
             <Section title="Interests" hint={`up to ${interestsQ.max}`}>
               <div style={grid(3)}>
-                {interestsQ.options.map((o) => {
+                {getActiveOptions(interestsQ, draft).map((o) => {
                   const sel = (draft.interests ?? []).includes(o.v);
                   return (
                     <ChipChoice

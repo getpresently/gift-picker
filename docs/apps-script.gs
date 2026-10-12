@@ -284,20 +284,74 @@ function rejectFromOwnerFeedback_(p) {
   }
 }
 
+// Requests from Dalia's own browsers are flagged "test". Script Property
+// TEST_CLIENT_IDS (comma-separated) overrides the default list.
+const DEFAULT_TEST_CLIENT_IDS = ["f612abb3-d0c4-4ffc-9c36-588984c6725e"];
+
+function testClientIds_() {
+  const raw = PropertiesService.getScriptProperties().getProperty("TEST_CLIENT_IDS");
+  return (raw ? raw.split(",") : DEFAULT_TEST_CLIENT_IDS).map((s) => s.trim()).filter(Boolean);
+}
+
+/** Column number for a row-1 header, added after the last column if missing. */
+function columnFor_(sheet, name) {
+  const lastCol = Math.max(sheet.getLastColumn(), 1);
+  const headers = sheet.getRange(1, 1, 1, lastCol).getValues()[0].map(String);
+  const at = headers.indexOf(name) + 1;
+  if (at) return at;
+  sheet.getRange(1, lastCol + 1).setValue(name);
+  return lastCol + 1;
+}
+
+/**
+ * "Request more" rows. Spam handling (10/13/26), on top of allowWrite_:
+ * the same shopper sending the same request again within ten minutes is
+ * dropped, and every row gets a "flag" (test, burst, no-client; blank looks
+ * like a real shopper) plus "results", the number of gifts they were shown.
+ */
 function handleRequest_(p) {
-  const sheet = ensureSheet_("Requests", REQUEST_HEADERS);
   const a = p.answers || {};
-  sheet.appendRow([
-    p.at || new Date().toISOString(),
-    p.type || "request",
-    a.recipient || "",
-    a.age || "",
-    a.occasion || "",
-    joinIfArray_(a.interests),
-    joinIfArray_(a.vibe),
-    a.budget || "",
-    p.clientId || "",
-  ]);
+  const clientId = String(p.clientId || "").slice(0, 80);
+  const signature = [a.recipient, a.age, a.occasion, joinIfArray_(a.interests), joinIfArray_(a.vibe), a.budget].join("|");
+  const cache = CacheService.getScriptCache();
+  const dupKey = "req_" + Utilities.base64EncodeWebSafe(
+    Utilities.computeDigest(Utilities.DigestAlgorithm.MD5, clientId + "|" + signature));
+  if (cache.get(dupKey)) return { ok: true };
+  cache.put(dupKey, "1", 600);
+
+  const burstKey = "reqn_" + clientId;
+  const recent = Number(cache.get(burstKey) || 0) + 1;
+  cache.put(burstKey, String(recent), 600);
+  const flags = [];
+  if (testClientIds_().indexOf(clientId) !== -1) flags.push("test");
+  if (!/^([0-9a-f-]{36}|gp_[a-z0-9_]+)$/i.test(clientId)) flags.push("no-client");
+  if (recent > 3) flags.push("burst");
+  const results = Number(p.results);
+
+  const lock = LockService.getScriptLock();
+  lock.waitLock(10000);
+  try {
+    const sheet = ensureSheet_("Requests", REQUEST_HEADERS);
+    const resultsCol = columnFor_(sheet, "results");
+    const flagCol = columnFor_(sheet, "flag");
+    const row = [
+      p.at || new Date().toISOString(),
+      p.type || "request",
+      a.recipient || "",
+      a.age || "",
+      a.occasion || "",
+      joinIfArray_(a.interests),
+      joinIfArray_(a.vibe),
+      a.budget || "",
+      clientId,
+    ];
+    while (row.length < Math.max(resultsCol, flagCol)) row.push("");
+    row[resultsCol - 1] = p.results == null || !isFinite(results) ? "" : results;
+    row[flagCol - 1] = flags.join(", ");
+    sheet.appendRow(row);
+  } finally {
+    lock.releaseLock();
+  }
   return { ok: true };
 }
 

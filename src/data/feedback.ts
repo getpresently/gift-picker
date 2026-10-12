@@ -104,6 +104,7 @@ type RequestPayload = {
   answers: WireAnswers;
   at: string;
   clientId: string;
+  results?: number;
 };
 
 type NotifyPayload = {
@@ -196,10 +197,12 @@ export async function postFeedback(payload: FeedbackInput): Promise<void> {
  * isn't satisfied with the picks and wants the catalog to grow in this
  * direction. The Apps Script appends a row to a "Requests" sheet.
  */
-export async function postRequest(answers: Answers): Promise<void> {
+export async function postRequest(answers: Answers, results?: number): Promise<void> {
   return postEvent({
     type: "request",
     answers: humanizeAnswers(answers),
+    // How many gifts the shopper was shown, so thin results stand out in the sheet.
+    ...(typeof results === "number" ? { results } : {}),
     at: new Date().toISOString(),
     clientId: getClientId(),
   });

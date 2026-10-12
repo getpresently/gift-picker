@@ -216,6 +216,13 @@ const HIDE_OCCASIONS_FOR_AGE: Record<string, Set<string>> = {
   teen: new Set(["housewarm", "wed", "baby", "anni", "sympathy"]),
 };
 
+// Per-age interest hides (Dalia, 10/13): interests that make no sense for a
+// baby or a little one are left out of the quiz and the Adjust panel.
+const HIDE_INTERESTS_FOR_AGE: Record<string, Set<string>> = {
+  baby: new Set(["gaming", "selfcare", "fitness", "food", "cooking", "pets", "wellness"]),
+  kid:  new Set(["selfcare", "wellness", "organize"]),
+};
+
 // Typed "Other" occasions that mean an occasion we already offer. The
 // shopper's own wording still shows on the results page; only scoring
 // treats it as the built-in occasion. Anything unmatched stays "other".
@@ -265,6 +272,11 @@ export function getActiveOptions(q: Question, answers: Answers): Option[] {
 
   if (q.id === "occasion" && answers.age && HIDE_OCCASIONS_FOR_AGE[answers.age]) {
     const hidden = HIDE_OCCASIONS_FOR_AGE[answers.age];
+    return q.options.filter((o) => !hidden.has(o.v));
+  }
+
+  if (q.id === "interests" && answers.age && HIDE_INTERESTS_FOR_AGE[answers.age]) {
+    const hidden = HIDE_INTERESTS_FOR_AGE[answers.age];
     return q.options.filter((o) => !hidden.has(o.v));
   }
 

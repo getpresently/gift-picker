@@ -130,7 +130,7 @@ export function Results() {
     if (requestSent) return;
     setRequestSent(true);
     track("request_more");
-    await postRequest(answers);
+    await postRequest(answers, ranked.length);
   };
 
   // If user lands here with no answers at all, bounce to /quiz.
