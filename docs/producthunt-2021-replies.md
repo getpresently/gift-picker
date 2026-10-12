@@ -30,7 +30,7 @@ Pacing: 50 replies posted back to back can read as mass messaging, which Product
 > Hi Peter, how did the picky family do? We relaunched GiftPicker on Product Hunt today, with 4x the gifts we had in 2021: [LINK]. I'd love to hear if it finds something for them this year.
 
 **Jigesh Mehta** (timing with Black Friday; easy to use)
-> Hi Jigesh, we're back just before Black Friday again: GiftPicker relaunched on Product Hunt today with 4x the gifts and rebuilt matching: [LINK]. I'd love to hear what you think.
+> Hi Jigesh, we're back ahead of the holidays again: GiftPicker relaunched on Product Hunt today with 4x the gifts and rebuilt matching: [LINK]. I'd love to hear what you think.
 
 **Soraya Fouladi** (Presently is a longtime favorite for group gifts)
 > Hi Soraya, thank you again. We relaunched GiftPicker on Product Hunt today: [LINK]. It has 4x the gifts we had in 2021, and I'd love to hear what you think of the new version.
@@ -95,7 +95,7 @@ Pacing: 50 replies posted back to back can read as mass messaging, which Product
 > Hi Christine, did you find something for your dad? GiftPicker relaunched on Product Hunt today with 4x the gifts and smarter matching: [LINK]. I'd love to know if it does better this time.
 
 **Derek Pankaew** (never knows what to get people)
-> Hi Derek, Christmas is coming again, and GiftPicker relaunched on Product Hunt today: [LINK]. 4x the gifts now. Would love to hear if it helps.
+> Hi Derek, the holidays are coming again, and GiftPicker relaunched on Product Hunt today: [LINK]. 4x the gifts now. Would love to hear if it helps.
 
 **Ben Arbov** (likes the quiz; maker of Greatest Gift)
 > Hi Ben, five years later and still in gifting: we relaunched GiftPicker on Product Hunt today: [LINK]. I'd love to hear what you think, and how Greatest Gift has been going.
