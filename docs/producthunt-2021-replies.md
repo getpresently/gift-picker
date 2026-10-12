@@ -2,9 +2,9 @@
 
 Post these on launch day as replies on the 2021 post (https://www.producthunt.com/posts/giftpicker-by-presently), once the new launch is live, so each person gets a reply notification. Swap [LINK] for the new launch URL. Each one asks them to try it or tell you what they think, never to upvote: Product Hunt removes or demotes launches that ask for upvotes or mass-message users.
 
-Covers all eight comment pages of the 2021 thread (read 10/12/26), 47 people in all. Team members from 2021 are left out: Alex Reed, Nicholas Osborne, Vrushali Tarte, Spencer Belsky, and the interns Dalia tagged (Marc Bacvanski, Erin Kim, nsortur). Qali Langstaff, also marked Maker, gets a personal note from you rather than a template.
+Covers all eight comment pages of the 2021 thread (read 10/12/26), 50 people in all. Team members from 2021 are left out: Alex Reed, Nicholas Osborne, Vrushali Tarte, Spencer Belsky, and the interns Dalia tagged (Marc Bacvanski, Erin Kim, nsortur). Qali Langstaff, also marked Maker, gets a personal note from you rather than a template.
 
-Pacing: 47 replies posted back to back can read as mass messaging, which Product Hunt penalizes. Spread them through launch day in small batches, starting with the people who asked for something (Nate, Anup) or said they would use it, and edit any line so it sounds like you.
+Pacing: 50 replies posted back to back can read as mass messaging, which Product Hunt penalizes. Spread them through launch day in small batches, starting with the people who asked for something (Nate, Anup) or said they would use it, and edit any line so it sounds like you.
 
 ---
 
