@@ -1,6 +1,6 @@
 # Replies to 2021 Product Hunt commenters, for launch day
 
-Post these on launch day as replies on the 2021 post (https://www.producthunt.com/posts/giftpicker-by-presently), once the new launch is live, so each person gets a reply notification. Swap [LINK] for the new launch URL. Each one asks them to try it or tell you what they think, never to upvote: Product Hunt removes or demotes launches that ask for upvotes or mass-message users.
+Post these on launch day as replies on the 2021 post (https://www.producthunt.com/posts/giftpicker-by-presently), once the new launch is live, so each person gets a reply notification. Swap [LINK] for the new launch URL. Short and warm, since Dalia knows most of these people (rewritten 10/12). None asks for an upvote: Product Hunt removes or demotes launches that ask for upvotes or mass-message users.
 
 Covers all eight comment pages of the 2021 thread (read 10/12/26), 50 people in all. Team members from 2021 are left out: Alex Reed, Nicholas Osborne, Vrushali Tarte, Spencer Belsky, and the interns Dalia tagged (Marc Bacvanski, Erin Kim, nsortur). Qali Langstaff, also marked Maker, gets a personal note from you rather than a template.
 
@@ -8,167 +8,176 @@ Pacing: 50 replies posted back to back can read as mass messaging, which Product
 
 ---
 
-**Bhaumik Patel** (said: simple, fast, and fun)
-> Hi Bhaumik, five years later GiftPicker is back on Product Hunt today: [LINK]. Still simple and fast, with 4x the gifts we had in 2021 and new matching under the hood. Would love to know if it's still fun.
 
-**Nate Grant** (asked for a budget slider; Dalia already replied that it shipped)
-> Hi Nate, the budget slider you asked for is live, and today we relaunched on Product Hunt: [LINK]. It now takes a range, so a $150 family exchange works well. I'd love to hear if it helps this year.
+## Page 1
 
-**Anup Gosavi** (asked whether recipients could take the quiz themselves)
-> Hi Anup, we relaunched on Product Hunt today: [LINK]. Your idea of letting the recipient take the quiz is still on our list, and I asked the new thread whether people want it. I'd love your take on the new version.
+**Bhaumik Patel** (@patel0phone)
+> Hey Bhaumik! GiftPicker is back, rebuilt from scratch: [LINK]. Hope it's still simple, fast, and fun 🙂
 
-**Justin Cuaresma** (gifting is hard; thanks for simplifying it)
-> Hi Justin, thanks again for the kind words in 2021. We relaunched GiftPicker today with 4x the gifts and rebuilt matching: [LINK]. I'd love to hear what you think.
+**Nate Grant** (@nathaniel_grant)
+> Hey Nate! Your budget slider made it in 🎉 We relaunched today: [LINK]. Hope it helps with the family exchange this year!
 
-**Shira Yevin** (smart, timely for the holidays, would use it)
-> Hi Shira, just in time for the holidays again: we relaunched GiftPicker on Product Hunt today, with 4x the gifts we had in 2021: [LINK]. I hope it helps with this year's list.
+**Anup Gosavi** (@_anupg)
+> Hey Anup! We relaunched today: [LINK]. Your recipient-takes-the-quiz idea is still on my list. Would love your take!
 
-**Amanda Emmanuel** (helps pick thoughtful gifts quickly)
-> Hi Amanda, we relaunched GiftPicker on Product Hunt today: [LINK]. Same quick quiz, 4x the gifts, and smarter matching. I'd love to know if the picks still feel thoughtful.
+**Justin Cuaresma** (@iamspidermayne)
+> Justin!! Five years later, GiftPicker is back: [LINK]. Gifting is still hard, hopefully a little less now 🙂
 
-**Peter Walker** (had been putting off shopping for his picky family)
-> Hi Peter, how did the picky family do? We relaunched GiftPicker on Product Hunt today, with 4x the gifts we had in 2021: [LINK]. I'd love to hear if it finds something for them this year.
+**Shira Yevin** (@shira_girl)
+> Shira! Back just in time for the holidays: [LINK]. Tell me what it picks for you 💛
 
-**Jigesh Mehta** (timing with Black Friday; easy to use)
-> Hi Jigesh, we're back ahead of the holidays again: GiftPicker relaunched on Product Hunt today with 4x the gifts and rebuilt matching: [LINK]. I'd love to hear what you think.
+**Amanda Emmanuel** (@amandaemmanuel)
+> Amanda! GiftPicker 2.0 is live today: [LINK]. Let me know if the picks still feel thoughtful!
 
-**Soraya Fouladi** (Presently is a longtime favorite for group gifts)
-> Hi Soraya, thank you again. We relaunched GiftPicker on Product Hunt today: [LINK]. It has 4x the gifts we had in 2021, and I'd love to hear what you think of the new version.
 
-**Greg Cimilluca** (hopes it keeps growing to help people like him)
-> Hi Greg, it kept growing: GiftPicker relaunched on Product Hunt today with 4x the gifts we had in 2021: [LINK]. I'd love to hear whether it helps.
+## Page 2
 
-**Zach Glabman** (hard-to-shop-for family; planned to share it with friends)
-> Hi Zach, we relaunched GiftPicker on Product Hunt today, with 4x the gifts and rebuilt matching: [LINK]. I'd love to know if it does better for your family this year.
+**Peter Walker** (@peterj_walker)
+> Peter! Did the picky family ever come around? 😅 We relaunched today: [LINK]. Give it another shot!
 
----
+**Jigesh Mehta** (@therealjig11)
+> Jigesh! Back again ahead of the holidays: [LINK]. Rebuilt the whole thing, would love your thoughts.
+
+**Soraya Fouladi** (@sorayafouladi)
+> Soraya, thank you always ❤️ GiftPicker is back today: [LINK]. Would love to hear what you think!
+
+**Greg Cimilluca** (@greg_cimilluca)
+> Greg, it kept growing! 4x the gifts now, and we relaunched today: [LINK]. Hope it helps!
+
+**Zach Glabman** (@zachglabman)
+> Zach! Round two for your hard-to-shop-for family: [LINK]. Curious if it does better this time 🙂
+
 
 ## Page 3
 
-**Jason Wiseman** (very helpful, recommends it)
-> Hi Jason, thanks for the recommendation back in 2021. We relaunched GiftPicker on Product Hunt today: [LINK]. It has 4x the gifts now, and I'd love to hear if it still earns the recommendation.
+**Jason Wiseman** (@jason_wiseman)
+> Jason! Thanks for the rec back in 2021. We relaunched today: [LINK]. Hope it still earns it!
 
-**Regina Gerbeaux** (excited, congrats to the team)
-> Hi Regina, thank you for cheering us on in 2021. GiftPicker relaunched on Product Hunt today, rebuilt with 4x the gifts: [LINK]. I'd love to hear what you think.
+**Regina Gerbeaux** (@regina_gerbeaux)
+> Regina!! We're back today: [LINK]. Thank you for cheering us on the first time ❤️
 
-**Max Greenwald** (easy to use, found a gift for his siblings)
-> Hi Max, I hope the sibling gift landed! We relaunched GiftPicker on Product Hunt today with 4x the gifts: [LINK]. Curious what it picks for them this year.
+**Max Greenwald** (@max_greenwald)
+> Max! Hope the sibling gift landed 😄 We relaunched today: [LINK]. Try it for round two!
 
-**Diego Diaz** (short cheer)
-> Hi Diego, thanks for the cheer in 2021. We're back: GiftPicker relaunched on Product Hunt today: [LINK]. Would love your take on the new version.
+**Diego Diaz** (@the1diegodiaz1)
+> Diego! We're baaack: [LINK] 🎉
 
-**Randy Stocklin** (super excited for Dalia)
-> Hi Randy, thank you for the support back then. GiftPicker relaunched on Product Hunt today, with 4x the gifts and new matching: [LINK]. I'd love to hear what you think.
+**Randy Stocklin** (@randystocklin)
+> Randy! Thank you for the support, then and now. We relaunched today: [LINK] 🙏
 
-**Chrissy Cowdrey** (gift giving is her love language; keep going)
-> Hi Chrissy, we kept going! GiftPicker relaunched on Product Hunt today with 4x the gifts we had in 2021: [LINK]. As a fellow gift-giving person, I'd love your honest take.
+**Chrissy Cowdrey** (@cowdrey)
+> Chrissy! We kept going 😄 GiftPicker is back today: [LINK]. Would love a fellow gift-lover's honest take.
 
-**Ryan Gilbert** (loves the idea, perfect timing)
-> Hi Ryan, perfect timing again: GiftPicker relaunched on Product Hunt today, right before the holidays: [LINK]. It has 4x the gifts now. Would love to hear what you think.
+**Ryan Gilbert** (@ryangilbert)
+> Ryan! Perfect timing again, right before the holidays: [LINK] 🎁
+
 
 ## Page 4
 
-**Sachit Gupta** (just in time for holiday shopping)
-> Hi Sachit, just in time for holiday shopping again: GiftPicker relaunched on Product Hunt today: [LINK]. 4x the gifts and rebuilt matching. Would love your feedback.
+**Sachit Gupta** (@sachitgupta)
+> Sachit! Holiday shopping, round two: [LINK] 🎁
 
-**Max Grigoryev** (great idea, fantastic team, good luck)
-> Hi Max, thanks for the good luck in 2021. GiftPicker relaunched on Product Hunt today: [LINK]. I'd love to hear what you think of the new version.
+**Max Grigoryev** (@max_grigoryev)
+> Max! Your good luck worked 😄 We relaunched today: [LINK].
 
-**Kelsey Bishop** (what they needed to start holiday shopping)
-> Hi Kelsey, hoping it kicks off your holiday shopping again this year: GiftPicker relaunched on Product Hunt today with 4x the gifts: [LINK]. Let me know how the picks look.
+**Kelsey Bishop** (@kelseycbishop)
+> Kelsey! Hope it kicks off your holiday shopping again this year: [LINK] 🎁
 
-**Michele Worthy** (congrats, can't wait to check it out)
-> Hi Michele, GiftPicker relaunched on Product Hunt today, rebuilt with 4x the gifts we had in 2021: [LINK]. I'd love your feedback on the new version.
+**Michele Worthy** (@michele_worthy)
+> Michele! GiftPicker is back today, totally rebuilt: [LINK]. Would love your feedback!
 
-**Laura Du** (will send it to family and her boyfriend)
-> Hi Laura, thank you for sharing it with your family in 2021. GiftPicker relaunched on Product Hunt today: [LINK]. 4x the gifts now, so I hope it finds something great for them.
+**Laura Du** (@laurayd)
+> Laura! Thanks for sharing it with the fam last time ❤️ We relaunched today: [LINK].
 
-**Katharine Jiang** (timing fit her holiday gift planning)
-> Hi Katharine, the timing works again: GiftPicker relaunched on Product Hunt today, just ahead of the holidays: [LINK]. I'd love to hear what you think of the new version.
+**Katharine Jiang** (@katjinja)
+> Katharine! Back in time for holiday planning: [LINK]. Would love to hear what you think!
+
 
 ## Page 5
 
-**Anna Fuller** (finds the quiz addictive, used it several times for family)
-> Hi Anna, the quiz you called addictive is back, with 4x the gifts: we relaunched GiftPicker on Product Hunt today: [LINK]. I'd love to hear if the family picks are better.
+**Anna Fuller** (@annafuller)
+> Anna! The quiz you called addictive is back, with way more gifts 😄 [LINK]
 
-**Christine Hong** (stuck on a gift for her dad)
-> Hi Christine, did you find something for your dad? GiftPicker relaunched on Product Hunt today with 4x the gifts and smarter matching: [LINK]. I'd love to know if it does better this time.
+**Christine Hong** (@itschristinehong)
+> Christine! Did you ever find something for your dad? 😄 We relaunched today: [LINK].
 
-**Derek Pankaew** (never knows what to get people)
-> Hi Derek, the holidays are coming again, and GiftPicker relaunched on Product Hunt today: [LINK]. 4x the gifts now. Would love to hear if it helps.
+**Derek Pankaew** (@derekpankaew)
+> Derek! The holidays are coming and so are we 😄 Relaunched today: [LINK].
 
-**Ben Arbov** (likes the quiz; maker of Greatest Gift)
-> Hi Ben, five years later and still in gifting: we relaunched GiftPicker on Product Hunt today: [LINK]. I'd love to hear what you think, and how Greatest Gift has been going.
+**Ben Arbov** (@ben_arbov)
+> Ben! Still in gifting five years later 🙌 We relaunched today: [LINK]. How's Greatest Gift doing?
 
-**Mario Sanchez Moreno** (works well, makes decisions easier)
-> Hi Mario, hope you're doing well! GiftPicker relaunched on Product Hunt today, with 4x the gifts we had in 2021: [LINK]. I'd love your feedback.
+**Mario Sanchez Moreno** (@mario_sanchez_moreno)
+> Mario! Hope you're doing well 🙂 GiftPicker is back today: [LINK].
 
-**Anthony Nardini** (makes gift-giving easy, loves it)
-> Hi Anthony, great to reconnect here. GiftPicker relaunched on Product Hunt today, rebuilt with 4x the gifts: [LINK]. I'd love to hear what you think.
+**Anthony Nardini** (@anthony_nardini)
+> Anthony! So good to see your name here again. We relaunched today: [LINK] 🙏
 
-**Andrea Orrego** (planned to onboard her in-laws)
-> Hi Andrea, how did the in-laws do? GiftPicker relaunched on Product Hunt today with 4x the gifts: [LINK]. I'd love to see what it picks for them this year.
+**Andrea Orrego** (@andreaorrego1)
+> Andrea! How did the in-laws do? 😄 We relaunched today: [LINK].
+
 
 ## Page 6
 
-**Sanjeev Sangwan** (solves a real problem)
-> Hi Sanjeev, we kept working on that problem: GiftPicker relaunched on Product Hunt today, with 4x the gifts and new matching: [LINK]. Would love your feedback.
+**Sanjeev Sangwan** (@sanjeev_sangwan)
+> Sanjeev! Still solving that problem, now with 4x the gifts: [LINK].
 
-**Lucija Matic** (brilliant, congrats)
-> Hi Lucija, thank you for the kind words in 2021. GiftPicker relaunched on Product Hunt today: [LINK]. I'd love to hear what you think of the new version.
+**Lucija Matic** (@lucija_matic)
+> Lucija! Thank you for the kind words last time ❤️ We relaunched today: [LINK].
 
-**Chris Lu** (awesome, congrats)
-> Hi Chris, thanks for the support back then. GiftPicker relaunched on Product Hunt today with 4x the gifts: [LINK]. I'd love your take.
+**Chris Lu** (@chris_lu3)
+> Chris! Thanks for the support back then. GiftPicker is back today: [LINK].
 
-**Patricia Mou** (much needed)
-> Hi Patricia, thank you for the encouragement in 2021. GiftPicker relaunched on Product Hunt today, rebuilt with 4x the gifts: [LINK]. I'd love to hear what you think.
+**Patricia Mou** (@patricia_mou2)
+> Patricia! Thank you for the encouragement in 2021 ❤️ We relaunched today: [LINK].
 
-**Tommy Holt** (perfect holiday timing, recommends it)
-> Hi Tommy, holiday timing again: GiftPicker relaunched on Product Hunt today: [LINK]. 4x the gifts we had in 2021. Would love to hear if you'd still recommend it.
+**Tommy Holt** (@trholt)
+> Tommy! Holiday timing again 😄 We relaunched today: [LINK].
 
-**Natalie Muenster** (loved seeing it come to life)
-> Hi Natalie, it's had a second life: GiftPicker relaunched on Product Hunt today with 4x the gifts and rebuilt matching: [LINK]. I'd love to hear what you think.
+**Natalie Muenster** (@natalie_muenster)
+> Natalie! GiftPicker got a second life 🎉 [LINK]. Would love your thoughts!
 
-**J W** (makes gifting easier)
-> Hi! GiftPicker relaunched on Product Hunt today, with 4x the gifts we had in 2021: [LINK]. I'd love to hear if it still makes gifting easier.
+**J W** (@jannwong)
+> Thank you for the support in 2021! GiftPicker relaunched today: [LINK] 🙏
+
 
 ## Page 7
 
-**Jorge Richardson** (great idea, well timed for the holidays)
-> Hi Jorge, back for the holidays: GiftPicker relaunched on Product Hunt today with 4x the gifts: [LINK]. I'd love to hear what you think.
+**Jorge Richardson** (@jorge_richardson)
+> Jorge! Back for the holidays: [LINK] 🎁
 
-**Lisa Canini** (great idea, perfect timing)
-> Hi Lisa, thank you for the support in 2021. GiftPicker relaunched on Product Hunt today: [LINK]. I'd love your feedback on the new version.
+**Lisa Canini** (@lisa_canini)
+> Lisa! Thank you for the support last time ❤️ We relaunched today: [LINK].
 
-**Zach Pelka** (really awesome; Dalia mentioned getting UneFemmeWines on Product Hunt)
-> Hi Zach, GiftPicker relaunched on Product Hunt today, rebuilt with 4x the gifts: [LINK]. I'd love to hear what you think, and how UneFemme is doing.
+**Zach Pelka** (@zach_pelka1)
+> Zach! GiftPicker is back today: [LINK]. Still want to get UneFemme on here too 😄
 
-**Shannon Almeida** (applause)
-> Hi Shannon, thanks for the applause in 2021! GiftPicker relaunched on Product Hunt today with 4x the gifts: [LINK]. Would love to hear what you think.
+**Shannon Almeida** (@shannon_almeida)
+> Shannon! 👏👏 right back at you. We relaunched today: [LINK].
 
-**Brian Nichols** (really cool)
-> Hi Brian, GiftPicker relaunched on Product Hunt today, with 4x the gifts and new matching: [LINK]. I'd love your take on the new version.
+**Brian Nichols** (@b_nicks11)
+> Brian! GiftPicker is back, rebuilt from scratch: [LINK].
 
-**Dave Goldblatt** (asked for it to be automated for him)
-> Hi Dave, step two is closer: GiftPicker relaunched on Product Hunt today with 4x the gifts and matching that does more of the thinking: [LINK]. Still not fully automated, but I'd love to hear what you think.
+**Dave Goldblatt** (@dave_goldblatt)
+> Dave! Step two is getting closer 😄 We relaunched today: [LINK].
 
-**Jack O'Brien** (awesome, timing couldn't be better)
-> Hi Jack, the timing is good again: GiftPicker relaunched on Product Hunt today, just before the holidays: [LINK]. I'd love to hear what you think.
+**Jack O'Brien** (@thejackobrien)
+> Jack! Gift launches are in the air again 😄 We relaunched today: [LINK].
+
 
 ## Page 8
 
-**Javaughn Lawrence** (congrats, Dalia)
-> Hi Javaughn, thank you for the congrats in 2021. GiftPicker relaunched on Product Hunt today, with 4x the gifts: [LINK]. I'd love your feedback.
+**Javaughn Lawrence** (@javaughn12)
+> Javaughn! Woot right back 🎉 We relaunched today: [LINK].
 
-**Eric Bahn** (love this, congrats)
-> Hi Eric, thank you for the support back then. GiftPicker relaunched on Product Hunt today, rebuilt with 4x the gifts we had in 2021: [LINK]. I'd love to hear what you think.
+**Eric Bahn** (@ericbahn)
+> Eric! Thank you for the love in 2021 ❤️ We're back today: [LINK].
 
-**Sarah Du** (timely for the holidays, likes it)
-> Hi Sarah, timely again: GiftPicker relaunched on Product Hunt today, ahead of the holidays: [LINK]. 4x the gifts now. Would love your take.
+**Sarah Du** (@_sarah_du)
+> Sarah! Back again for the holiday season: [LINK] 🎁
 
-**Adam Hardej** (compliments and congrats)
-> Hi Adam, thank you for the kind words in 2021. GiftPicker relaunched on Product Hunt today: [LINK]. I'd love to hear what you think of the new version.
+**Adam Hardej** (@adam_hardej2)
+> Adam! Thank you for the kind words last time 🙏 We relaunched today: [LINK].
 
-**Macgill Davis** (congrats)
-> Hi Macgill, thanks for the congrats back then. GiftPicker relaunched on Product Hunt today with 4x the gifts and rebuilt matching: [LINK]. I'd love your feedback.
-
+**Macgill Davis** (@macgridcupcake)
+> Macgill! We're back today: [LINK]. Hope Rize is going great!
