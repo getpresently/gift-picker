@@ -208,7 +208,7 @@ The maker's name: "Geo F. Trumper" for a body wash that Maggard Razors sells. A 
 ### Links
 
 - **Link**: the product page, ideally on the brand's own site. It must load, show the product in stock, and match the price.
-- **AmazonAltLink**: only `https://www.amazon.com/dp/ASIN`, only for the identical product (same model, size, and count). Never amzn.to. The Associates tag is added at click time in `src/data/affiliate.ts`, so the sheet stores clean links.
+- **AmazonAltLink**: only `https://www.amazon.com/dp/ASIN`. Never amzn.to. The Associates tag is added at click time in `src/data/affiliate.ts`, so the sheet stores clean links. Rules relaxed by Dalia on 10/13/26: the identical product or a close fit (same brand, similar model, size, colour, or edition) is fine; any seller is fine, third-party resellers included, as long as the offer is new; any price is fine, cheaper or pricier; out of stock or no featured offer is fine if the listing exists. Still skip a different brand, a used-only listing, or a different product type.
 - **Link and AmazonAltLink never hold the same URL or ASIN** (Dalia 10/3). If Amazon is the only seller, it goes in Link and AmazonAltLink stays empty. Seven rows broke this on 10/3 and were cleared: r63, r181, r246, r261, r378, r422, r693.
 
 ### Descriptions
