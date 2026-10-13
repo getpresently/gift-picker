@@ -62,6 +62,12 @@ async function handleEvent(event) {
     return serveSitemap(event);
   }
 
+  // Short link for the 2026 Product Hunt launch. PH cuts long URLs in comments
+  // and notification emails to "https://www.producthunt.com/prod...".
+  if (url.pathname.replace(/\/+$/, "") === "/ph") {
+    return Response.redirect("https://www.producthunt.com/products/giftpicker-by-presently/launches/giftpicker", 302);
+  }
+
   // Live catalog for the results page, straight from KV (the site falls
   // back to Apps Script if this ever answers with an error).
   if (url.pathname === "/api/gifts") {
