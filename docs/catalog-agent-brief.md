@@ -166,7 +166,7 @@ TSV, no header, exactly 20 columns per row, no tabs or newlines inside fields. *
 11. **Description:** 20 to 40 words, plain and concrete: what it is and why it makes a good gift.
 12. **PhotoAddress:** a direct image URL you verified (section 6).
 13. **Link:** a direct product page you verified: it loads, the product is in stock, and the price matches. Prefer the brand's own site.
-14. **AmazonAltLink:** `https://www.amazon.com/dp/ASIN` if Amazon sells the identical product or a close fit (same brand, similar model, size, colour, or edition), from any seller as long as it is new, at any price, even if it is out of stock right now; else empty. Never amzn.to. **Never the same URL or ASIN as Link.** If Amazon is the only seller, put it in Link and leave this empty.
+14. **AmazonAltLink:** `https://www.amazon.com/dp/ASIN` if Amazon sells the identical product or a close fit (same brand, similar model, size, colour, or edition), from any seller with ratings as long as it is new, at any price, even if it is out of stock right now; skip a close fit that drops what makes the gift special (a themed edition, a foreign-language edition); else empty. Never amzn.to. **Never the same URL or ASIN as Link.** If Amazon is the only seller, put it in Link and leave this empty.
 15. **Status:** `Live`.
 16. **Date updated:** today's date as `YYYY-MM-DD`.
 17. **Review status:** `FALSE`.
