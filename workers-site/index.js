@@ -2,6 +2,7 @@ import {
   getAssetFromKV,
   serveSinglePageApp,
 } from "@cloudflare/kv-asset-handler";
+import { serveAnalytics } from "./analytics.js";
 
 /**
  * The DEBUG flag will do two things that help during development:
@@ -66,6 +67,11 @@ async function handleEvent(event) {
   // and notification emails to "https://www.producthunt.com/prod...".
   if (url.pathname.replace(/\/+$/, "") === "/ph") {
     return Response.redirect("https://www.producthunt.com/products/giftpicker-by-presently/launches/giftpicker", 302);
+  }
+
+  // Numbers for the Analytics tab in /review (GA4 data, password-gated).
+  if (url.pathname === "/api/analytics") {
+    return serveAnalytics(event.request, url);
   }
 
   // Live catalog for the results page, straight from KV (the site falls

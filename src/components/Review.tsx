@@ -8,6 +8,7 @@ import { PriceDisplay } from "./clay/PriceDisplay";
 import { useNavigate } from "react-router-dom";
 import { SiteHeader } from "./clay/SiteHeader";
 import { useImageFallback } from "../hooks/useImageFallback";
+import { ReviewAnalytics } from "./ReviewAnalytics";
 import { useIsMobile } from "../hooks/useIsMobile";
 import { buildMatcher } from "../data/similarity";
 import type { SimilarityResult } from "../data/similarity";
@@ -829,8 +830,11 @@ function ErrorBanner({ text, reloadable, onDismiss }: { text: string; reloadable
  * Main tool
  * ------------------------------------------------------------------ */
 
-function ReviewTool({ unlock }: { unlock: UnlockState }) {
+function ReviewTool({ unlock, active, onOpenAnalytics }: { unlock: UnlockState; active: boolean; onOpenAnalytics: () => void }) {
   const isMobile = useIsMobile();
+  // Hidden while the Analytics tab is open; its shortcut keys must not act on gifts then.
+  const activeRef = useRef(active);
+  activeRef.current = active;
   const navigate = useNavigate();
   const { data, loading, error, reload } = useReviewGifts();
 
@@ -1021,7 +1025,7 @@ function ReviewTool({ unlock }: { unlock: UnlockState }) {
   useEffect(() => {
     function onKeyDown(e: KeyboardEvent) {
       // Cmd+R must stay "refresh"; only bare, non-repeating keys count.
-      if (e.metaKey || e.ctrlKey || e.altKey || e.repeat) return;
+      if (!activeRef.current || e.metaKey || e.ctrlKey || e.altKey || e.repeat) return;
       const target = e.target as HTMLElement | null;
       const tag = target?.tagName;
       if (tag === "INPUT" || tag === "TEXTAREA" || target?.isContentEditable) return;
@@ -1053,14 +1057,19 @@ function ReviewTool({ unlock }: { unlock: UnlockState }) {
   const currentGift = currentId ? giftById.get(currentId) ?? null : null;
 
   return (
-    <div style={{ background: "#FBF1E1", minHeight: "100vh", position: "relative" }}>
+    <div style={{ background: "#FBF1E1", minHeight: "100vh", position: "relative", display: active ? undefined : "none" }}>
       <div style={{ position: "relative", minHeight: "100vh" }}>
         <AmbientGlow variant="results" />
 
         <SiteHeader onLogoClick={() => navigate("/")}>
-          <span style={{ fontFamily: "Geist, sans-serif", fontSize: 13, color: "rgba(35,20,16,0.6)", whiteSpace: "nowrap" }}>
-            {tally.approved} approved, {tally.rejected} rejected{tally.dead ? `, ${tally.dead} dead` : ""}
-          </span>
+          {!isMobile && (
+            <span style={{ fontFamily: "Geist, sans-serif", fontSize: 13, color: "rgba(35,20,16,0.6)", whiteSpace: "nowrap" }}>
+              {tally.approved} approved, {tally.rejected} rejected{tally.dead ? `, ${tally.dead} dead` : ""}
+            </span>
+          )}
+          <Pillow tone="cream" size="sm" onClick={onOpenAnalytics}>
+            Analytics
+          </Pillow>
           <Pillow tone="ink" size="sm" onClick={unlock.lock}>
             Sign out
           </Pillow>
@@ -1262,8 +1271,54 @@ export function Review() {
     document.title = "Review · GiftPicker";
   }, []);
 
+  // ?tab=analytics opens the Analytics view; the catalog tool stays mounted
+  // underneath so switching back keeps its place and loaded gifts.
+  const [tab, setTab] = useState<"catalog" | "analytics">(() =>
+    new URLSearchParams(window.location.search).get("tab") === "analytics" ? "analytics" : "catalog",
+  );
+  const switchTab = (next: "catalog" | "analytics") => {
+    setTab(next);
+    const url = new URL(window.location.href);
+    if (next === "analytics") url.searchParams.set("tab", "analytics");
+    else url.searchParams.delete("tab");
+    window.history.replaceState(null, "", url.toString());
+  };
+
+  // Dev only: `npm run dev`, then /review?tab=analytics&mock shows sample data without the password.
+  if (import.meta.env.DEV && tab === "analytics" && new URLSearchParams(window.location.search).has("mock")) {
+    return <AnalyticsPage unlock={{ ...unlock, secret: "dev" }} onBack={() => switchTab("catalog")} />;
+  }
   if (!unlock.unlocked) {
     return <PasswordGate unlock={unlock} />;
   }
-  return <ReviewTool unlock={unlock} />;
+  return (
+    <>
+      <ReviewTool unlock={unlock} active={tab === "catalog"} onOpenAnalytics={() => switchTab("analytics")} />
+      {tab === "analytics" && <AnalyticsPage unlock={unlock} onBack={() => switchTab("catalog")} />}
+    </>
+  );
+}
+
+function AnalyticsPage({ unlock, onBack }: { unlock: UnlockState; onBack: () => void }) {
+  const isMobile = useIsMobile();
+  const navigate = useNavigate();
+  return (
+    <div style={{ background: "#FBF1E1", minHeight: "100vh", position: "relative" }}>
+      <AmbientGlow variant="results" />
+      <SiteHeader onLogoClick={() => navigate("/")}>
+        <Pillow tone="cream" size="sm" onClick={onBack}>
+          Catalog
+        </Pillow>
+        <Pillow tone="ink" size="sm" onClick={unlock.lock}>
+          Sign out
+        </Pillow>
+      </SiteHeader>
+      <div style={{ position: "relative", zIndex: 1, padding: isMobile ? "20px 16px 80px" : "28px 56px 64px", maxWidth: 1120, margin: "0 auto" }}>
+        <h1 style={{ fontFamily: "Geist, sans-serif", fontWeight: 600, fontSize: isMobile ? 24 : 30, color: "#231410", margin: "0 0 16px" }}>
+          How people use GiftPicker
+        </h1>
+        {unlock.secret && <ReviewAnalytics secret={unlock.secret} />}
+      </div>
+    </div>
+  );
 }
