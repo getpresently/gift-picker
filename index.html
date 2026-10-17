@@ -12,10 +12,21 @@
 
       gtag('js', new Date());
 
+      // Dalia's own browsers (any that unlocked /review, or opened a page
+      // with ?internal=1 once) send traffic_type=internal, which GA's
+      // Internal Traffic filter drops, alongside the home IP rule in GA.
+      var internal = false;
+      try {
+        if (/[?&]internal=1(&|$)/.test(location.search) || localStorage.getItem('gp_review_secret')) {
+          localStorage.setItem('gp_internal', '1');
+        }
+        internal = localStorage.getItem('gp_internal') === '1';
+      } catch (e) {}
+
       // SPA route changes are tracked manually via src/data/analytics.ts:
       // disable the implicit first page_view here so we don't double-count
       // when the React app fires its own page_view on initial mount.
-      gtag('config', 'G-4TNQSM74DH', { send_page_view: false });
+      gtag('config', 'G-4TNQSM74DH', internal ? { send_page_view: false, traffic_type: 'internal' } : { send_page_view: false });
 	</script>
 
 	<!-- REACT STUFF -->
