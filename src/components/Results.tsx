@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { AmbientGlow } from "./clay/AmbientGlow";
 import { GiftCard } from "./clay/GiftCard";
@@ -13,7 +13,7 @@ import { isDemoting, NOTIFY_OPT_IN_LIVE, postFeedback, postRequest, type Feedbac
 import { NotifyOptIn } from "./clay/NotifyOptIn";
 import { loadSaved, saveSaved } from "../data/saved";
 import { buildShareUrl, hydrateAnswersFromShareUrl, shareOrCopy } from "../data/share";
-import { track } from "../data/analytics";
+import { resultsBand, track } from "../data/analytics";
 import { AffiliateDisclosure } from "./clay/AffiliateDisclosure";
 import { isAmazonUrl } from "../data/affiliate";
 import { SiteHeader } from "./clay/SiteHeader";
@@ -41,6 +41,15 @@ export function Results() {
     () => foldTwins(rankGifts(allGifts, scoring), seed),
     [allGifts, scoring, seed],
   );
+
+  // One results_view per ranking shown (the catalog arriving, or new answers
+  // from Adjust), never per re-render: the ref remembers the last list counted.
+  const countedRanking = useRef<RankedGift[] | null>(null);
+  useEffect(() => {
+    if (loading || error || !Object.keys(answers).length || countedRanking.current === ranked) return;
+    countedRanking.current = ranked;
+    track("results_view", { results_count: ranked.length, results_band: resultsBand(ranked.length) });
+  }, [ranked, loading, error, answers]);
 
   const [feedbackById, setFeedbackById] = useState<Record<string, FeedbackRecord>>({});
   // Live re-rank: gifts reported as disliked or unavailable sort to the bottom (stable within each group).

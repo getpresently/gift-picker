@@ -138,6 +138,8 @@ export function Quiz() {
         vibe_count: a.vibe?.length ?? 0,
         budget: a.budget,
       });
+      // One event per picked interest, so GA can count what people shop for.
+      for (const interest of a.interests ?? []) track("quiz_interest", { interest });
       navigate("/results");
     } else {
       setStep(i);

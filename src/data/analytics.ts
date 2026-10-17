@@ -47,3 +47,14 @@ export function pageview(path: string, title?: string): void {
     page_title: title ?? (typeof document !== "undefined" ? document.title : undefined),
   });
 }
+
+/** Buckets for the results_view event's results_band parameter (few values, so GA can report them). */
+export const RESULTS_BANDS = ["none", "under 8", "8 to 19", "20 plus"] as const;
+export type ResultsBand = (typeof RESULTS_BANDS)[number];
+
+export function resultsBand(count: number): ResultsBand {
+  if (count <= 0) return "none";
+  if (count < 8) return "under 8";
+  if (count < 20) return "8 to 19";
+  return "20 plus";
+}

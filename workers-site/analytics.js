@@ -1,15 +1,24 @@
 /**
  * /api/analytics: the numbers behind the Analytics tab in /review.
  *
- * Reads the Google Analytics 4 data the site already collects (no extra
- * tracking). A Google service account with Viewer access to the GA4 property
+ * Reads the Google Analytics 4 data the site collects through track() in
+ * src/data/analytics.ts. A Google service account with Viewer access to the GA4 property
  * signs in from the worker; its JSON key lives in the GA_SERVICE_ACCOUNT
  * secret, set by Dalia with `npx wrangler secret put GA_SERVICE_ACCOUNT`.
  *
  * Access uses the same password as /review. The worker never stores it: it
  * asks the Apps Script to check it (the review "ping"), then remembers only a
  * SHA-256 hash of an accepted password for 12 hours.
+ *
+ * The pure math (KPI changes, takeaways, before/after windows around the site
+ * changes in src/data/changes.ts) lives in src/data/insights.ts; wrangler's
+ * bundler compiles those TypeScript imports.
  */
+
+import { CHANGES } from "../src/data/changes.ts";
+import {
+  addDays, beforeAfter, fallbackFunnel, fillDays, giftStats, kpis, lowClickGifts, takeaways, todayIn,
+} from "../src/data/insights.ts";
 
 const APPS_SCRIPT =
   "https://script.google.com/macros/s/AKfycbwPuaXtXuurdqNg94_mGoOR1YHXqKrJyZrkxkt09oFbGGZtS_KdH44vhJNn4qLzeJqhuQ/exec";
@@ -23,10 +32,10 @@ const ALLOWED_DAYS = [7, 30, 90];
 
 // Event parameters the dashboard breaks down by. GA4 only reports a parameter
 // once it is registered as an event-scoped custom dimension, from that day on.
-const CUSTOM_DIMS = ["destination", "gift_name", "step_index", "question_id"];
+const CUSTOM_DIMS = ["destination", "gift_name", "step_index", "question_id", "recipient", "interest", "results_band"];
 
-const FUNNEL_EVENTS = ["quiz_start", "quiz_step_view", "quiz_complete", "gift_open", "gift_buy_click"];
-const TREND_EVENTS = ["quiz_complete", "gift_buy_click"];
+const SERIES_DAYS = 90;
+const DAILY_EVENTS = ["quiz_start", "quiz_step_view", "quiz_complete", "gift_open", "gift_buy_click"];
 const COUNT_EVENTS = [
   "quiz_start", "quiz_complete", "gift_open", "gift_buy_click", "results_load_more",
   "results_refine", "gift_save", "gift_share", "request_more",
@@ -49,14 +58,15 @@ export async function serveAnalytics(request, url) {
   }
 
   const days = ALLOWED_DAYS.includes(Number(url.searchParams.get("days"))) ? Number(url.searchParams.get("days")) : 30;
-  const cacheKey = `analytics:v1:${days}`;
-  if (url.searchParams.get("fresh") !== "1") {
+  const fresh = url.searchParams.get("fresh") === "1";
+  const cacheKey = `analytics:v2:${days}`;
+  if (!fresh) {
     const cached = await GIFTS_CACHE.get(cacheKey);
     if (cached) return new Response(cached, { headers: { "content-type": "application/json", "cache-control": "no-store" } });
   }
 
   try {
-    const body = JSON.stringify({ ok: true, ...(await buildReport(days)) });
+    const body = JSON.stringify({ ok: true, ...(await buildReport(days, fresh)) });
     await GIFTS_CACHE.put(cacheKey, body, { expirationTtl: REPORT_TTL_S });
     return new Response(body, { headers: { "content-type": "application/json", "cache-control": "no-store" } });
   } catch (err) {
@@ -165,9 +175,13 @@ const num = (v) => Number(v || 0);
 const inList = (field, values) => ({ filter: { fieldName: field, inListFilter: { values } } });
 const eq = (field, value) => ({ filter: { fieldName: field, stringFilter: { value } } });
 const begins = (field, value) => ({ filter: { fieldName: field, stringFilter: { matchType: "BEGINS_WITH", value } } });
+const notSet = (v) => v && v !== "(not set)";
 
-function rows(report, dims, mets) {
-  return (report.rows || []).map((r) => {
+/** Report rows as objects keyed by the response's own header names (a second date range adds a dateRange column). */
+function rows(report) {
+  const dims = ((report && report.dimensionHeaders) || []).map((h) => h.name);
+  const mets = ((report && report.metricHeaders) || []).map((h) => h.name);
+  return ((report && report.rows) || []).map((r) => {
     const o = {};
     dims.forEach((d, i) => { o[d] = r.dimensionValues[i].value; });
     mets.forEach((m, i) => { o[m] = num(r.metricValues[i].value); });
@@ -175,87 +189,183 @@ function rows(report, dims, mets) {
   });
 }
 
-async function buildReport(days) {
+/** Rows of a two-range report, split into the current and previous periods. */
+function byRange(list) {
+  if (!list.some((r) => "dateRange" in r)) return { current: list, previous: [] };
+  const strip = (r) => {
+    const o = { ...r };
+    delete o.dateRange;
+    return o;
+  };
+  return {
+    current: list.filter((r) => r.dateRange === "current").map(strip),
+    previous: list.filter((r) => r.dateRange === "previous").map(strip),
+  };
+}
+
+function periodData(totalRows, eventRows, resultRows) {
+  return {
+    totals: totalRows[0] || {},
+    events: Object.fromEntries(eventRows.map((r) => [r.eventName, { eventCount: r.eventCount, totalUsers: r.totalUsers }])),
+    results: resultRows.reduce((a, r) => ({
+      views: a.views + r.screenPageViews, seconds: a.seconds + r.userEngagementDuration, users: a.users + r.activeUsers,
+    }), { views: 0, seconds: 0, users: 0 }),
+  };
+}
+
+/** Runs named report requests, five per batchRunReports call (the API's limit), and returns the reports by name. */
+async function runReports(id, named) {
+  const keys = Object.keys(named);
+  const chunks = [];
+  for (let i = 0; i < keys.length; i += 5) chunks.push(keys.slice(i, i + 5));
+  const outs = await Promise.all(chunks.map((ks) =>
+    gaFetch(`/v1beta/properties/${id}:batchRunReports`, { requests: ks.map((k) => named[k]) }).then((r) => r.reports || [])));
+  const byName = {};
+  chunks.forEach((ks, ci) => ks.forEach((k, i) => { byName[k] = outs[ci][i]; }));
+  return byName;
+}
+
+/** The GA property's time zone, so "today" here matches GA's "today". Kept in KV for a week. */
+async function propertyTimeZone(id) {
+  const key = `analytics:tz:${id}`;
+  const cached = await GIFTS_CACHE.get(key);
+  if (cached) return cached;
+  try {
+    const p = await gaFetch(`/properties/${id}`, null, ADMIN_API);
+    if (p.timeZone) {
+      await GIFTS_CACHE.put(key, p.timeZone, { expirationTtl: 7 * 24 * 60 * 60 });
+      return p.timeZone;
+    }
+  } catch {
+    // fall back to UTC below
+  }
+  return "UTC";
+}
+
+/**
+ * Day-by-day numbers for the last 90 days, fetched once and shared by every
+ * range (KV, 10 minutes). The before/after windows around site changes and
+ * the day-by-day chart both read from it.
+ */
+async function dailySeries(id, fresh) {
+  const key = "analytics:v2:daily";
+  if (!fresh) {
+    const cached = await GIFTS_CACHE.get(key, "json");
+    if (cached) return cached;
+  }
+  const today = todayIn(await propertyTimeZone(id));
+  const start = addDays(today, -(SERIES_DAYS - 1));
+  const dateRanges = [{ startDate: `${SERIES_DAYS - 1}daysAgo`, endDate: "today" }];
+  const r = await runReports(id, {
+    visits: { dateRanges, dimensions: [{ name: "date" }], metrics: [{ name: "activeUsers" }, { name: "sessions" }] },
+    events: { dateRanges, dimensions: [{ name: "date" }, { name: "eventName" }], metrics: [{ name: "eventCount" }, { name: "totalUsers" }],
+      dimensionFilter: inList("eventName", DAILY_EVENTS) },
+    results: { dateRanges, dimensions: [{ name: "date" }], metrics: [{ name: "screenPageViews" }],
+      dimensionFilter: begins("pagePath", "/results") },
+  });
+  const days = {};
+  const day = (d) => (days[d] = days[d] || {
+    date: d, visitors: 0, sessions: 0, quizStarters: 0, quizFinishers: 0, quizzes: 0, opens: 0, storeClicks: 0, resultsViews: 0,
+  });
+  for (const v of rows(r.visits)) Object.assign(day(v.date), { visitors: v.activeUsers, sessions: v.sessions });
+  for (const v of rows(r.results)) day(v.date).resultsViews = v.screenPageViews;
+  for (const v of rows(r.events)) {
+    const d = day(v.date);
+    if (v.eventName === "quiz_start" || v.eventName === "quiz_step_view") d.quizStarters = Math.max(d.quizStarters, v.totalUsers);
+    if (v.eventName === "quiz_complete") Object.assign(d, { quizFinishers: v.totalUsers, quizzes: v.eventCount });
+    if (v.eventName === "gift_open") d.opens = v.eventCount;
+    if (v.eventName === "gift_buy_click") d.storeClicks = v.eventCount;
+  }
+  const series = { start, today, rows: fillDays(Object.values(days), start, today) };
+  await GIFTS_CACHE.put(key, JSON.stringify(series), { expirationTtl: REPORT_TTL_S });
+  return series;
+}
+
+async function buildReport(days, fresh) {
   const id = await propertyId();
-  const dateRanges = [{ startDate: `${days - 1}daysAgo`, endDate: "today" }];
+  const range = { startDate: `${days - 1}daysAgo`, endDate: "today" };
+  const current = [{ ...range, name: "current" }];
+  // The previous period of the same length, for the change on each KPI tile.
+  const both = [...current, { startDate: `${2 * days - 1}daysAgo`, endDate: `${days}daysAgo`, name: "previous" }];
 
   const meta = await gaFetch(`/v1beta/properties/${id}/metadata`);
   const registered = new Set((meta.dimensions || []).map((d) => d.apiName));
   const has = (p) => registered.has(`customEvent:${p}`);
   const missingDims = CUSTOM_DIMS.filter((p) => !has(p));
 
-  const base = [
-    // 0. Site totals
-    { dateRanges, metrics: [{ name: "activeUsers" }, { name: "newUsers" }, { name: "sessions" }, { name: "engagedSessions" }, { name: "userEngagementDuration" }] },
-    // 1. Event counts and the people behind them
-    { dateRanges, dimensions: [{ name: "eventName" }], metrics: [{ name: "eventCount" }, { name: "totalUsers" }],
+  const buyClicks = eq("eventName", "gift_buy_click");
+  const named = {
+    totals: { dateRanges: both, metrics: [{ name: "activeUsers" }, { name: "newUsers" }, { name: "sessions" }, { name: "engagedSessions" }, { name: "userEngagementDuration" }] },
+    events: { dateRanges: both, dimensions: [{ name: "eventName" }], metrics: [{ name: "eventCount" }, { name: "totalUsers" }],
       dimensionFilter: inList("eventName", COUNT_EVENTS) },
-    // 2. Results page: views and engaged time
-    { dateRanges, dimensions: [{ name: "pagePath" }], metrics: [{ name: "screenPageViews" }, { name: "userEngagementDuration" }, { name: "activeUsers" }],
+    results: { dateRanges: both, dimensions: [{ name: "pagePath" }], metrics: [{ name: "screenPageViews" }, { name: "userEngagementDuration" }, { name: "activeUsers" }],
       dimensionFilter: begins("pagePath", "/results") },
-    // 3. Daily trend
-    { dateRanges, dimensions: [{ name: "date" }], metrics: [{ name: "activeUsers" }, { name: "sessions" }] },
-    // 4. Daily trend of quiz completions and store clicks
-    { dateRanges, dimensions: [{ name: "date" }, { name: "eventName" }], metrics: [{ name: "eventCount" }],
-      dimensionFilter: inList("eventName", TREND_EVENTS) },
-  ];
-  const second = [
-    // 5. Where sessions come from
-    { dateRanges, dimensions: [{ name: "sessionSource" }], metrics: [{ name: "sessions" }, { name: "engagedSessions" }],
+    sources: { dateRanges: current, dimensions: [{ name: "sessionSource" }], metrics: [{ name: "sessions" }, { name: "engagedSessions" }],
       orderBys: [{ metric: { metricName: "sessions" }, desc: true }], limit: 10 },
-    // 6. Device split
-    { dateRanges, dimensions: [{ name: "deviceCategory" }], metrics: [{ name: "sessions" }] },
-    // 7. New vs returning
-    { dateRanges, dimensions: [{ name: "newVsReturning" }], metrics: [{ name: "activeUsers" }] },
-  ];
-  if (has("destination")) {
-    second.push({ dateRanges, dimensions: [{ name: "customEvent:destination" }], metrics: [{ name: "eventCount" }],
-      dimensionFilter: eq("eventName", "gift_buy_click") });
-  }
+    sourceClicks: { dateRanges: current, dimensions: [{ name: "sessionSource" }], metrics: [{ name: "eventCount" }], dimensionFilter: buyClicks },
+    devices: { dateRanges: current, dimensions: [{ name: "deviceCategory" }], metrics: [{ name: "sessions" }] },
+    deviceClicks: { dateRanges: current, dimensions: [{ name: "deviceCategory" }], metrics: [{ name: "eventCount" }], dimensionFilter: buyClicks },
+    newVsReturning: { dateRanges: current, dimensions: [{ name: "newVsReturning" }], metrics: [{ name: "activeUsers" }] },
+  };
+  const byEvent = (param, eventName, extra = {}) => ({
+    dateRanges: current, dimensions: [{ name: `customEvent:${param}` }], metrics: [{ name: "eventCount" }],
+    dimensionFilter: eq("eventName", eventName), orderBys: [{ metric: { metricName: "eventCount" }, desc: true }], ...extra,
+  });
+  if (has("destination")) named.destinations = byEvent("destination", "gift_buy_click");
   if (has("gift_name")) {
-    second.push({ dateRanges, dimensions: [{ name: "eventName" }, { name: "customEvent:gift_name" }], metrics: [{ name: "eventCount" }],
+    named.gifts = { dateRanges: current, dimensions: [{ name: "eventName" }, { name: "customEvent:gift_name" }], metrics: [{ name: "eventCount" }],
       dimensionFilter: inList("eventName", ["gift_open", "gift_buy_click"]),
-      orderBys: [{ metric: { metricName: "eventCount" }, desc: true }], limit: 40 });
+      orderBys: [{ metric: { metricName: "eventCount" }, desc: true }], limit: 1000 };
   }
-  const third = [];
   if (has("step_index")) {
-    third.push({ dateRanges, dimensions: [{ name: "customEvent:step_index" }], metrics: [{ name: "totalUsers" }],
-      dimensionFilter: eq("eventName", "quiz_step_view") });
+    named.quizSteps = { dateRanges: current, dimensions: [{ name: "customEvent:step_index" }], metrics: [{ name: "totalUsers" }],
+      dimensionFilter: eq("eventName", "quiz_step_view") };
   }
+  if (has("recipient")) named.recipients = byEvent("recipient", "quiz_complete");
+  if (has("interest")) named.interests = byEvent("interest", "quiz_interest");
+  if (has("results_band")) named.resultsBands = byEvent("results_band", "results_view");
 
-  const call = (requests) => requests.length
-    ? gaFetch(`/v1beta/properties/${id}:batchRunReports`, { requests }).then((r) => r.reports)
-    : Promise.resolve([]);
-  const [r1, r2, r3, funnel] = await Promise.all([call(base), call(second), call(third), funnelReport(id, dateRanges)]);
+  const [r, series, funnel] = await Promise.all([runReports(id, named), dailySeries(id, fresh), funnelReport(id, [range])]);
 
-  const totals = rows(r1[0], [], ["activeUsers", "newUsers", "sessions", "engagedSessions", "userEngagementDuration"])[0] || {};
-  const events = Object.fromEntries(rows(r1[1], ["eventName"], ["eventCount", "totalUsers"]).map((r) => [r.eventName, r]));
-  const resultsRows = rows(r1[2], ["pagePath"], ["screenPageViews", "userEngagementDuration", "activeUsers"]);
-  const results = resultsRows.reduce((a, r) => ({
-    views: a.views + r.screenPageViews, seconds: a.seconds + r.userEngagementDuration, users: a.users + r.activeUsers,
-  }), { views: 0, seconds: 0, users: 0 });
+  const t = byRange(rows(r.totals));
+  const e = byRange(rows(r.events));
+  const p = byRange(rows(r.results));
+  const now = periodData(t.current, e.current, p.current);
+  const before = periodData(t.previous, e.previous, p.previous);
 
-  const byDay = {};
-  for (const r of rows(r1[3], ["date"], ["activeUsers", "sessions"])) byDay[r.date] = { date: r.date, visitors: r.activeUsers, sessions: r.sessions, quizzes: 0, storeClicks: 0 };
-  for (const r of rows(r1[4], ["date", "eventName"], ["eventCount"])) {
-    byDay[r.date] = byDay[r.date] || { date: r.date, visitors: 0, sessions: 0, quizzes: 0, storeClicks: 0 };
-    if (r.eventName === "quiz_complete") byDay[r.date].quizzes = r.eventCount;
-    if (r.eventName === "gift_buy_click") byDay[r.date].storeClicks = r.eventCount;
-  }
+  const clicksBy = (report, dim) => Object.fromEntries(rows(report).map((x) => [x[dim], x.eventCount]));
+  const sourceClicks = clicksBy(r.sourceClicks, "sessionSource");
+  const deviceClicks = clicksBy(r.deviceClicks, "deviceCategory");
+  const sources = rows(r.sources).map((s) => ({ ...s, storeClicks: sourceClicks[s.sessionSource] || 0 }));
+  const devices = rows(r.devices).map((d) => ({ ...d, storeClicks: deviceClicks[d.deviceCategory] || 0 }));
+  const funnelOut = funnel.steps.length ? funnel : { ...funnel, steps: fallbackFunnel(now) };
 
-  let i = 3;
-  const sources = rows(r2[0], ["sessionSource"], ["sessions", "engagedSessions"]);
-  const devices = rows(r2[1], ["deviceCategory"], ["sessions"]);
-  const newVsReturning = rows(r2[2], ["newVsReturning"], ["activeUsers"]);
-  const destinations = has("destination") ? rows(r2[i++], ["customEvent:destination"], ["eventCount"]) : null;
-  const topGifts = has("gift_name") ? rows(r2[i++], ["eventName", "customEvent:gift_name"], ["eventCount"]) : null;
-  const quizSteps = has("step_index") ? rows(r3[0], ["customEvent:step_index"], ["totalUsers"]) : null;
+  const counted = (report, param, as) => rows(report)
+    .filter((x) => notSet(x[`customEvent:${param}`]))
+    .map((x) => ({ [as]: x[`customEvent:${param}`], count: x.eventCount }));
+  const gifts = r.gifts
+    ? giftStats(rows(r.gifts).map((x) => ({ eventName: x.eventName, name: x["customEvent:gift_name"], eventCount: x.eventCount })))
+    : null;
 
+  const trendFrom = addDays(series.today, -(days - 1));
   return {
-    days, generatedAt: new Date().toISOString(), missingDims,
-    totals, events, results, funnel,
-    trend: Object.values(byDay).sort((a, b) => a.date.localeCompare(b.date)),
-    sources, devices, newVsReturning, destinations, topGifts, quizSteps,
+    days, generatedAt: new Date().toISOString(), today: series.today, missingDims,
+    totals: now.totals, events: now.events, results: now.results,
+    kpis: { current: kpis(now), previous: kpis(before) },
+    takeaways: takeaways({ days, current: now, previous: before, funnel: funnelOut, sources }),
+    funnel: funnelOut,
+    trend: series.rows.filter((d) => d.date >= trendFrom)
+      .map((d) => ({ date: d.date, visitors: d.visitors, sessions: d.sessions, quizzes: d.quizzes, storeClicks: d.storeClicks })),
+    changes: beforeAfter(series.rows, series.start, series.today, CHANGES),
+    sources, devices,
+    newVsReturning: rows(r.newVsReturning),
+    destinations: r.destinations ? rows(r.destinations) : null,
+    gifts: gifts && gifts.slice(0, 40),
+    lowClickGifts: gifts && lowClickGifts(gifts),
+    quizSteps: r.quizSteps ? rows(r.quizSteps) : null,
+    recipients: r.recipients ? counted(r.recipients, "recipient", "recipient") : null,
+    interests: r.interests ? counted(r.interests, "interest", "interest") : null,
+    resultsBands: r.resultsBands ? counted(r.resultsBands, "results_band", "band") : null,
   };
 }
 
