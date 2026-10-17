@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { Fragment, useCallback, useEffect, useRef, useState } from "react";
 import type { CSSProperties, ReactNode } from "react";
 import { ClaySurface } from "./clay/ClaySurface";
 import { useIsMobile } from "../hooks/useIsMobile";
@@ -7,7 +7,7 @@ import { INTEREST_LABELS } from "../data/gifts";
 import { RESULTS_BANDS } from "../data/analytics";
 import { CHANGES } from "../data/changes";
 import {
-  addDays, beforeAfter, change, duration, fmt, fmtKpi, fmtRate, fmtShare, giftStats, kpis, lowClickGifts, per100, takeaways,
+  addDays, beforeAfter, change, fmt, fmtKpi, fmtRate, fmtShare, giftStats, kpis, lowClickGifts, NA, per100, takeaways,
   type ChangeImpact, type DailyRow, type Funnel, type GiftStat, type KpiKey, type Kpis, type PeriodData, type SourceRow,
   type WindowStats,
 } from "../data/insights";
@@ -32,7 +32,7 @@ type Report = {
   kpis: { current: Kpis; previous: Kpis };
   takeaways: string[];
   funnel: Funnel;
-  trend: { date: string; visitors: number; sessions: number; quizzes: number; storeClicks: number }[];
+  trend: { date: string; visitors: number; quizzes: number; storeClicks: number }[];
   changes: ChangeImpact[];
   sources: SourceRow[];
   devices: { deviceCategory: string; sessions: number; storeClicks: number }[];
@@ -55,7 +55,7 @@ const CORAL = "#E64B45"; // sequential and series 1 (Amazon)
 const PLUM = "#7E3F71"; // series 2 (brand stores) and change markers; validated pair, light surface
 const SANS = "Geist, sans-serif";
 
-const pct = (part: number, whole: number) => (whole > 0 ? `${Math.round((part / whole) * 100)}%` : "–");
+const pct = (part: number, whole: number) => (whole > 0 ? `${Math.round((part / whole) * 100)}%` : NA);
 const dayLabel = (d: string) => new Date(`${d.slice(0, 4)}-${d.slice(4, 6)}-${d.slice(6, 8)}T12:00:00`).toLocaleDateString(undefined, { month: "short", day: "numeric" });
 const cap = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
 const sourceLabel = (s: string) => (s === "(direct)" ? "Direct" : s);
@@ -185,25 +185,25 @@ function Stat({ label, value, note, delta }: { label: string; value: string; not
 
 /* ---------------- charts ---------------- */
 
-/** Horizontal bars, one hue, value at the tip. Bars may shrink on narrow screens so the label never overflows. */
+/**
+ * Horizontal bars, one hue, value at the tip. All rows share one grid, so every
+ * bar is measured against the same track and lengths stay comparable on phones.
+ */
 function HBars({ items, sub }: { items: { label: string; value: number; tip: string }[]; sub?: (v: number, i: number) => string }) {
   const max = Math.max(1, ...items.map((i) => i.value));
-  const reach = sub ? 70 : 82;
   return (
-    <div style={{ display: "grid", gap: 10 }}>
+    <div style={{ display: "grid", gridTemplateColumns: "minmax(80px, min(170px, 36%)) minmax(0, 1fr) auto", columnGap: 12, rowGap: 10, alignItems: "center" }}>
       {items.map((it, i) => (
-        <div key={it.label} style={{ display: "grid", gridTemplateColumns: "minmax(96px, 170px) minmax(0, 1fr)", gap: 12, alignItems: "center" }}>
+        <Fragment key={it.label}>
           <div style={{ fontFamily: SANS, fontSize: 13, color: INK, overflowWrap: "anywhere" }}>{it.label}</div>
           <Tip text={it.tip}>
-            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-              <div style={{ flex: `0 1 ${Math.max(1.5, (it.value / max) * reach)}%`, minWidth: 2, height: 20, background: CORAL, borderRadius: "0 4px 4px 0" }} />
-              <span style={{ fontFamily: SANS, fontSize: 13, color: INK, fontVariantNumeric: "tabular-nums", whiteSpace: "nowrap" }}>
-                {fmt(it.value)}
-                {sub && <span style={{ color: INK_3 }}> {sub(it.value, i)}</span>}
-              </span>
-            </div>
+            <div style={{ width: `${Math.max(1.5, (it.value / max) * 100)}%`, height: 20, background: CORAL, borderRadius: "0 4px 4px 0" }} />
           </Tip>
-        </div>
+          <span style={{ fontFamily: SANS, fontSize: 13, color: INK, fontVariantNumeric: "tabular-nums", whiteSpace: "nowrap" }}>
+            {fmt(it.value)}
+            {sub && <span style={{ color: INK_3 }}> {sub(it.value, i)}</span>}
+          </span>
+        </Fragment>
       ))}
     </div>
   );
@@ -390,31 +390,44 @@ function ChangesCard({ changes }: { changes: ChangeImpact[] }) {
 
 const RANGES = [7, 30, 90] as const;
 
+/**
+ * Dev only: `npm run dev`, then /review?tab=analytics&mock shows sample data
+ * without the password (&mock=missing shows the cards still waiting on GA
+ * custom dimensions). Null in production builds, so the sample data is dropped.
+ */
+export function mockVariant(): string | null {
+  return import.meta.env.DEV ? new URLSearchParams(window.location.search).get("mock") : null;
+}
+
 export function ReviewAnalytics({ secret }: { secret: string }) {
   const [days, setDays] = useState<number>(30);
   const [data, setData] = useState<Report | null>(null);
   const [failure, setFailure] = useState<Failure | null>(null);
   const [loading, setLoading] = useState(false);
+  // Only the latest request may show its answer: clicking 90 days and then
+  // 7 days must never leave the 90-day numbers under the 7-day pill.
+  const latest = useRef(0);
 
   const load = useCallback(async (fresh = false) => {
+    const id = ++latest.current;
     setLoading(true);
-    try {
-      if (import.meta.env.DEV && new URLSearchParams(window.location.search).has("mock")) {
-        setData(mockReport(days, new URLSearchParams(window.location.search).get("mock")));
-        setFailure(null);
-        return;
+    let next: Report | Failure;
+    const mock = mockVariant();
+    if (mock !== null) next = mockReport(days, mock);
+    else {
+      try {
+        const res = await fetch(`/api/analytics?days=${days}${fresh ? "&fresh=1" : ""}`, { headers: { "x-review-secret": secret } });
+        next = (await res.json()) as Report | Failure;
+      } catch {
+        next = { ok: false, error: "network" };
       }
-      const res = await fetch(`/api/analytics?days=${days}${fresh ? "&fresh=1" : ""}`, { headers: { "x-review-secret": secret } });
-      const json = (await res.json()) as Report | Failure;
-      if (json.ok) {
-        setData(json);
-        setFailure(null);
-      } else setFailure(json);
-    } catch {
-      setFailure({ ok: false, error: "network" });
-    } finally {
-      setLoading(false);
     }
+    if (id !== latest.current) return;
+    if (next.ok) {
+      setData(next);
+      setFailure(null);
+    } else setFailure(next);
+    setLoading(false);
   }, [days, secret]);
 
   useEffect(() => { void load(); }, [load]);
@@ -448,7 +461,9 @@ export function ReviewAnalytics({ secret }: { secret: string }) {
 
 function FailureNote({ failure }: { failure: Failure }) {
   const text: Record<string, ReactNode> = {
-    unauthorized: "The analytics endpoint did not accept the review password. Sign out and in again.",
+    wrong_password: "The analytics endpoint did not accept the review password. Sign out and sign in again.",
+    locked: "Too many wrong passwords, so password checks are paused for 15 minutes. Try again after that.",
+    auth_unavailable: "The password check (the Apps Script) didn't answer. Refresh in a minute.",
     not_configured: (
       <>
         Google Analytics isn't connected yet. Create a Google Cloud service account, give its email Viewer access to the
@@ -482,6 +497,14 @@ function Dashboard({ r }: { r: Report }) {
   const amazon = r.destinations?.find((d) => d["customEvent:destination"] === "amazon")?.eventCount ?? 0;
   const brand = r.destinations?.find((d) => d["customEvent:destination"] === "brand")?.eventCount ?? 0;
   const funnelSteps = r.funnel.steps;
+  // A closed funnel compares each step with the one before; an open one (people skip steps) with all visitors.
+  const funnelBase = (i: number) => (r.funnel.closed ? funnelSteps[i - 1].users : funnelSteps[0].users);
+  const funnelBaseLabel = r.funnel.closed ? "of the step before" : "of all visitors";
+  const actions: [string, number][] = [
+    ["Results views", r.results.views], ["Opened a gift", opens.eventCount], ["Clicked to a store", clicks.eventCount],
+    ["Loaded more", ev("results_load_more").eventCount], ["Refined answers", ev("results_refine").eventCount],
+    ["Saved a gift", ev("gift_save").eventCount], ["Shared", ev("gift_share").eventCount], ["Asked for more", ev("request_more").eventCount],
+  ];
 
   const steps = (r.quizSteps ?? [])
     .map((s) => ({ step: Number(s["customEvent:step_index"]), users: s.totalUsers }))
@@ -527,17 +550,20 @@ function Dashboard({ r }: { r: Report }) {
 
       <Card
         title="From visit to store click"
-        sub={r.funnel.closed ? "People who reached each step after every earlier one" : "People who did each step in the period, as a share of all visitors (people can skip steps: a shared link opens results directly, and cards have their own Buy button)"}
-        table={<DataTable head={["Step", "People", "Of the step before", "Of all visitors"]}
-          rows={funnelSteps.map((s, i) => [s.name, fmt(s.users), i ? pct(s.users, funnelSteps[i - 1].users) : "", pct(s.users, funnelSteps[0].users)])} />}
+        sub={r.funnel.closed ? "People who reached each step after every earlier one" : "GA's funnel report did not load, so each step counts the people who did it in the period, as a share of all visitors (people can skip steps: a shared link opens results directly, and cards have their own Buy button)"}
+        table={<DataTable head={["Step", "People", cap(funnelBaseLabel)]}
+          rows={funnelSteps.map((s, i) => [s.name, fmt(s.users), i ? pct(s.users, funnelBase(i)) : ""])} />}
       >
         <HBars
           items={funnelSteps.map((s, i) => ({
             label: s.name, value: s.users,
-            tip: `${s.name}: ${fmt(s.users)} people${i ? (r.funnel.closed ? `, ${pct(s.users, funnelSteps[i - 1].users)} of the step before` : `, ${pct(s.users, funnelSteps[0].users)} of all visitors`) : ""}`,
+            tip: `${s.name}: ${fmt(s.users)} people${i ? `, ${pct(s.users, funnelBase(i))} ${funnelBaseLabel}` : ""}`,
           }))}
-          sub={(v, i) => (i ? `· ${pct(v, r.funnel.closed ? funnelSteps[i - 1].users : funnelSteps[0].users)}` : "")}
+          sub={(v, i) => (i ? `· ${pct(v, funnelBase(i))}` : "")}
         />
+        {r.funnel.error && (
+          <div style={{ fontFamily: SANS, fontSize: 12, color: INK_3, marginTop: 12 }}>Funnel report error: {r.funnel.error}</div>
+        )}
       </Card>
 
       <Card
@@ -560,17 +586,14 @@ function Dashboard({ r }: { r: Report }) {
           {r.destinations ? <SplitBar a={{ label: "Amazon", value: amazon }} b={{ label: "Brand store", value: brand }} />
             : <Empty text="Needs the destination custom dimension (see the note above)." />}
         </Card>
-        <Card title="What people do on results" sub="Per results view in this period"
-          table={<DataTable head={["Action", "Count"]} rows={[
-            ["Results views", fmt(r.results.views)], ["Gifts opened", fmt(opens.eventCount)], ["Store clicks", fmt(clicks.eventCount)],
-            ["Loaded more", fmt(ev("results_load_more").eventCount)], ["Refined answers", fmt(ev("results_refine").eventCount)],
-            ["Saved a gift", fmt(ev("gift_save").eventCount)], ["Shared", fmt(ev("gift_share").eventCount)], ["Asked for more", fmt(ev("request_more").eventCount)],
-          ]} />}
+        <Card title="What people do on results" sub="Counts in this period"
+          table={<DataTable head={["Action", "Count", "Per 100 results views"]}
+            rows={actions.map(([label, value], i) => [label, fmt(value), i ? fmtRate(per100(value, r.results.views)) : ""])} />}
         >
-          <HBars items={[
-            ["Opened a gift", opens.eventCount], ["Clicked to a store", clicks.eventCount], ["Loaded more", ev("results_load_more").eventCount],
-            ["Refined answers", ev("results_refine").eventCount], ["Saved a gift", ev("gift_save").eventCount], ["Shared", ev("gift_share").eventCount],
-          ].map(([label, value]) => ({ label: String(label), value: Number(value), tip: `${label}: ${fmt(Number(value))} (${fmtRate(per100(Number(value), r.results.views))} per 100 results views)` }))} />
+          <HBars items={actions.map(([label, value], i) => ({
+            label, value,
+            tip: i ? `${label}: ${fmt(value)} (${fmtRate(per100(value, r.results.views))} per 100 results views)` : `${label}: ${fmt(value)}`,
+          }))} />
         </Card>
       </div>
 
@@ -593,7 +616,7 @@ function Dashboard({ r }: { r: Report }) {
                 label: sourceLabel(s.sessionSource), value: s.sessions,
                 tip: `${s.sessionSource}: ${fmt(s.sessions)} visits, ${fmt(s.storeClicks)} store clicks (${fmtRate(per100(s.storeClicks, s.sessions))} per 100 visits)`,
               }))}
-              sub={(_, i) => `· ${fmtRate(per100(sources[i].storeClicks, sources[i].sessions))} per 100`}
+              sub={(_, i) => `· ${fmtRate(per100(sources[i].storeClicks, sources[i].sessions))}`}
             />
           ) : <Empty text="No visits in this period." />}
         </Card>
@@ -664,7 +687,7 @@ function Dashboard({ r }: { r: Report }) {
                 label: cap(d.deviceCategory), value: d.sessions,
                 tip: `${cap(d.deviceCategory)}: ${fmt(d.sessions)} visits, ${fmt(d.storeClicks)} store clicks (${fmtRate(per100(d.storeClicks, d.sessions))} per 100 visits)`,
               }))}
-              sub={(_, i) => `· ${fmtRate(per100(r.devices[i].storeClicks, r.devices[i].sessions))} per 100`}
+              sub={(_, i) => `· ${fmtRate(per100(r.devices[i].storeClicks, r.devices[i].sessions))}`}
             />
           ) : <Empty text="No visits in this period." />}
         </Card>
@@ -697,7 +720,7 @@ function mockReport(days: number, variant: string | null): Report {
     const quizFinishers = Math.round(quizStarters * 0.72);
     const resultsViews = Math.round(quizFinishers * 1.3);
     return {
-      date, visitors, sessions: Math.round(visitors * 1.2), quizStarters, quizFinishers, quizzes: Math.round(quizFinishers * 1.4),
+      date, visitors, quizStarters, quizFinishers, quizzes: Math.round(quizFinishers * 1.4),
       opens: Math.round(resultsViews * (date >= "20261013" ? 0.95 : 0.78)),
       storeClicks: Math.round(resultsViews * (date >= "20261007" ? 0.25 : 0.19)),
       resultsViews,
@@ -709,7 +732,7 @@ function mockReport(days: number, variant: string | null): Report {
     const sum = (k: keyof Omit<DailyRow, "date">) => sel.reduce((a, d) => a + d[k], 0);
     const people = (n: number, perPerson: number) => ({ eventCount: n, totalUsers: Math.round(n / perPerson) });
     return {
-      totals: { activeUsers: sum("visitors"), newUsers: Math.round(sum("visitors") * 0.8), sessions: sum("sessions"), engagedSessions: Math.round(sum("sessions") * 0.62), userEngagementDuration: sum("visitors") * 95 },
+      totals: { activeUsers: sum("visitors"), sessions: Math.round(sum("visitors") * 1.2) },
       events: {
         quiz_start: people(sum("quizStarters"), 1.05), quiz_complete: { eventCount: sum("quizzes"), totalUsers: sum("quizFinishers") },
         gift_open: people(sum("opens"), 3.4), gift_buy_click: people(sum("storeClicks"), 1.6),
@@ -754,7 +777,7 @@ function mockReport(days: number, variant: string | null): Report {
     kpis: { current: kpis(current), previous: kpis(previous) },
     takeaways: takeaways({ days, current, previous, funnel, sources }),
     funnel,
-    trend: series.slice(-days).map((d) => ({ date: d.date, visitors: d.visitors, sessions: d.sessions, quizzes: d.quizzes, storeClicks: d.storeClicks })),
+    trend: series.slice(-days).map((d) => ({ date: d.date, visitors: d.visitors, quizzes: d.quizzes, storeClicks: d.storeClicks })),
     changes: beforeAfter(series, series[0].date, today, CHANGES),
     sources,
     devices: [

@@ -35,4 +35,5 @@ export const CHANGES: SiteChange[] = [
   { date: "2026-10-17", title: "Load more keeps the page still, and new cards fade in" },
   { date: "2026-10-17", title: "Quiz shows every interest at once" },
   { date: "2026-10-17", title: "Books & Reading interest added" },
+  { date: "2026-10-17", title: "Buy buttons in gift details stay on one row on desktop" },
 ];

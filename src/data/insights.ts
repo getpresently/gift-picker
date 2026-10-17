@@ -16,7 +16,7 @@ export type EventStat = { eventCount: number; totalUsers: number };
 
 /** One period of site totals, event counts, and results-page numbers. */
 export type PeriodData = {
-  totals: { activeUsers?: number; newUsers?: number; sessions?: number; engagedSessions?: number; userEngagementDuration?: number };
+  totals: { activeUsers?: number; sessions?: number };
   events: Record<string, EventStat | undefined>;
   results: { views: number; seconds: number; users: number };
 };
@@ -30,7 +30,6 @@ export type SourceRow = { sessionSource: string; sessions: number; engagedSessio
 export type DailyRow = {
   date: string;
   visitors: number;
-  sessions: number;
   /** People who started the quiz (quiz_start or a quiz question view, whichever is larger). */
   quizStarters: number;
   /** People who finished the quiz. */
@@ -68,20 +67,23 @@ export type GiftStat = { name: string; opens: number; clicks: number };
 
 /* ---------------- formatting (shared by the worker's sentences and the page) ---------------- */
 
+/** Shown where a value can't be computed (nothing to divide by). */
+export const NA = "n/a";
+
 export const fmt = (n: number) =>
   n >= 10000 ? `${(n / 1000).toFixed(n >= 100000 ? 0 : 1)}K` : Math.round(n).toLocaleString("en-US");
 
 /** Rates such as "per 100 views": one decimal below 10, whole numbers above. */
 export const fmtRate = (n: number | null) => {
-  if (n == null || !isFinite(n)) return "–";
+  if (n == null || !isFinite(n)) return NA;
   if (n === 0) return "0";
   return n < 10 ? n.toFixed(1) : fmt(n);
 };
 
-export const fmtShare = (n: number | null) => (n == null || !isFinite(n) ? "–" : `${Math.round(n * 100)}%`);
+export const fmtShare = (n: number | null) => (n == null || !isFinite(n) ? NA : `${Math.round(n * 100)}%`);
 
 export const duration = (s: number | null) => {
-  if (s == null || !isFinite(s) || s <= 0) return "–";
+  if (s == null || !isFinite(s) || s <= 0) return NA;
   const m = Math.floor(s / 60);
   const sec = Math.round(s % 60);
   return m ? `${m}m ${String(sec).padStart(2, "0")}s` : `${sec}s`;
@@ -106,7 +108,7 @@ export const KPI_LABELS: Record<KpiKey, string> = {
 };
 
 export function fmtKpi(key: KpiKey, v: number | null): string {
-  if (v == null) return "–";
+  if (v == null) return NA;
   if (key === "resultsSeconds") return duration(v);
   if (key === "quizzesPerTaker") return v.toFixed(1);
   if (key === "opensPer100" || key === "clicksPer100") return fmtRate(v);
@@ -257,7 +259,7 @@ export function todayIn(timeZone: string, now: Date = new Date()): string {
 }
 
 const emptyDay = (date: string): DailyRow => ({
-  date, visitors: 0, sessions: 0, quizStarters: 0, quizFinishers: 0, quizzes: 0, opens: 0, storeClicks: 0, resultsViews: 0,
+  date, visitors: 0, quizStarters: 0, quizFinishers: 0, quizzes: 0, opens: 0, storeClicks: 0, resultsViews: 0,
 });
 
 /** One row per day from start to end; days GA left out (no data) count as zero. */

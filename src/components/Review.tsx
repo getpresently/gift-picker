@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import type { CSSProperties } from "react";
+import type { CSSProperties, ReactNode } from "react";
 import { AmbientGlow } from "./clay/AmbientGlow";
 import { ClaySurface } from "./clay/ClaySurface";
 import { GiftBox3D } from "./clay/GiftBox3D";
@@ -8,7 +8,7 @@ import { PriceDisplay } from "./clay/PriceDisplay";
 import { useNavigate } from "react-router-dom";
 import { SiteHeader } from "./clay/SiteHeader";
 import { useImageFallback } from "../hooks/useImageFallback";
-import { ReviewAnalytics } from "./ReviewAnalytics";
+import { mockVariant, ReviewAnalytics } from "./ReviewAnalytics";
 import { useIsMobile } from "../hooks/useIsMobile";
 import { buildMatcher } from "../data/similarity";
 import type { SimilarityResult } from "../data/similarity";
@@ -1082,11 +1082,12 @@ function ReviewTool({ unlock, active, onOpenAnalytics }: { unlock: UnlockState; 
   const currentGift = currentId ? giftById.get(currentId) ?? null : null;
 
   return (
-    <div style={{ background: "#FBF1E1", minHeight: "100vh", position: "relative", display: active ? undefined : "none" }}>
-      <div style={{ position: "relative", minHeight: "100vh" }}>
-        <AmbientGlow variant="results" />
-
-        <SiteHeader onLogoClick={() => navigate("/")}>
+    <ReviewShell
+      hidden={!active}
+      onSignOut={unlock.lock}
+      mobileBottom={120}
+      header={
+        <>
           {!isMobile && (
             <span style={{ fontFamily: "Geist, sans-serif", fontSize: 13, color: "rgba(35,20,16,0.6)", whiteSpace: "nowrap" }}>
               {tally.approved} approved, {tally.rejected} rejected{tally.dead ? `, ${tally.dead} dead` : ""}
@@ -1095,20 +1096,27 @@ function ReviewTool({ unlock, active, onOpenAnalytics }: { unlock: UnlockState; 
           <Pillow tone="cream" size="sm" onClick={onOpenAnalytics}>
             Analytics
           </Pillow>
-          <Pillow tone="ink" size="sm" onClick={unlock.lock}>
-            Sign out
-          </Pillow>
-        </SiteHeader>
-
-        <div
-          style={{
-            position: "relative",
-            zIndex: 1,
-            padding: isMobile ? "20px 16px 120px" : "28px 56px 64px",
-            maxWidth: 1120,
-            margin: "0 auto",
-          }}
-        >
+        </>
+      }
+      after={
+        <>
+          {isMobile && (
+            <ActionBar
+              isMobile
+              disabled={!currentGift}
+              canUndo={undoStack.length > 0}
+              onApprove={() => performAction("approve")}
+              onReject={() => performAction("reject")}
+              onDead={() => performAction("dead")}
+              onSkip={skip}
+              onBack={back}
+              onUndo={undoLast}
+            />
+          )}
+          {toast && <Toast toast={toast} onUndo={undoLast} />}
+        </>
+      }
+    >
           {banner && (
             <ErrorBanner text={banner.text} reloadable={banner.reloadable} onDismiss={() => setBanner(null)} />
           )}
@@ -1266,24 +1274,30 @@ function ReviewTool({ unlock, active, onOpenAnalytics }: { unlock: UnlockState; 
               </div>
             </div>
           )}
+    </ReviewShell>
+  );
+}
 
+/** The frame both /review views share: page background, glow, header with Sign out, and the content column. */
+function ReviewShell({ hidden = false, header, onSignOut, mobileBottom, after, children }: {
+  hidden?: boolean; header: ReactNode; onSignOut: () => void; mobileBottom: number; after?: ReactNode; children: ReactNode;
+}) {
+  const isMobile = useIsMobile();
+  const navigate = useNavigate();
+  return (
+    <div style={{ background: "#FBF1E1", minHeight: "100vh", position: "relative", display: hidden ? "none" : undefined }}>
+      <div style={{ position: "relative", minHeight: "100vh" }}>
+        <AmbientGlow variant="results" />
+        <SiteHeader onLogoClick={() => navigate("/")}>
+          {header}
+          <Pillow tone="ink" size="sm" onClick={onSignOut}>
+            Sign out
+          </Pillow>
+        </SiteHeader>
+        <div style={{ position: "relative", zIndex: 1, padding: isMobile ? `20px 16px ${mobileBottom}px` : "28px 56px 64px", maxWidth: 1120, margin: "0 auto" }}>
+          {children}
         </div>
-
-        {isMobile && (
-          <ActionBar
-            isMobile
-            disabled={!currentGift}
-            canUndo={undoStack.length > 0}
-            onApprove={() => performAction("approve")}
-            onReject={() => performAction("reject")}
-                    onDead={() => performAction("dead")}
-            onSkip={skip}
-            onBack={back}
-            onUndo={undoLast}
-          />
-        )}
-
-        {toast && <Toast toast={toast} onUndo={undoLast} />}
+        {after}
       </div>
     </div>
   );
@@ -1309,8 +1323,8 @@ export function Review() {
     window.history.replaceState(null, "", url.toString());
   };
 
-  // Dev only: `npm run dev`, then /review?tab=analytics&mock shows sample data without the password.
-  if (import.meta.env.DEV && tab === "analytics" && new URLSearchParams(window.location.search).has("mock")) {
+  // Dev only: sample analytics without the password (see mockVariant).
+  if (tab === "analytics" && mockVariant() !== null) {
     return <AnalyticsPage unlock={{ ...unlock, secret: "dev" }} onBack={() => switchTab("catalog")} />;
   }
   if (!unlock.unlocked) {
@@ -1326,24 +1340,20 @@ export function Review() {
 
 function AnalyticsPage({ unlock, onBack }: { unlock: UnlockState; onBack: () => void }) {
   const isMobile = useIsMobile();
-  const navigate = useNavigate();
   return (
-    <div style={{ background: "#FBF1E1", minHeight: "100vh", position: "relative" }}>
-      <AmbientGlow variant="results" />
-      <SiteHeader onLogoClick={() => navigate("/")}>
+    <ReviewShell
+      onSignOut={unlock.lock}
+      mobileBottom={80}
+      header={
         <Pillow tone="cream" size="sm" onClick={onBack}>
           Catalog
         </Pillow>
-        <Pillow tone="ink" size="sm" onClick={unlock.lock}>
-          Sign out
-        </Pillow>
-      </SiteHeader>
-      <div style={{ position: "relative", zIndex: 1, padding: isMobile ? "20px 16px 80px" : "28px 56px 64px", maxWidth: 1120, margin: "0 auto" }}>
-        <h1 style={{ fontFamily: "Geist, sans-serif", fontWeight: 600, fontSize: isMobile ? 24 : 30, color: "#231410", margin: "0 0 16px" }}>
-          How people use GiftPicker
-        </h1>
-        {unlock.secret && <ReviewAnalytics secret={unlock.secret} />}
-      </div>
-    </div>
+      }
+    >
+      <h1 style={{ fontFamily: "Geist, sans-serif", fontWeight: 600, fontSize: isMobile ? 24 : 30, color: "#231410", margin: "0 0 16px" }}>
+        How people use GiftPicker
+      </h1>
+      {unlock.secret && <ReviewAnalytics secret={unlock.secret} />}
+    </ReviewShell>
   );
 }

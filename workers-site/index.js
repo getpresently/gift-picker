@@ -3,6 +3,7 @@ import {
   serveSinglePageApp,
 } from "@cloudflare/kv-asset-handler";
 import { serveAnalytics } from "./analytics.js";
+import { APPS_SCRIPT_URL } from "./config.js";
 
 /**
  * The DEBUG flag will do two things that help during development:
@@ -18,8 +19,7 @@ const DEBUG = false;
  * 18-40s to answer, so pages never wait on it: the cron below copies the live
  * rows into the GIFTS_CACHE KV namespace and requests read from there.
  */
-const GIFTS_ENDPOINT =
-  "https://script.google.com/macros/s/AKfycbwPuaXtXuurdqNg94_mGoOR1YHXqKrJyZrkxkt09oFbGGZtS_KdH44vhJNn4qLzeJqhuQ/exec?tab=Gifts";
+const GIFTS_ENDPOINT = `${APPS_SCRIPT_URL}?tab=Gifts`;
 
 const SITE_ORIGIN = "https://giftpicker.io";
 const GIFTS_KEY = "gifts:live:v1";

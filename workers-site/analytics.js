@@ -8,25 +8,28 @@
  *
  * Access uses the same password as /review. The worker never stores it: it
  * asks the Apps Script to check it (the review "ping"), then remembers only a
- * SHA-256 hash of an accepted password for 12 hours.
+ * SHA-256 hash of an accepted password for 10 minutes. Wrong passwords are
+ * counted per IP in KV; after 10 in 15 minutes the endpoint refuses every
+ * check (429) before asking the Apps Script, which keeps its own lockout.
  *
  * The pure math (KPI changes, takeaways, before/after windows around the site
  * changes in src/data/changes.ts) lives in src/data/insights.ts; wrangler's
  * bundler compiles those TypeScript imports.
  */
 
+import { APPS_SCRIPT_URL } from "./config.js";
 import { CHANGES } from "../src/data/changes.ts";
 import {
   addDays, beforeAfter, fallbackFunnel, fillDays, giftStats, kpis, lowClickGifts, takeaways, todayIn,
 } from "../src/data/insights.ts";
 
-const APPS_SCRIPT =
-  "https://script.google.com/macros/s/AKfycbwPuaXtXuurdqNg94_mGoOR1YHXqKrJyZrkxkt09oFbGGZtS_KdH44vhJNn4qLzeJqhuQ/exec";
 const MEASUREMENT_ID = "G-4TNQSM74DH";
 const DATA_API = "https://analyticsdata.googleapis.com";
 const ADMIN_API = "https://analyticsadmin.googleapis.com/v1beta";
 const SCOPE = "https://www.googleapis.com/auth/analytics.readonly";
-const AUTH_TTL_S = 12 * 60 * 60;
+const AUTH_TTL_S = 10 * 60;
+const MAX_FAILS = 10;
+const FAIL_WINDOW_S = 15 * 60;
 const REPORT_TTL_S = 10 * 60;
 const ALLOWED_DAYS = [7, 30, 90];
 
@@ -43,18 +46,19 @@ const COUNT_EVENTS = [
 
 let tokenCache = null; // { token, exp } for this isolate
 
-export async function serveAnalytics(request, url) {
-  const json = (body, status = 200) =>
-    new Response(JSON.stringify(body), {
-      status,
-      headers: { "content-type": "application/json", "cache-control": "no-store", "x-robots-tag": "noindex" },
-    });
+const JSON_HEADERS = { "content-type": "application/json", "cache-control": "no-store", "x-robots-tag": "noindex" };
+const respond = (body, status = 200) =>
+  new Response(typeof body === "string" ? body : JSON.stringify(body), { status, headers: JSON_HEADERS });
 
-  if (request.method !== "GET") return json({ ok: false, error: "method" }, 405);
-  const secret = request.headers.get("x-review-secret") || "";
-  if (!secret || !(await reviewSecretOk(secret))) return json({ ok: false, error: "unauthorized" }, 401);
+// Password check outcomes and the HTTP status each one answers with.
+const AUTH_STATUS = { wrong_password: 401, locked: 429, auth_unavailable: 503 };
+
+export async function serveAnalytics(request, url) {
+  if (request.method !== "GET") return respond({ ok: false, error: "method" }, 405);
+  const auth = await checkReviewSecret(request);
+  if (auth !== "ok") return respond({ ok: false, error: auth }, AUTH_STATUS[auth]);
   if (typeof GA_SERVICE_ACCOUNT === "undefined" || !GA_SERVICE_ACCOUNT) {
-    return json({ ok: false, error: "not_configured" });
+    return respond({ ok: false, error: "not_configured" });
   }
 
   const days = ALLOWED_DAYS.includes(Number(url.searchParams.get("days"))) ? Number(url.searchParams.get("days")) : 30;
@@ -62,15 +66,15 @@ export async function serveAnalytics(request, url) {
   const cacheKey = `analytics:v2:${days}`;
   if (!fresh) {
     const cached = await GIFTS_CACHE.get(cacheKey);
-    if (cached) return new Response(cached, { headers: { "content-type": "application/json", "cache-control": "no-store" } });
+    if (cached) return respond(cached);
   }
 
   try {
     const body = JSON.stringify({ ok: true, ...(await buildReport(days, fresh)) });
     await GIFTS_CACHE.put(cacheKey, body, { expirationTtl: REPORT_TTL_S });
-    return new Response(body, { headers: { "content-type": "application/json", "cache-control": "no-store" } });
+    return respond(body);
   } catch (err) {
-    return json({ ok: false, error: "ga_error", detail: String((err && err.message) || err).slice(0, 300) });
+    return respond({ ok: false, error: "ga_error", detail: String((err && err.message) || err).slice(0, 300) });
   }
 }
 
@@ -81,29 +85,42 @@ async function sha256Hex(text) {
   return [...new Uint8Array(buf)].map((b) => b.toString(16).padStart(2, "0")).join("");
 }
 
-async function reviewSecretOk(secret) {
-  const key = `review-ok:${await sha256Hex(secret)}`;
-  if (await GIFTS_CACHE.get(key)) return true;
+/** "ok", "wrong_password", "locked", or "auth_unavailable" (the Apps Script could not answer). */
+async function checkReviewSecret(request) {
+  const failKey = `review-fail:${request.headers.get("cf-connecting-ip") || "unknown"}`;
+  const fails = Number(await GIFTS_CACHE.get(failKey)) || 0;
+  if (fails >= MAX_FAILS) return "locked";
+  const secret = request.headers.get("x-review-secret") || "";
+  if (!secret) return "wrong_password";
+
+  const okKey = `review-ok:${await sha256Hex(secret)}`;
+  if (await GIFTS_CACHE.get(okKey)) return "ok";
   // Apps Script's redirect sometimes answers with an HTML 404 although the
   // script ran, so retry a few times before giving up.
   for (let i = 0; i < 3; i++) {
+    let out = null;
     try {
-      const res = await fetch(APPS_SCRIPT, {
+      const res = await fetch(APPS_SCRIPT_URL, {
         method: "POST",
         body: JSON.stringify({ type: "review", secret, action: "ping" }),
         redirect: "follow",
       });
-      const out = await res.json();
-      if (out && out.ok === true) {
-        await GIFTS_CACHE.put(key, "1", { expirationTtl: AUTH_TTL_S });
-        return true;
-      }
-      if (out && out.ok === false) return false;
+      out = await res.json();
     } catch {
-      // retry
+      continue; // not JSON (the HTML 404) or a network error: try again
     }
+    if (out && out.ok === true) {
+      await GIFTS_CACHE.put(okKey, "1", { expirationTtl: AUTH_TTL_S });
+      return "ok";
+    }
+    if (out && out.error === "locked") return "locked";
+    if (out && out.error === "unauthorized") {
+      await GIFTS_CACHE.put(failKey, String(fails + 1), { expirationTtl: FAIL_WINDOW_S });
+      return "wrong_password";
+    }
+    return "auth_unavailable"; // not_configured or an answer we don't know
   }
-  return false;
+  return "auth_unavailable";
 }
 
 /* ---------------- Google auth ---------------- */
@@ -257,7 +274,7 @@ async function dailySeries(id, fresh) {
   const start = addDays(today, -(SERIES_DAYS - 1));
   const dateRanges = [{ startDate: `${SERIES_DAYS - 1}daysAgo`, endDate: "today" }];
   const r = await runReports(id, {
-    visits: { dateRanges, dimensions: [{ name: "date" }], metrics: [{ name: "activeUsers" }, { name: "sessions" }] },
+    visits: { dateRanges, dimensions: [{ name: "date" }], metrics: [{ name: "activeUsers" }] },
     events: { dateRanges, dimensions: [{ name: "date" }, { name: "eventName" }], metrics: [{ name: "eventCount" }, { name: "totalUsers" }],
       dimensionFilter: inList("eventName", DAILY_EVENTS) },
     results: { dateRanges, dimensions: [{ name: "date" }], metrics: [{ name: "screenPageViews" }],
@@ -265,9 +282,9 @@ async function dailySeries(id, fresh) {
   });
   const days = {};
   const day = (d) => (days[d] = days[d] || {
-    date: d, visitors: 0, sessions: 0, quizStarters: 0, quizFinishers: 0, quizzes: 0, opens: 0, storeClicks: 0, resultsViews: 0,
+    date: d, visitors: 0, quizStarters: 0, quizFinishers: 0, quizzes: 0, opens: 0, storeClicks: 0, resultsViews: 0,
   });
-  for (const v of rows(r.visits)) Object.assign(day(v.date), { visitors: v.activeUsers, sessions: v.sessions });
+  for (const v of rows(r.visits)) day(v.date).visitors = v.activeUsers;
   for (const v of rows(r.results)) day(v.date).resultsViews = v.screenPageViews;
   for (const v of rows(r.events)) {
     const d = day(v.date);
@@ -295,7 +312,7 @@ async function buildReport(days, fresh) {
 
   const buyClicks = eq("eventName", "gift_buy_click");
   const named = {
-    totals: { dateRanges: both, metrics: [{ name: "activeUsers" }, { name: "newUsers" }, { name: "sessions" }, { name: "engagedSessions" }, { name: "userEngagementDuration" }] },
+    totals: { dateRanges: both, metrics: [{ name: "activeUsers" }, { name: "sessions" }] },
     events: { dateRanges: both, dimensions: [{ name: "eventName" }], metrics: [{ name: "eventCount" }, { name: "totalUsers" }],
       dimensionFilter: inList("eventName", COUNT_EVENTS) },
     results: { dateRanges: both, dimensions: [{ name: "pagePath" }], metrics: [{ name: "screenPageViews" }, { name: "userEngagementDuration" }, { name: "activeUsers" }],
@@ -355,7 +372,7 @@ async function buildReport(days, fresh) {
     takeaways: takeaways({ days, current: now, previous: before, funnel: funnelOut, sources }),
     funnel: funnelOut,
     trend: series.rows.filter((d) => d.date >= trendFrom)
-      .map((d) => ({ date: d.date, visitors: d.visitors, sessions: d.sessions, quizzes: d.quizzes, storeClicks: d.storeClicks })),
+      .map((d) => ({ date: d.date, visitors: d.visitors, quizzes: d.quizzes, storeClicks: d.storeClicks })),
     changes: beforeAfter(series.rows, series.start, series.today, CHANGES),
     sources, devices,
     newVsReturning: rows(r.newVsReturning),
