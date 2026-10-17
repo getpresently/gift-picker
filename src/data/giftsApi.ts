@@ -122,7 +122,7 @@ export function adaptRow(row: RawRow): Gift {
     occasions: splitCsv(row.Occasion as string | undefined),
     status: String(row.Status ?? ""),
     gender: normalizeGender(row.Gender),
-    twinGroup: String(row["Twin group"] ?? "").trim(),
+    twinGroup: String(row["Twin group"] ?? "").trim().toLowerCase(),
   };
 }
 
