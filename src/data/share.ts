@@ -1,5 +1,5 @@
 import type { Answers } from "./questions";
-import { saveAnswers } from "./questions";
+import { reconcileAnswers, saveAnswers } from "./questions";
 
 /**
  * Share-link encoding. We pack the quiz answers into short URL params
@@ -46,7 +46,8 @@ export function decodeAnswers(search: string): Answers | null {
     const n = Number(bmin);
     if (Number.isFinite(n)) out.budgetMin = n;
   }
-  return Object.keys(out).length ? out : null;
+  // An old link can carry codes the quiz has since dropped or not launched yet.
+  return Object.keys(out).length ? reconcileAnswers(out) : null;
 }
 
 export function buildShareUrl(answers: Answers): string {

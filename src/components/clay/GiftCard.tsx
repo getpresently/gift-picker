@@ -8,10 +8,10 @@ import type { BoxColor } from "./GiftBox3D";
 import { Pillow } from "./Pillow";
 import { PriceDisplay } from "./PriceDisplay";
 import { useImageFallback } from "../../hooks/useImageFallback";
-import { track } from "../../data/analytics";
 import type { Gift } from "../../data/gifts";
 import { isDemoting, type FeedbackOption, type FeedbackRecord } from "../../data/feedback";
-import { buyLinks, isAmazonUrl, openBuyLink as openExternal } from "../../data/affiliate";
+import { primaryBuy } from "../../data/affiliate";
+import { openGiftBuy } from "./BuyButtons";
 
 /** Cards may receive a ranked gift; matchScore is optional for non-ranked uses. */
 type CardGift = Gift & { matchScore?: number };
@@ -358,17 +358,8 @@ export function GiftCard(props: Props) {
             e?.stopPropagation?.();
             // Amazon first (Dalia's default, matching the top pick), then
             // the brand's own page when the gift isn't sold on Amazon.
-            const url = buyLinks(gift).amazon || gift.link;
-            const destination = isAmazonUrl(url) ? "amazon" : "brand";
-            track("gift_buy_click", {
-              gift_id: gift.id,
-              gift_name: gift.name,
-              brand: gift.brand,
-              price: gift.price,
-              source: hero ? "hero_card" : "card",
-              destination,
-            });
-            openExternal(url);
+            const { url, destination } = primaryBuy(gift);
+            openGiftBuy(gift, url, destination, hero ? "hero_card" : "card");
           }}
         >
           {hero ? "Buy gift →" : "Buy →"}

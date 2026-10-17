@@ -15,7 +15,7 @@ import { loadSaved, saveSaved } from "../data/saved";
 import { buildShareUrl, hydrateAnswersFromShareUrl, shareOrCopy } from "../data/share";
 import { resultsBand, track } from "../data/analytics";
 import { AffiliateDisclosure } from "./clay/AffiliateDisclosure";
-import { isAmazonUrl } from "../data/affiliate";
+import { buyLinks } from "../data/affiliate";
 import { SiteHeader } from "./clay/SiteHeader";
 import { FooterLinks } from "./clay/FooterLinks";
 import { FooterBrand } from "./clay/FooterBrand";
@@ -34,31 +34,29 @@ export function Results() {
   // Scoring sees typed occasions it recognizes (Christmas, a promotion) as
   // the built-in occasion; the header keeps the shopper's own wording.
   const scoring = useMemo(() => scoringAnswers(answers), [answers]);
-  // Twins fold into one card. The seed leaves out budget, vibe, and occasion,
-  // so changing only those keeps the same coin toss between tied twins.
+  const ranked = useMemo<RankedGift[]>(() => rankGifts(allGifts, scoring), [allGifts, scoring]);
+  // The twin coin toss leaves out budget, vibe, and occasion (see twinSeed).
   const seed = twinSeed(answers);
-  const ranked = useMemo<RankedGift[]>(
-    () => foldTwins(rankGifts(allGifts, scoring), seed),
-    [allGifts, scoring, seed],
-  );
+
+  const [feedbackById, setFeedbackById] = useState<Record<string, FeedbackRecord>>({});
+  // Live re-rank: gifts reported as disliked or unavailable sort to the bottom
+  // (stable within each group). Twins fold after that, so a reported twin
+  // hands its card to the other maker's gift.
+  const picks = useMemo<RankedGift[]>(() => {
+    const demoted = new Set(ranked.filter((g) => isDemoting(feedbackById[g.id])).map((g) => g.id));
+    const order = [...ranked.filter((g) => !demoted.has(g.id)), ...ranked.filter((g) => demoted.has(g.id))];
+    return foldTwins(order, seed, demoted);
+  }, [ranked, feedbackById, seed]);
 
   // One results_view per ranking shown (the catalog arriving, or new answers
-  // from Adjust), never per re-render: the ref remembers the last list counted.
+  // from Adjust), never per re-render or report: the ref remembers the last
+  // ranking counted. The count is the cards shown, twins folded.
   const countedRanking = useRef<RankedGift[] | null>(null);
   useEffect(() => {
     if (loading || error || !Object.keys(answers).length || countedRanking.current === ranked) return;
     countedRanking.current = ranked;
-    track("results_view", { results_count: ranked.length, results_band: resultsBand(ranked.length) });
-  }, [ranked, loading, error, answers]);
-
-  const [feedbackById, setFeedbackById] = useState<Record<string, FeedbackRecord>>({});
-  // Live re-rank: gifts reported as disliked or unavailable sort to the bottom (stable within each group).
-  const picks = useMemo<RankedGift[]>(() => {
-    return ranked
-      .map((g, i) => ({ g, i, flagged: isDemoting(feedbackById[g.id]) }))
-      .sort((a, b) => (a.flagged === b.flagged ? a.i - b.i : a.flagged ? 1 : -1))
-      .map((x) => x.g);
-  }, [ranked, feedbackById]);
+    track("results_view", { results_count: picks.length, results_band: resultsBand(picks.length) });
+  }, [ranked, picks, loading, error, answers]);
 
   const [modalIndex, setModalIndex] = useState<number | null>(null);
   // Every time a gift's details are shown, so GA4 can count gift opens
@@ -111,7 +109,9 @@ export function Results() {
     });
   };
 
-  const flaggedCount = Object.keys(feedbackById).length;
+  // Reports on gifts in the current results, twins included; reports made
+  // before an Edit answers change stay in feedbackById but no longer count.
+  const flaggedCount = picks.flatMap((g) => [g, ...(g.twins ?? [])]).filter((g) => feedbackById[g.id]).length;
 
   const [shareStatus, setShareStatus] = useState<"idle" | "copied" | "shared" | "failed">("idle");
   const handleShare = async () => {
@@ -145,7 +145,7 @@ export function Results() {
     if (requestSent) return;
     setRequestSent(true);
     track("request_more");
-    await postRequest(answers, ranked.length);
+    await postRequest(answers, picks.length);
   };
 
   // If user lands here with no answers at all, bounce to /quiz.
@@ -261,21 +261,22 @@ export function Results() {
   // covers the full list the button hides itself.
   const BATCH_SIZE = 8;
   const [visibleCount, setVisibleCount] = useState(BATCH_SIZE);
-  // Reset the batch window if the underlying list of picks changes
-  // (new ranking, hydration from share URL, flagging a gift).
   // Index of the first card from the latest "Load more"; those cards ease in.
   const [animateFrom, setAnimateFrom] = useState<number | null>(null);
+  // A new ranking (edited answers, gifts loaded) starts over at one batch.
+  // Reporting a gift only reorders the list, so it keeps what is shown.
   useEffect(() => {
     setVisibleCount(BATCH_SIZE);
     setAnimateFrom(null);
-  }, [rest.length]);
+  }, [ranked]);
   const visibleRest = rest.slice(0, visibleCount);
   const hasMore = rest.length > visibleCount;
   // "Load more" adds the next cards where the button was and pushes the
   // button below them; the page itself does not move (Dalia 10/17/26: the
-  // old scroll to the first new card felt like a jump). The page opts out of
-  // scroll anchoring (overflowAnchor below), or Chrome scrolls down to keep
-  // the content under the button in view.
+  // old scroll to the first new card felt like a jump). The whole page opts
+  // out of scroll anchoring (overflowAnchor below), or Chrome scrolls down to
+  // keep the content under the button in view. Opting out only the button and
+  // what follows it was not enough: Chrome still jumped (tested 10/17/26).
   const loadMore = () => {
     setAnimateFrom(visibleCount);
     setVisibleCount((n) => n + BATCH_SIZE);
@@ -476,26 +477,29 @@ export function Results() {
                       gap: isMobile ? 12 : 18,
                     }}
                   >
-                    {visibleRest.map((g, i) => (
-                      // The wrapper is a one-cell grid so the card still stretches to the row height.
-                      <div
-                        key={g.id || `gift-${i}`}
-                        className={animateFrom !== null && i >= animateFrom ? "card-in" : undefined}
-                        style={{ display: "grid", animationDelay: animateFrom !== null && i >= animateFrom ? `${(i - animateFrom) * 45}ms` : undefined }}
-                      >
-                      <GiftCard
-                        gift={g}
-                        tone={SECONDARY_TONES[i % SECONDARY_TONES.length]}
-                        saved={saved.has(g.id)}
-                        onToggleSave={toggleSave}
-                        isMobile={isMobile}
-                        onOpenDetails={() => openModal(i + 1)}
-                        feedback={feedbackById[g.id]}
-                        onReport={handleReport(g)}
-                        onUndoReport={handleUndoReport(g)}
-                      />
-                      </div>
-                    ))}
+                    {visibleRest.map((g, i) => {
+                      const easeIn = animateFrom !== null && i >= animateFrom;
+                      return (
+                        // The wrapper is a one-cell grid so the card still stretches to the row height.
+                        <div
+                          key={g.id || `gift-${i}`}
+                          className={easeIn ? "card-in" : undefined}
+                          style={{ display: "grid", animationDelay: easeIn ? `${(i - animateFrom) * 45}ms` : undefined }}
+                        >
+                          <GiftCard
+                            gift={g}
+                            tone={SECONDARY_TONES[i % SECONDARY_TONES.length]}
+                            saved={saved.has(g.id)}
+                            onToggleSave={toggleSave}
+                            isMobile={isMobile}
+                            onOpenDetails={() => openModal(i + 1)}
+                            feedback={feedbackById[g.id]}
+                            onReport={handleReport(g)}
+                            onUndoReport={handleUndoReport(g)}
+                          />
+                        </div>
+                      );
+                    })}
                   </div>
 
                   {hasMore && (
@@ -609,7 +613,7 @@ export function Results() {
           >
             <FooterBrand />
             <FooterLinks />
-            {picks.some((g) => g.amazonLink || isAmazonUrl(g.link)) && <AffiliateDisclosure />}
+            {picks.some((g) => buyLinks(g).amazon) && <AffiliateDisclosure />}
           </footer>
         </div>
       </div>

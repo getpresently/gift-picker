@@ -5,35 +5,28 @@ export type Option = {
   hint?: string;
 };
 
-export type ChoiceQuestion = {
+type QuestionBase = {
   id: keyof Answers;
   label: string;
   /** Label when the shopper is buying for themselves ("Treat myself"). */
   selfLabel?: string;
   helper: string;
+};
+
+export type ChoiceQuestion = QuestionBase & {
   type: "choice";
   autoAdvance: true;
   options: Option[];
 };
 
-export type MultiQuestion = {
-  id: keyof Answers;
-  label: string;
-  /** Label when the shopper is buying for themselves ("Treat myself"). */
-  selfLabel?: string;
-  helper: string;
+export type MultiQuestion = QuestionBase & {
   type: "multi";
   max: number;
   bigTiles?: boolean;
   options: Option[];
 };
 
-export type SliderQuestion = {
-  id: keyof Answers;
-  label: string;
-  /** Label when the shopper is buying for themselves ("Treat myself"). */
-  selfLabel?: string;
-  helper: string;
+export type SliderQuestion = QuestionBase & {
   type: "slider";
   min: number;
   max: number;
@@ -295,6 +288,32 @@ export function getActiveOptions(q: Question, answers: Answers): Option[] {
   return q.options;
 }
 
+const question = (id: keyof Answers) => QUESTIONS.find((x) => x.id === id) as Question;
+
+/**
+ * Drop answers the quiz would not ask or offer for the rest of the answers:
+ * an age after the recipient changed to one that skips it, an interest
+ * hidden for the age, and codes the quiz no longer has (or does not offer
+ * yet) arriving from an old share link or a saved session.
+ */
+export function reconcileAnswers(a: Answers): Answers {
+  const next = { ...a };
+  const active = getActiveQuestions(next).map((x) => x.id);
+  if (!active.includes("age")) delete next.age;
+  if (next.age && !getActiveOptions(question("age"), next).some((o) => o.v === next.age)) delete next.age;
+  if (next.occasion && !getActiveOptions(question("occasion"), next).some((o) => o.v === next.occasion)) {
+    delete next.occasion;
+    delete next.occasionOther;
+  }
+  if (next.occasion !== "other") delete next.occasionOther;
+  if (!active.includes("vibe")) delete next.vibe;
+  if (next.interests) {
+    const allowed = new Set(getActiveOptions(question("interests"), next).map((o) => o.v));
+    next.interests = next.interests.filter((v) => allowed.has(v));
+  }
+  return next;
+}
+
 const STORAGE_KEY = "giftpicker_answers_v1";
 
 export function saveAnswers(answers: Answers): void {
@@ -308,7 +327,7 @@ export function saveAnswers(answers: Answers): void {
 export function loadAnswers(): Answers {
   try {
     const raw = sessionStorage.getItem(STORAGE_KEY);
-    return raw ? (JSON.parse(raw) as Answers) : {};
+    return raw ? reconcileAnswers(JSON.parse(raw) as Answers) : {};
   } catch {
     return {};
   }

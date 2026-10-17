@@ -36,4 +36,6 @@ export const CHANGES: SiteChange[] = [
   { date: "2026-10-17", title: "Quiz shows every interest at once" },
   { date: "2026-10-17", title: "Books & Reading interest added" },
   { date: "2026-10-17", title: "Buy buttons in gift details stay on one row on desktop" },
+  { date: "2026-10-17", title: "Gardening and Sports gifts score in full on their other interests until those quiz options launch" },
+  { date: "2026-10-17", title: "Reporting a gift with a twin shows the other maker's gift in its place" },
 ];

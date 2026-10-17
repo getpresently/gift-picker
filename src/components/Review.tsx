@@ -857,9 +857,6 @@ function ErrorBanner({ text, reloadable, onDismiss }: { text: string; reloadable
 
 function ReviewTool({ unlock, active, onOpenAnalytics }: { unlock: UnlockState; active: boolean; onOpenAnalytics: () => void }) {
   const isMobile = useIsMobile();
-  // Hidden while the Analytics tab is open; its shortcut keys must not act on gifts then.
-  const activeRef = useRef(active);
-  activeRef.current = active;
   const navigate = useNavigate();
   const { data, loading, error, reload } = useReviewGifts();
 
@@ -1048,9 +1045,11 @@ function ReviewTool({ unlock, active, onOpenAnalytics }: { unlock: UnlockState; 
   }, []);
 
   useEffect(() => {
+    // Hidden while the Analytics tab is open; the shortcut keys must not act on gifts then.
+    if (!active) return;
     function onKeyDown(e: KeyboardEvent) {
       // Cmd+R must stay "refresh"; only bare, non-repeating keys count.
-      if (!activeRef.current || e.metaKey || e.ctrlKey || e.altKey || e.repeat) return;
+      if (e.metaKey || e.ctrlKey || e.altKey || e.repeat) return;
       const target = e.target as HTMLElement | null;
       const tag = target?.tagName;
       if (tag === "INPUT" || tag === "TEXTAREA" || target?.isContentEditable) return;
@@ -1077,7 +1076,7 @@ function ReviewTool({ unlock, active, onOpenAnalytics }: { unlock: UnlockState; 
     }
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
-  }, [performAction, skip, back, undoLast]);
+  }, [active, performAction, skip, back, undoLast]);
 
   const currentGift = currentId ? giftById.get(currentId) ?? null : null;
 

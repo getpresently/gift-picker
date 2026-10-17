@@ -13,13 +13,15 @@ const overlap = (a: string[], b: string[]) => {
  * shared vibes and relations, with a nudge toward a similar price. Gifts of
  * the same product type are pushed down so the row offers alternatives
  * rather than near-copies of the gift on the page, and each brand appears
- * at most once.
+ * at most once. The gift's twins are left out: the page shows them in their
+ * own row.
  */
 export function relatedGifts(gift: Gift, all: Gift[], count = 4): Gift[] {
   const interests = gift.interests.filter((i) => !/^best sellers?$/i.test(i.trim()));
   const type = productType(gift.name, gift.description);
   return all
     .filter((g) => g.id !== gift.id && (!g.status || g.status.trim() === "Live"))
+    .filter((g) => !(gift.twinGroup && g.twinGroup === gift.twinGroup))
     .filter((g) => !gift.ages.length || !g.ages.length || overlap(gift.ages, g.ages) > 0)
     .filter((g) => !(gift.gender && g.gender && gift.gender !== g.gender))
     .map((g) => {

@@ -1,11 +1,13 @@
+import type { CSSProperties } from "react";
+import { useImageFallback } from "../../hooks/useImageFallback";
 import type { Gift } from "../../data/gifts";
 
 type Props<T extends Gift> = {
-  /** The other gifts in the twin group; at most 2 are shown. */
+  /** The other gifts in the twin group; at most 2 are shown, and none renders nothing. */
   twins: T[];
   /** Opens that twin's own GiftPicker listing (never the store). */
   onOpen: (twin: T) => void;
-  label?: string;
+  style?: CSSProperties;
 };
 
 /**
@@ -13,11 +15,11 @@ type Props<T extends Gift> = {
  * in the product modal and on the gift page. Lives in the scrolling content,
  * never in the pinned Buy-button footer.
  */
-export function TwinRow<T extends Gift>({ twins, onOpen, label = "Also from another maker" }: Props<T>) {
+export function TwinRow<T extends Gift>({ twins, onOpen, style }: Props<T>) {
   const shown = twins.slice(0, 2);
   if (!shown.length) return null;
   return (
-    <div>
+    <div style={style}>
       <div
         style={{
           fontFamily: "Geist, sans-serif",
@@ -29,7 +31,7 @@ export function TwinRow<T extends Gift>({ twins, onOpen, label = "Also from anot
           marginBottom: 8,
         }}
       >
-        {label}
+        Also from another maker
       </div>
       {shown.map((t, i) => (
         <button
@@ -53,11 +55,7 @@ export function TwinRow<T extends Gift>({ twins, onOpen, label = "Also from anot
             textAlign: "left",
           }}
         >
-          <img
-            src={t.image}
-            alt=""
-            style={{ width: 56, height: 56, borderRadius: 10, objectFit: "contain", background: "#fff", flexShrink: 0 }}
-          />
+          <TwinThumb src={t.image} />
           <span style={{ flex: 1, minWidth: 0 }}>
             <span
               style={{
@@ -90,4 +88,19 @@ export function TwinRow<T extends Gift>({ twins, onOpen, label = "Also from anot
       ))}
     </div>
   );
+}
+
+const THUMB: CSSProperties = { width: 56, height: 56, borderRadius: 10, background: "#fff", flexShrink: 0 };
+
+/** The twin's photo, or a plain tile with a gift emoji when it fails to load. */
+function TwinThumb({ src }: { src: string }) {
+  const { failed, onError } = useImageFallback(src);
+  if (!src || failed) {
+    return (
+      <span aria-hidden style={{ ...THUMB, display: "grid", placeItems: "center", fontSize: 24 }}>
+        🎁
+      </span>
+    );
+  }
+  return <img key={src} src={src} alt="" onError={onError} style={{ ...THUMB, objectFit: "contain" }} />;
 }

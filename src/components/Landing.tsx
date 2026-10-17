@@ -22,6 +22,8 @@ const BRANDS = [
   "Aesop", "Le Creuset", "Diptyque", "Le Labo", "Smeg", "Bose",
 ];
 
+// The 2021 launch, where the badge's "#3 Product of the Day" comes from.
+// giftpicker.io/ph (workers-site/index.js) points at the 2026 launch instead.
 const PRODUCTHUNT_URL = "https://www.producthunt.com/products/giftpicker-by-presently/launches/giftpicker-by-presently";
 
 function Star({ size = 14 }: { size?: number }) {

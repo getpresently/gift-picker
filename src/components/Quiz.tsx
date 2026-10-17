@@ -15,6 +15,7 @@ import {
   getActiveQuestions,
   loadAnswers,
   questionLabel,
+  reconcileAnswers,
   saveAnswers,
   clearAnswers,
   type Answers,
@@ -163,11 +164,13 @@ export function Quiz() {
     const pickingOccasionOther = q.id === "occasion" && opt.v === "other";
     const clearOccasionOther = q.id === "occasion" && opt.v !== "other";
 
-    const newAnswers: Answers = {
+    // Changing an earlier answer drops later ones the quiz no longer offers
+    // (an interest hidden for the new age, say).
+    const newAnswers = reconcileAnswers({
       ...answers,
       [q.id]: opt.v,
       ...(clearOccasionOther ? { occasionOther: undefined } : {}),
-    };
+    });
     setAnswers(newAnswers);
     if (q.type === "choice" && q.autoAdvance && !pickingOccasionOther) {
       if (advanceTimerRef.current !== null) window.clearTimeout(advanceTimerRef.current);

@@ -1,4 +1,4 @@
-import type { Answers } from "./questions";
+import { QUESTIONS, type Answers } from "./questions";
 import { buildSimilarity, productType } from "./similarity";
 
 /**
@@ -75,6 +75,8 @@ export const AGE_LABELS: Record<NonNullable<Answers["age"]>, string[]> = {
   senior: ["Senior"],
 };
 
+// garden and sports are ready here before the quiz offers them (questions.ts);
+// until then no shopper can pick them, and OFFERED_PRIMARIES treats them as unassigned.
 export const INTEREST_LABELS: Record<string, string[]> = {
   best: ["Best Sellers", "Best Seller"],
   apparel: ["Apparel & Accessories"],
@@ -226,6 +228,18 @@ function matchCount(haystack: string[], candidates: string[]): number {
  * misses both the vibe and the occasion tag.
  * ------------------------------------------------------------------ */
 
+/**
+ * Sheet labels (normalized) of the interests the quiz offers. A primary
+ * outside them (Gardening & Plants while its option waits) can never be
+ * picked, so the gift counts as having no primary and its other tags earn
+ * full credit instead of half.
+ */
+const OFFERED_PRIMARIES = new Set(
+  QUESTIONS.flatMap((q) => (q.id === "interests" && q.type === "multi" ? q.options : []))
+    .flatMap((o) => INTEREST_LABELS[o.v] ?? [])
+    .map(normalize),
+);
+
 /** Credit for a pick that matches one of the gift's secondary interest tags. */
 const SECONDARY_INTEREST_WEIGHT = 0.5;
 
@@ -235,11 +249,12 @@ const SECONDARY_INTEREST_WEIGHT = 0.5;
  * only a secondary tag counts SECONDARY_INTEREST_WEIGHT, so a beanie tagged
  * Self-Care & Beauty no longer ranks like a real self-care gift. "Best
  * Sellers" is a popularity flag rather than a category, so it counts in
- * full, and gifts with no primary assigned yet count every tag in full.
+ * full, and gifts with no primary assigned yet (or one the quiz doesn't
+ * offer) count every tag in full.
  */
 function interestMatchCount(gift: Gift, answers: Answers): number {
   const picks = answers.interests ?? [];
-  const primary = gift.primaryInterest ? [gift.primaryInterest] : [];
+  const primary = gift.primaryInterest && OFFERED_PRIMARIES.has(normalize(gift.primaryInterest)) ? [gift.primaryInterest] : [];
   let hits = 0;
   for (const v of picks) {
     const labels = INTEREST_LABELS[v] ?? [];
@@ -258,9 +273,9 @@ const isSelfOnly = (gift: Gift) =>
  * tell me your story" journal) is made for someone else, so "Treat myself"
  * never shows it. Partner-only gifts stay: a couples game suits yourself too.
  */
-const FOR_OTHERS_ONLY = ["Parent", "Grandparent", "Coworker", "Mentor/Teacher"];
+const FOR_OTHERS_ONLY = ["parent", "grandparent", "coworker", "mentor"].flatMap((r) => RECIPIENT_LABELS[r]);
 const isForOthersOnly = (gift: Gift) =>
-  gift.relations.length > 0 && gift.relations.every((r) => FOR_OTHERS_ONLY.some((o) => tolerantIncludes([r], o)));
+  gift.relations.length > 0 && gift.relations.every((r) => tolerantIncludes(FOR_OTHERS_ONLY, r));
 
 function scoreRelation(gift: Gift, answers: Answers): number {
   if (!answers.recipient) return 0;
@@ -541,7 +556,7 @@ export function scoreGift(gift: Gift, answers: Answers): number {
  * Sellers, 3) price closest to the budget
  * ------------------------------------------------------------------ */
 
-export function isBestSeller(gift: Gift): boolean {
+function isBestSeller(gift: Gift): boolean {
   return tolerantIncludes(gift.interests, "Best Sellers") || tolerantIncludes(gift.interests, "Best Seller");
 }
 
@@ -708,8 +723,10 @@ export function rankGifts(gifts: Gift[], answers: Answers): RankedGift[] {
 /**
  * Seed for the twin coin toss, built only from the stable parts of a search:
  * recipient, age, gender, and the interests (sorted). Budget, vibe, and
- * occasion are left out on purpose, so nudging the budget never swaps which
- * twin shows. "Anyone" and no gender answer count as the same.
+ * occasion are left out on purpose, so changing them never re-tosses the
+ * coin. They can still change which twin shows when they change the twins'
+ * match % (one twin over budget, or no longer tied). "Anyone" and no gender
+ * answer count as the same.
  */
 export function twinSeed(answers: Answers): string {
   const gender = answers.gender && answers.gender !== "any" ? answers.gender : "";
@@ -732,11 +749,13 @@ function fnv1a(s: string): number {
  * highest match %; members tied on it get an even coin toss (50/50 for two)
  * seeded by twinSeed and the group name, so the same search always shows
  * the same winner. No Best Sellers tiebreak (the tag already counts in the score)
- * and price never decides. The winner keeps its own slot, the others are
- * dropped from the list and attached to it as `twins` (best match first),
- * and nothing else moves. Input objects are not mutated.
+ * and price never decides. Gifts in `demoted` (reported by the shopper) only
+ * win when every member is demoted. The winner takes the slot of the group's
+ * highest-placed member, the others are dropped from the list and attached
+ * to it as `twins` (best match first), and nothing else moves. Input objects
+ * are not mutated.
  */
-export function foldTwins(ranked: RankedGift[], seed: string): RankedGift[] {
+export function foldTwins(ranked: RankedGift[], seed: string, demoted: Set<string> = new Set()): RankedGift[] {
   const groups = new Map<string, RankedGift[]>();
   for (const g of ranked) {
     if (!g.twinGroup) continue;
@@ -744,21 +763,26 @@ export function foldTwins(ranked: RankedGift[], seed: string): RankedGift[] {
     if (members) members.push(g);
     else groups.set(g.twinGroup, [g]);
   }
-  const winners = new Map<string, RankedGift>();
-  const losers = new Set<string>();
+  // Keyed by the id of the group's first member in `ranked`, whose slot the winner takes.
+  const winnerAt = new Map<string, RankedGift>();
+  const folded = new Set<string>();
   for (const [name, members] of groups) {
     if (members.length < 2) continue;
-    const top = Math.max(...members.map((g) => g.matchScore));
-    const tied = members
+    const eligible = members.some((g) => !demoted.has(g.id)) ? members.filter((g) => !demoted.has(g.id)) : members;
+    const top = Math.max(...eligible.map((g) => g.matchScore));
+    const tied = eligible
       .filter((g) => g.matchScore === top)
       .sort((a, b) => (a.id < b.id ? -1 : a.id > b.id ? 1 : 0));
     const winner = tied[fnv1a(`${seed}|${name}`) % tied.length];
     const twins = members.filter((g) => g !== winner).sort((a, b) => b.matchScore - a.matchScore);
-    for (const t of twins) losers.add(t.id);
-    winners.set(winner.id, { ...winner, twins });
+    for (const g of members) folded.add(g.id);
+    winnerAt.set(members[0].id, { ...winner, twins });
   }
-  if (!losers.size) return ranked;
-  return ranked.filter((g) => !losers.has(g.id)).map((g) => winners.get(g.id) ?? g);
+  if (!folded.size) return ranked;
+  return ranked.flatMap((g) => {
+    const winner = winnerAt.get(g.id);
+    return winner ? [winner] : folded.has(g.id) ? [] : [g];
+  });
 }
 
 /**

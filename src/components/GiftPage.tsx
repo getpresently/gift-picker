@@ -9,7 +9,7 @@ import { useIsMobile } from "../hooks/useIsMobile";
 import { useImageFallback } from "../hooks/useImageFallback";
 import { useGifts } from "../data/giftsApi";
 import { track } from "../data/analytics";
-import { isAmazonUrl } from "../data/affiliate";
+import { buyLinks } from "../data/affiliate";
 import { AffiliateDisclosure } from "./clay/AffiliateDisclosure";
 import { SiteHeader } from "./clay/SiteHeader";
 import { FooterLinks } from "./clay/FooterLinks";
@@ -43,14 +43,8 @@ export function GiftPage() {
   );
   const { failed: imgFailed, onError: onImgError, loaded: imgLoaded, onLoad: onImgLoad } = useImageFallback(gift?.image);
 
-  // Twins from other brands get their own row, so they are left out of the
-  // related gifts below and nothing shows twice.
   const twins = useMemo(() => (gift ? twinsOf(gift, allGifts) : []), [gift, allGifts]);
-  const related = useMemo(() => {
-    if (!gift) return [];
-    const twinIds = new Set(twins.map((t) => t.id));
-    return relatedGifts(gift, twinIds.size ? allGifts.filter((g) => !twinIds.has(g.id)) : allGifts);
-  }, [gift, allGifts, twins]);
+  const related = useMemo(() => (gift ? relatedGifts(gift, allGifts) : []), [gift, allGifts]);
   const [saved, setSaved] = useState<Set<string>>(() => loadSaved());
   const toggleSave = (id: string) => {
     setSaved((prev) => {
@@ -280,18 +274,15 @@ export function GiftPage() {
                     {copied ? "Link copied ✓" : "🔗 Copy link to this gift"}
                   </button>
 
-                  {twins.length > 0 && (
-                    <div style={{ marginTop: 8 }}>
-                      <TwinRow
-                        twins={twins}
-                        onOpen={(t) => {
-                          track("gift_twin_open", { gift_id: t.id, from_gift_id: gift.id, source: "gift_page" });
-                          navigate(`/gift/${t.id}`);
-                          window.scrollTo({ top: 0 });
-                        }}
-                      />
-                    </div>
-                  )}
+                  <TwinRow
+                    twins={twins}
+                    style={{ marginTop: 8 }}
+                    onOpen={(t) => {
+                      track("gift_twin_open", { gift_id: t.id, from_gift_id: gift.id, source: "gift_page" });
+                      navigate(`/gift/${t.id}`);
+                      window.scrollTo({ top: 0 });
+                    }}
+                  />
                 </div>
               </div>
             </ClaySurface>
@@ -372,7 +363,7 @@ export function GiftPage() {
           >
             <FooterBrand />
             <FooterLinks />
-            {gift && (gift.amazonLink || isAmazonUrl(gift.link)) && <AffiliateDisclosure />}
+            {gift && buyLinks(gift).amazon && <AffiliateDisclosure />}
           </footer>
         </div>
       </div>

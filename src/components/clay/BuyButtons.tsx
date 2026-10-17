@@ -4,6 +4,19 @@ import { track } from "../../data/analytics";
 import { buyLinks, openBuyLink } from "../../data/affiliate";
 import type { Gift } from "../../data/gifts";
 
+/** Logs gift_buy_click and opens the store (with the Amazon tag) in a new tab. */
+export function openGiftBuy(gift: Gift, url: string, destination: "amazon" | "brand", source: string) {
+  track("gift_buy_click", {
+    gift_id: gift.id,
+    gift_name: gift.name,
+    brand: gift.brand,
+    price: gift.price,
+    source,
+    destination,
+  });
+  openBuyLink(url);
+}
+
 type Props = {
   gift: Gift;
   /** Where the click happened, for the gift_buy_click event. */
@@ -25,15 +38,7 @@ export function BuyButtons({ gift, source, oneRow, style }: Props) {
   const { amazon, brand } = buyLinks(gift);
   const buy = (url: string, destination: "amazon" | "brand") => (e?: { stopPropagation?: () => void }) => {
     e?.stopPropagation?.();
-    track("gift_buy_click", {
-      gift_id: gift.id,
-      gift_name: gift.name,
-      brand: gift.brand,
-      price: gift.price,
-      source,
-      destination,
-    });
-    openBuyLink(url);
+    openGiftBuy(gift, url, destination, source);
   };
   const storeLabel = `Buy on ${gift.brand || "store"}`;
 

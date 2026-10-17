@@ -8,6 +8,7 @@ import {
   QUESTIONS,
   getActiveOptions,
   getActiveQuestions,
+  reconcileAnswers,
   type Answers,
   type Question,
 } from "../../data/questions";
@@ -21,25 +22,6 @@ type Props = {
 };
 
 const q = (id: keyof Answers) => QUESTIONS.find((x) => x.id === id) as Question;
-
-/** Drop answers the quiz itself would no longer ask, after an upstream change. */
-function reconcile(a: Answers): Answers {
-  const next = { ...a };
-  const active = getActiveQuestions(next).map((x) => x.id);
-  if (!active.includes("age")) delete next.age;
-  if (next.age && !getActiveOptions(q("age"), next).some((o) => o.v === next.age)) delete next.age;
-  if (next.occasion && !getActiveOptions(q("occasion"), next).some((o) => o.v === next.occasion)) {
-    delete next.occasion;
-    delete next.occasionOther;
-  }
-  if (next.occasion !== "other") delete next.occasionOther;
-  if (!active.includes("vibe")) delete next.vibe;
-  if (next.interests) {
-    const allowed = new Set(getActiveOptions(q("interests"), next).map((o) => o.v));
-    next.interests = next.interests.filter((v) => allowed.has(v));
-  }
-  return next;
-}
 
 function Section({ title, hint, children }: { title: string; hint?: string; children: ReactNode }) {
   return (
@@ -90,7 +72,7 @@ export function RefineModal({ open, answers, isMobile, onClose, onApply }: Props
 
   if (!open) return null;
 
-  const set = (patch: Partial<Answers>) => setDraft((d) => reconcile({ ...d, ...patch }));
+  const set = (patch: Partial<Answers>) => setDraft((d) => reconcileAnswers({ ...d, ...patch }));
   const toggle = (id: "interests" | "vibe", v: string, max: number) =>
     setDraft((d) => {
       const cur = d[id] ?? [];
@@ -223,7 +205,7 @@ export function RefineModal({ open, answers, isMobile, onClose, onApply }: Props
           </Section>
 
           {activeIds.includes("age") && (
-            <Section title="Their age">
+            <Section title={draft.recipient === "self" ? "Your age" : "Their age"}>
               <div style={grid(3)}>
                 {getActiveOptions(q("age"), draft).map((o) => (
                   <ChipChoice key={o.v} option={o} selected={draft.age === o.v} atMax={false} onClick={() => set({ age: o.v })} />
@@ -341,7 +323,7 @@ export function RefineModal({ open, answers, isMobile, onClose, onApply }: Props
           >
             Cancel
           </button>
-          <Pillow tone="coral" size="md" onClick={() => canApply && onApply(reconcile(draft))} disabled={!canApply}>
+          <Pillow tone="coral" size="md" onClick={() => canApply && onApply(reconcileAnswers(draft))} disabled={!canApply}>
             Update picks
           </Pillow>
         </div>

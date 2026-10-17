@@ -583,11 +583,7 @@ export function ProductModal({
 
           {/* Twins from other brands. A row opens that gift's own listing
               here in the modal (not the store). */}
-          {alternatives.length > 0 && (
-            <div style={{ marginTop: 22 }}>
-              <TwinRow twins={alternatives} onOpen={openAlternative} />
-            </div>
-          )}
+          <TwinRow twins={alternatives} onOpen={openAlternative} style={{ marginTop: 22 }} />
 
           </div>
 

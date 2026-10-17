@@ -6,10 +6,10 @@ import { GiftBox3D } from "./GiftBox3D";
 import { Pillow } from "./Pillow";
 import { PriceDisplay } from "./PriceDisplay";
 import { useImageFallback } from "../../hooks/useImageFallback";
-import { track } from "../../data/analytics";
 import type { RankedGift } from "../../data/gifts";
 import type { FeedbackOption, FeedbackRecord } from "../../data/feedback";
-import { buyLinks, isAmazonUrl, openBuyLink as openExternal } from "../../data/affiliate";
+import { primaryBuy } from "../../data/affiliate";
+import { openGiftBuy } from "./BuyButtons";
 
 type Props = {
   gift: RankedGift;
@@ -162,17 +162,8 @@ export function Hero({
               onClick={(e) => {
                 e?.stopPropagation?.();
                 // Prefer Amazon if available, otherwise the brand's product link.
-                const url = buyLinks(gift).amazon || gift.link;
-                const destination = isAmazonUrl(url) ? "amazon" : "brand";
-                track("gift_buy_click", {
-                  gift_id: gift.id,
-                  gift_name: gift.name,
-                  brand: gift.brand,
-                  price: gift.price,
-                  source: "hero",
-                  destination,
-                });
-                openExternal(url);
+                const { url, destination } = primaryBuy(gift);
+                openGiftBuy(gift, url, destination, "hero");
               }}
             >
               Buy gift →

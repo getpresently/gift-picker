@@ -48,6 +48,12 @@ export function buyLinks(gift: { link: string; amazonLink: string }): { amazon: 
   };
 }
 
+/** The one store a card's quick Buy button opens: Amazon when the gift is sold there, else the brand. */
+export function primaryBuy(gift: { link: string; amazonLink: string }): { url: string; destination: "amazon" | "brand" } {
+  const { amazon, brand } = buyLinks(gift);
+  return amazon ? { url: amazon, destination: "amazon" } : { url: brand, destination: "brand" };
+}
+
 export function affiliateUrl(url: string): string {
   if (!url || !AMAZON_TAG || !isAmazonUrl(url)) return url;
   try {
