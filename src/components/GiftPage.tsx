@@ -9,13 +9,14 @@ import { useIsMobile } from "../hooks/useIsMobile";
 import { useImageFallback } from "../hooks/useImageFallback";
 import { useGifts } from "../data/giftsApi";
 import { track } from "../data/analytics";
-import { buyLinks, isAmazonUrl, openBuyLink as openExternal } from "../data/affiliate";
+import { isAmazonUrl } from "../data/affiliate";
 import { AffiliateDisclosure } from "./clay/AffiliateDisclosure";
 import { SiteHeader } from "./clay/SiteHeader";
 import { FooterLinks } from "./clay/FooterLinks";
 import { FooterBrand } from "./clay/FooterBrand";
 import { GiftCard } from "./clay/GiftCard";
 import { TwinRow } from "./clay/TwinRow";
+import { BuyButtons } from "./clay/BuyButtons";
 import { SECONDARY_TONES, twinsOf } from "../data/gifts";
 import { relatedGifts } from "../data/related";
 import { loadSaved, saveSaved } from "../data/saved";
@@ -41,7 +42,6 @@ export function GiftPage() {
     [allGifts, giftId],
   );
   const { failed: imgFailed, onError: onImgError, loaded: imgLoaded, onLoad: onImgLoad } = useImageFallback(gift?.image);
-  const buy = gift ? buyLinks(gift) : { amazon: "", brand: "" };
 
   // Twins from other brands get their own row, so they are left out of the
   // related gifts below and nothing shows twice.
@@ -259,67 +259,7 @@ export function GiftPage() {
                     </div>
                   )}
 
-                  {/* Buy CTAs: same Amazon-first rules as the modal */}
-                  <div style={{ display: "flex", gap: 10, marginTop: 8, flexWrap: "wrap" }}>
-                    {buy.amazon ? (
-                      <>
-                        <Pillow
-                          tone="coral"
-                          size="md"
-                          onClick={() => {
-                            track("gift_buy_click", {
-                              gift_id: gift.id,
-                              gift_name: gift.name,
-                              brand: gift.brand,
-                              price: gift.price,
-                              source: "gift_page",
-                              destination: "amazon",
-                            });
-                            openExternal(buy.amazon);
-                          }}
-                        >
-                          Buy on Amazon →
-                        </Pillow>
-                        {buy.brand && (
-                          <Pillow
-                            tone="ink"
-                            size="md"
-                            onClick={() => {
-                              track("gift_buy_click", {
-                                gift_id: gift.id,
-                                gift_name: gift.name,
-                                brand: gift.brand,
-                                price: gift.price,
-                                source: "gift_page",
-                                destination: "brand",
-                              });
-                              openExternal(buy.brand);
-                            }}
-                          >
-                            Buy on {gift.brand || "store"} →
-                          </Pillow>
-                        )}
-                      </>
-                    ) : (
-                      <Pillow
-                        tone="coral"
-                        size="md"
-                        onClick={() => {
-                          track("gift_buy_click", {
-                            gift_id: gift.id,
-                            gift_name: gift.name,
-                            brand: gift.brand,
-                            price: gift.price,
-                            source: "gift_page",
-                            destination: "brand",
-                          });
-                          openExternal(buy.brand);
-                        }}
-                      >
-                        Buy on {gift.brand || "store"} →
-                      </Pillow>
-                    )}
-                  </div>
+                  <BuyButtons gift={gift} source="gift_page" oneRow={!isMobile} style={{ marginTop: 8 }} />
 
                   <button
                     type="button"

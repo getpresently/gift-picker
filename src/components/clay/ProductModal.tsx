@@ -1,14 +1,13 @@
 import { useEffect, useRef, useState } from "react";
 import { FeedbackPopover } from "./FeedbackPopover";
 import { GiftBox3D } from "./GiftBox3D";
-import { Pillow } from "./Pillow";
+import { BuyButtons } from "./BuyButtons";
 import { PriceDisplay } from "./PriceDisplay";
 import { TwinRow } from "./TwinRow";
 import { useImageFallback } from "../../hooks/useImageFallback";
 import { track } from "../../data/analytics";
 import type { RankedGift } from "../../data/gifts";
 import type { FeedbackOption, FeedbackRecord } from "../../data/feedback";
-import { buyLinks, openBuyLink as openExternal } from "../../data/affiliate";
 
 type Props = {
   gifts: RankedGift[];
@@ -30,6 +29,9 @@ type Props = {
   onToggleSave?: (giftId: string) => void;
 };
 
+
+/** Bottom-edge fade for the scrolling details, used as a CSS mask. */
+const SCROLL_FADE = "linear-gradient(to bottom, #000 calc(100% - 56px), transparent)";
 
 function navBtnStyle(enabled: boolean): React.CSSProperties {
   return {
@@ -78,6 +80,16 @@ export function ProductModal({
   }
   const gift = twinView ?? listGift;
   const scrollRef = useRef<HTMLDivElement>(null);
+  const [moreBelow, setMoreBelow] = useState(false);
+  const checkMoreBelow = () => {
+    const el = scrollRef.current;
+    setMoreBelow(!!el && el.scrollHeight - el.scrollTop - el.clientHeight > 4);
+  };
+  useEffect(() => {
+    checkMoreBelow();
+    window.addEventListener("resize", checkMoreBelow);
+    return () => window.removeEventListener("resize", checkMoreBelow);
+  }, [open, gift?.id]);
   const canPrev = open && (currentIndex as number) > 0;
   const canNext = open && (currentIndex as number) < gifts.length - 1;
   const feedback = gift ? feedbackById?.[gift.id] : undefined;
@@ -124,7 +136,6 @@ export function ProductModal({
   }, [open, currentIndex, canPrev, canNext, onClose, onNavigate]);
 
   if (!open || !gift || !listGift) return null;
-  const { amazon: amazonUrl, brand: brandUrl } = buyLinks(gift);
   const idx = currentIndex as number;
   // The other gifts in this twin group: the list gift's twins, or, while a
   // twin is open, the list gift plus its remaining twins.
@@ -203,7 +214,7 @@ export function ProductModal({
           background: "linear-gradient(160deg, #FFFCF5 0%, #FBF1E1 100%)",
           borderRadius: isMobile ? "24px 24px 0 0" : 24,
           width: "100%",
-          maxWidth: 760,
+          maxWidth: isMobile ? 760 : 900,
           maxHeight: isMobile ? "92vh" : "90vh",
           display: "flex",
           flexDirection: isMobile ? "column" : "row",
@@ -269,7 +280,7 @@ export function ProductModal({
         {/* Image side */}
         <div
           style={{
-            flex: isMobile ? "0 0 auto" : "1 1 50%",
+            flex: isMobile ? "0 0 auto" : "1 1 42%",
             aspectRatio: isMobile ? "4/3" : "auto",
             minHeight: isMobile ? 0 : 380,
             background: "linear-gradient(160deg, #FFE9A8, #F7C76A)",
@@ -390,7 +401,7 @@ export function ProductModal({
             when the description is long. */}
         <div
           style={{
-            flex: isMobile ? "1 1 auto" : "1 1 50%",
+            flex: isMobile ? "1 1 auto" : "1 1 58%",
             display: "flex",
             flexDirection: "column",
             minHeight: 0,
@@ -399,10 +410,13 @@ export function ProductModal({
         >
           <div
             ref={scrollRef}
+            onScroll={checkMoreBelow}
             style={{
               flex: "1 1 auto",
               minHeight: 0,
               overflowY: "auto",
+              // While more content sits below, the bottom edge fades into the card.
+              ...(moreBelow ? { WebkitMaskImage: SCROLL_FADE, maskImage: SCROLL_FADE } : {}),
               padding: isMobile ? "22px 22px 14px" : "28px 28px 18px",
             }}
           >
@@ -577,26 +591,6 @@ export function ProductModal({
 
           </div>
 
-          {/* Fade on the bottom edge of the scrollable area (mobile only)
-              hints there's more content above the pinned CTAs. */}
-          {isMobile && (
-            <div
-              aria-hidden
-              style={{
-                position: "absolute",
-                left: 0,
-                right: 0,
-                bottom: 0,
-                height: 28,
-                pointerEvents: "none",
-                background:
-                  "linear-gradient(180deg, rgba(251,241,225,0) 0%, rgba(251,241,225,0.9) 75%, rgba(251,241,225,1) 100%)",
-                transform: "translateY(-100%)",
-                zIndex: 1,
-              }}
-            />
-          )}
-
           {/* Pinned footer, CTAs + feedback link. flexShrink:0 keeps it
               from being squeezed; on mobile a subtle top border + cream
               wash separates it from the scrolling content. */}
@@ -612,71 +606,7 @@ export function ProductModal({
               zIndex: 2,
             }}
           >
-          {/* CTAs, Amazon takes the primary slot when present, otherwise
-              the brand link is primary. Both buttons start with "Buy on…". */}
-          <div style={{ display: "flex", gap: 10, marginTop: isMobile ? 0 : 22, flexWrap: "wrap" }}>
-            {amazonUrl ? (
-              <>
-                <Pillow
-                  tone="coral"
-                  size="md"
-                  onClick={(e) => {
-                    e?.stopPropagation?.();
-                    track("gift_buy_click", {
-                      gift_id: gift.id,
-                      gift_name: gift.name,
-                      brand: gift.brand,
-                      price: gift.price,
-                      source: "modal",
-                      destination: "amazon",
-                    });
-                    openExternal(amazonUrl);
-                  }}
-                >
-                  Buy on Amazon →
-                </Pillow>
-                {brandUrl && (
-                  <Pillow
-                    tone="ink"
-                    size="md"
-                    onClick={(e) => {
-                      e?.stopPropagation?.();
-                      track("gift_buy_click", {
-                        gift_id: gift.id,
-                        gift_name: gift.name,
-                        brand: gift.brand,
-                        price: gift.price,
-                        source: "modal",
-                        destination: "brand",
-                      });
-                      openExternal(brandUrl);
-                    }}
-                  >
-                    Buy on {gift.brand || "store"} →
-                  </Pillow>
-                )}
-              </>
-            ) : (
-              <Pillow
-                tone="coral"
-                size="md"
-                onClick={(e) => {
-                  e?.stopPropagation?.();
-                  track("gift_buy_click", {
-                    gift_id: gift.id,
-                    gift_name: gift.name,
-                    brand: gift.brand,
-                    price: gift.price,
-                    source: "modal",
-                    destination: "brand",
-                  });
-                  openExternal(brandUrl);
-                }}
-              >
-                Buy on {gift.brand || "store"} →
-              </Pillow>
-            )}
-          </div>
+          <BuyButtons gift={gift} source="modal" oneRow={!isMobile} style={{ marginTop: isMobile ? 0 : 22 }} />
 
           {/* Footer links: "Something off?" feedback + per-gift permalink */}
           <div
