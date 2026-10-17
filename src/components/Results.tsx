@@ -254,8 +254,11 @@ export function Results() {
   const [visibleCount, setVisibleCount] = useState(BATCH_SIZE);
   // Reset the batch window if the underlying list of picks changes
   // (new ranking, hydration from share URL, flagging a gift).
+  // Index of the first card from the latest "Load more"; those cards ease in.
+  const [animateFrom, setAnimateFrom] = useState<number | null>(null);
   useEffect(() => {
     setVisibleCount(BATCH_SIZE);
+    setAnimateFrom(null);
   }, [rest.length]);
   const visibleRest = rest.slice(0, visibleCount);
   const hasMore = rest.length > visibleCount;
@@ -265,6 +268,7 @@ export function Results() {
   // scroll anchoring (overflowAnchor below), or Chrome scrolls down to keep
   // the content under the button in view.
   const loadMore = () => {
+    setAnimateFrom(visibleCount);
     setVisibleCount((n) => n + BATCH_SIZE);
     track("results_load_more", { shown: Math.min(visibleCount + BATCH_SIZE, rest.length), total: rest.length });
   };
@@ -464,8 +468,13 @@ export function Results() {
                     }}
                   >
                     {visibleRest.map((g, i) => (
-                      <GiftCard
+                      // The wrapper is a one-cell grid so the card still stretches to the row height.
+                      <div
                         key={g.id || `gift-${i}`}
+                        className={animateFrom !== null && i >= animateFrom ? "card-in" : undefined}
+                        style={{ display: "grid", animationDelay: animateFrom !== null && i >= animateFrom ? `${(i - animateFrom) * 45}ms` : undefined }}
+                      >
+                      <GiftCard
                         gift={g}
                         tone={SECONDARY_TONES[i % SECONDARY_TONES.length]}
                         saved={saved.has(g.id)}
@@ -476,6 +485,7 @@ export function Results() {
                         onReport={handleReport(g)}
                         onUndoReport={handleUndoReport(g)}
                       />
+                      </div>
                     ))}
                   </div>
 

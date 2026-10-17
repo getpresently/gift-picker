@@ -37,6 +37,16 @@ body {
 	to   { opacity: 1; transform: translateY(0); }
 }
 
+/* Cards added by "Load more" on the results page ease in, a little staggered. */
+@keyframes cardIn {
+	from { opacity: 0; transform: translateY(12px); }
+	to   { opacity: 1; transform: translateY(0); }
+}
+.card-in { animation: cardIn 360ms cubic-bezier(.2,.8,.2,1) both; }
+@media (prefers-reduced-motion: reduce) {
+	.card-in { animation: none; }
+}
+
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
