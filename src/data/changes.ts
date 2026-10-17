@@ -39,4 +39,5 @@ export const CHANGES: SiteChange[] = [
   { date: "2026-10-17", title: "Gardening and Sports gifts score in full on their other interests until those quiz options launch" },
   { date: "2026-10-17", title: "Reporting a gift with a twin shows the other maker's gift in its place" },
   { date: "2026-10-17", title: "Sports interest added" },
+  { date: "2026-10-17", title: "Gardening & Plants interest added" },
 ];

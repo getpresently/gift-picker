@@ -75,8 +75,6 @@ export const AGE_LABELS: Record<NonNullable<Answers["age"]>, string[]> = {
   senior: ["Senior"],
 };
 
-// garden is ready here before the quiz offers it (questions.ts); until then no
-// shopper can pick it, and OFFERED_PRIMARIES treats it as unassigned.
 export const INTEREST_LABELS: Record<string, string[]> = {
   best: ["Best Sellers", "Best Seller"],
   apparel: ["Apparel & Accessories"],
@@ -230,9 +228,9 @@ function matchCount(haystack: string[], candidates: string[]): number {
 
 /**
  * Sheet labels (normalized) of the interests the quiz offers. A primary
- * outside them (Gardening & Plants while its option waits) can never be
- * picked, so the gift counts as having no primary and its other tags earn
- * full credit instead of half.
+ * outside them (a new interest tagged before its quiz option launches) can
+ * never be picked, so the gift counts as having no primary and its other tags
+ * earn full credit instead of half.
  */
 const OFFERED_PRIMARIES = new Set(
   QUESTIONS.flatMap((q) => (q.id === "interests" && q.type === "multi" ? q.options : []))

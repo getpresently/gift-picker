@@ -145,6 +145,7 @@ export const QUESTIONS: Question[] = [
       { v: "fitness",  l: "Fitness",               e: "💪" },
       { v: "food",     l: "Food & Drinks",         e: "🍷" },
       { v: "gaming",   l: "Gaming",                e: "🎮" },
+      { v: "garden",   l: "Gardening & Plants",    e: "🌱" },
       { v: "wellness", l: "Health & Wellness",     e: "🌙" },
       { v: "home",     l: "Home & Decor",          e: "🛋️" },
       { v: "learn",    l: "Learning",              e: "📚" },
