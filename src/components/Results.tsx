@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { AmbientGlow } from "./clay/AmbientGlow";
 import { GiftCard } from "./clay/GiftCard";
@@ -259,28 +259,18 @@ export function Results() {
   }, [rest.length]);
   const visibleRest = rest.slice(0, visibleCount);
   const hasMore = rest.length > visibleCount;
-  // After "Load more", scroll to the first newly shown card. Without this
-  // the browser keeps the button in view, so the page lands at the bottom
-  // and it isn't clear what changed.
-  const gridRef = useRef<HTMLDivElement>(null);
-  const [scrollToCard, setScrollToCard] = useState<number | null>(null);
+  // "Load more" adds the next cards where the button was and pushes the
+  // button below them; the page itself does not move (Dalia 10/17/26: the
+  // old scroll to the first new card felt like a jump). The page opts out of
+  // scroll anchoring (overflowAnchor below), or Chrome scrolls down to keep
+  // the content under the button in view.
   const loadMore = () => {
-    setScrollToCard(visibleCount);
     setVisibleCount((n) => n + BATCH_SIZE);
     track("results_load_more", { shown: Math.min(visibleCount + BATCH_SIZE, rest.length), total: rest.length });
   };
-  useEffect(() => {
-    if (scrollToCard === null) return;
-    const card = gridRef.current?.children[scrollToCard] as HTMLElement | undefined;
-    setScrollToCard(null);
-    if (!card) return;
-    const headerH = document.querySelector("header")?.getBoundingClientRect().height ?? 72;
-    const reduce = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
-    window.scrollTo({ top: card.getBoundingClientRect().top + window.scrollY - headerH - 16, behavior: reduce ? "auto" : "smooth" });
-  }, [visibleCount, scrollToCard]);
 
   return (
-    <div style={{ background: "#FBF1E1", minHeight: "100vh", position: "relative" }}>
+    <div style={{ background: "#FBF1E1", minHeight: "100vh", position: "relative", overflowAnchor: "none" }}>
       <div style={{ position: "relative", minHeight: "100vh" }}>
         <AmbientGlow variant="results" />
 
@@ -467,7 +457,6 @@ export function Results() {
                   </div>
 
                   <div
-                    ref={gridRef}
                     style={{
                       display: "grid",
                       gridTemplateColumns: isMobile ? "1fr 1fr" : "repeat(auto-fit, minmax(220px, 1fr))",
