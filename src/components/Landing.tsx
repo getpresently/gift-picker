@@ -22,7 +22,7 @@ const BRANDS = [
   "Aesop", "Le Creuset", "Diptyque", "Le Labo", "Smeg", "Bose",
 ];
 
-const PRODUCTHUNT_URL = "https://www.producthunt.com/posts/giftpicker-by-presently";
+const PRODUCTHUNT_URL = "https://www.producthunt.com/products/giftpicker-by-presently/launches/giftpicker-by-presently";
 
 function Star({ size = 14 }: { size?: number }) {
   return (
