@@ -241,6 +241,15 @@ function interestMatchCount(gift: Gift, answers: Answers): number {
 const isSelfOnly = (gift: Gift) =>
   gift.relations.length > 0 && gift.relations.every((r) => tolerantIncludes([r], "Self"));
 
+/**
+ * A gift tagged only for a parent, grandparent, coworker, or teacher (a "Dad,
+ * tell me your story" journal) is made for someone else, so "Treat myself"
+ * never shows it. Partner-only gifts stay: a couples game suits yourself too.
+ */
+const FOR_OTHERS_ONLY = ["Parent", "Grandparent", "Coworker", "Mentor/Teacher"];
+const isForOthersOnly = (gift: Gift) =>
+  gift.relations.length > 0 && gift.relations.every((r) => FOR_OTHERS_ONLY.some((o) => tolerantIncludes([r], o)));
+
 function scoreRelation(gift: Gift, answers: Answers): number {
   if (!answers.recipient) return 0;
   if (answers.recipient === "self") {
@@ -473,6 +482,7 @@ export function scoreGift(gift: Gift, answers: Answers): number {
   // Hard filter: a gift tagged only Self is for treating yourself, never
   // for someone else.
   if (answers.recipient && answers.recipient !== "self" && isSelfOnly(gift)) return -1;
+  if (answers.recipient === "self" && isForOthersOnly(gift)) return -1;
 
   // Hard filter: age tags both specified, no overlap.
   if (gift.ages.length > 0) {

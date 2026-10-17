@@ -14,6 +14,7 @@ import {
   getActiveOptions,
   getActiveQuestions,
   loadAnswers,
+  questionLabel,
   saveAnswers,
   clearAnswers,
   type Answers,
@@ -287,7 +288,7 @@ export function Quiz() {
                   textWrap: "balance" as never,
                 }}
               >
-                {q.label}
+                {questionLabel(q, answers)}
               </h1>
               {(q.helper || q.type === "multi") && (
               <p

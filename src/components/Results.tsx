@@ -362,7 +362,7 @@ export function Results() {
                 ? "Finding your picks…"
                 : error
                   ? "Couldn't reach the gift database"
-                  : `${picks.length} picks tailored for them`}
+                  : `${picks.length} picks tailored for ${answers.recipient === "self" ? "you" : "them"}`}
             </div>
             <h1
               style={{
@@ -455,7 +455,7 @@ export function Results() {
                         color: "rgba(35,20,16,0.5)",
                       }}
                     >
-                      More they might love
+                      More {answers.recipient === "self" ? "you" : "they"} might love
                     </span>
                   </div>
 

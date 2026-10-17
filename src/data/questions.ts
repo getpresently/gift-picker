@@ -8,6 +8,8 @@ export type Option = {
 export type ChoiceQuestion = {
   id: keyof Answers;
   label: string;
+  /** Label when the shopper is buying for themselves ("Treat myself"). */
+  selfLabel?: string;
   helper: string;
   type: "choice";
   autoAdvance: true;
@@ -17,6 +19,8 @@ export type ChoiceQuestion = {
 export type MultiQuestion = {
   id: keyof Answers;
   label: string;
+  /** Label when the shopper is buying for themselves ("Treat myself"). */
+  selfLabel?: string;
   helper: string;
   type: "multi";
   max: number;
@@ -28,6 +32,8 @@ export type MultiQuestion = {
 export type SliderQuestion = {
   id: keyof Answers;
   label: string;
+  /** Label when the shopper is buying for themselves ("Treat myself"). */
+  selfLabel?: string;
   helper: string;
   type: "slider";
   min: number;
@@ -90,6 +96,7 @@ export const QUESTIONS: Question[] = [
   {
     id: "age",
     label: "How old are they?",
+    selfLabel: "How old are you?",
     helper: "Helps us nail the vibe.",
     type: "choice",
     autoAdvance: true,
@@ -132,6 +139,7 @@ export const QUESTIONS: Question[] = [
   {
     id: "interests",
     label: "What are they into?",
+    selfLabel: "What are you into?",
     helper: "Up to 3.",
     type: "multi",
     max: 3,
@@ -230,6 +238,11 @@ const TYPED_OCCASION_ALIASES: { code: string; pattern: RegExp }[] = [
   { code: "holi", pattern: /\b(christmas|xmas|x-mas|c?hanukk?ah|kwanzaa|diwali|eid|lunar new year|holidays?|secret santa)\b/i },
   { code: "newjob", pattern: /\b(new job|first job|job|promotion|promoted|new role|new position)\b/i },
 ];
+
+/** The question's label in the shopper's own words: "you" when they picked "Treat myself". */
+export function questionLabel(q: Question, answers: Answers): string {
+  return answers.recipient === "self" && q.selfLabel ? q.selfLabel : q.label;
+}
 
 /** Built-in occasion code for a typed "Other" occasion, or null if it is genuinely new. */
 export function typedOccasionCode(text: string | undefined): string | null {
