@@ -24,7 +24,9 @@ function RouteEffects(): null {
   const { pathname, search } = useLocation();
   useEffect(() => {
     window.scrollTo(0, 0);
-    pageview(pathname + search);
+    // The query string travels in page_location; adding it to page_path too
+    // made GA show landing pages as "/?ref=x?ref=x".
+    pageview(pathname);
   }, [pathname, search]);
   return null;
 }
