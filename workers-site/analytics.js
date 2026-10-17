@@ -194,6 +194,18 @@ const eq = (field, value) => ({ filter: { fieldName: field, stringFilter: { valu
 const begins = (field, value) => ({ filter: { fieldName: field, stringFilter: { matchType: "BEGINS_WITH", value } } });
 const notSet = (v) => v && v !== "(not set)";
 
+/**
+ * Countries left out of every report. GA cannot drop past traffic by
+ * country, so the dashboard does: Seychelles visits are bots (Dalia 10/17/26).
+ */
+const EXCLUDED_COUNTRIES = ["Seychelles"];
+const keepCountries = { notExpression: inList("country", EXCLUDED_COUNTRIES) };
+/** A report or funnel request with the country exclusion added to its filter. */
+const withExclusions = (req) => ({
+  ...req,
+  dimensionFilter: req.dimensionFilter ? { andGroup: { expressions: [req.dimensionFilter, keepCountries] } } : keepCountries,
+});
+
 /** Report rows as objects keyed by the response's own header names (a second date range adds a dateRange column). */
 function rows(report) {
   const dims = ((report && report.dimensionHeaders) || []).map((h) => h.name);
@@ -236,7 +248,7 @@ async function runReports(id, named) {
   const chunks = [];
   for (let i = 0; i < keys.length; i += 5) chunks.push(keys.slice(i, i + 5));
   const outs = await Promise.all(chunks.map((ks) =>
-    gaFetch(`/v1beta/properties/${id}:batchRunReports`, { requests: ks.map((k) => named[k]) }).then((r) => r.reports || [])));
+    gaFetch(`/v1beta/properties/${id}:batchRunReports`, { requests: ks.map((k) => withExclusions(named[k])) }).then((r) => r.reports || [])));
   const byName = {};
   chunks.forEach((ks, ci) => ks.forEach((k, i) => { byName[k] = outs[ci][i]; }));
   return byName;
@@ -402,9 +414,9 @@ async function funnelReport(id, dateRanges) {
     step("Clicked to a store", ev("gift_buy_click")),
   ];
   try {
-    const out = await gaFetch(`/v1alpha/properties/${id}:runFunnelReport`, {
+    const out = await gaFetch(`/v1alpha/properties/${id}:runFunnelReport`, withExclusions({
       dateRanges, funnel: { isOpenFunnel: false, steps },
-    });
+    }));
     const table = out.funnelTable || {};
     const users = {};
     for (const r of table.rows || []) {
