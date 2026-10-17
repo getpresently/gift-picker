@@ -145,12 +145,14 @@ export const QUESTIONS: Question[] = [
     options: [
       { v: "best",     l: "Best Sellers",          e: "🏆" },
       { v: "apparel",  l: "Apparel & Accessories", e: "👕" },
+      { v: "books",    l: "Books & Reading",       e: "📖" },
       { v: "cooking",  l: "Cooking",               e: "🍳" },
       { v: "creative", l: "Creativity",            e: "🎨" },
       { v: "exp",      l: "Experiences",           e: "🎟️" },
       { v: "fitness",  l: "Fitness",               e: "💪" },
       { v: "food",     l: "Food & Drinks",         e: "🍷" },
       { v: "gaming",   l: "Gaming",                e: "🎮" },
+      { v: "garden",   l: "Gardening & Plants",    e: "🌱" },
       { v: "wellness", l: "Health & Wellness",     e: "🌙" },
       { v: "home",     l: "Home & Decor",          e: "🛋️" },
       { v: "learn",    l: "Learning",              e: "📚" },
@@ -162,6 +164,7 @@ export const QUESTIONS: Question[] = [
       { v: "rest",     l: "Rest & Relaxation",     e: "🛁" },
       { v: "seasonal", l: "Seasonal Gifts",        e: "🍁" },
       { v: "selfcare", l: "Self-Care & Beauty",    e: "🧴" },
+      { v: "sports",   l: "Sports",                e: "⚽" },
       { v: "sustain",  l: "Sustainability",        e: "♻️" },
       { v: "tech",     l: "Tech & Electronics",    e: "🛠" },
       { v: "toys",     l: "Toys & Games",          e: "🧸" },
@@ -225,7 +228,7 @@ const HIDE_OCCASIONS_FOR_AGE: Record<string, Set<string>> = {
 // Per-age interest hides (Dalia, 10/13): interests that make no sense for a
 // baby or a little one are left out of the quiz and the Adjust panel.
 const HIDE_INTERESTS_FOR_AGE: Record<string, Set<string>> = {
-  baby: new Set(["gaming", "selfcare", "fitness", "food", "cooking", "pets", "wellness"]),
+  baby: new Set(["gaming", "selfcare", "fitness", "food", "cooking", "pets", "wellness", "garden", "sports"]),
   kid:  new Set(["selfcare", "wellness", "organize"]),
 };
 
