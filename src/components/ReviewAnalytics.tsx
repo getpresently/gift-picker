@@ -41,6 +41,8 @@ const SANS = "Geist, sans-serif";
 const fmt = (n: number) => (n >= 10000 ? `${(n / 1000).toFixed(n >= 100000 ? 0 : 1)}K` : Math.round(n).toLocaleString());
 const pct = (part: number, whole: number) => (whole > 0 ? `${Math.round((part / whole) * 100)}%` : "–");
 const ratio = (a: number, b: number) => (b > 0 ? (a / b).toFixed(1) : "–");
+/** Events per 100 results views: small per-view rates (0.04) read better this way. */
+const per100 = (a: number, b: number) => (b > 0 ? fmt((a / b) * 100) : "–");
 const duration = (s: number) => {
   if (!isFinite(s) || s <= 0) return "–";
   const m = Math.floor(s / 60);
@@ -357,22 +359,22 @@ function Dashboard({ r }: { r: Report }) {
         <Stat label="Quizzes finished" value={fmt(quizDone.eventCount)} note={`${fmt(quizDone.totalUsers)} people`} />
         <Stat label="Quizzes per quiz taker" value={ratio(quizDone.eventCount, quizDone.totalUsers)} />
         <Stat label="Time on results" value={duration(avgResults)} note="average engaged time per view" />
-        <Stat label="Gifts opened per results view" value={ratio(opens.eventCount, r.results.views)} />
-        <Stat label="Store clicks per results view" value={ratio(clicks.eventCount, r.results.views)} note={`${fmt(clicks.eventCount)} clicks in all`} />
+        <Stat label="Gifts opened per 100 results views" value={per100(opens.eventCount, r.results.views)} />
+        <Stat label="Store clicks per 100 results views" value={per100(clicks.eventCount, r.results.views)} note={`${fmt(clicks.eventCount)} clicks in all`} />
       </div>
 
       <Card
         title="From visit to store click"
-        sub={r.funnel.closed ? "People who reached each step after every earlier one" : "People who did each step in the period"}
+        sub={r.funnel.closed ? "People who reached each step after every earlier one" : "People who did each step in the period, as a share of all visitors (people can skip steps: a shared link opens results directly, and cards have their own Buy button)"}
         table={<DataTable head={["Step", "People", "Of the step before", "Of all visitors"]}
           rows={funnelSteps.map((s, i) => [s.name, fmt(s.users), i ? pct(s.users, funnelSteps[i - 1].users) : "", pct(s.users, funnelSteps[0].users)])} />}
       >
         <HBars
           items={funnelSteps.map((s, i) => ({
             label: s.name, value: s.users,
-            tip: `${s.name}: ${fmt(s.users)} people${i ? `, ${pct(s.users, funnelSteps[i - 1].users)} of the step before` : ""}`,
+            tip: `${s.name}: ${fmt(s.users)} people${i ? (r.funnel.closed ? `, ${pct(s.users, funnelSteps[i - 1].users)} of the step before` : `, ${pct(s.users, funnelSteps[0].users)} of all visitors`) : ""}`,
           }))}
-          sub={(v, i) => (i ? `· ${pct(v, funnelSteps[i - 1].users)}` : "")}
+          sub={(v, i) => (i ? `· ${pct(v, r.funnel.closed ? funnelSteps[i - 1].users : funnelSteps[0].users)}` : "")}
         />
       </Card>
 
@@ -404,7 +406,7 @@ function Dashboard({ r }: { r: Report }) {
           <HBars items={[
             ["Opened a gift", opens.eventCount], ["Clicked to a store", clicks.eventCount], ["Loaded more", ev("results_load_more").eventCount],
             ["Refined answers", ev("results_refine").eventCount], ["Saved a gift", ev("gift_save").eventCount], ["Shared", ev("gift_share").eventCount],
-          ].map(([label, value]) => ({ label: String(label), value: Number(value), tip: `${label}: ${fmt(Number(value))} (${ratio(Number(value), r.results.views)} per view)` }))} />
+          ].map(([label, value]) => ({ label: String(label), value: Number(value), tip: `${label}: ${fmt(Number(value))} (${per100(Number(value), r.results.views)} per 100 results views)` }))} />
         </Card>
       </div>
 
