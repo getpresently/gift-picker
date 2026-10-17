@@ -1,7 +1,7 @@
 /**
  * Logic checks for the parts of the site that decide what a shopper sees and
  * where a Buy click goes: twins, buy links, the Treat-myself filter, interest
- * credit, and answer cleanup. Run with `npm test` (scripts/test.mjs bundles
+ * credit, answer cleanup, and the blog post data. Run with `npm test` (scripts/test.mjs bundles
  * this file with esbuild and runs it on node:test). Run it before a deploy.
  */
 import { test } from "node:test";
@@ -11,6 +11,7 @@ import { affiliateUrl, AMAZON_TAG, buyLinks, isAmazonUrl, primaryBuy } from "../
 import { QUESTIONS, questionLabel, reconcileAnswers, type Answers } from "../src/data/questions";
 import { decodeAnswers, encodeAnswers } from "../src/data/share";
 import { relatedGifts } from "../src/data/related";
+import { findPost, formatPostDate, parseInline, postGiftIds, POSTS } from "../src/data/posts";
 
 function gift(id: string, over: Partial<Gift> = {}): Gift {
   return {
@@ -208,3 +209,45 @@ test("share links round-trip and shed unknown codes", () => {
   assert.deepEqual(decodeAnswers(encodeAnswers(answers)), answers);
   assert.deepEqual(decodeAnswers("r=friend&a=adult&i=cooking,made-up")?.interests, ["cooking"]);
 });
+
+test("post links: gift: links go to the gift page, other links stay as written", () => {
+  assert.deepEqual(parseInline("See [the mug](gift:r293) or [this guide](/blog/x)."), [
+    { text: "See " },
+    { text: "the mug", href: "/gift/r293", giftId: "r293" },
+    { text: " or " },
+    { text: "this guide", href: "/blog/x" },
+    { text: "." },
+  ]);
+  assert.deepEqual(parseInline("No links here"), [{ text: "No links here" }]);
+});
+
+test("post dates read as the calendar day in any time zone", () => {
+  assert.equal(formatPostDate("2026-10-17"), "October 17, 2026");
+  assert.equal(formatPostDate("2027-01-02"), "January 2, 2027");
+});
+
+test("blog posts: unique slugs, sheet-style gift IDs, links to real posts, and house style", () => {
+  const slugs = POSTS.map((p) => p.slug);
+  assert.equal(new Set(slugs).size, slugs.length, "duplicate slug");
+  for (const post of POSTS) {
+    assert.match(post.slug, /^[a-z0-9]+(-[a-z0-9]+)*$/, post.slug);
+    assert.match(post.published, /^\d{4}-\d{2}-\d{2}$/, post.slug);
+    assert.ok(post.description.length <= 160, `${post.slug}: description is ${post.description.length} characters`);
+    assert.ok(postGiftIds(post).length > 0, `${post.slug}: no gifts`);
+    for (const id of postGiftIds(post)) assert.match(id, /^r\d+$/, `${post.slug}: ${id}`);
+    const texts = [post.title, post.description, post.cta, ...post.intro];
+    for (const b of post.body) {
+      if (b.kind === "list") texts.push(...b.items);
+      else if (b.kind !== "gifts") texts.push(b.text);
+    }
+    for (const t of texts) {
+      assert.ok(!t.includes("\u2014"), `${post.slug}: em-dash in "${t.slice(0, 40)}"`);
+      assert.ok(!/presently/i.test(t), `${post.slug}: mentions Presently`);
+      for (const s of parseInline(t)) {
+        const blog = s.href?.match(/^\/blog\/(.+)$/);
+        if (blog) assert.ok(findPost(blog[1]), `${post.slug}: links to missing post ${blog[1]}`);
+      }
+    }
+  }
+});
+
