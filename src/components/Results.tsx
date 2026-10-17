@@ -7,7 +7,7 @@ import { Pillow } from "./clay/Pillow";
 import { ProductModal } from "./clay/ProductModal";
 import { useIsMobile } from "../hooks/useIsMobile";
 import { clearAnswers, GENDER_OPTIONS, loadAnswers, QUESTIONS, saveAnswers, scoringAnswers, type Answers } from "../data/questions";
-import { buildMatchReasons, rankGifts, SECONDARY_TONES, type RankedGift } from "../data/gifts";
+import { buildMatchReasons, foldTwins, rankGifts, SECONDARY_TONES, twinSeed, type RankedGift } from "../data/gifts";
 import { useGifts } from "../data/giftsApi";
 import { isDemoting, NOTIFY_OPT_IN_LIVE, postFeedback, postRequest, type FeedbackOption, type FeedbackRecord } from "../data/feedback";
 import { NotifyOptIn } from "./clay/NotifyOptIn";
@@ -34,7 +34,13 @@ export function Results() {
   // Scoring sees typed occasions it recognizes (Christmas, a promotion) as
   // the built-in occasion; the header keeps the shopper's own wording.
   const scoring = useMemo(() => scoringAnswers(answers), [answers]);
-  const ranked = useMemo<RankedGift[]>(() => rankGifts(allGifts, scoring), [allGifts, scoring]);
+  // Twins fold into one card. The seed leaves out budget, vibe, and occasion,
+  // so changing only those keeps the same coin toss between tied twins.
+  const seed = twinSeed(answers);
+  const ranked = useMemo<RankedGift[]>(
+    () => foldTwins(rankGifts(allGifts, scoring), seed),
+    [allGifts, scoring, seed],
+  );
 
   const [feedbackById, setFeedbackById] = useState<Record<string, FeedbackRecord>>({});
   // Live re-rank: gifts reported as disliked or unavailable sort to the bottom (stable within each group).
@@ -148,7 +154,8 @@ export function Results() {
       // Log every heart-on event to the Feedback sheet as reason: heart.
       // Useful as a positive signal alongside the negative "Something off" reports.
       if (adding) {
-        const gift = picks.find((p) => p.id === id);
+        // A twin opened inside the modal is not in picks, so search those too.
+        const gift = picks.flatMap((p) => [p, ...(p.twins ?? [])]).find((p) => p.id === id);
         if (gift) {
           postFeedback({
             giftId: gift.id,
@@ -615,12 +622,10 @@ export function Results() {
         onClose={closeModal}
         isMobile={isMobile}
         matchReasons={modalReasons}
-        feedback={modalIndex !== null && picks[modalIndex] ? feedbackById[picks[modalIndex].id] : undefined}
-        onReport={modalIndex !== null && picks[modalIndex] ? handleReport(picks[modalIndex]) : undefined}
-        onUndoReport={
-          modalIndex !== null && picks[modalIndex] ? handleUndoReport(picks[modalIndex]) : undefined
-        }
-        saved={modalIndex !== null && picks[modalIndex] ? saved.has(picks[modalIndex].id) : false}
+        feedbackById={feedbackById}
+        onReport={(g, opt, detail) => handleReport(g)(opt, detail)}
+        onUndoReport={(g) => handleUndoReport(g)()}
+        savedIds={saved}
         onToggleSave={toggleSave}
       />
     </div>

@@ -1,8 +1,9 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { FeedbackPopover } from "./FeedbackPopover";
 import { GiftBox3D } from "./GiftBox3D";
 import { Pillow } from "./Pillow";
 import { PriceDisplay } from "./PriceDisplay";
+import { TwinRow } from "./TwinRow";
 import { useImageFallback } from "../../hooks/useImageFallback";
 import { track } from "../../data/analytics";
 import type { RankedGift } from "../../data/gifts";
@@ -17,15 +18,15 @@ type Props = {
   isMobile: boolean;
   /** Optional dynamic "Why we picked this" bullets, currently hidden by design. */
   matchReasons?: string[];
-  /** Feedback record for the gift at currentIndex (if reported). */
-  feedback?: FeedbackRecord;
-  /** Called when the user picks a feedback option for the current gift. */
-  onReport?: (opt: FeedbackOption, detail?: string) => void;
-  /** Called when the user clears feedback for the current gift. */
-  onUndoReport?: () => void;
-  /** Whether the current gift is hearted. */
-  saved?: boolean;
-  /** Toggle the heart for the current gift. */
+  /** Feedback records by gift id; the modal reads the shown gift's (list gift or twin). */
+  feedbackById?: Record<string, FeedbackRecord>;
+  /** Called when the user picks a feedback option for the shown gift. */
+  onReport?: (gift: RankedGift, opt: FeedbackOption, detail?: string) => void;
+  /** Called when the user clears feedback for the shown gift. */
+  onUndoReport?: (gift: RankedGift) => void;
+  /** Hearted gift ids; the heart reflects the shown gift. */
+  savedIds?: Set<string>;
+  /** Toggle the heart for the shown gift. */
   onToggleSave?: (giftId: string) => void;
 };
 
@@ -57,23 +58,37 @@ export function ProductModal({
   onClose,
   isMobile,
   matchReasons,
-  feedback,
+  feedbackById,
   onReport,
   onUndoReport,
-  saved,
+  savedIds,
   onToggleSave,
 }: Props) {
   const open = currentIndex !== null && currentIndex >= 0 && gifts[currentIndex] !== undefined;
-  const gift = open ? gifts[currentIndex as number] : null;
+  const listGift = open ? gifts[currentIndex as number] : null;
+  // A twin opened from the "Also from another maker" row replaces the list
+  // gift in place; the arrows and counter still walk the results list.
+  const [twinView, setTwinView] = useState<RankedGift | null>(null);
+  // Moving through the results drops an open twin. Reset during render (not
+  // in an effect) so the next gift never flashes the old twin first.
+  const [twinIndex, setTwinIndex] = useState(currentIndex);
+  if (twinIndex !== currentIndex) {
+    setTwinIndex(currentIndex);
+    setTwinView(null);
+  }
+  const gift = twinView ?? listGift;
+  const scrollRef = useRef<HTMLDivElement>(null);
   const canPrev = open && (currentIndex as number) > 0;
   const canNext = open && (currentIndex as number) < gifts.length - 1;
+  const feedback = gift ? feedbackById?.[gift.id] : undefined;
   const reported = !!feedback;
+  const saved = gift ? !!savedIds?.has(gift.id) : false;
 
   const [popoverOpen, setPopoverOpen] = useState(false);
-  // Close the popover whenever the modal navigates to a new gift.
+  // Close the popover whenever the modal navigates to a new gift or twin.
   useEffect(() => {
     setPopoverOpen(false);
-  }, [currentIndex]);
+  }, [currentIndex, twinView]);
 
   // Fall back to the GiftBox3D placeholder if the photo URL is broken.
   // Reset hook tracks `gift.image` so navigating from a broken-photo
@@ -84,7 +99,7 @@ export function ProductModal({
   const [linkCopied, setLinkCopied] = useState(false);
   useEffect(() => {
     setLinkCopied(false);
-  }, [currentIndex]);
+  }, [currentIndex, twinView]);
   const copyGiftLink = async () => {
     if (!gift) return;
     try {
@@ -108,9 +123,19 @@ export function ProductModal({
     return () => window.removeEventListener("keydown", onKey);
   }, [open, currentIndex, canPrev, canNext, onClose, onNavigate]);
 
-  if (!open || !gift) return null;
+  if (!open || !gift || !listGift) return null;
   const { amazon: amazonUrl, brand: brandUrl } = buyLinks(gift);
   const idx = currentIndex as number;
+  // The other gifts in this twin group: the list gift's twins, or, while a
+  // twin is open, the list gift plus its remaining twins.
+  const alternatives = twinView
+    ? [listGift, ...(listGift.twins ?? []).filter((t) => t.id !== twinView.id)]
+    : listGift.twins ?? [];
+  const openAlternative = (alt: RankedGift) => {
+    track("gift_twin_open", { gift_id: alt.id, from_gift_id: gift.id, source: "modal" });
+    setTwinView(alt.id === listGift.id ? null : alt);
+    scrollRef.current?.scrollTo({ top: 0 });
+  };
   const match = typeof gift.matchScore === "number" ? Math.round(gift.matchScore) : null;
   // Derive simple tags from gift.interests / gift.types (up to 3)
   const tags = [...gift.interests.slice(0, 2), ...gift.types.slice(0, 1)].filter(Boolean).slice(0, 3);
@@ -373,6 +398,7 @@ export function ProductModal({
           }}
         >
           <div
+            ref={scrollRef}
             style={{
               flex: "1 1 auto",
               minHeight: 0,
@@ -541,6 +567,14 @@ export function ProductModal({
             </div>
           )}
 
+          {/* Twins from other brands. A row opens that gift's own listing
+              here in the modal (not the store). */}
+          {alternatives.length > 0 && (
+            <div style={{ marginTop: 22 }}>
+              <TwinRow twins={alternatives} onOpen={openAlternative} />
+            </div>
+          )}
+
           </div>
 
           {/* Fade on the bottom edge of the scrollable area (mobile only)
@@ -660,7 +694,7 @@ export function ProductModal({
                   type="button"
                   onClick={(e) => {
                     e.stopPropagation();
-                    if (reported && onUndoReport) onUndoReport();
+                    if (reported && onUndoReport) onUndoReport(gift);
                     else setPopoverOpen((o) => !o);
                   }}
                   style={{
@@ -685,7 +719,7 @@ export function ProductModal({
                   open={popoverOpen}
                   onClose={() => setPopoverOpen(false)}
                   onPick={(opt, detail) => {
-                    onReport(opt, detail);
+                    onReport(gift, opt, detail);
                     setPopoverOpen(false);
                   }}
                   anchorSide="left"

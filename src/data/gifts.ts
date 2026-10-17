@@ -44,10 +44,19 @@ export type Gift = {
   status: string;
   /** "" means the gift suits anyone; only clearly gendered products are tagged. */
   gender: "" | "men" | "women";
+  /**
+   * Twins: near-identical gifts from different brands at about the same
+   * price (Bose vs Sony headphones) share a short kebab-case name here
+   * (sheet column "Twin group", e.g. "over-ear-headphones"). "" for most gifts.
+   */
+  twinGroup: string;
 };
 
-/** A gift with its computed match score attached (0–100). */
-export type RankedGift = Gift & { matchScore: number };
+/**
+ * A gift with its computed match score attached (0 to 100). `twins` holds the
+ * gifts from its twin group that foldTwins took out of the results.
+ */
+export type RankedGift = Gift & { matchScore: number; twins?: RankedGift[] };
 
 /* ------------------------------------------------------------------ *
  * Quiz-answer code -> the label strings expected in the sheet column.
@@ -529,7 +538,7 @@ export function scoreGift(gift: Gift, answers: Answers): number {
  * Sellers, 3) price closest to the budget
  * ------------------------------------------------------------------ */
 
-function isBestSeller(gift: Gift): boolean {
+export function isBestSeller(gift: Gift): boolean {
   return tolerantIncludes(gift.interests, "Best Sellers") || tolerantIncludes(gift.interests, "Best Seller");
 }
 
@@ -686,6 +695,78 @@ export function rankGifts(gifts: Gift[], answers: Answers): RankedGift[] {
   if (above60.length > 5) return finalize(above60);
   const above55 = scored.filter((s) => s.score >= MATCH_LOOSE);
   return finalize(above55);
+}
+
+/* ------------------------------------------------------------------ *
+ * Twins: results show one gift per twin group; the others open from
+ * that gift's detail view ("Also from another maker").
+ * ------------------------------------------------------------------ */
+
+/**
+ * Seed for the twin coin toss, built only from the stable parts of a search:
+ * recipient, age, gender, and the interests (sorted). Budget, vibe, and
+ * occasion are left out on purpose, so nudging the budget never swaps which
+ * twin shows. "Anyone" and no gender answer count as the same.
+ */
+export function twinSeed(answers: Answers): string {
+  const gender = answers.gender && answers.gender !== "any" ? answers.gender : "";
+  const interests = [...(answers.interests ?? [])].sort().join(",");
+  return [answers.recipient ?? "", answers.age ?? "", gender, interests].join("|");
+}
+
+/** FNV-1a string hash, unsigned 32-bit. */
+function fnv1a(s: string): number {
+  let h = 0x811c9dc5;
+  for (let i = 0; i < s.length; i++) {
+    h ^= s.charCodeAt(i);
+    h = Math.imul(h, 0x01000193);
+  }
+  return h >>> 0;
+}
+
+/**
+ * Keeps one gift per twin group in ranked results. The winner is the
+ * highest match %; members tied on it get an even coin toss (50/50 for two)
+ * seeded by twinSeed and the group name, so the same search always shows
+ * the same winner. No Best Sellers tiebreak (the tag already counts in the score)
+ * and price never decides. The winner keeps its own slot, the others are
+ * dropped from the list and attached to it as `twins` (best match first),
+ * and nothing else moves. Input objects are not mutated.
+ */
+export function foldTwins(ranked: RankedGift[], seed: string): RankedGift[] {
+  const groups = new Map<string, RankedGift[]>();
+  for (const g of ranked) {
+    if (!g.twinGroup) continue;
+    const members = groups.get(g.twinGroup);
+    if (members) members.push(g);
+    else groups.set(g.twinGroup, [g]);
+  }
+  const winners = new Map<string, RankedGift>();
+  const losers = new Set<string>();
+  for (const [name, members] of groups) {
+    if (members.length < 2) continue;
+    const top = Math.max(...members.map((g) => g.matchScore));
+    const tied = members
+      .filter((g) => g.matchScore === top)
+      .sort((a, b) => (a.id < b.id ? -1 : a.id > b.id ? 1 : 0));
+    const winner = tied[fnv1a(`${seed}|${name}`) % tied.length];
+    const twins = members.filter((g) => g !== winner).sort((a, b) => b.matchScore - a.matchScore);
+    for (const t of twins) losers.add(t.id);
+    winners.set(winner.id, { ...winner, twins });
+  }
+  if (!losers.size) return ranked;
+  return ranked.filter((g) => !losers.has(g.id)).map((g) => winners.get(g.id) ?? g);
+}
+
+/**
+ * The other gifts in `gift`'s twin group, for pages with no search to rank
+ * by (the gift page, /review): Best Sellers first, then by name.
+ */
+export function twinsOf<T extends Gift>(gift: Gift, all: T[]): T[] {
+  if (!gift.twinGroup) return [];
+  return all
+    .filter((g) => g.id !== gift.id && g.twinGroup === gift.twinGroup)
+    .sort((a, b) => Number(isBestSeller(b)) - Number(isBestSeller(a)) || a.name.localeCompare(b.name));
 }
 
 /** Rotating tint palette for secondary cards (hero is always plum). */

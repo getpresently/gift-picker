@@ -15,7 +15,8 @@ import { SiteHeader } from "./clay/SiteHeader";
 import { FooterLinks } from "./clay/FooterLinks";
 import { FooterBrand } from "./clay/FooterBrand";
 import { GiftCard } from "./clay/GiftCard";
-import { SECONDARY_TONES } from "../data/gifts";
+import { TwinRow } from "./clay/TwinRow";
+import { SECONDARY_TONES, twinsOf } from "../data/gifts";
 import { relatedGifts } from "../data/related";
 import { loadSaved, saveSaved } from "../data/saved";
 
@@ -42,7 +43,14 @@ export function GiftPage() {
   const { failed: imgFailed, onError: onImgError, loaded: imgLoaded, onLoad: onImgLoad } = useImageFallback(gift?.image);
   const buy = gift ? buyLinks(gift) : { amazon: "", brand: "" };
 
-  const related = useMemo(() => (gift ? relatedGifts(gift, allGifts) : []), [gift, allGifts]);
+  // Twins from other brands get their own row, so they are left out of the
+  // related gifts below and nothing shows twice.
+  const twins = useMemo(() => (gift ? twinsOf(gift, allGifts) : []), [gift, allGifts]);
+  const related = useMemo(() => {
+    if (!gift) return [];
+    const twinIds = new Set(twins.map((t) => t.id));
+    return relatedGifts(gift, twinIds.size ? allGifts.filter((g) => !twinIds.has(g.id)) : allGifts);
+  }, [gift, allGifts, twins]);
   const [saved, setSaved] = useState<Set<string>>(() => loadSaved());
   const toggleSave = (id: string) => {
     setSaved((prev) => {
@@ -331,6 +339,19 @@ export function GiftPage() {
                   >
                     {copied ? "Link copied ✓" : "🔗 Copy link to this gift"}
                   </button>
+
+                  {twins.length > 0 && (
+                    <div style={{ marginTop: 8 }}>
+                      <TwinRow
+                        twins={twins}
+                        onOpen={(t) => {
+                          track("gift_twin_open", { gift_id: t.id, from_gift_id: gift.id, source: "gift_page" });
+                          navigate(`/gift/${t.id}`);
+                          window.scrollTo({ top: 0 });
+                        }}
+                      />
+                    </div>
+                  )}
                 </div>
               </div>
             </ClaySurface>

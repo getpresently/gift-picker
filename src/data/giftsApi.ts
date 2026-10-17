@@ -10,7 +10,7 @@ import { isAmazonShortLink } from "./affiliate";
  *   row_id, Gift, Brand, Age, Relation, Type, Interests, Occasion,
  *   Price (numeric string lower bound), PriceMax (numeric / "$1,240" / "open" / ""),
  *   BillingPeriod ("one-time" | "monthly" | "weekly"), Description,
- *   PhotoAddress, Link, AmazonAltLink, Status, Feedback.
+ *   PhotoAddress, Link, AmazonAltLink, Status, Feedback, Twin group.
  *
  * The adapter maps that into the clean Gift shape used everywhere in code.
  */
@@ -122,6 +122,7 @@ export function adaptRow(row: RawRow): Gift {
     occasions: splitCsv(row.Occasion as string | undefined),
     status: String(row.Status ?? ""),
     gender: normalizeGender(row.Gender),
+    twinGroup: String(row["Twin group"] ?? "").trim(),
   };
 }
 

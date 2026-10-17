@@ -12,6 +12,7 @@ import { ReviewAnalytics } from "./ReviewAnalytics";
 import { useIsMobile } from "../hooks/useIsMobile";
 import { buildMatcher } from "../data/similarity";
 import type { SimilarityResult } from "../data/similarity";
+import { twinsOf } from "../data/gifts";
 import {
   setReviewRow,
   useReviewGifts,
@@ -386,7 +387,27 @@ function FeedbackNote({ text }: { text: string }) {
   );
 }
 
-function GiftCard({ gift, isMobile }: { gift: ReviewGift; isMobile: boolean }) {
+/** "a", "a and b", "a, b, and c". */
+function listNames(names: string[]): string {
+  if (names.length < 3) return names.join(" and ");
+  return `${names.slice(0, -1).join(", ")}, and ${names[names.length - 1]}`;
+}
+
+/**
+ * Read-only twin group line: the group name from the sheet and the other
+ * gifts in it, so a wrong grouping is easy to spot. Editing stays in the sheet.
+ */
+function TwinGroupLine({ group, twins }: { group: string; twins: ReviewGift[] }) {
+  const names = twins.map((t) => (isLiveStatus(t.status) ? t.name : `${t.name} (${t.status.trim() || "no status"})`));
+  return (
+    <div style={{ fontFamily: "Geist, sans-serif", fontSize: 13, lineHeight: 1.5, color: "rgba(35,20,16,0.7)" }}>
+      Twin group: <span style={{ fontWeight: 600, color: "#231410" }}>{group}</span>
+      {names.length ? `, with ${listNames(names)}` : ", no other gifts in it yet"}
+    </div>
+  );
+}
+
+function GiftCard({ gift, twins, isMobile }: { gift: ReviewGift; twins: ReviewGift[]; isMobile: boolean }) {
   const { failed, onError, loaded, onLoad } = useImageFallback(gift.image);
 
   return (
@@ -473,6 +494,8 @@ function GiftCard({ gift, isMobile }: { gift: ReviewGift; isMobile: boolean }) {
             <TagRow label="Interests" values={gift.interests} />
             <TagRow label="Occasion" values={gift.occasions} />
           </div>
+
+          {gift.twinGroup && <TwinGroupLine group={gift.twinGroup} twins={twins} />}
 
           <div style={{ display: "flex", gap: 18, flexWrap: "wrap", marginTop: 4 }}>
             {gift.link && (
@@ -568,6 +591,7 @@ function ClosestMatchesPanel({
         result.top.map((m) => {
           const mg = giftById.get(m.rowId);
           if (!mg) return null;
+          const twin = !!gift.twinGroup && mg.twinGroup === gift.twinGroup;
           return (
             <button key={m.rowId} type="button" onClick={() => onJump(m.rowId)} style={matchRowStyle}>
               <MatchThumb gift={mg} />
@@ -595,6 +619,7 @@ function ClosestMatchesPanel({
                   {Math.round(m.score * 100)}%
                 </span>
                 <StatusChip status={mg.status} />
+                {twin && <span style={{ ...chipBase, background: "rgba(196,71,126,0.12)", color: "#C4477E" }}>Twin</span>}
               </div>
             </button>
           );
@@ -1222,7 +1247,7 @@ function ReviewTool({ unlock, active, onOpenAnalytics }: { unlock: UnlockState; 
                 alignItems: "start",
               }}
             >
-              <GiftCard gift={currentGift} isMobile={isMobile} />
+              <GiftCard gift={currentGift} twins={twinsOf(currentGift, merged)} isMobile={isMobile} />
               <div style={{ minWidth: 0 }}>
                 {!isMobile && (
                   <ActionBar

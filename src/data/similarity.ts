@@ -45,6 +45,10 @@ const GENERIC = new Set([
   "perfectly", "beautiful", "high", "quality", "durable", "stylish", "unique",
   "personalized", "custom", "handmade", "top", "favorite", "favorites",
   "oz", "fl", "ml", "qt", "lb", "inch", "in", "piece", "count", "gen", "generation",
+  // Venue gift cards (Topgolf, Benihana, Blo) matched each other on this
+  // wording; ignoring it cut the twin scan's false pairs from 150 to 70 and
+  // kept every real twin.
+  "card", "cards", "egift", "certificate", "voucher",
 ]);
 
 /**
