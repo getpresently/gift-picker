@@ -122,7 +122,7 @@ Add an interest tag only if a shopper who picked that interest would be glad, an
 - The Interests value lists the primary first, then secondary tags, then Best Sellers last.
 - Examples: a beanie is Apparel & Accessories only; a sun hat is Apparel & Accessories only; a streaming gift card is Rest & Relaxation; the Stardew Valley cookbook is Gaming, then Cooking and Food & Drinks; a countertop indoor garden can carry Home & Decor because it sits on display; a repair tool kit is Tech & Electronics with no Sustainability tag.
 - **Same kind, same primary:** speakers and everyday headphones are Tech & Electronics first and Music second; diffusers are Home & Decor; electric kettles are Food & Drinks; instant cameras are Creativity; throw blankets are Rest & Relaxation; adult insulated bottles are Health & Wellness with Fitness second; countertop smart gardens are Cooking. For any other kind, match the primary of the same kind of gift already in the catalog.
-- **Best Sellers** is only for proven, widely loved hits (AirPods, Kindle, Owala FreeSip, Slip pillowcase, lululemon belt bag, Magna-Tiles, Jellycat). Never for pricey furniture, niche gamer gear, generic baby items, or a brand that is merely popular in a niche.
+- **Best Sellers** needs evidence, written in Feedback: 5K+ bought in the past month on Amazon; or 10,000+ ratings at 4.5+ stars; or a top-10 Amazon category rank with 1,000+ ratings; or millions of units sold for the line; or a current Wirecutter pick with 4.4+ stars from 1,000+ ratings. Never under 4.2 stars. A kit or bundle does not inherit its products' numbers. If you cannot show one of these, leave the tag off.
 
 ### Age
 

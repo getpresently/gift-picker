@@ -339,33 +339,21 @@ Dalia's five exceptions, in her words, with the tags that resulted:
 
 Read together, the exceptions say: an object people keep out on display at home earns Home & Decor (the countertop garden, the feeder); a repair tool earns no Sustainability tag for being a repair tool; a co-op game a family plays together can count as Toys & Games; mixing drinks counts as kitchen craft.
 
-### Best Sellers
+### Best Sellers (evidence rule, since 10/17/26)
 
-Reserved for proven, widely loved hits: AirPods, Kindle Paperwhite, Owala FreeSip, Slip silk pillowcase, lululemon Everywhere Belt Bag, Magna-Tiles, Jellycat. Never for pricey furniture, niche gamer gear, or generic baby items. On 9/21 it was removed from 13 rows, including the Pottery Barn Kids All-in-1 Play Kitchen, Smeg Mini Fridge, Peloton Cross Training Bike, Logitech G PRO X Superlight 2 mouse, and Crate & Kids Playhouse. On 10/3 it came off the Jade Leaf matcha before that row was pasted. A Best Sellers tag on the gift counts in full when the shopper picks Best Sellers, so it is a strong boost; apply it sparingly.
+Best Sellers marks proven, broad popularity, backed by evidence written in Feedback with a date. A gift qualifies with any one of:
 
-### Age
+1. 5K+ bought in the past month on its Amazon listing.
+2. 10,000+ ratings at 4.5 stars or more, on Amazon, the brand's site, or a major retailer.
+3. A top-10 rank in its Amazon Best Sellers category, with 1,000+ ratings.
+4. Millions of units sold for the product line, from the company or credible press (instax, Toniebox, Ray-Ban Meta, lululemon Align).
+5. A current Wirecutter pick with 4.4+ stars from 1,000+ ratings.
 
-- **Alcohol and cannabis exclude Young Adult and younger.** Young Adult is 18 to 25, which includes people under 21. Hard Kombucha Subscription is Adult only; the virtual wine tasting is Adult and Senior. Barware without alcohol (cocktail glasses, a decanter) may include Young Adult.
-- **Trendy beauty is teen-only** (Dalia 9/21): "beauty products like that are okay to gift to teens but not to adults." Summer Fridays Neapolitan Lip Trio, Dior Addict Lip Glow Oil, and both Sol de Janeiro sets are tagged Teenager only.
-- Tag every age the gift honestly suits. When a shopper picks an age the gift is not tagged for, the gift is hidden entirely (section 6), so a missing age costs more than a missing interest.
-- **Grandparent means Senior.** The quiz skips the age question for grandparents and treats them as Senior, so a gift tagged Grandparent without Senior never shows for them. On 10/5 the fondue pot, charcuterie board, stemware, Roku, Serenity spa box, wine-box truffles, and The Crew card game all had this gap.
-- **The Child recipient reads Relation `Friend, Sibling`.** A `Child` value in Relation matches nothing; kids' gifts carry `Friend, Sibling`.
-- **Kids (Dalia 10/4).** `Child` (3 to 12) goes only on gifts a kid that age would want; kids' gifts carry Relation `Friend, Sibling` by convention and add Teenager only if teens truly want them. Grown-up gifts lose Child: the Airbnb card, nostalgic chocolate bars, camping voucher, Hope Cards, felt letter board, and pocket projector did on 10/4. Dalia kept Child on the ice cream makers, the Belgian waffle maker, the scratch-off travel map, and PlantWave, which she called great kid gifts. Kid-first gifts lose adult ages, so they stop showing in adult searches: the MicroBrite microscope and Foldscope kit are Child and Teenager, the Alice pop-up book is Child only, and the kid-and-adult yoga mats are Child. Only about 70 gifts were kid-specific on 10/4, thin in gaming, tech, music, and creativity, so a batch of 21 was added.
+Floor: never under 4.2 stars where ratings exist. The evidence must be for this product: the same item in another color, size, or packaging counts (the Bum Bum Cream in a glass jar), but a kit, set, or bundle does not inherit its products' numbers (the Rhode Kit, the Summer Fridays trio). A brand-new model of a proven hit may keep the tag while its own numbers build, but say so in Feedback and recheck. Brands still have to pass the ratings and seller rules above; a product recall or a pattern of complaints disqualifies.
 
-### Relation, Type, and Occasion
+The tag counts in full when a shopper picks Best Sellers and breaks ties in the general ranking. It does not break twin ties, since it already counted in the score.
 
-- **Relation** is worth 25 points, the largest single factor. Tag only relationships where the gift makes sense. For "Treat myself" gifts include at least Friend, Sibling, and Partner, plus whatever else genuinely fits. Use `Mentor/Teacher` exactly as written.
-- **No intimate gifts for Coworker or Mentor/Teacher** (Dalia 10/7): bath and shower products, body care, facial tools, and anything worn to bed are too personal for someone you work with. She pulled Coworker and Mentor/Teacher from the Herbivore milk bath soak, and the same rule took them off the Twisted Tomboy shower steamers, the Lush Relax bath set, and the Mount Lai gua sha set. Desk-friendly self-care (eye stones, a hand cream set, an essential oil roller) can stay. Intimate self-care also gets `Self` (Dalia 10/7), so it shows for "Treat myself": the bath caddy, body oil, bath oil collection, milk bath, shower steamers, gua sha set, facial brush, cleansing balm, and Lush set got it on 10/7.
-- **Travel means a travel gift** (Dalia 10/7): a toy that happens to come in a small tin, like the microMAGS Travel set, is Toys & Games, not Travel.
-- **Type** (Fun, Practical, Sentimental, Luxurious): tag what the gift feels like. Occasion rules read it: Anniversary rewards Sentimental or Luxurious; Just Because rewards Fun and docks Luxurious.
-- **Sympathy (added 10/4).** The Sympathy occasion shows ONLY gifts tagged `Sympathy`, skips the vibe question, and is hidden for babies, little ones, and teens. A gift tagged Sympathy alone (a grief book, a memorial chime) never shows for any other occasion; a general comfort gift (a robe, a frame, a weighted blanket) can carry Sympathy alongside its usual occasions. Never Fun, never celebratory, no plants and no flowers (Dalia: plants aren't a good sympathy gift). Good directions: meals and practical help, comfort items, memorial keepsakes, respected grief books, pet-loss pieces, and charity gifts.
-- **Occasion**: tag every occasion a thoughtful giver would choose it for. New Job was added on 10/3, and 52 existing gifts were tagged for it: things for the desk, the commute, or the work bag; coffee or tea at work; focus headphones; celebratory treats; learning memberships. Skip kids' toys, baby items, furniture, and wedding-type gifts for New Job.
-
-### Gender (column I)
-
-Tag `Men` or `Women` only when the item is obviously gendered (Dalia 9/21: "shavers, hair clips"). Kids' items stay neutral: "for kids, try not to gender too much where it may be neutral. like star realms could be boys or girls." Blank never excludes anything. On 10/7 21 live gifts were Women and 2 Men; the 10/7 check of the past week's additions found one untagged (the Little Words Project bracelet, now Women). /review shows a Gender tag on any gift that has one.
-
----
+**The 10/17 check** covered all 52 tagged gifts plus the 15 untagged twins (evidence in ~/Sites/gift-picker-batches/bestsellers/): 37 kept, 10 removed (Barefoot Dreams ABC Blanket and CozyChic Throw, Theragun Prime Plus, Manta SILK mask, the Snoop Dogg cookbook, Sonos Roam 2, Rhode Kit, Summer Fridays trio, Sol de Janeiro mist set, Lovesac Sac), 3 added (JBL Charge 6, Bose SoundLink Flex, Bearaby Cotton Napper), and 5 left in place because their main sales channels block automated checks (Slip pillowcase, Jellycat Amuseables Sun, Dior Lip Glow Oil, Ember Mug 3, AirPods Max 2). Our tools cannot open nytimes.com, so Wirecutter status came from archived copies and is incomplete. Recheck before the holidays each year.
 
 ## 5. Photos
 
