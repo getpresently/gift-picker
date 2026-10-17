@@ -34,6 +34,20 @@ export function isAmazonUrl(url: string): boolean {
   }
 }
 
+/**
+ * The store buttons a gift gets. A Link that is itself an Amazon page is the
+ * Amazon button (it wins over the AmazonAltLink, which is only a fallback
+ * listing), so a gift never shows "Buy on Amazon" twice or labels an Amazon
+ * page "Buy on <brand>".
+ */
+export function buyLinks(gift: { link: string; amazonLink: string }): { amazon: string; brand: string } {
+  const linkIsAmazon = isAmazonUrl(gift.link);
+  return {
+    amazon: linkIsAmazon ? gift.link : gift.amazonLink,
+    brand: linkIsAmazon ? "" : gift.link,
+  };
+}
+
 export function affiliateUrl(url: string): string {
   if (!url || !AMAZON_TAG || !isAmazonUrl(url)) return url;
   try {

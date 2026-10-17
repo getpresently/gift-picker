@@ -11,7 +11,7 @@ import { useImageFallback } from "../../hooks/useImageFallback";
 import { track } from "../../data/analytics";
 import type { Gift } from "../../data/gifts";
 import { isDemoting, type FeedbackOption, type FeedbackRecord } from "../../data/feedback";
-import { isAmazonUrl, openBuyLink as openExternal } from "../../data/affiliate";
+import { buyLinks, isAmazonUrl, openBuyLink as openExternal } from "../../data/affiliate";
 
 /** Cards may receive a ranked gift; matchScore is optional for non-ranked uses. */
 type CardGift = Gift & { matchScore?: number };
@@ -358,7 +358,7 @@ export function GiftCard(props: Props) {
             e?.stopPropagation?.();
             // Amazon first (Dalia's default, matching the top pick), then
             // the brand's own page when the gift isn't sold on Amazon.
-            const url = gift.amazonLink || gift.link;
+            const url = buyLinks(gift).amazon || gift.link;
             const destination = isAmazonUrl(url) ? "amazon" : "brand";
             track("gift_buy_click", {
               gift_id: gift.id,

@@ -7,7 +7,7 @@ import { useImageFallback } from "../../hooks/useImageFallback";
 import { track } from "../../data/analytics";
 import type { RankedGift } from "../../data/gifts";
 import type { FeedbackOption, FeedbackRecord } from "../../data/feedback";
-import { openBuyLink as openExternal } from "../../data/affiliate";
+import { buyLinks, openBuyLink as openExternal } from "../../data/affiliate";
 
 type Props = {
   gifts: RankedGift[];
@@ -109,6 +109,7 @@ export function ProductModal({
   }, [open, currentIndex, canPrev, canNext, onClose, onNavigate]);
 
   if (!open || !gift) return null;
+  const { amazon: amazonUrl, brand: brandUrl } = buyLinks(gift);
   const idx = currentIndex as number;
   const match = typeof gift.matchScore === "number" ? Math.round(gift.matchScore) : null;
   // Derive simple tags from gift.interests / gift.types (up to 3)
@@ -580,7 +581,7 @@ export function ProductModal({
           {/* CTAs, Amazon takes the primary slot when present, otherwise
               the brand link is primary. Both buttons start with "Buy on…". */}
           <div style={{ display: "flex", gap: 10, marginTop: isMobile ? 0 : 22, flexWrap: "wrap" }}>
-            {gift.amazonLink ? (
+            {amazonUrl ? (
               <>
                 <Pillow
                   tone="coral"
@@ -595,12 +596,12 @@ export function ProductModal({
                       source: "modal",
                       destination: "amazon",
                     });
-                    openExternal(gift.amazonLink);
+                    openExternal(amazonUrl);
                   }}
                 >
                   Buy on Amazon →
                 </Pillow>
-                {gift.link && (
+                {brandUrl && (
                   <Pillow
                     tone="ink"
                     size="md"
@@ -614,7 +615,7 @@ export function ProductModal({
                         source: "modal",
                         destination: "brand",
                       });
-                      openExternal(gift.link);
+                      openExternal(brandUrl);
                     }}
                   >
                     Buy on {gift.brand || "store"} →
@@ -635,7 +636,7 @@ export function ProductModal({
                     source: "modal",
                     destination: "brand",
                   });
-                  openExternal(gift.link);
+                  openExternal(brandUrl);
                 }}
               >
                 Buy on {gift.brand || "store"} →

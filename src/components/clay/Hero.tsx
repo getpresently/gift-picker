@@ -9,7 +9,7 @@ import { useImageFallback } from "../../hooks/useImageFallback";
 import { track } from "../../data/analytics";
 import type { RankedGift } from "../../data/gifts";
 import type { FeedbackOption, FeedbackRecord } from "../../data/feedback";
-import { openBuyLink as openExternal } from "../../data/affiliate";
+import { buyLinks, isAmazonUrl, openBuyLink as openExternal } from "../../data/affiliate";
 
 type Props = {
   gift: RankedGift;
@@ -162,7 +162,8 @@ export function Hero({
               onClick={(e) => {
                 e?.stopPropagation?.();
                 // Prefer Amazon if available, otherwise the brand's product link.
-                const destination = gift.amazonLink ? "amazon" : "brand";
+                const url = buyLinks(gift).amazon || gift.link;
+                const destination = isAmazonUrl(url) ? "amazon" : "brand";
                 track("gift_buy_click", {
                   gift_id: gift.id,
                   gift_name: gift.name,
@@ -171,7 +172,7 @@ export function Hero({
                   source: "hero",
                   destination,
                 });
-                openExternal(gift.amazonLink || gift.link);
+                openExternal(url);
               }}
             >
               Buy gift →

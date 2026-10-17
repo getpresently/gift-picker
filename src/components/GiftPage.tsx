@@ -9,7 +9,7 @@ import { useIsMobile } from "../hooks/useIsMobile";
 import { useImageFallback } from "../hooks/useImageFallback";
 import { useGifts } from "../data/giftsApi";
 import { track } from "../data/analytics";
-import { isAmazonUrl, openBuyLink as openExternal } from "../data/affiliate";
+import { buyLinks, isAmazonUrl, openBuyLink as openExternal } from "../data/affiliate";
 import { AffiliateDisclosure } from "./clay/AffiliateDisclosure";
 import { SiteHeader } from "./clay/SiteHeader";
 import { FooterLinks } from "./clay/FooterLinks";
@@ -40,6 +40,7 @@ export function GiftPage() {
     [allGifts, giftId],
   );
   const { failed: imgFailed, onError: onImgError, loaded: imgLoaded, onLoad: onImgLoad } = useImageFallback(gift?.image);
+  const buy = gift ? buyLinks(gift) : { amazon: "", brand: "" };
 
   const related = useMemo(() => (gift ? relatedGifts(gift, allGifts) : []), [gift, allGifts]);
   const [saved, setSaved] = useState<Set<string>>(() => loadSaved());
@@ -252,7 +253,7 @@ export function GiftPage() {
 
                   {/* Buy CTAs: same Amazon-first rules as the modal */}
                   <div style={{ display: "flex", gap: 10, marginTop: 8, flexWrap: "wrap" }}>
-                    {gift.amazonLink ? (
+                    {buy.amazon ? (
                       <>
                         <Pillow
                           tone="coral"
@@ -266,12 +267,12 @@ export function GiftPage() {
                               source: "gift_page",
                               destination: "amazon",
                             });
-                            openExternal(gift.amazonLink);
+                            openExternal(buy.amazon);
                           }}
                         >
                           Buy on Amazon →
                         </Pillow>
-                        {gift.link && (
+                        {buy.brand && (
                           <Pillow
                             tone="ink"
                             size="md"
@@ -284,7 +285,7 @@ export function GiftPage() {
                                 source: "gift_page",
                                 destination: "brand",
                               });
-                              openExternal(gift.link);
+                              openExternal(buy.brand);
                             }}
                           >
                             Buy on {gift.brand || "store"} →
@@ -304,7 +305,7 @@ export function GiftPage() {
                             source: "gift_page",
                             destination: "brand",
                           });
-                          openExternal(gift.link);
+                          openExternal(buy.brand);
                         }}
                       >
                         Buy on {gift.brand || "store"} →
