@@ -31,7 +31,6 @@ export function Quiz() {
 
   const [step, setStep] = useState(0);
   const [answers, setAnswers] = useState<Answers>(() => loadAnswers());
-  const [showAllInterests, setShowAllInterests] = useState(false);
   const advanceTimerRef = useRef<number | null>(null);
   // True only between a tap on an auto-advance option and the move to the
   // next question, so "advancing…" never shows for a remembered answer.
@@ -77,11 +76,6 @@ export function Quiz() {
   useEffect(() => {
     saveAnswers(answers);
   }, [answers]);
-
-  // Reset "show more" expansion when the question changes.
-  useEffect(() => {
-    setShowAllInterests(false);
-  }, [step]);
 
   // Scroll back to the top of the screen whenever the step changes so
   // long answer lists don't leave the next question scrolled off-screen.
@@ -195,10 +189,6 @@ export function Quiz() {
   const setSlider = (v: number) => setAnswers((a) => ({ ...a, [q.id]: v }));
 
   const multiCount = Array.isArray(value) ? value.length : 0;
-  const visibleInterestOptions =
-    q.type === "multi" && q.showMoreAfter && !showAllInterests
-      ? activeOptions.slice(0, q.showMoreAfter)
-      : activeOptions;
 
   return (
     <div style={{ background: "#FBF1E1", minHeight: "100vh", position: "relative" }}>
@@ -398,7 +388,7 @@ export function Quiz() {
                     gap: isMobile ? 8 : 10,
                   }}
                 >
-                  {visibleInterestOptions.map((opt) => {
+                  {activeOptions.map((opt) => {
                     const arr = Array.isArray(value) ? value : [];
                     const sel = arr.includes(opt.v);
                     const atMax = arr.length >= q.max && !sel;
@@ -413,30 +403,6 @@ export function Quiz() {
                     );
                   })}
                 </div>
-                {q.showMoreAfter && activeOptions.length > q.showMoreAfter && (
-                  <div style={{ display: "flex", justifyContent: "center", marginTop: 16 }}>
-                    <button
-                      type="button"
-                      onClick={() => setShowAllInterests((s) => !s)}
-                      style={{
-                        background: "rgba(255,255,255,0.65)",
-                        backdropFilter: "blur(8px)",
-                        border: "1px solid rgba(35,20,16,0.1)",
-                        padding: "8px 16px",
-                        borderRadius: 999,
-                        cursor: "pointer",
-                        fontFamily: "Geist, sans-serif",
-                        fontSize: 13,
-                        color: "#5A3F36",
-                        fontWeight: 500,
-                        boxShadow:
-                          "inset 0 1px 0 rgba(255,255,255,0.9), 0 3px 8px -2px rgba(80,30,30,0.15)",
-                      }}
-                    >
-                      {showAllInterests ? "↑ Show fewer" : `↓ Show ${activeOptions.length - q.showMoreAfter} more`}
-                    </button>
-                  </div>
-                )}
               </>
             )}
 

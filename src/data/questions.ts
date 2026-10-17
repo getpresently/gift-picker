@@ -25,7 +25,6 @@ export type MultiQuestion = {
   type: "multi";
   max: number;
   bigTiles?: boolean;
-  showMoreAfter?: number;
   options: Option[];
 };
 
@@ -143,7 +142,6 @@ export const QUESTIONS: Question[] = [
     helper: "Up to 3.",
     type: "multi",
     max: 3,
-    showMoreAfter: 12,
     options: [
       { v: "best",     l: "Best Sellers",          e: "🏆" },
       { v: "apparel",  l: "Apparel & Accessories", e: "👕" },
