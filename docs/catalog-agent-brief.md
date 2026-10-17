@@ -121,6 +121,7 @@ Add an interest tag only if a shopper who picked that interest would be glad, an
 - **Primary interest** is the ONE label that says what the gift is: the interest a shopper would pick if this gift is exactly what they hoped to find. Never Best Sellers. When torn, pick the label that describes the object itself. The site gives a primary match full credit and a secondary match half credit, so a wrong primary hurts the shoppers who want the gift most.
 - The Interests value lists the primary first, then secondary tags, then Best Sellers last.
 - Examples: a beanie is Apparel & Accessories only; a sun hat is Apparel & Accessories only; a streaming gift card is Rest & Relaxation; the Stardew Valley cookbook is Gaming, then Cooking and Food & Drinks; a countertop indoor garden can carry Home & Decor because it sits on display; a repair tool kit is Tech & Electronics with no Sustainability tag.
+- **Same kind, same primary:** speakers and everyday headphones are Tech & Electronics first and Music second; diffusers are Home & Decor; electric kettles are Food & Drinks; instant cameras are Creativity; throw blankets are Rest & Relaxation; adult insulated bottles are Health & Wellness with Fitness second; countertop smart gardens are Cooking. For any other kind, match the primary of the same kind of gift already in the catalog.
 - **Best Sellers** is only for proven, widely loved hits (AirPods, Kindle, Owala FreeSip, Slip pillowcase, lululemon belt bag, Magna-Tiles, Jellycat). Never for pricey furniture, niche gamer gear, generic baby items, or a brand that is merely popular in a niche.
 
 ### Age
@@ -163,14 +164,14 @@ TSV, no header, exactly 20 columns per row, no tabs or newlines inside fields. *
 8. **Price:** number only (64.99), the lowest real price for the item as sold.
 9. **PriceMax:** a number when the product genuinely has a range (sizes, set counts, gift card amounts), else empty. Gift cards use a real purchasable range; do not copy the seller's default amount (Hipcamp is listed at 25 to 500, in line with the other gift cards, because the buyer can type any amount).
 10. **BillingPeriod:** exactly `one-time`, `monthly`, or `weekly`. No other values.
-11. **Description:** 20 to 40 words, plain and concrete: what it is and why it makes a good gift.
+11. **Description:** 20 to 40 words, plain and concrete: what it is and why it makes a good gift. For an in-person gift sold only at a limited set of locations (a venue gift card, a studio class, a restaurant chain), end with "Check for a nearby location before buying." (or "nearby chapter" for clubs, "Check the city list before buying." for city passes). Skip it when the card also works online.
 12. **PhotoAddress:** a direct image URL you verified (section 6).
 13. **Link:** a direct product page you verified: it loads, the product is in stock, and the price matches. Prefer the brand's own site.
 14. **AmazonAltLink:** `https://www.amazon.com/dp/ASIN` if Amazon sells the identical product or a close fit (same brand, similar model, size, colour, or edition), from any seller with ratings as long as it is new, at any price, even if it is out of stock right now; skip a close fit that drops what makes the gift special (a themed edition, a foreign-language edition); else empty. Never amzn.to. **Never the same URL or ASIN as Link.** If Amazon is the only seller, put it in Link and leave this empty.
 15. **Status:** `Live`.
 16. **Date updated:** today's date as `YYYY-MM-DD`.
 17. **Review status:** `FALSE`.
-18. **Feedback:** the note your task gives you; it must start with the word `Added` and a date (for example `Added 10/3/26 for user request #25`). If the gift is a copycat of an original brand, append ` | Copycat of <original brand>: kept because <genuinely better: reason>` or `... because <popular in its own right: reason>`. If it replaces a dead or sold-out gift, use `Added <date> to replace <old gift> (<reason>)`.
+18. **Feedback:** the note your task gives you; it must start with the word `Added` and a date (for example `Added 10/3/26 for user request #25`). If the gift is a copycat of an original brand, append ` | Copycat of <original brand>: kept because <genuinely better: reason>` or `... because <popular in its own right: reason>`. If it replaces a dead or sold-out gift, use `Added <date> to replace <old gift> (<reason>)`. If a live catalog gift from another maker is a fair swap for yours at about the same price (same kind, same use, prices within roughly 25%), append ` | Possible twin of <rID> <name>: <why>`; give it the same primary interest as that gift. Do not write a twin group yourself.
 19. **Gender:** empty unless the item is obviously gendered (`Men` / `Women`).
 20. **Primary interest:** the ONE label that says what the gift is. Best Sellers can never be the primary. It must also appear first in column 6.
 

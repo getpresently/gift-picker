@@ -166,7 +166,7 @@ Dalia asked to map the most common quiz paths and fill the ones without enough g
 
 ### Sheet columns (since 10/3/26)
 
-A ID, B Gift, C Brand, D Age, E Relation, F Type, G Primary interest, H Interests, I Occasion, J Gender, K Price, L PriceMax, M BillingPeriod, N Description, O PhotoAddress, P Link, Q AmazonAltLink, R Status, S Date updated, T Review status, U Feedback (ID added 10/3/26).
+A ID, B Gift, C Brand, D Age, E Relation, F Type, G Primary interest, H Interests, I Occasion, J Gender, K Price, L PriceMax, M BillingPeriod, N Description, O PhotoAddress, P Link, Q AmazonAltLink, R Status, S Date updated, T Review status, U Feedback, V Twin group (ID added 10/3/26; Twin group added 10/17/26, see "Twins" below).
 
 Dalia had Primary interest moved next to Interests and Gender moved after Occasion. The site, the edge cache, /review, and the Apps Script all read columns by header name, so column moves are safe for them. Scratch scripts and Name Box edits use letters and must be updated after any move.
 
@@ -214,6 +214,8 @@ The maker's name: "Geo F. Trumper" for a body wash that Maggard Razors sells. A 
 ### Descriptions
 
 20 to 40 words, plain and concrete: what it is and why it makes a good gift. No em-dashes, few en-dashes, Oxford comma, no hype words ("perfect," "amazing," "ultimate," "must-have," "elevate"), no "X, not Y" constructions, and no verbless fragment as a closing flourish ("Instructions included.").
+
+In-person gifts sold at a limited set of locations (venue gift cards, studio classes, restaurant chains, gyms) end with one sentence: "Check for a nearby location before buying." Use "Check for a nearby chapter before buying." for clubs with chapters and "Check the city list before buying." for city passes (Dalia 10/16/26; 21 gifts got it on 10/17). Skip it when the card also works online (Ulta, Kendra Scott, lululemon, CourseHorse). Gifts tied to a single city (the Little Havana food tour, the Mexico City walking tour) stay for now as trip inspiration; a decision on them is parked.
 
 ### Status and Review status
 
@@ -279,6 +281,17 @@ Sheet edits go straight into Dalia's sheet tab in Chrome; there is no edit queue
 
 ---
 
+### Twins (column V, since 10/17/26)
+
+Twins are gifts from different makers that are a fair swap for each other at about the same cost: Bose QuietComfort Ultra and Sony WH-1000XM6 headphones, the Gravity and Bearaby weighted blankets. Siblings are the same kind of thing a step up or down in price, size, or capability (JBL Go 5 at $40 and Charge 6 at $200); they are not marked yet. Lookalikes that are different gifts (two cookbooks, two themed puzzles, two venue gift cards) are neither.
+
+- **Who marks them:** Claude and its agents, never Dalia (10/17/26: she wants to be hands-off). The /review close matches propose candidates; an agent applies the test; each marked row gets the same short kebab-case group name in column V (`over-ear-anc-headphones`) and a dated Feedback note saying why.
+- **Be conservative.** When unsure, leave the pair unmarked: a missed twin only costs a duplicate card, while a wrong twin hides a gift that deserved its own card. Ecosystem lock-in is a real difference, so AirPods are not twins of Bose or Sony.
+- **Align their tags.** Twins share a primary interest and any secondary tag that describes both equally (Cuisinart got Food & Drinks to match the Ninja CREAMi). Keep tags that mark a real difference.
+- **On the site:** results show one card per group: the twin with the higher match %, and on an exact tie a 50/50 coin toss seeded by who the gift is for, their age, gender, and interests (not the budget), so the same search and its share link always show the same one. Best Sellers does not break twin ties, because it already counts in the score. The other twins (at most 2) appear in that gift's detail view under "Also from another maker", and tapping one opens its own listing. Results stay in match % order.
+- **10 groups set on 10/17:** ice-cream-makers, portable-speakers, weighted-blankets, smart-indoor-gardens, oil-diffusers, baby-keepsake-boxes, over-ear-anc-headphones, sunrise-sleep-clocks, pet-beds, picnic-wine-tables.
+- **Later (idea stage):** siblings could get a Wirecutter-style "Budget pick" and "Upgrade pick" row in the detail view while keeping their own cards.
+
 ## 4. Tagging rules
 
 ### The binding test
@@ -307,6 +320,8 @@ Examples:
 - The Official Stardew Valley Cookbook: Gaming, with Cooking and Food & Drinks as secondary tags.
 - It Takes Two (Nintendo Switch): Gaming, with Toys & Games.
 - Long Distance Friendship Lamps: Home & Decor.
+
+**Same kind of product, same primary (Dalia 10/17/26).** Gifts that are the same kind of thing share a primary, so two equivalent gifts never rank apart on a tagging slip. Set on 10/17: speakers and everyday headphones and earbuds are Tech & Electronics first and Music second (gear built for a purpose keeps its own primary: gaming headsets are Gaming, sport and swim headphones are Fitness, studio monitor headphones and the guitar amp are Music); essential oil diffusers are Home & Decor; electric kettles are Food & Drinks; instant and film cameras are Creativity; throw blankets are Rest & Relaxation; adult insulated water bottles are Health & Wellness with Fitness second; countertop smart gardens are Cooking.
 
 ### The 10/3 tag-trim pass
 
@@ -465,6 +480,8 @@ Under its old five tags, the same glass matched all three picks for the full 40 
 Under each gift page: live gifts that share an age tag, are not made for the other gender, and share at least one interest (Best Sellers ignored). Score = 3 per shared interest + 1 per shared vibe + 0.5 per shared relation + 2 when prices are within 2× (1 within 4×), minus 4 for the same product type and 1 for the same brand. One gift per brand, top 4.
 
 ### Close matches in /review (`similarity.ts`)
+
+Since 10/17/26 the filler list also ignores "card", "cards", "egift", "certificate", and "voucher": venue gift cards (Topgolf, Benihana, Blo) had been flagged as matches of each other on that wording alone. The change cut the twin scan's candidate pairs from 150 to 70 and kept all 11 real twin pairs.
 
 TF-IDF cosine similarity on the name (weight 0.7) and description (0.3), with brand words and filler ("set," "gift," "premium") removed. Adjustments: up to +0.1 for shared interests; +0.35 when both gifts are the same product type; −0.1 when the gift has a type and the candidate's type differs; −0.15 when prices differ by more than 3×. A score of 0.40 or more counts as a close match. Product types include drinkware, planters, coffee makers, kettles, headphones, speakers, instant cameras, photo printers, wearables, massage guns, yoga mats, blankets, candles, diffusers, jigsaws, e-readers, controllers, keyboards, sheet sets, slippers, sneakers, hoodies, digital frames, sleep clocks, indoor gardens, Dutch ovens, ice cream makers, coffee subscriptions, cheese, chocolate, VR headsets, online classes, sunglasses, and wallets. The drinkware type was added after Dalia noted the Rambler "is the same as the other water bottles" while the matcher scored it low.
 
