@@ -156,6 +156,7 @@ export const QUESTIONS: Question[] = [
       { v: "rest",     l: "Rest & Relaxation",     e: "🛁" },
       { v: "seasonal", l: "Seasonal Gifts",        e: "🍁" },
       { v: "selfcare", l: "Self-Care & Beauty",    e: "🧴" },
+      { v: "sports",   l: "Sports",                e: "⚽" },
       { v: "sustain",  l: "Sustainability",        e: "♻️" },
       { v: "tech",     l: "Tech & Electronics",    e: "🛠" },
       { v: "toys",     l: "Toys & Games",          e: "🧸" },

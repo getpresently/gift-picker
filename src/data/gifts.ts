@@ -75,8 +75,8 @@ export const AGE_LABELS: Record<NonNullable<Answers["age"]>, string[]> = {
   senior: ["Senior"],
 };
 
-// garden and sports are ready here before the quiz offers them (questions.ts);
-// until then no shopper can pick them, and OFFERED_PRIMARIES treats them as unassigned.
+// garden is ready here before the quiz offers it (questions.ts); until then no
+// shopper can pick it, and OFFERED_PRIMARIES treats it as unassigned.
 export const INTEREST_LABELS: Record<string, string[]> = {
   best: ["Best Sellers", "Best Seller"],
   apparel: ["Apparel & Accessories"],
