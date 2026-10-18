@@ -715,7 +715,7 @@ export function rankGifts(gifts: Gift[], answers: Answers): RankedGift[] {
 
 /* ------------------------------------------------------------------ *
  * Twins: results show one gift per twin group; the others open from
- * that gift's detail view ("Also from another maker").
+ * that gift's detail view ("Similar picks").
  * ------------------------------------------------------------------ */
 
 /**

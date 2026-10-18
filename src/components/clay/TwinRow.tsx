@@ -11,7 +11,7 @@ type Props<T extends Gift> = {
 };
 
 /**
- * "Also from another maker": near-identical gifts from other brands, shown
+ * "Similar picks": near-identical gifts from other brands (twins), shown
  * in the product modal and on the gift page. Lives in the scrolling content,
  * never in the pinned Buy-button footer.
  */
@@ -31,7 +31,7 @@ export function TwinRow<T extends Gift>({ twins, onOpen, style }: Props<T>) {
           marginBottom: 8,
         }}
       >
-        Also from another maker
+        Similar picks
       </div>
       {shown.map((t, i) => (
         <button

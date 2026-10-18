@@ -68,7 +68,7 @@ export function ProductModal({
 }: Props) {
   const open = currentIndex !== null && currentIndex >= 0 && gifts[currentIndex] !== undefined;
   const listGift = open ? gifts[currentIndex as number] : null;
-  // A twin opened from the "Also from another maker" row replaces the list
+  // A twin opened from the "Similar picks" row replaces the list
   // gift in place; the arrows and counter still walk the results list.
   const [twinView, setTwinView] = useState<RankedGift | null>(null);
   // Moving through the results drops an open twin. Reset during render (not
