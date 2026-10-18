@@ -267,10 +267,11 @@ function GiftRow({
 }) {
   const isMobile = useIsMobile();
   const navigate = useNavigate();
-  // Gifts still waiting for a catalog row (see PENDING_GIFTS) get no card.
-  const shown = ids.filter((id) => !isPendingGift(id));
-  const gifts = shown.map((id) => byId.get(id)).filter((g): g is Gift => !!g);
-  const count = loading ? shown.length : gifts.length;
+  // Every gift that is live gets a card, including pending ones Dalia has since
+  // approved; while loading, only established gifts get a placeholder tile.
+  const gifts = ids.map((id) => byId.get(id)).filter((g): g is Gift => !!g);
+  const settled = ids.filter((id) => !isPendingGift(id));
+  const count = loading ? settled.length : gifts.length;
   if (!count) return null;
   const cols = isMobile ? 2 : rowColumns(count);
   return (
@@ -285,7 +286,7 @@ function GiftRow({
       }}
     >
       {loading
-        ? shown.map((id) => (
+        ? settled.map((id) => (
             <ClaySurface key={id} tint="cream" style={{ padding: 16 }}>
               <div style={{ aspectRatio: "1/1", borderRadius: 16, background: "linear-gradient(160deg, #FBF1E1, #E8D7B8)" }} />
               <div style={{ height: 52 }} />

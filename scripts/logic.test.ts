@@ -234,10 +234,7 @@ test("blog posts: unique slugs, sheet-style gift IDs, links to real posts, and h
     assert.match(post.published, /^\d{4}-\d{2}-\d{2}$/, post.slug);
     assert.ok(post.description.length <= 160, `${post.slug}: description is ${post.description.length} characters`);
     assert.ok(postGiftIds(post).length > 0, `${post.slug}: no gifts`);
-    for (const id of postGiftIds(post)) {
-      if (isPendingGift(id)) assert.ok(PENDING_GIFTS[id], `${post.slug}: ${id} is not listed in PENDING_GIFTS`);
-      else assert.match(id, /^r\d+$/, `${post.slug}: ${id}`);
-    }
+    for (const id of postGiftIds(post)) assert.match(id, /^r\d+$/, `${post.slug}: ${id}`);
     const texts = [post.title, post.description, post.cta, ...post.intro];
     for (const b of post.body) {
       if (b.kind === "list") texts.push(...b.items);
@@ -289,11 +286,18 @@ test("Featured in lists every post that recommends a gift, newest first", () => 
   assert.deepEqual(postsFeaturing("r0"), []);
 });
 
-test("pending gifts never link, and every PENDING_GIFTS entry is still used by a post", () => {
-  const [seg] = parseInline("[Spa gift card](gift:new-example)");
-  assert.equal(segmentHref(seg, null), null);
-  assert.equal(segmentHref(seg, new Set(["new-example"])), null);
-  const used = new Set(POSTS.flatMap((p) => postGiftIds(p).filter(isPendingGift)));
-  for (const key of Object.keys(PENDING_GIFTS)) assert.ok(used.has(key), `${key} is listed but no post uses it`);
+test("a pending gift links only once the live catalog has it, and every PENDING_GIFTS entry is used by a post", () => {
+  const used = new Set(POSTS.flatMap((p) => postGiftIds(p)));
+  for (const id of Object.keys(PENDING_GIFTS)) {
+    assert.match(id, /^r\d+$/, `${id} should be a sheet ID`);
+    assert.ok(used.has(id), `${id} is listed in PENDING_GIFTS but no post uses it`);
+  }
+  const id = Object.keys(PENDING_GIFTS)[0];
+  if (!id) return;
+  assert.ok(isPendingGift(id));
+  const [seg] = parseInline(`[a gift](gift:${id})`);
+  assert.equal(segmentHref(seg, null), null, "unknown catalog: pending stays plain text");
+  assert.equal(segmentHref(seg, new Set(["r1"])), null, "not approved yet: plain text");
+  assert.equal(segmentHref(seg, new Set([id])), `/gift/${id}`, "approved and live: a link, with no code change");
 });
 

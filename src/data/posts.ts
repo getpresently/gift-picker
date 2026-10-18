@@ -76,45 +76,45 @@ export function formatPostDate(iso: string): string {
 }
 
 /**
- * Gifts proposed for the catalog that have no sheet ID yet, referenced in posts
- * as `gift:new-<key>`. They read as plain text, with no link and no card, until
- * the row exists: then replace every `new-<key>` in this file with its rID and
- * delete the entry. The rows themselves are in
- * ~/Sites/gift-picker-batches/blog/batch_presently_gifts.json, whose Feedback
- * names each placeholder key.
+ * Gifts added to the sheet for these posts that Dalia has not approved yet
+ * (Status Live, Review status FALSE), from
+ * ~/Sites/gift-picker-batches/blog/batch_presently_gifts.json. Until a gift is
+ * in the live catalog it reads as plain text with no card; once she approves it,
+ * it links and shows its card on its own. `npm test` (scripts/check-posts.mjs)
+ * reports these as pending, says when one has gone live (then delete its entry
+ * here), and fails if she rejects one, so its sentence can be rewritten.
  */
 export const PENDING_GIFTS: Record<string, { name: string; presentlySource: string }> = {
-  "new-sephora": { name: "Sephora Gift Card", presentlySource: "Ultimate Gift Ideas For The 5 Love Languages" },
-  "new-amazon-card": { name: "Amazon Gift Card", presentlySource: "27 Best Gift Ideas For Coworkers By Occasion; 10 Get Well Soon and Thinking of You Gifts for Coworkers" },
-  "new-starbucks": { name: "Starbucks Gift Card", presentlySource: "27 Best Gift Ideas For Coworkers By Occasion" },
-  "new-ws-card": { name: "Williams Sonoma Gift Card", presentlySource: "27 Best Gift Ideas For Coworkers By Occasion" },
-  "new-cb-card": { name: "Crate & Barrel Gift Card", presentlySource: "27 Best Gift Ideas For Coworkers By Occasion" },
-  "new-hotels-card": { name: "Hotels.com Gift Card", presentlySource: "27 Best Gift Ideas For Coworkers By Occasion" },
-  "new-wine-tasting": { name: "Cooper's Hawk Winery Gift Card (in-person wine tasting)", presentlySource: "27 Best Gift Ideas For Coworkers By Occasion (wine for a wedding)" },
-  "new-sommselect": { name: "SommSelect Wine Club Gift Membership (3 Months)", presentlySource: "27 Best Gift Ideas For Coworkers By Occasion" },
-  "new-hellofresh": { name: "HelloFresh Gift Card", presentlySource: "10 Get Well Soon and Thinking of You Gifts for Coworkers" },
-  "new-stonewall": { name: "Stonewall Kitchen Best of the Best Gift Basket (20 Items)", presentlySource: "10 Get Well Soon and Thinking of You Gifts for Coworkers" },
-  "new-teaspressa": { name: "Teaspressa Champagne Bellini Mixer Kit (18 Cubes)", presentlySource: "10 Get Well Soon and Thinking of You Gifts for Coworkers" },
-  "new-littlemarket": { name: "Prosperity Candle In Loving Memory Personalized Candle (The Little Market's maker)", presentlySource: "10 Get Well Soon and Thinking of You Gifts for Coworkers" },
-  "new-truelove": { name: "Truelove Seeds African Diaspora Collection Seed Packets and Postcards", presentlySource: "10 Get Well Soon and Thinking of You Gifts for Coworkers" },
-  "new-goldbelly": { name: "Goldbelly Monthly Restaurant Food Box Subscription (3 to 12 Months)", presentlySource: "Holiday Gifting For Your Grandparents: 6 Gifts To Help You Achieve Favorite Grandchild Status" },
-  "new-omaha": { name: "Omaha Steaks Steak Sampler (8 Steaks and Seasoning)", presentlySource: "7 Best Gift Ideas for Men Who Already Have Everything" },
+  "r1083": { name: "Sephora Gift Card", presentlySource: "Ultimate Gift Ideas For The 5 Love Languages" },
+  "r1084": { name: "Amazon Gift Card", presentlySource: "27 Best Gift Ideas For Coworkers By Occasion; 10 Get Well Soon and Thinking of You Gifts for Coworkers" },
+  "r1085": { name: "Starbucks Gift Card", presentlySource: "27 Best Gift Ideas For Coworkers By Occasion" },
+  "r1086": { name: "Williams Sonoma Gift Card", presentlySource: "27 Best Gift Ideas For Coworkers By Occasion" },
+  "r1087": { name: "Crate & Barrel Gift Card", presentlySource: "27 Best Gift Ideas For Coworkers By Occasion" },
+  "r1088": { name: "Hotels.com Gift Card", presentlySource: "27 Best Gift Ideas For Coworkers By Occasion" },
+  "r1090": { name: "Cooper's Hawk Winery Gift Card (in-person wine tasting)", presentlySource: "27 Best Gift Ideas For Coworkers By Occasion (wine for a wedding)" },
+  "r1092": { name: "SommSelect Wine Club Gift Membership (3 Months)", presentlySource: "27 Best Gift Ideas For Coworkers By Occasion" },
+  "r1089": { name: "HelloFresh Gift Card", presentlySource: "10 Get Well Soon and Thinking of You Gifts for Coworkers" },
+  "r1093": { name: "Stonewall Kitchen Best of the Best Gift Basket (20 Items)", presentlySource: "10 Get Well Soon and Thinking of You Gifts for Coworkers" },
+  "r1095": { name: "Teaspressa Champagne Bellini Mixer Kit (18 Cubes)", presentlySource: "10 Get Well Soon and Thinking of You Gifts for Coworkers" },
+  "r1096": { name: "Prosperity Candle In Loving Memory Personalized Candle (The Little Market's maker)", presentlySource: "10 Get Well Soon and Thinking of You Gifts for Coworkers" },
+  "r1097": { name: "Truelove Seeds African Diaspora Collection Seed Packets and Postcards", presentlySource: "10 Get Well Soon and Thinking of You Gifts for Coworkers" },
+  "r1091": { name: "Goldbelly Monthly Restaurant Food Box Subscription (3 to 12 Months)", presentlySource: "Holiday Gifting For Your Grandparents: 6 Gifts To Help You Achieve Favorite Grandchild Status" },
+  "r1094": { name: "Omaha Steaks Steak Sampler (8 Steaks and Seasoning)", presentlySource: "7 Best Gift Ideas for Men Who Already Have Everything" },
 };
 
 export function isPendingGift(id: string): boolean {
-  return id.startsWith("new-");
+  return Object.prototype.hasOwnProperty.call(PENDING_GIFTS, id);
 }
 
 /**
  * Where a text segment links, or null to show it as plain text. A gift link
- * stays a link while its gift is live; `live` is null when the catalog isn't
- * known (still loading, or it failed to load), and then every link stays.
- * Pending gifts never link.
+ * stays a link while its gift is live. `live` is null when the catalog isn't
+ * known (still loading, or it failed to load): then established gifts keep
+ * their links, and pending gifts wait until the catalog confirms them.
  */
 export function segmentHref(seg: InlineSegment, live: Set<string> | null): string | null {
   if (!seg.href) return null;
-  if (seg.giftId && isPendingGift(seg.giftId)) return null;
-  if (seg.giftId && live && !live.has(seg.giftId)) return null;
+  if (seg.giftId && (live ? !live.has(seg.giftId) : isPendingGift(seg.giftId))) return null;
   return seg.href;
 }
 
@@ -246,9 +246,9 @@ const ALL_POSTS: Post[] = [
       },
       {
         kind: "p",
-        text: "Jewelry with a message works the same way: Little Words Project's [custom word bracelet](gift:r929) spells out any word or name you choose in handmade beads, so it carries something only the two of you understand. And if they love to browse, a [Sephora gift card](gift:new-sephora) turns into a small shopping spree on makeup, skincare, or fragrance, and it never expires.",
+        text: "Jewelry with a message works the same way: Little Words Project's [custom word bracelet](gift:r929) spells out any word or name you choose in handmade beads, so it carries something only the two of you understand. And if they love to browse, a [Sephora gift card](gift:r1083) turns into a small shopping spree on makeup, skincare, or fragrance, and it never expires.",
       },
-      { kind: "gifts", ids: ["r944", "r706", "r615", "r929", "new-sephora"] },
+      { kind: "gifts", ids: ["r944", "r706", "r615", "r929", "r1083"] },
 
       { kind: "h2", text: "When they speak two languages" },
       {
@@ -309,9 +309,9 @@ const ALL_POSTS: Post[] = [
       },
       {
         kind: "p",
-        text: "The [Hot Ones 10 Pack](gift:r468) from Heatonist holds all ten craft hot sauces from a season of the Hot Ones interview show, boxed in order from mild to extreme. A man with a full beard will get real use out of the [Beardbrand Bold Fortune Grooming Set](gift:r924), which pairs beard oil, a matching cologne, and a large comb in a warm, smoky scent of leather, whiskey, saffron, and tobacco. If he runs the grill, Omaha Steaks' [Steak Sampler](gift:new-omaha) sends eight steaks in four cuts, from T-bones to filet mignon, and the [Spiceology rub collection](gift:r586) gives him twelve mini jars of seasoning blends to try on them, including Smoky Honey Habanero and Korean BBQ.",
+        text: "The [Hot Ones 10 Pack](gift:r468) from Heatonist holds all ten craft hot sauces from a season of the Hot Ones interview show, boxed in order from mild to extreme. A man with a full beard will get real use out of the [Beardbrand Bold Fortune Grooming Set](gift:r924), which pairs beard oil, a matching cologne, and a large comb in a warm, smoky scent of leather, whiskey, saffron, and tobacco. If he runs the grill, Omaha Steaks' [Steak Sampler](gift:r1094) sends eight steaks in four cuts, from T-bones to filet mignon, and the [Spiceology rub collection](gift:r586) gives him twelve mini jars of seasoning blends to try on them, including Smoky Honey Habanero and Korean BBQ.",
       },
-      { kind: "gifts", ids: ["r468", "r924", "new-omaha", "r586"] },
+      { kind: "gifts", ids: ["r468", "r924", "r1094", "r586"] },
 
       { kind: "h2", text: "Hand him a new hobby" },
       {
@@ -379,9 +379,9 @@ const ALL_POSTS: Post[] = [
       },
       {
         kind: "p",
-        text: "For the coworker who can't go a day without their latte, a [Starbucks gift card](gift:new-starbucks) in any amount from $5 to $100 loads straight into the Starbucks app. Queen Majesty's [Hot Sauce Trinity](gift:r418) is a gift box of three small-batch New York sauces, from Jalapeño Tequila Lime to Red Habanero Black Coffee. For the office cook, Jacobsen Salt Co.'s [Sea Salt Slide Tin Trio](gift:r424) packs hand-harvested Oregon sea salt into three illustrated pocket tins, including a pinot noir infused salt.",
+        text: "For the coworker who can't go a day without their latte, a [Starbucks gift card](gift:r1085) in any amount from $5 to $100 loads straight into the Starbucks app. Queen Majesty's [Hot Sauce Trinity](gift:r418) is a gift box of three small-batch New York sauces, from Jalapeño Tequila Lime to Red Habanero Black Coffee. For the office cook, Jacobsen Salt Co.'s [Sea Salt Slide Tin Trio](gift:r424) packs hand-harvested Oregon sea salt into three illustrated pocket tins, including a pinot noir infused salt.",
       },
-      { kind: "gifts", ids: ["new-starbucks", "r418", "r424"] },
+      { kind: "gifts", ids: ["r1085", "r418", "r424"] },
 
       { kind: "h2", text: "$25 to $60: a close colleague or a bigger milestone" },
       {
@@ -406,9 +406,9 @@ const ALL_POSTS: Post[] = [
       { kind: "gifts", ids: ["r362", "r662"] },
       {
         kind: "p",
-        text: "For a coworker's wedding, a gift card lets the couple choose what their new home needs. A [Williams Sonoma gift card](gift:new-ws-card) covers cookware, cutlery, and tabletop, and it also works at Pottery Barn and West Elm, while a [Crate & Barrel gift card](gift:new-cb-card) goes toward dinnerware, glassware, and furniture at Crate & Barrel and CB2. If they enjoy a good bottle, a [Cooper's Hawk Winery gift card](gift:new-wine-tasting) pays for a guided tasting of seven or eight wines in the tasting room of any of its 78 winery restaurants, with dinner after if they like; check for a location near them first.",
+        text: "For a coworker's wedding, a gift card lets the couple choose what their new home needs. A [Williams Sonoma gift card](gift:r1086) covers cookware, cutlery, and tabletop, and it also works at Pottery Barn and West Elm, while a [Crate & Barrel gift card](gift:r1087) goes toward dinnerware, glassware, and furniture at Crate & Barrel and CB2. If they enjoy a good bottle, a [Cooper's Hawk Winery gift card](gift:r1090) pays for a guided tasting of seven or eight wines in the tasting room of any of its 78 winery restaurants, with dinner after if they like; check for a location near them first.",
       },
-      { kind: "gifts", ids: ["new-ws-card", "new-cb-card", "new-wine-tasting"] },
+      { kind: "gifts", ids: ["r1086", "r1087", "r1090"] },
       {
         kind: "p",
         text: "The first months with a new baby leave very little time for cooking. An [Uber and Uber Eats gift card](gift:r135), in whatever amount the group collects, covers takeout on the nights when making dinner is out of the question.",
@@ -437,9 +437,9 @@ const ALL_POSTS: Post[] = [
       { kind: "gifts", ids: ["r39", "r595"] },
       {
         kind: "p",
-        text: "For a wedding or a long-awaited retirement trip, Away's [Carry-On Suitcase](gift:r571) has a hard shell, spinner wheels, and an interior compression system. A [Hotels.com gift card](gift:new-hotels-card) never expires, so the couple can save it for the honeymoon, and an [Airbnb gift card](gift:r309) works the same way for a farewell adventure. For a couple who loves wine, SommSelect's [three-month wine club membership](gift:new-sommselect) sends bottles chosen by a team led by a Master Sommelier, each with tasting notes and food pairings.",
+        text: "For a wedding or a long-awaited retirement trip, Away's [Carry-On Suitcase](gift:r571) has a hard shell, spinner wheels, and an interior compression system. A [Hotels.com gift card](gift:r1088) never expires, so the couple can save it for the honeymoon, and an [Airbnb gift card](gift:r309) works the same way for a farewell adventure. For a couple who loves wine, SommSelect's [three-month wine club membership](gift:r1092) sends bottles chosen by a team led by a Master Sommelier, each with tasting notes and food pairings.",
       },
-      { kind: "gifts", ids: ["r571", "new-hotels-card", "r309", "new-sommselect"] },
+      { kind: "gifts", ids: ["r571", "r1088", "r309", "r1092"] },
       {
         kind: "p",
         text: "For a milestone birthday or a big promotion, a splurge from the team goes a long way. Sony's [WH-1000XM6 headphones](gift:r596) block out a noisy office with adaptive noise canceling and up to 30 hours of battery. Plant lovers will be thrilled with The Sill's [Best Sellers Duo](gift:r598), a monstera and a snake plant that arrive potted in ceramic planters. And for the coworker who spends weekends outdoors, the [GoPro HERO12 Black](gift:r369) is a rugged, waterproof action camera that records stabilized video of every hike, ride, and trip.",
@@ -447,9 +447,9 @@ const ALL_POSTS: Post[] = [
       { kind: "gifts", ids: ["r596", "r598", "r369"] },
       {
         kind: "p",
-        text: "If the team can't settle on an object, cash in a card signed by everyone is always welcome, especially at a farewell, and an [Amazon gift card](gift:new-amazon-card) works almost as well. If they would rather do some good, a [TisBest Charity Gift Card](gift:r769) lets the recipient give the money to any of about 1.8 million US charities.",
+        text: "If the team can't settle on an object, cash in a card signed by everyone is always welcome, especially at a farewell, and an [Amazon gift card](gift:r1084) works almost as well. If they would rather do some good, a [TisBest Charity Gift Card](gift:r769) lets the recipient give the money to any of about 1.8 million US charities.",
       },
-      { kind: "gifts", ids: ["new-amazon-card", "r769"] },
+      { kind: "gifts", ids: ["r1084", "r769"] },
 
       { kind: "h2", text: "Keeping it comfortable" },
       {
@@ -588,14 +588,14 @@ const ALL_POSTS: Post[] = [
       },
       {
         kind: "p",
-        text: "An [Instacart gift card](gift:r768) covers groceries, delivery fees, and tips, and it never expires, so they can use it whenever they need a restock. An [Uber and Uber Eats gift card](gift:r135) handles takeout on the nights when nobody feels like cooking, and a [HelloFresh gift card](gift:new-hellofresh) brings meal kits with pre-measured ingredients for the days they feel up to cooking, without starting a subscription. For anything else they need, an [Amazon gift card](gift:new-amazon-card) arrives by email and never expires.",
+        text: "An [Instacart gift card](gift:r768) covers groceries, delivery fees, and tips, and it never expires, so they can use it whenever they need a restock. An [Uber and Uber Eats gift card](gift:r135) handles takeout on the nights when nobody feels like cooking, and a [HelloFresh gift card](gift:r1089) brings meal kits with pre-measured ingredients for the days they feel up to cooking, without starting a subscription. For anything else they need, an [Amazon gift card](gift:r1084) arrives by email and never expires.",
       },
-      { kind: "gifts", ids: ["r768", "r135", "new-hellofresh", "new-amazon-card"] },
+      { kind: "gifts", ids: ["r768", "r135", "r1089", "r1084"] },
       {
         kind: "p",
-        text: "Then something sweet. Stonewall Kitchen's [Best of the Best Gift Basket](gift:new-stonewall) packs twenty of its favorites, from Wild Maine Blueberry Jam to pancake mix and pasta sauce, into a reusable wicker basket, enough for easy breakfasts and dinners while they recover. For someone who eats keto or gluten-free, Wonder Monday's [keto cheesecakes](gift:r158) come in four flavors with zero grains or gluten. Sugarfina's [Champagne Bears](gift:r650) are gummies made with Dom Pérignon champagne that contain no alcohol, and Teaspressa's [Champagne Bellini Mixer Kit](gift:new-teaspressa) holds 18 handmade fruit cubes to drop into prosecco, or into sparkling water for a mocktail, on the day they feel like celebrating.",
+        text: "Then something sweet. Stonewall Kitchen's [Best of the Best Gift Basket](gift:r1093) packs twenty of its favorites, from Wild Maine Blueberry Jam to pancake mix and pasta sauce, into a reusable wicker basket, enough for easy breakfasts and dinners while they recover. For someone who eats keto or gluten-free, Wonder Monday's [keto cheesecakes](gift:r158) come in four flavors with zero grains or gluten. Sugarfina's [Champagne Bears](gift:r650) are gummies made with Dom Pérignon champagne that contain no alcohol, and Teaspressa's [Champagne Bellini Mixer Kit](gift:r1095) holds 18 handmade fruit cubes to drop into prosecco, or into sparkling water for a mocktail, on the day they feel like celebrating.",
       },
-      { kind: "gifts", ids: ["new-stonewall", "r158", "r650", "new-teaspressa"] },
+      { kind: "gifts", ids: ["r1093", "r158", "r650", "r1095"] },
 
       { kind: "h2", text: "For the long days on the couch" },
       {
@@ -620,9 +620,9 @@ const ALL_POSTS: Post[] = [
       },
       {
         kind: "p",
-        text: "Living plants bring some green to a room that hasn't seen much fresh air lately. The Sill's [Houseplant of the Month Club](gift:r1075) delivers a new plant in a ceramic planter every month, and its [Best Sellers Duo](gift:r598) sends a monstera and a snake plant at once. For someone who likes to grow their own, the self-watering [Click & Grow Smart Garden 3](gift:r613) grows herbs and greens on the counter under its own lights, and Truelove Seeds' [African Diaspora Collection](gift:new-truelove) pairs four heritage seed packets, including the Paul Robeson tomato, with illustrated postcards that tell each seed's story, something hopeful to plant next spring.",
+        text: "Living plants bring some green to a room that hasn't seen much fresh air lately. The Sill's [Houseplant of the Month Club](gift:r1075) delivers a new plant in a ceramic planter every month, and its [Best Sellers Duo](gift:r598) sends a monstera and a snake plant at once. For someone who likes to grow their own, the self-watering [Click & Grow Smart Garden 3](gift:r613) grows herbs and greens on the counter under its own lights, and Truelove Seeds' [African Diaspora Collection](gift:r1097) pairs four heritage seed packets, including the Paul Robeson tomato, with illustrated postcards that tell each seed's story, something hopeful to plant next spring.",
       },
-      { kind: "gifts", ids: ["r1075", "r598", "r613", "new-truelove"] },
+      { kind: "gifts", ids: ["r1075", "r598", "r613", "r1097"] },
       {
         kind: "p",
         text: "A favorite photo makes a thoughtful addition to their space. Framebridge's [custom framed photo](gift:r766) prints your picture, frames it behind a white mat, and ships it in a gift box with a personal note.",
@@ -636,9 +636,9 @@ const ALL_POSTS: Post[] = [
       },
       {
         kind: "p",
-        text: "Harry & David's [Sympathy Gift Box](gift:r767) holds pears, apples, cheddar, summer sausage, crackers, and baked goods, packed in a box that can be set out when visitors come by. [Healing After Loss](gift:r774) by Martha Whitmore Hickman offers a short reading for every day of the year, which suits the days when a whole book feels impossible. A [TisBest Charity Gift Card](gift:r769) lets the family give to a charity the person they lost cared about. And The Little Market's candles, now made by Prosperity Candle, include an [In Loving Memory personalized candle](gift:new-littlemarket) with the name and date you choose, hand-poured by a woman artisan who came to the US as a refugee.",
+        text: "Harry & David's [Sympathy Gift Box](gift:r767) holds pears, apples, cheddar, summer sausage, crackers, and baked goods, packed in a box that can be set out when visitors come by. [Healing After Loss](gift:r774) by Martha Whitmore Hickman offers a short reading for every day of the year, which suits the days when a whole book feels impossible. A [TisBest Charity Gift Card](gift:r769) lets the family give to a charity the person they lost cared about. And The Little Market's candles, now made by Prosperity Candle, include an [In Loving Memory personalized candle](gift:r1096) with the name and date you choose, hand-poured by a woman artisan who came to the US as a refugee.",
       },
-      { kind: "gifts", ids: ["r767", "r774", "r769", "new-littlemarket"] },
+      { kind: "gifts", ids: ["r767", "r774", "r769", "r1096"] },
 
       { kind: "h2", text: "If they've lost a pet" },
       {
@@ -694,9 +694,9 @@ const ALL_POSTS: Post[] = [
       { kind: "h2", text: "For dinner at home" },
       {
         kind: "p",
-        text: "Decades of cooking for the family earn a few nights off. Goldbelly's [monthly restaurant food box subscription](gift:new-goldbelly) sends famous dishes from restaurants and bakeries around the country, like pizza, barbecue, cakes, and pies, and each box serves at least four. For the nights they do cook, Le Creuset's [cast iron round oven](gift:r62) is the enameled Dutch oven that turns a Sunday roast or a pot of soup into a family tradition, and the [AeroGarden Harvest](gift:r368) grows fresh herbs and greens on the counter all year with no soil, so the basil is always a snip away.",
+        text: "Decades of cooking for the family earn a few nights off. Goldbelly's [monthly restaurant food box subscription](gift:r1091) sends famous dishes from restaurants and bakeries around the country, like pizza, barbecue, cakes, and pies, and each box serves at least four. For the nights they do cook, Le Creuset's [cast iron round oven](gift:r62) is the enameled Dutch oven that turns a Sunday roast or a pot of soup into a family tradition, and the [AeroGarden Harvest](gift:r368) grows fresh herbs and greens on the counter all year with no soil, so the basil is always a snip away.",
       },
-      { kind: "gifts", ids: ["new-goldbelly", "r62", "r368"] },
+      { kind: "gifts", ids: ["r1091", "r62", "r368"] },
 
       { kind: "h2", text: "For the weekends" },
       {
