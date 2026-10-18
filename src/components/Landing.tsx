@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { AmbientGlow } from "./clay/AmbientGlow";
-import { ClaySurface, type Tint } from "./clay/ClaySurface";
+import { ClaySurface } from "./clay/ClaySurface";
 import { GiftBox3D } from "./clay/GiftBox3D";
 import { Pillow } from "./clay/Pillow";
 import { useIsMobile } from "../hooks/useIsMobile";
@@ -9,11 +9,12 @@ import { SiteHeader } from "./clay/SiteHeader";
 import { FooterLinks } from "./clay/FooterLinks";
 import { TestimonialCarousel } from "./clay/TestimonialCarousel";
 import { FooterBrand } from "./clay/FooterBrand";
+import { HowSteps, type HowStep } from "./clay/HowSteps";
 
-const HOW_STEPS: { n: string; title: string; body: string; tint: Tint }[] = [
-  { n: "01", title: "Tell us about them", body: "Closeness, vibes, budget. Five questions, no account.", tint: "rose" },
-  { n: "02", title: "We do the thinking", body: "Every gift is hand-curated by our team, then matched to your answers.", tint: "butter" },
-  { n: "03", title: "Show up looking great", body: "Send the link or just buy it yourself.", tint: "sage" },
+const HOW_STEPS: HowStep[] = [
+  { n: "01", title: "Tell us about them", body: "Closeness, vibes, budget. Five questions, no account." },
+  { n: "02", title: "We do the thinking", body: "Every gift is hand-curated by our team, then matched to your answers." },
+  { n: "03", title: "Show up looking great", body: "Send the link or just buy it yourself." },
 ];
 
 // 12 brands → renders cleanly as 6×2 on desktop, 3×4 on mobile.
@@ -231,51 +232,7 @@ export function Landing() {
             >
               Three steps to a <em style={{ color: "#C4477E", fontStyle: "italic" }}>great</em> gift.
             </h2>
-            <div
-              style={{
-                display: "grid",
-                gridTemplateColumns: isMobile ? "1fr" : "repeat(3, 1fr)",
-                gap: 16,
-              }}
-            >
-              {HOW_STEPS.map((step) => (
-                <ClaySurface key={step.n} tint={step.tint} style={{ padding: 24 }}>
-                  <div
-                    style={{
-                      fontFamily: '"Instrument Serif", serif',
-                      fontSize: 42,
-                      color: "rgba(35,20,16,0.5)",
-                      lineHeight: 1,
-                    }}
-                  >
-                    {step.n}
-                  </div>
-                  <div
-                    style={{
-                      fontFamily: "Geist, sans-serif",
-                      fontSize: 18,
-                      fontWeight: 600,
-                      color: "#231410",
-                      marginTop: 16,
-                      letterSpacing: "-0.01em",
-                    }}
-                  >
-                    {step.title}
-                  </div>
-                  <div
-                    style={{
-                      fontFamily: "Geist, sans-serif",
-                      fontSize: 14,
-                      color: "rgba(35,20,16,0.65)",
-                      marginTop: 6,
-                      lineHeight: 1.45,
-                    }}
-                  >
-                    {step.body}
-                  </div>
-                </ClaySurface>
-              ))}
-            </div>
+            <HowSteps steps={HOW_STEPS} isMobile={isMobile} />
           </section>
 
           {/* Brands */}
