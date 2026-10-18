@@ -67,3 +67,23 @@ code {
 .gp-field::placeholder {
   color: rgba(35, 20, 16, 0.38);
 }
+
+/* Homepage gift carousel (GiftCarousel): two copies of the row slide left by
+   one copy's width, so the loop is seamless. Pauses on hover or focus. */
+@keyframes giftMarquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+.gift-marquee {
+  animation-name: giftMarquee;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+}
+.gift-marquee-wrap:hover .gift-marquee,
+.gift-marquee-wrap:focus-within .gift-marquee {
+  animation-play-state: paused;
+}
+@media (prefers-reduced-motion: reduce) {
+  .gift-marquee { animation: none; }
+  .gift-marquee-wrap { overflow-x: auto !important; }
+}

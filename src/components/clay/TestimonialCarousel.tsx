@@ -10,23 +10,21 @@ const HERO: Quote = {
   n: "Amanda E.",
 };
 
-// Shown three at a time beside the hero quote, like notes in a margin.
-const PAGES: Quote[][] = [
-  [
-    { q: "This is addictive! Already filled it out multiple times looking for gifts for my fam. Life saver!!", n: "Anna F." },
-    { q: "My boyfriend uses the V60 every single morning. It was the perfect choice.", n: "Ella R." },
-    { q: "Took 90 seconds. Picked something better than I would have in an hour.", n: "Priya S." },
-  ],
-  [
-    { q: "Perfect timing, I’ve been dragging my feet on gift shopping for my picky fam. Ty for the help!", n: "Peter W." },
-    { q: "Easy to use and gave me a great idea for my gifts for my siblings. Thanks!", n: "Max G." },
-    { q: "Super easy to use and will definitely be using for ideas for family and friends.", n: "Jigesh M." },
-  ],
-  [
-    { q: "Works great and makes the decision process easier.", n: "Mario S." },
-    { q: "Simple, fast, and fun :)", n: "Bhaumik P." },
-  ],
+// Shown two at a time beside the hero quote, like notes in a margin.
+const NOTES: Quote[] = [
+  { q: "This is addictive! Already filled it out multiple times looking for gifts for my fam. Life saver!!", n: "Anna F." },
+  { q: "My boyfriend uses the V60 every single morning. It was the perfect choice.", n: "Ella R." },
+  { q: "Took 90 seconds. Picked something better than I would have in an hour.", n: "Priya S." },
+  { q: "Perfect timing, I’ve been dragging my feet on gift shopping for my picky fam. Ty for the help!", n: "Peter W." },
+  { q: "Easy to use and gave me a great idea for my gifts for my siblings. Thanks!", n: "Max G." },
+  { q: "Super easy to use and will definitely be using for ideas for family and friends.", n: "Jigesh M." },
+  { q: "Works great and makes the decision process easier.", n: "Mario S." },
+  { q: "Simple, fast, and fun :)", n: "Bhaumik P." },
 ];
+const PER_PAGE = 2;
+const PAGES: Quote[][] = Array.from({ length: Math.ceil(NOTES.length / PER_PAGE) }, (_, i) =>
+  NOTES.slice(i * PER_PAGE, i * PER_PAGE + PER_PAGE),
+);
 
 const TONES = [
   { bg: "#FFD9CC", fg: "#8A3A2A" },
@@ -98,9 +96,9 @@ function Byline({ name, tone, size, fontSize }: { name: string; tone: number; si
 }
 
 /**
- * Homepage testimonials: one fixed hero quote, with three shorter quotes
+ * Homepage testimonials: one fixed hero quote, with two shorter quotes
  * beside it as plain margin notes between hairline rules. The notes fade to
- * the next three every ADVANCE_MS; page dots below let visitors step through.
+ * the next two every ADVANCE_MS; page dots below let visitors step through.
  * All pages share one grid cell, so the section never changes height.
  * Rotation pauses on hover or focus, stops for good once the visitor picks a
  * page, and never runs for reduced-motion users. Phones can also swipe.
@@ -213,7 +211,7 @@ export function TestimonialCarousel({ isMobile }: { isMobile: boolean }) {
                     >
                       {t.q}
                     </blockquote>
-                    <Byline name={t.n} tone={p * 3 + k + 1} size={26} fontSize={13} />
+                    <Byline name={t.n} tone={p * PER_PAGE + k + 1} size={26} fontSize={13} />
                   </figure>
                 ))}
               </div>

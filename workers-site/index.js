@@ -4,6 +4,7 @@ import {
 } from "@cloudflare/kv-asset-handler";
 import { serveAnalytics } from "./analytics.js";
 import { APPS_SCRIPT_URL, GIFT_PATH, GIFTS_KEY } from "./config.js";
+import { SHOWCASE_IDS } from "../src/data/showcase.ts";
 import { POSTS, findPost, formatPostDate, parseInline, postShareImage, postsFeaturing, postTitleTag, relatedPosts, segmentHref } from "../src/data/posts.ts";
 
 /**
@@ -87,6 +88,12 @@ async function handleEvent(event) {
   // back to Apps Script if this ever answers with an error).
   if (url.pathname === "/api/gifts") {
     return serveGiftsApi();
+  }
+
+  // The homepage carousel's gifts: id, name, brand, and photo only, so the
+  // homepage never downloads the full catalog.
+  if (url.pathname === "/api/showcase") {
+    return serveShowcase(event);
   }
 
   let options = {};
@@ -251,6 +258,21 @@ async function serveGiftsApi() {
   }
   return new Response(body, {
     headers: { "Content-Type": "application/json; charset=utf-8", "Cache-Control": "public, max-age=60" },
+  });
+}
+
+/** The live SHOWCASE_IDS gifts that have a photo, in carousel order. */
+async function serveShowcase(event) {
+  const rows = (await loadGifts(event)) || [];
+  const byId = new Map(rows.map((g) => [g.row_id, g]));
+  const gifts = SHOWCASE_IDS.map((id) => byId.get(id))
+    .filter((g) => g && g.PhotoAddress)
+    .map((g) => ({ id: g.row_id, name: g.Gift, brand: g.Brand || "", image: g.PhotoAddress }));
+  return new Response(JSON.stringify({ gifts }), {
+    headers: {
+      "Content-Type": "application/json; charset=utf-8",
+      "Cache-Control": gifts.length ? "public, max-age=600" : "no-store",
+    },
   });
 }
 

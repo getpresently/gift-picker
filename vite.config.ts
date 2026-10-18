@@ -10,6 +10,9 @@ export default defineConfig({
   // worker, so the app fell back to the slow Apps Script feed (which fails about
   // 1 call in 3) and photos often never appeared; read the live endpoint instead.
   server: {
-    proxy: { "/api/gifts": { target: "https://giftpicker.io", changeOrigin: true } },
+    proxy: {
+      "/api/gifts": { target: "https://giftpicker.io", changeOrigin: true },
+      "/api/showcase": { target: "https://giftpicker.io", changeOrigin: true },
+    },
   },
 });

@@ -11,6 +11,7 @@ import { TestimonialCarousel } from "./clay/TestimonialCarousel";
 import { FooterBrand } from "./clay/FooterBrand";
 import { HowSteps, type HowStep } from "./clay/HowSteps";
 import { HomeGuides } from "./HomeGuides";
+import { CatalogShowcase } from "./clay/CatalogShowcase";
 
 const HOW_STEPS: HowStep[] = [
   { n: "01", title: "Tell us about them", body: "Closeness, vibes, budget. Five questions, no account." },
@@ -236,54 +237,10 @@ export function Landing() {
             <HowSteps steps={HOW_STEPS} isMobile={isMobile} />
           </section>
 
-          {/* Brands */}
-          <section id="brands" style={{ marginTop: isMobile ? 64 : 96 }}>
-            <ClaySurface tint="ink" style={{ padding: isMobile ? "24px 20px" : "36px 40px", color: "#FFF8EE" }}>
-              <div
-                style={{
-                  fontFamily: "Geist, sans-serif",
-                  fontSize: 12,
-                  letterSpacing: "0.14em",
-                  color: "rgba(255,248,238,0.55)",
-                  textTransform: "uppercase",
-                  marginBottom: 18,
-                }}
-              >
-                Curated from 600+ brands · including
-              </div>
-              {/* 6×2 grid on desktop, 3×4 on mobile, even rows, consistent
-                  serif treatment so the strip reads as one cohesive band. */}
-              <div
-                style={{
-                  display: "grid",
-                  gridTemplateColumns: isMobile ? "repeat(3, 1fr)" : "repeat(6, 1fr)",
-                  columnGap: isMobile ? 12 : 24,
-                  rowGap: isMobile ? 16 : 22,
-                  alignItems: "center",
-                  justifyItems: "center",
-                  fontFamily: '"Instrument Serif", serif',
-                  fontStyle: "italic",
-                  fontSize: isMobile ? 19 : 24,
-                  color: "#FFF8EE",
-                  textAlign: "center",
-                }}
-              >
-                {BRANDS.map((b) => (
-                  <span
-                    key={b}
-                    style={{
-                      opacity: 0.82,
-                      letterSpacing: "-0.01em",
-                      whiteSpace: "nowrap",
-                      lineHeight: 1.1,
-                    }}
-                  >
-                    {b}
-                  </span>
-                ))}
-              </div>
-            </ClaySurface>
-          </section>
+          {/* The catalog: coral band with the gift rows, brand names, and the way in */}
+          <div style={{ marginTop: isMobile ? 64 : 96 }}>
+            <CatalogShowcase isMobile={isMobile} brands={BRANDS} onStart={goStart} />
+          </div>
 
           {/* Testimonials */}
           {/* Kept off ClaySurface on purpose so this band doesn't mirror the step cards above. */}
