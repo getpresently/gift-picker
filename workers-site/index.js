@@ -3,7 +3,7 @@ import {
   serveSinglePageApp,
 } from "@cloudflare/kv-asset-handler";
 import { serveAnalytics } from "./analytics.js";
-import { APPS_SCRIPT_URL } from "./config.js";
+import { APPS_SCRIPT_URL, GIFT_PATH, GIFTS_KEY } from "./config.js";
 import { POSTS, findPost, formatPostDate, parseInline, postShareImage, postsFeaturing, postTitleTag, relatedPosts, segmentHref } from "../src/data/posts.ts";
 
 /**
@@ -23,7 +23,6 @@ const DEBUG = false;
 const GIFTS_ENDPOINT = `${APPS_SCRIPT_URL}?tab=Gifts`;
 
 const SITE_ORIGIN = "https://giftpicker.io";
-const GIFTS_KEY = "gifts:live:v1";
 const SITEMAP_KEY = "sitemap:xml:v1";
 // Full live rows for the quiz results page, served at /api/gifts.
 const FULL_KEY = "gifts:full:v1";
@@ -106,7 +105,7 @@ async function handleEvent(event) {
     // title/meta/OG/JSON-LD and a static content block so the URL is
     // fully indexable by crawlers that don't execute JavaScript. Any
     // failure falls back to the untouched SPA shell.
-    const giftMatch = url.pathname.match(/^\/gift\/(r\d+)\/?$/);
+    const giftMatch = url.pathname.match(GIFT_PATH);
     if (giftMatch) {
       try {
         const rewritten = await prerenderGiftPage(event, response, giftMatch[1]);

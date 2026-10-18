@@ -7,9 +7,10 @@ import { INTEREST_LABELS } from "../data/gifts";
 import { RESULTS_BANDS } from "../data/analytics";
 import { CHANGES } from "../data/changes";
 import {
-  addDays, beforeAfter, change, fmt, fmtKpi, fmtRate, fmtShare, giftStats, kpis, lowClickGifts, NA, per100, takeaways,
-  type ChangeImpact, type DailyRow, type Funnel, type GiftStat, type KpiKey, type Kpis, type PeriodData, type SourceRow,
-  type WindowStats,
+  addDays, beforeAfter, change, fmt, fmtKpi, fmtRate, fmtShare, giftStats, kpis, lowClickGifts, mostCopiedGifts, mostOpenedGifts, NA,
+  per100, rarelyTappedGifts, shareBreakdown, shareTotals, takeaways,
+  type ChangeImpact, type CopiedGift, type DailyRow, type Funnel, type GiftStat, type KpiKey, type Kpis, type OpenedGift,
+  type PeriodData, type SeenGift, type ShareBreakdown, type ShareTotals, type SourceRow, type WindowStats,
 } from "../data/insights";
 
 /**
@@ -40,10 +41,17 @@ type Report = {
   destinations: { "customEvent:destination": string; eventCount: number }[] | null;
   gifts: GiftStat[] | null;
   lowClickGifts: { perOpen: number | null; gifts: GiftStat[] } | null;
+  /** fromCards: detail opens count only taps on results cards (false until the source dimension is registered). */
+  openedGifts: { fromCards: boolean; gifts: OpenedGift[] } | null;
+  rarelyTapped: { per100: number | null; gifts: SeenGift[] } | null;
   quizSteps: { "customEvent:step_index": string; totalUsers: number }[] | null;
   recipients: { recipient: string; count: number }[] | null;
   interests: { interest: string; count: number }[] | null;
   resultsBands: { band: string; count: number }[] | null;
+  shares: { current: ShareTotals; previous: ShareTotals };
+  copiedGifts: CopiedGift[] | null;
+  shareRecipients: ShareBreakdown | null;
+  shareOccasions: ShareBreakdown | null;
 };
 type Failure = { ok: false; error: string; detail?: string };
 
@@ -60,12 +68,14 @@ const dayLabel = (d: string) => new Date(`${d.slice(0, 4)}-${d.slice(4, 6)}-${d.
 const cap = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
 const sourceLabel = (s: string) => (s === "(direct)" ? "Direct" : s);
 const FILLS_IN = "Fills in from the day this was turned on.";
+const needsDim = (dim: string) => `Needs the ${dim} custom dimension (see the note above).`;
 
 const optionLabel = (qid: string, v: string) => {
   const q = QUESTIONS.find((x) => x.id === qid);
   return (q && q.type !== "slider" && q.options.find((o) => o.v === v)?.l) || undefined;
 };
 const recipientLabel = (v: string) => optionLabel("recipient", v) ?? v;
+const occasionLabel = (v: string) => optionLabel("occasion", v) ?? v;
 const interestLabel = (v: string) => optionLabel("interests", v) ?? INTEREST_LABELS[v]?.[0] ?? v;
 const BAND_LABELS: Record<string, string> = { none: "No results", "under 8": "Fewer than 8", "8 to 19": "8 to 19", "20 plus": "20 or more" };
 
@@ -386,6 +396,117 @@ function ChangesCard({ changes }: { changes: ChangeImpact[] }) {
   );
 }
 
+/* ---------------- what gets shared ---------------- */
+
+/** Results shares and finished quizzes by one answer (recipient or occasion), with the share rate. */
+function ShareBreakdownCard({ title, noun, dim, data, label, anyShares }: {
+  title: string; noun: string; dim: string; data: ShareBreakdown | null; label: (v: string) => string; anyShares: boolean;
+}) {
+  const shared = data ? data.segments.filter((s) => s.shares > 0) : [];
+  const rate = (v: number | null) => (v == null ? "under 10 quizzes, so no rate" : `${fmtRate(v)} per 100 finished quizzes`);
+  return (
+    <Card
+      title={title}
+      sub={`Results shares; the second number is shares per 100 finished quizzes (n/a under 10 quizzes)${data?.per100 != null ? `. All ${noun}s: ${fmtRate(data.per100)}` : ""}`}
+      table={data?.segments.length ? <DataTable head={[cap(noun), "Shares", "Finished quizzes", "Per 100 quizzes"]}
+        rows={data.segments.map((s) => [label(s.value), fmt(s.shares), fmt(s.quizzes), fmtRate(s.per100)])} /> : undefined}
+    >
+      {!data ? <Empty text={needsDim(dim)} />
+        : shared.length ? (
+          <HBars items={shared.map((s) => ({
+            label: label(s.value), value: s.shares, tip: `${label(s.value)}: ${fmt(s.shares)} shares from ${fmt(s.quizzes)} finished quizzes, ${rate(s.per100)}`,
+          }))} sub={(_, i) => `· ${fmtRate(shared[i].per100)}`} />
+        ) : <Empty text={anyShares ? FILLS_IN : "No results shares in this period."} />}
+    </Card>
+  );
+}
+
+function SharesSection({ r }: { r: Report }) {
+  const isMobile = useIsMobile();
+  const { current: cur, previous: prev } = r.shares;
+  const tile = (label: string, get: (s: ShareTotals) => number | null, note: string, show: (v: number | null) => string = (v) => (v == null ? NA : fmt(v))) => (
+    <Stat label={label} value={show(get(cur))} delta={changeText(change(get(cur), get(prev)), r.days)} note={note} />
+  );
+  // Shares from days before method was registered have no split.
+  const unsplit = cur.shared == null ? 0 : cur.resultsShares - cur.shared - (cur.copied ?? 0);
+  const splitNote = cur.shared == null ? "Share sheet versus copied needs the method custom dimension"
+    : `${fmt(cur.shared)} through the share sheet, ${fmt(cur.copied ?? 0)} copied${unsplit > 0 ? `, ${fmt(unsplit)} from before this was turned on` : ""}`;
+  return (
+    <>
+      <div style={{ margin: "30px 0 14px" }}>
+        <h2 style={{ fontFamily: SANS, fontWeight: 600, fontSize: 20, color: INK, margin: 0 }}>What gets shared</h2>
+        <div style={{ fontFamily: SANS, fontSize: 13, color: INK_2, marginTop: 4, lineHeight: 1.45 }}>
+          Results shared with the Share these picks button, gift links copied, and how often people open those links.
+        </div>
+      </div>
+      <div style={{ display: "grid", gridTemplateColumns: isMobile ? "repeat(2, minmax(0, 1fr))" : "repeat(3, minmax(0, 1fr))", gap: 14, marginBottom: 18 }}>
+        {tile("Results shares", (s) => s.resultsShares, splitNote)}
+        {tile("Gift links copied", (s) => s.giftCopies, "From gift details and gift pages")}
+        {tile("Shared links opened", (s) => s.opens, "Results and gift links together")}
+        {tile("Results links opened", (s) => s.resultsOpens,
+          cur.resultsOpens == null ? "Needs the share_type custom dimension" : `${fmtRate(cur.opensPerResultsShare)} per results share`)}
+        {tile("Gift links opened", (s) => s.giftOpens,
+          cur.giftOpens == null ? "Needs the share_type custom dimension" : `${fmtRate(cur.opensPerGiftCopy)} per gift link copied`)}
+        {tile("Opens per share", (s) => s.opensPerShare, "Opens of shared links per share, both kinds together", fmtRate)}
+      </div>
+      <div style={twoUp}>
+        <ShareBreakdownCard title="Shares by recipient" noun="recipient" dim="recipient" data={r.shareRecipients} label={recipientLabel} anyShares={cur.resultsShares > 0} />
+        <ShareBreakdownCard title="Shares by occasion" noun="occasion" dim="occasion" data={r.shareOccasions} label={occasionLabel} anyShares={cur.resultsShares > 0} />
+      </div>
+      <Card title="Most copied gifts" sub="Top 12 by links copied. The last column is copies per 100 opens on results, n/a under 3 opens.">
+        {r.copiedGifts ? (r.copiedGifts.length
+          ? <DataTable head={["Gift", "Copied", "Opened", "Per 100 opens"]}
+            rows={r.copiedGifts.map((g) => [g.name, fmt(g.copies), fmt(g.opens), fmtRate(g.copiesPer100Opens)])} />
+          : <Empty text={cur.giftCopies ? FILLS_IN : "No gift links copied in this period."} />)
+          : <Empty text={needsDim("gift_name")} />}
+      </Card>
+    </>
+  );
+}
+
+/* ---------------- what gets opened ---------------- */
+
+function OpenedSection({ r }: { r: Report }) {
+  const opened = r.openedGifts;
+  const opensLabel = opened?.fromCards === false ? "Details opened, with arrow browsing" : "Details opened";
+  const rare = r.rarelyTapped;
+  const missing = (dims: string[]) => needsDim(dims.find((d) => r.missingDims.includes(d)) ?? dims[0]);
+  return (
+    <>
+      <div style={{ margin: "30px 0 14px" }}>
+        <h2 style={{ fontFamily: SANS, fontWeight: 600, fontSize: 20, color: INK, margin: 0 }}>What gets opened</h2>
+        <div style={{ fontFamily: SANS, fontSize: 13, color: INK_2, marginTop: 4, lineHeight: 1.45 }}>
+          How often people go from a gift's tile to its details, in the results modal or on its gift page, and which cards get seen but rarely tapped.
+        </div>
+      </div>
+      <Card
+        title="Most opened gifts"
+        sub={opened?.fromCards === false
+          ? "Top 12 by details opened plus gift page views. Until the source custom dimension is registered, details opened also counts browsing with the arrows in the details."
+          : "Top 12 by details opened from a results tile plus gift page views, with store clicks and link copies for context"}
+        table={opened?.gifts.length ? <DataTable head={["Gift", opensLabel, "Gift page views", "Total", "Store clicks", "Copied"]}
+          rows={opened.gifts.map((g) => [g.name, fmt(g.opens), fmt(g.pageViews), fmt(g.total), fmt(g.clicks), fmt(g.copies)])} /> : undefined}
+      >
+        {opened ? (opened.gifts.length ? (
+          <HBars items={opened.gifts.map((g) => ({
+            label: g.name, value: g.total,
+            tip: `${g.name}: ${fmt(g.opens)} ${opensLabel.toLowerCase()}, ${fmt(g.pageViews)} gift page views, ${fmt(g.clicks)} store clicks, ${fmt(g.copies)} copied`,
+          }))} />
+        ) : <Empty text="No gift details opened in this period." />) : <Empty text={needsDim("gift_name")} />}
+      </Card>
+      <Card
+        title="Seen but rarely tapped"
+        sub={`Seen at least 20 times on results, with fewer taps per 100 seen than all gifts together${rare?.per100 != null ? ` (${fmtRate(rare.per100)} per 100 seen)` : ""}. Cards lower on the page get fewer taps, so a gift here may need a better photo or title, or may just rank low.`}
+      >
+        {rare ? (rare.gifts.length
+          ? <DataTable head={["Gift", "Seen", "Taps", "Per 100 seen"]} rows={rare.gifts.slice(0, 12).map((g) => [g.name, fmt(g.seen), fmt(g.taps), fmtRate(g.tapsPer100Seen)])} />
+          : <Empty text={rare.per100 == null ? FILLS_IN : "No gift fits this in the period."} />)
+          : <Empty text={missing(["gift_name", "source"])} />}
+      </Card>
+    </>
+  );
+}
+
 /* ---------------- the page ---------------- */
 
 const RANGES = [7, 30, 90] as const;
@@ -584,7 +705,7 @@ function Dashboard({ r }: { r: Report }) {
       <div style={twoUp}>
         <Card title="Where store clicks go" sub="Amazon versus the brand's own store">
           {r.destinations ? <SplitBar a={{ label: "Amazon", value: amazon }} b={{ label: "Brand store", value: brand }} />
-            : <Empty text="Needs the destination custom dimension (see the note above)." />}
+            : <Empty text={needsDim("destination")} />}
         </Card>
         <Card title="What people do on results" sub="Counts in this period"
           table={<DataTable head={["Action", "Count", "Per 100 results views"]}
@@ -604,7 +725,7 @@ function Dashboard({ r }: { r: Report }) {
               label: `Question ${s.step + 1}`, value: s.users,
               tip: `Question ${s.step + 1}: ${fmt(s.users)} people${i ? `, ${pct(s.users, steps[i - 1].users)} of the question before` : ""}`,
             }))} sub={(v, i) => (i ? `· ${pct(v, steps[i - 1].users)}` : "")} />
-          ) : <Empty text={r.quizSteps ? "No quiz steps in this period." : "Needs the step_index custom dimension (see the note above)."} />}
+          ) : <Empty text={r.quizSteps ? "No quiz steps in this period." : needsDim("step_index")} />}
         </Card>
         <Card title="Where visits come from" sub="Top sources by visits; the second number is store clicks per 100 visits"
           table={<DataTable head={["Source", "Visits", "Engaged", "Store clicks", "Per 100 visits"]}
@@ -661,7 +782,7 @@ function Dashboard({ r }: { r: Report }) {
           {r.gifts ? (r.gifts.length
             ? <DataTable head={["Gift", "Opened", "Store clicks"]} rows={r.gifts.slice(0, 12).map((g) => [g.name, fmt(g.opens), fmt(g.clicks)])} />
             : <Empty text="No gift opens in this period." />)
-            : <Empty text="Needs the gift_name custom dimension (see the note above)." />}
+            : <Empty text={needsDim("gift_name")} />}
         </Card>
         <Card
           title="Opened but rarely clicked"
@@ -675,6 +796,9 @@ function Dashboard({ r }: { r: Report }) {
             : <Empty text={FILLS_IN} />}
         </Card>
       </div>
+
+      <SharesSection r={r} />
+      <OpenedSection r={r} />
 
       <div style={twoUp}>
         <Card title="Devices" sub="Visits by device; the second number is store clicks per 100 visits"
@@ -737,8 +861,9 @@ function mockReport(days: number, variant: string | null): Report {
         quiz_start: people(sum("quizStarters"), 1.05), quiz_complete: { eventCount: sum("quizzes"), totalUsers: sum("quizFinishers") },
         gift_open: people(sum("opens"), 3.4), gift_buy_click: people(sum("storeClicks"), 1.6),
         results_load_more: people(Math.round(sum("resultsViews") * 0.22), 1.3), results_refine: people(Math.round(sum("resultsViews") * 0.12), 1.2),
-        gift_save: people(Math.round(sum("resultsViews") * 0.08), 1.5), gift_share: people(Math.round(sum("resultsViews") * 0.03), 1),
+        gift_save: people(Math.round(sum("resultsViews") * 0.08), 1.5), gift_share: people(Math.round(sum("resultsViews") * (to >= "20261010" ? 0.034 : 0.026)), 1),
         request_more: people(Math.round(sum("resultsViews") * 0.02), 1),
+        gift_link_copy: people(Math.round(sum("resultsViews") * 0.045), 1.1), share_open: people(Math.round(sum("resultsViews") * 0.07), 1),
       },
       results: { views: sum("resultsViews"), seconds: sum("resultsViews") * (to >= "20261003" ? 104 : 88), users: Math.round(sum("quizFinishers") * 0.98) },
     };
@@ -761,21 +886,53 @@ function mockReport(days: number, variant: string | null): Report {
     { sessionSource: "linkedin.com", sessions: n(60), engagedSessions: n(35), storeClicks: n(4) },
     { sessionSource: "reddit.com", sessions: 6, engagedSessions: 4, storeClicks: 3 },
   ];
+  // name, opens, store clicks, copies, times seen, taps from a tile, gift page views
   const giftRows = [
-    ["Sound Clock: Alarmo", 96, 41], ["Fluff Yeah Slippers", 71, 33], ["Exploding Kittens: Original Edition", 58, 19],
-    ["Ember Mug 2", 44, 6], ["Personalized Star Map", 31, 4], ["Le Creuset Mini Cocotte", 22, 9], ["Bonsai Starter Kit", 17, 2],
-    ["Vinyl Record Frame", 9, 1], ["Polaroid Go Gen 2", 6, 3], ["Mystery Book Box", 2, 0],
+    ["Sound Clock: Alarmo", 96, 41, 6, 610, 81, 22], ["Fluff Yeah Slippers", 71, 33, 3, 540, 60, 9], ["Exploding Kittens: Original Edition", 58, 19, 4, 480, 47, 14],
+    ["Ember Mug 2", 44, 6, 1, 520, 31, 3], ["Personalized Star Map", 31, 4, 9, 300, 24, 31], ["Le Creuset Mini Cocotte", 22, 9, 0, 410, 15, 2],
+    ["Bonsai Starter Kit", 17, 2, 2, 380, 12, 6], ["Vinyl Record Frame", 9, 1, 0, 260, 7, 0], ["Polaroid Go Gen 2", 6, 3, 1, 90, 5, 4],
+    ["Mystery Book Box", 2, 0, 2, 15, 2, 1], ["Hand-Knit Wool Throw", 0, 0, 1, 0, 0, 12],
   ] as const;
-  const gifts = giftStats(giftRows.flatMap(([name, o, c]) => [
+  const gifts = giftStats(giftRows.flatMap(([name, o, c, k, seen]) => [
     { eventName: "gift_open", name, eventCount: n(o) }, { eventName: "gift_buy_click", name, eventCount: n(c) },
+    { eventName: "gift_link_copy", name, eventCount: n(k) }, { eventName: "gift_impression", name, eventCount: n(seen) },
   ]));
   const missing = variant === "missing";
+  // ?mock=nosource: everything but the source dimension, so detail opens fall back to every gift_open.
+  const noSource = variant === "nosource";
+  const taps = noSource ? null : Object.fromEntries(giftRows.map(([name, , , , , t]) => [name, n(t)]));
+  const giftPageViews = Object.fromEntries(giftRows.map(([name, , , , , , pv]) => [name, n(pv)]));
+  // gift_share by method and share_open by share_type, as GA would split them.
+  const methodsOf = (p: PeriodData) => {
+    const all = p.events.gift_share?.eventCount ?? 0;
+    const shared = Math.round(all * 0.37);
+    const copied = Math.round(all * 0.6);
+    return { shared, copied, failed: all - shared - copied };
+  };
+  const openTypesOf = (p: PeriodData) => {
+    const all = p.events.share_open?.eventCount ?? 0;
+    const results = Math.round(all * 0.58);
+    return { results, gift: all - results };
+  };
+  // Finished quizzes and a relative share rate by answer; the period's results shares are spread by quizzes times rate.
+  const shareCount = current.events.gift_share?.eventCount ?? 0;
+  const answerRows = (list: [string, number, number][]) => {
+    const weight = list.reduce((a, [, q, rate]) => a + n(q) * rate, 0) || 1;
+    return list.flatMap(([value, q, rate]) => [
+      { eventName: "quiz_complete", value, eventCount: n(q) },
+      { eventName: "gift_share", value, eventCount: Math.round((shareCount * n(q) * rate) / weight) },
+    ]);
+  };
+  const shareRecipients = missing ? null : shareBreakdown(answerRows([
+    ["partner", 310, 7.5], ["friend", 220, 3.2], ["parent", 180, 2.4], ["sibling", 96, 3.1], ["self", 74, 0.8], ["child", 61, 2.2],
+    ["coworker", 40, 4.4], ["grandparent", 22, 1.5], ["mentor", 12, 6],
+  ]));
   return {
     ok: true, days, generatedAt: new Date().toISOString(), today,
-    missingDims: missing ? ["gift_name", "recipient", "interest", "results_band"] : [],
+    missingDims: missing ? ["gift_name", "recipient", "interest", "results_band", "occasion", "method", "share_type", "source"] : noSource ? ["source"] : [],
     totals: current.totals, events: current.events, results: current.results,
     kpis: { current: kpis(current), previous: kpis(previous) },
-    takeaways: takeaways({ days, current, previous, funnel, sources }),
+    takeaways: takeaways({ days, current, previous, funnel, sources, shareRecipients }),
     funnel,
     trend: series.slice(-days).map((d) => ({ date: d.date, visitors: d.visitors, quizzes: d.quizzes, storeClicks: d.storeClicks })),
     changes: beforeAfter(series, series[0].date, today, CHANGES),
@@ -787,8 +944,10 @@ function mockReport(days: number, variant: string | null): Report {
     ],
     newVsReturning: [{ newVsReturning: "new", activeUsers: Math.round(v * 0.8) }, { newVsReturning: "returning", activeUsers: Math.round(v * 0.2) }],
     destinations: [{ "customEvent:destination": "amazon", eventCount: n(140) }, { "customEvent:destination": "brand", eventCount: n(101) }],
-    gifts: missing ? null : gifts,
+    gifts: missing ? null : gifts.filter((g) => g.opens || g.clicks),
     lowClickGifts: missing ? null : lowClickGifts(gifts),
+    openedGifts: missing ? null : { fromCards: taps != null, gifts: mostOpenedGifts(gifts, taps, giftPageViews) },
+    rarelyTapped: missing || !taps ? null : rarelyTappedGifts(gifts, taps),
     quizSteps: [0, 1, 2, 3, 4, 5].map((s) => ({ "customEvent:step_index": String(s), totalUsers: Math.round(v * 0.56 * Math.pow(0.9, s)) })),
     recipients: missing ? null : [
       ["partner", 310], ["friend", 220], ["parent", 180], ["sibling", 96], ["self", 74], ["child", 61], ["coworker", 40], ["grandparent", 22], ["mentor", 12],
@@ -800,5 +959,15 @@ function mockReport(days: number, variant: string | null): Report {
     resultsBands: missing ? null : [
       { band: "20 plus", count: n(620) }, { band: "8 to 19", count: n(210) }, { band: "under 8", count: n(70) }, { band: "none", count: n(12) },
     ],
+    shares: {
+      current: shareTotals(current, missing ? null : methodsOf(current), missing ? null : openTypesOf(current)),
+      previous: shareTotals(previous, missing ? null : methodsOf(previous), missing ? null : openTypesOf(previous)),
+    },
+    copiedGifts: missing ? null : mostCopiedGifts(gifts),
+    shareRecipients,
+    shareOccasions: missing ? null : shareBreakdown(answerRows([
+      ["bday", 300, 3.4], ["holi", 260, 5.2], ["anni", 120, 6.1], ["jb", 90, 2.1], ["wed", 60, 4.8], ["thank", 40, 2.6],
+      ["newjob", 30, 3.3], ["housewarm", 25, 2.2], ["other", 22, 4.1], ["baby", 20, 3.9], ["appreciate", 15, 2.1], ["sympathy", 8, 1],
+    ])),
   };
 }

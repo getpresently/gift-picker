@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { AmbientGlow } from "./clay/AmbientGlow";
 import { ClaySurface } from "./clay/ClaySurface";
@@ -21,6 +21,7 @@ import { SECONDARY_TONES, twinsOf } from "../data/gifts";
 import { relatedGifts } from "../data/related";
 import { loadSaved, saveSaved } from "../data/saved";
 import { postsFeaturing } from "../data/posts";
+import { buildGiftShareUrl, dropShareRef, hasShareRef } from "../data/share";
 
 /**
  * Standalone, shareable page for a single gift at /gift/:giftId.
@@ -59,12 +60,28 @@ export function GiftPage() {
     });
   };
 
+  // A copied gift link ends in ?ref=share. Read it once on load (the twin and
+  // related links reuse this page for other gifts), drop it from the address
+  // bar, and count the open once the gift's name is known.
+  const [sharedId] = useState(() => (hasShareRef(window.location.search) ? giftId : undefined));
+  useEffect(() => {
+    if (sharedId) dropShareRef();
+  }, [sharedId]);
+  const countedShareOpen = useRef(false);
+  useEffect(() => {
+    if (!sharedId || loading || countedShareOpen.current) return;
+    countedShareOpen.current = true;
+    const shared = allGifts.find((g) => g.id === sharedId);
+    track("share_open", { share_type: "gift", gift_id: sharedId, gift_name: shared?.name, brand: shared?.brand });
+  }, [sharedId, loading, allGifts]);
+
   const [copied, setCopied] = useState(false);
   const copyLink = async () => {
+    if (!gift) return;
     try {
-      await navigator.clipboard.writeText(window.location.href);
+      await navigator.clipboard.writeText(buildGiftShareUrl(gift.id));
       setCopied(true);
-      track("gift_link_copy", { gift_id: gift?.id, source: "gift_page" });
+      track("gift_link_copy", { gift_id: gift.id, gift_name: gift.name, brand: gift.brand, price: gift.price, source: "gift_page" });
       setTimeout(() => setCopied(false), 2000);
     } catch {
       // Clipboard unavailable: leave the button as-is.

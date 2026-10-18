@@ -1,7 +1,7 @@
 /**
  * The pure numbers behind the Analytics tab in /review: KPI values and their
  * change against the previous period, the takeaway sentences, before/after
- * windows around site changes, and per-gift click rates.
+ * windows around site changes, per-gift opens and click rates, and what gets shared.
  *
  * No I/O here. The worker (workers-site/analytics.js) runs these on GA4 rows,
  * the dev mock in ReviewAnalytics.tsx runs them on sample rows, and
@@ -63,7 +63,8 @@ export type ChangeImpact = {
   after: WindowStats | null;
 };
 
-export type GiftStat = { name: string; opens: number; clicks: number };
+/** Per gift from GA events: opens (every gift_open), store clicks, link copies, and times its card was seen on results. */
+export type GiftStat = { name: string; opens: number; clicks: number; copies: number; seen: number };
 
 /* ---------------- formatting (shared by the worker's sentences and the page) ---------------- */
 
@@ -210,12 +211,15 @@ export function bestSource(sources: SourceRow[], allVisits: number, allClicks: n
   return `${who} had the most store clicks per visit, ${fmtRate(per100(best.storeClicks, best.sessions))} per 100 visits${tail}`;
 }
 
-export function takeaways(input: { days: number; current: PeriodData; previous: PeriodData; funnel: Funnel; sources: SourceRow[] }): string[] {
-  const { days, current, previous, funnel, sources } = input;
+export function takeaways(input: {
+  days: number; current: PeriodData; previous: PeriodData; funnel: Funnel; sources: SourceRow[]; shareRecipients?: ShareBreakdown | null;
+}): string[] {
+  const { days, current, previous, funnel, sources, shareRecipients } = input;
   return [
     biggestKpiChange(days, current, previous),
     biggestLeak(funnel),
     bestSource(sources, current.totals.sessions ?? 0, ev(current, "gift_buy_click").eventCount),
+    mostSharedRecipient(shareRecipients ?? null),
   ].filter((s): s is string => Boolean(s));
 }
 
@@ -327,21 +331,26 @@ export function beforeAfter(daily: DailyRow[], seriesStart: string, today: strin
 
 /* ---------------- gifts ---------------- */
 
-/** Opens and store clicks per gift from GA rows of (eventName, gift_name, eventCount). */
+/** Per-gift numbers from GA rows of (eventName, gift_name, eventCount). */
 export function giftStats(rows: { eventName: string; name: string; eventCount: number }[]): GiftStat[] {
   const m = new Map<string, GiftStat>();
   for (const r of rows) {
     if (!r.name || r.name === "(not set)") continue;
-    const g = m.get(r.name) ?? { name: r.name, opens: 0, clicks: 0 };
+    const g = m.get(r.name) ?? { name: r.name, opens: 0, clicks: 0, copies: 0, seen: 0 };
     if (r.eventName === "gift_open") g.opens += r.eventCount;
     else if (r.eventName === "gift_buy_click") g.clicks += r.eventCount;
+    else if (r.eventName === "gift_link_copy") g.copies += r.eventCount;
+    else if (r.eventName === "gift_impression") g.seen += r.eventCount;
     m.set(r.name, g);
   }
   return [...m.values()].sort((a, b) => b.clicks - a.clicks || b.opens - a.opens);
 }
 
+/** A gift needs this many opens before a per-open rate means anything. */
+const MIN_GIFT_OPENS = 3;
+
 /** Gifts opened at least `minOpens` times whose clicks per open are below the all-gift rate, most opened first. */
-export function lowClickGifts(stats: GiftStat[], minOpens = 3): { perOpen: number | null; gifts: GiftStat[] } {
+export function lowClickGifts(stats: GiftStat[], minOpens = MIN_GIFT_OPENS): { perOpen: number | null; gifts: GiftStat[] } {
   const opens = stats.reduce((a, g) => a + g.opens, 0);
   const clicks = stats.reduce((a, g) => a + g.clicks, 0);
   const perOpen = opens > 0 ? clicks / opens : null;
@@ -350,4 +359,164 @@ export function lowClickGifts(stats: GiftStat[], minOpens = 3): { perOpen: numbe
     .filter((g) => g.opens >= minOpens && g.clicks / g.opens < perOpen)
     .sort((a, b) => b.opens - a.opens || a.clicks - b.clicks);
   return { perOpen, gifts };
+}
+
+/* ---------------- opened and seen ---------------- */
+
+export type OpenedGift = { name: string; opens: number; pageViews: number; total: number; clicks: number; copies: number };
+
+/**
+ * Gifts by how often people went from a tile to the gift's details: detail
+ * opens plus gift page views, most first. `taps` is gift_open from a results
+ * card (top pick or grid) by gift name; while it is null (the source dimension
+ * is unregistered), detail opens fall back to every gift_open, which includes
+ * browsing with the modal's arrows.
+ */
+export function mostOpenedGifts(stats: GiftStat[], taps: Record<string, number> | null, pageViews: Record<string, number>, limit = 12): OpenedGift[] {
+  const byName = new Map(stats.map((g) => [g.name, g]));
+  const names = new Set([...byName.keys(), ...Object.keys(taps ?? {}), ...Object.keys(pageViews)]);
+  names.delete("(not set)");
+  return [...names]
+    .map((name) => {
+      const g = byName.get(name);
+      const opens = taps ? taps[name] ?? 0 : g?.opens ?? 0;
+      const views = pageViews[name] ?? 0;
+      return { name, opens, pageViews: views, total: opens + views, clicks: g?.clicks ?? 0, copies: g?.copies ?? 0 };
+    })
+    .filter((g) => g.total > 0)
+    .sort((a, b) => b.total - a.total || b.clicks - a.clicks)
+    .slice(0, limit);
+}
+
+/** A card needs this many views before its taps per view mean anything. */
+const MIN_SEEN = 20;
+
+export type SeenGift = { name: string; seen: number; taps: number; tapsPer100Seen: number };
+
+/**
+ * Gifts seen at least `minSeen` times whose taps per 100 seen are below the
+ * rate across all seen gifts, most seen first. Taps on gifts never seen (before
+ * gift_impression existed) stay out of the rate.
+ */
+export function rarelyTappedGifts(stats: GiftStat[], taps: Record<string, number>, minSeen = MIN_SEEN): { per100: number | null; gifts: SeenGift[] } {
+  const seenGifts = stats.filter((g) => g.seen > 0).map((g) => ({ name: g.name, seen: g.seen, taps: taps[g.name] ?? 0 }));
+  const per100All = per100(seenGifts.reduce((a, g) => a + g.taps, 0), seenGifts.reduce((a, g) => a + g.seen, 0));
+  if (per100All == null) return { per100: null, gifts: [] };
+  const gifts = seenGifts
+    .map((g) => ({ ...g, tapsPer100Seen: (g.taps / g.seen) * 100 }))
+    .filter((g) => g.seen >= minSeen && g.tapsPer100Seen < per100All)
+    .sort((a, b) => b.seen - a.seen || a.taps - b.taps);
+  return { per100: per100All, gifts };
+}
+
+/* ---------------- sharing ---------------- */
+
+const ratio = (part: number, whole: number) => (whole > 0 ? part / whole : null);
+
+/** One period of sharing: results shares, gift links copied, and opens of shared links. */
+export type ShareTotals = {
+  /** Results shares that worked: gift_share events less the ones with method "failed". */
+  resultsShares: number;
+  /** Results shares through the share sheet, and copied; null until the method dimension is registered. */
+  shared: number | null;
+  copied: number | null;
+  giftCopies: number;
+  /** Opens of shared links, results and gift together (share_open). */
+  opens: number;
+  /** Opens by share_type; null until the share_type dimension is registered. */
+  resultsOpens: number | null;
+  giftOpens: number | null;
+  /** Opens per share, both kinds together. Can pass 1: one share sheet post reaches many people. */
+  opensPerShare: number | null;
+  opensPerResultsShare: number | null;
+  opensPerGiftCopy: number | null;
+};
+
+/**
+ * Sharing totals for a period. `methods` is gift_share counts by method and
+ * `openTypes` share_open counts by share_type, each null while its dimension
+ * is unregistered. Days before a dimension was registered report it as
+ * "(not set)", so results shares are all shares less the known failures.
+ */
+export function shareTotals(p: PeriodData, methods: Record<string, number> | null, openTypes: Record<string, number> | null): ShareTotals {
+  const resultsShares = Math.max(0, ev(p, "gift_share").eventCount - (methods?.failed ?? 0));
+  const giftCopies = ev(p, "gift_link_copy").eventCount;
+  const opens = ev(p, "share_open").eventCount;
+  const resultsOpens = openTypes ? openTypes.results ?? 0 : null;
+  const giftOpens = openTypes ? openTypes.gift ?? 0 : null;
+  return {
+    resultsShares,
+    shared: methods ? methods.shared ?? 0 : null,
+    copied: methods ? methods.copied ?? 0 : null,
+    giftCopies,
+    opens,
+    resultsOpens,
+    giftOpens,
+    opensPerShare: ratio(opens, resultsShares + giftCopies),
+    opensPerResultsShare: resultsOpens == null ? null : ratio(resultsOpens, resultsShares),
+    opensPerGiftCopy: giftOpens == null ? null : ratio(giftOpens, giftCopies),
+  };
+}
+
+export type CopiedGift = { name: string; copies: number; opens: number; copiesPer100Opens: number | null };
+
+/** Gifts by link copies, most copied first. The per-open rate needs 3 opens (opens happen on results; gift page copies have none). */
+export function mostCopiedGifts(stats: GiftStat[], limit = 12): CopiedGift[] {
+  return stats
+    .filter((g) => g.copies > 0)
+    .sort((a, b) => b.copies - a.copies || b.opens - a.opens)
+    .slice(0, limit)
+    .map((g) => ({ name: g.name, copies: g.copies, opens: g.opens, copiesPer100Opens: g.opens >= MIN_GIFT_OPENS ? per100(g.copies, g.opens) : null }));
+}
+
+export type ShareSegment = { value: string; shares: number; quizzes: number; per100: number | null };
+/** Results shares and finished quizzes per answer (a recipient or an occasion), and the rate across all of them. */
+export type ShareBreakdown = { segments: ShareSegment[]; shares: number; quizzes: number; per100: number | null };
+
+/** Shares per 100 finished quizzes, or null under MIN_BASE quizzes (a few quizzes make a wild rate). */
+const shareRate = (shares: number, quizzes: number) => (quizzes >= MIN_BASE ? per100(shares, quizzes) : null);
+
+/** From GA rows of (eventName, answer value, eventCount) for gift_share and quiz_complete. */
+export function shareBreakdown(rows: { eventName: string; value: string; eventCount: number }[]): ShareBreakdown {
+  const m = new Map<string, ShareSegment>();
+  for (const r of rows) {
+    if (!r.value || r.value === "(not set)") continue;
+    const s = m.get(r.value) ?? { value: r.value, shares: 0, quizzes: 0, per100: null };
+    if (r.eventName === "gift_share") s.shares += r.eventCount;
+    else if (r.eventName === "quiz_complete") s.quizzes += r.eventCount;
+    m.set(r.value, s);
+  }
+  const segments = [...m.values()]
+    .map((s) => ({ ...s, per100: shareRate(s.shares, s.quizzes) }))
+    .sort((a, b) => b.shares - a.shares || b.quizzes - a.quizzes);
+  const shares = segments.reduce((a, s) => a + s.shares, 0);
+  const quizzes = segments.reduce((a, s) => a + s.quizzes, 0);
+  return { segments, shares, quizzes, per100: shareRate(shares, quizzes) };
+}
+
+const RECIPIENT_PHRASES: Record<string, string> = {
+  partner: "a partner", parent: "a parent", child: "a child", grandparent: "a grandparent", sibling: "a sibling",
+  friend: "a friend", coworker: "a coworker", mentor: "a mentor or teacher", self: "themselves",
+};
+/** How far above the average a recipient's share rate must be to make a takeaway. */
+const MIN_SHARE_LIFT = 1.5;
+/** Shares the winning recipient needs itself, so one share in a small group can't make the sentence. */
+const MIN_SEGMENT_SHARES = 5;
+
+/**
+ * (d) The recipient whose picks get shared most often per finished quiz. It
+ * needs 10+ quizzes and 5+ shares of its own, at least 10 shares counted in
+ * all, another recipient with 10+ quizzes to compare with, and a rate at
+ * least 1.5 times the rate across all recipients.
+ */
+export function mostSharedRecipient(b: ShareBreakdown | null): string | null {
+  if (!b || b.per100 == null || b.per100 <= 0 || b.shares < MIN_BASE) return null;
+  const rated = b.segments.filter((s): s is ShareSegment & { per100: number } => s.per100 != null);
+  const candidates = rated.filter((s) => s.shares >= MIN_SEGMENT_SHARES);
+  if (rated.length < 2 || !candidates.length) return null;
+  const best = candidates.reduce((a, s) => (s.per100 > a.per100 ? s : a));
+  const lift = best.per100 / b.per100;
+  if (lift < MIN_SHARE_LIFT) return null;
+  const who = RECIPIENT_PHRASES[best.value] ?? best.value;
+  return `People shopping for ${who} shared their picks ${fmtRate(lift)} times as often as average, ${fmtRate(best.per100)} shares per 100 finished quizzes compared with ${fmtRate(b.per100)} across all recipients.`;
 }

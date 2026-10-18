@@ -9,7 +9,8 @@ import assert from "node:assert/strict";
 import { foldTwins, rankGifts, scoreGift, twinSeed, twinsOf, type Gift, type RankedGift } from "../src/data/gifts";
 import { affiliateUrl, AMAZON_TAG, buyLinks, isAmazonUrl, primaryBuy } from "../src/data/affiliate";
 import { QUESTIONS, questionLabel, reconcileAnswers, type Answers } from "../src/data/questions";
-import { decodeAnswers, encodeAnswers } from "../src/data/share";
+import { buildGiftShareUrl, decodeAnswers, encodeAnswers, hasShareRef } from "../src/data/share";
+import { budgetBand, searchShape } from "../src/data/analytics";
 import { relatedGifts } from "../src/data/related";
 import { findPost, formatPostDate, isPendingGift, parseInline, PENDING_GIFTS, postGiftIds, POSTS, postsFeaturing, postShareImage, postTitleTag, relatedPosts, segmentHref } from "../src/data/posts";
 import { existsSync, readFileSync } from "node:fs";
@@ -320,3 +321,12 @@ test("SEO basics: short, unique title tags and descriptions; related posts; shar
   }
 });
 
+test("share events: budget bands, search shape without free text, and the gift link ref", () => {
+  assert.deepEqual([10, 49, 50, 99, 100, 249, 250, 500].map(budgetBand), ["under 50", "under 50", "50 to 99", "50 to 99", "100 to 249", "100 to 249", "250 plus", "250 plus"]);
+  assert.equal(budgetBand(undefined), undefined);
+  const shape = searchShape({ recipient: "friend", age: "adult", occasion: "other", occasionOther: "my cat's birthday", interests: ["books", "music"], budget: 75 });
+  assert.deepEqual(shape, { recipient: "friend", occasion: "other", age: "adult", interests_count: 2, budget_band: "50 to 99" });
+  assert.ok(!JSON.stringify(shape).includes("cat"), "the typed occasion never goes to GA");
+  assert.equal(buildGiftShareUrl("r12"), "/gift/r12?ref=share", "no window in node, so no origin");
+  assert.ok(hasShareRef("?ref=share") && hasShareRef("?x=1&ref=share") && !hasShareRef("?ref=producthunt") && !hasShareRef(""));
+});

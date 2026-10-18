@@ -13,6 +13,8 @@
  * settings, see `pageview()` below + the effect in App.tsx.
  */
 
+import type { Answers } from "./questions";
+
 type GtagCommand = "event" | "config" | "set" | "js";
 type GtagFn = (command: GtagCommand, target: string, params?: Record<string, unknown>) => void;
 
@@ -57,4 +59,31 @@ export function resultsBand(count: number): ResultsBand {
   if (count < 8) return "under 8";
   if (count < 20) return "8 to 19";
   return "20 plus";
+}
+
+/** Buckets for the budget_band parameter on share events (few values, so GA can report them). */
+export const BUDGET_BANDS = ["under 50", "50 to 99", "100 to 249", "250 plus"] as const;
+export type BudgetBand = (typeof BUDGET_BANDS)[number];
+
+export function budgetBand(budget: number | undefined): BudgetBand | undefined {
+  if (typeof budget !== "number" || !Number.isFinite(budget)) return undefined;
+  if (budget < 50) return "under 50";
+  if (budget < 100) return "50 to 99";
+  if (budget < 250) return "100 to 249";
+  return "250 plus";
+}
+
+/**
+ * The shape of a search, for share events: answer codes, counts, and the
+ * budget band. A typed "Other" occasion reports as "other"; free text never
+ * goes to GA.
+ */
+export function searchShape(a: Answers): TrackParams {
+  return {
+    recipient: a.recipient,
+    occasion: a.occasion,
+    age: a.age,
+    interests_count: a.interests?.length ?? 0,
+    budget_band: budgetBand(a.budget),
+  };
 }

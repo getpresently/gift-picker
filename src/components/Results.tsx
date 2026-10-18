@@ -6,6 +6,7 @@ import { Hero } from "./clay/Hero";
 import { Pillow } from "./clay/Pillow";
 import { ProductModal } from "./clay/ProductModal";
 import { useIsMobile } from "../hooks/useIsMobile";
+import { useImpressions } from "../hooks/useImpressions";
 import { clearAnswers, GENDER_OPTIONS, loadAnswers, QUESTIONS, saveAnswers, scoringAnswers, type Answers } from "../data/questions";
 import { buildMatchReasons, foldTwins, rankGifts, SECONDARY_TONES, twinSeed, type RankedGift } from "../data/gifts";
 import { useGifts } from "../data/giftsApi";
@@ -13,7 +14,7 @@ import { isDemoting, NOTIFY_OPT_IN_LIVE, postFeedback, postRequest, type Feedbac
 import { NotifyOptIn } from "./clay/NotifyOptIn";
 import { loadSaved, saveSaved } from "../data/saved";
 import { buildShareUrl, hydrateAnswersFromShareUrl, shareOrCopy } from "../data/share";
-import { resultsBand, track } from "../data/analytics";
+import { resultsBand, searchShape, track } from "../data/analytics";
 import { AffiliateDisclosure } from "./clay/AffiliateDisclosure";
 import { buyLinks } from "../data/affiliate";
 import { SiteHeader } from "./clay/SiteHeader";
@@ -58,6 +59,15 @@ export function Results() {
     track("results_view", { results_count: picks.length, results_band: resultsBand(picks.length) });
   }, [ranked, picks, loading, error, answers]);
 
+  // gift_impression: once per gift per ranking, when its card has been at
+  // least half on screen for a moment. With gift_open from a card, GA can
+  // count taps per 100 times seen.
+  const { refFor: seenRef, markSeen } = useImpressions(ranked, (id) => {
+    const i = picks.findIndex((g) => g.id === id);
+    const g = picks[i];
+    if (g) track("gift_impression", { gift_id: g.id, gift_name: g.name, brand: g.brand, position: i + 1 });
+  });
+
   const [modalIndex, setModalIndex] = useState<number | null>(null);
   // Every time a gift's details are shown, so GA4 can count gift opens
   // per gift alongside gift_buy_click.
@@ -67,6 +77,8 @@ export function Results() {
   };
   const openModal = (i: number) => {
     setModalIndex(i);
+    // A tapped card was seen, even if it had not been on screen for long.
+    if (picks[i]) markSeen(picks[i].id);
     trackOpen(i, i === 0 ? "top_pick" : "grid");
   };
   const closeModal = () => setModalIndex(null);
@@ -118,7 +130,7 @@ export function Results() {
     const url = buildShareUrl(answers);
     const result = await shareOrCopy(url);
     setShareStatus(result);
-    track("gift_share", { method: result });
+    track("gift_share", { method: result, ...searchShape(answers), results_count: picks.length });
     setTimeout(() => setShareStatus("idle"), 2200);
   };
 
@@ -441,7 +453,7 @@ export function Results() {
 
           {!loading && !error && hero && (
             <>
-              <div style={{ marginBottom: isMobile ? 28 : 36 }}>
+              <div ref={seenRef(hero.id)} style={{ marginBottom: isMobile ? 28 : 36 }}>
                 <Hero
                   gift={hero}
                   saved={saved.has(hero.id)}
@@ -483,6 +495,7 @@ export function Results() {
                         // The wrapper is a one-cell grid so the card still stretches to the row height.
                         <div
                           key={g.id || `gift-${i}`}
+                          ref={seenRef(g.id)}
                           className={easeIn ? "card-in" : undefined}
                           style={{ display: "grid", animationDelay: easeIn ? `${(i - animateFrom) * 45}ms` : undefined }}
                         >
