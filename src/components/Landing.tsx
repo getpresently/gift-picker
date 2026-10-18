@@ -10,6 +10,7 @@ import { FooterLinks } from "./clay/FooterLinks";
 import { TestimonialCarousel } from "./clay/TestimonialCarousel";
 import { FooterBrand } from "./clay/FooterBrand";
 import { HowSteps, type HowStep } from "./clay/HowSteps";
+import { HomeGuides } from "./HomeGuides";
 
 const HOW_STEPS: HowStep[] = [
   { n: "01", title: "Tell us about them", body: "Closeness, vibes, budget. Five questions, no account." },
@@ -129,8 +130,8 @@ export function Landing() {
                   textWrap: "pretty" as never,
                 }}
               >
-                GiftPicker is a free gift finder quiz for the indecisive and the deeply caring. Answer five quick
-                questions about the person and get a shortlist of gifts they'll actually love.
+                Five questions. A shortlist of gifts they'll actually love. Built for the indecisive and the deeply
+                caring.
               </p>
 
               <div style={{ display: "flex", gap: 12, marginTop: 28, flexWrap: "wrap" }}>
@@ -248,7 +249,7 @@ export function Landing() {
                   marginBottom: 18,
                 }}
               >
-                Curated from 300+ brands · including
+                Curated from 600+ brands · including
               </div>
               {/* 6×2 grid on desktop, 3×4 on mobile, even rows, consistent
                   serif treatment so the strip reads as one cohesive band. */}
@@ -353,6 +354,8 @@ export function Landing() {
               Submit a product →
             </Pillow>
           </section>
+
+          <HomeGuides />
 
           {/* Footer */}
           <footer

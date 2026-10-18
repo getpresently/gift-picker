@@ -3,7 +3,8 @@ import {
   serveSinglePageApp,
 } from "@cloudflare/kv-asset-handler";
 import { serveAnalytics } from "./analytics.js";
-import { APPS_SCRIPT_URL } from "./config.js";
+import { APPS_SCRIPT_URL, GIFT_PATH, GIFTS_KEY } from "./config.js";
+import { POSTS, findPost, formatPostDate, parseInline, postShareImage, postsFeaturing, postTitleTag, relatedPosts, segmentHref } from "../src/data/posts.ts";
 
 /**
  * The DEBUG flag will do two things that help during development:
@@ -22,7 +23,6 @@ const DEBUG = false;
 const GIFTS_ENDPOINT = `${APPS_SCRIPT_URL}?tab=Gifts`;
 
 const SITE_ORIGIN = "https://giftpicker.io";
-const GIFTS_KEY = "gifts:live:v1";
 const SITEMAP_KEY = "sitemap:xml:v1";
 // Full live rows for the quiz results page, served at /api/gifts.
 const FULL_KEY = "gifts:full:v1";
@@ -67,7 +67,7 @@ async function handleEvent(event) {
     return Response.redirect(`${SITE_ORIGIN}/${url.search}`, 301);
   }
 
-  // Dynamic sitemap: /, /quiz, plus one URL per live gift.
+  // Dynamic sitemap: /, /brands, the blog, plus one URL per live gift.
   if (url.pathname === "/sitemap.xml") {
     return serveSitemap(event);
   }
@@ -114,11 +114,22 @@ async function handleEvent(event) {
     // title/meta/OG/JSON-LD and a static content block so the URL is
     // fully indexable by crawlers that don't execute JavaScript. Any
     // failure falls back to the untouched SPA shell.
-    const giftMatch = url.pathname.match(/^\/gift\/(r\d+)\/?$/);
+    const giftMatch = url.pathname.match(GIFT_PATH);
     if (giftMatch) {
       try {
         const rewritten = await prerenderGiftPage(event, response, giftMatch[1]);
         if (rewritten) response = rewritten;
+      } catch (e) {
+        // fall through with the plain SPA shell
+      }
+    }
+
+    // Blog index and posts: same idea, from the post data in src/data/posts.ts.
+    // An unknown slug gets the SPA shell (React shows "not found") with a 404.
+    const blogMatch = url.pathname.match(/^\/blog(?:\/([^/]+))?\/?$/);
+    if (blogMatch) {
+      try {
+        response = await prerenderBlog(event, response, blogMatch[1]);
       } catch (e) {
         // fall through with the plain SPA shell
       }
@@ -351,8 +362,8 @@ async function prerenderGiftPage(event, response, giftId) {
 		<h1 style="font-size:36px;line-height:1.1;margin:0 0 12px;">${name}</h1>
 		${label ? `<p style="font-size:20px;margin:0 0 12px;">${escapeHtml(label)}</p>` : ""}
 		${desc ? `<p>${desc}</p>` : ""}
-		<p><a href="${buyLink}" rel="sponsored noopener" style="color:#C4477E;">Buy this gift</a></p>
-		<p>This is a hand-curated gift pick on <a href="${SITE_ORIGIN}/" style="color:#C4477E;">GiftPicker</a>, a free gift finder quiz that recommends genuinely good gifts from 300+ brands. <a href="${SITE_ORIGIN}/quiz" style="color:#C4477E;">Take the quiz</a> to get picks tailored to your recipient.</p>
+		<p><a href="${buyLink}" rel="sponsored noopener" style="color:#C4477E;">Buy this gift</a></p>${featuredInHtml(giftId)}
+		<p>This is a hand-curated gift pick on <a href="${SITE_ORIGIN}/" style="color:#C4477E;">GiftPicker</a>, a free 60-second gift finder quiz that recommends genuinely good gifts from 600+ brands. <a href="${SITE_ORIGIN}/quiz" style="color:#C4477E;">Take the quiz</a> to get picks tailored to your recipient.</p>
 		<p style="font-size:12px;color:#8a7a72;">As an Amazon Associate, GiftPicker earns from qualifying purchases.</p>
 	</div>`;
 
@@ -365,6 +376,16 @@ async function prerenderGiftPage(event, response, giftId) {
     status: 200,
     headers: response.headers,
   });
+}
+
+/** "Featured in" links to the blog posts that recommend a gift (empty when none do). */
+function featuredInHtml(giftId) {
+  const posts = postsFeaturing(giftId);
+  if (!posts.length) return "";
+  const links = posts
+    .map((p) => `<a href="${SITE_ORIGIN}/blog/${p.slug}" style="color:#C4477E;">${escapeHtml(p.title)}</a>`)
+    .join(", ");
+  return `\n\t\t<p>Featured in: ${links}</p>`;
 }
 
 function replaceBetween(html, startMarker, endMarker, replacement) {
@@ -426,7 +447,7 @@ async function prerenderStaticPage(response, path, page) {
 	<div style="max-width:720px;margin:0 auto;padding:48px 24px;font-family:Geist,system-ui,sans-serif;color:#231410;background:#FBF1E1;line-height:1.6;">
 		<h1 style="font-size:36px;line-height:1.1;margin:0 0 12px;">${escapeHtml(page.title.split(" · ")[0])}</h1>
 		<p>${escapeHtml(page.body)}</p>
-		<p><a href="${SITE_ORIGIN}/" style="color:#C4477E;">GiftPicker</a> is a free gift finder quiz with hand-curated picks from 300+ brands.</p>
+		<p><a href="${SITE_ORIGIN}/" style="color:#C4477E;">GiftPicker</a> is a free 60-second gift finder quiz with hand-curated picks from 600+ brands.</p>
 	</div>`;
     out = replaceBetween(out, "<!--gp-static-->", "<!--/gp-static-->", staticBlock);
   }
@@ -435,18 +456,22 @@ async function prerenderStaticPage(response, path, page) {
 }
 
 function buildSitemap(rows) {
-  const urls = [`${SITE_ORIGIN}/`, `${SITE_ORIGIN}/brands`].concat(
-    (rows || []).map((g) => `${SITE_ORIGIN}/gift/${g.row_id}`)
-  );
+  const postDate = (p) => p.updated || p.published;
+  const urls = [{ loc: `${SITE_ORIGIN}/` }, { loc: `${SITE_ORIGIN}/brands` }]
+    .concat(POSTS.length ? [{ loc: `${SITE_ORIGIN}/blog`, lastmod: POSTS.map(postDate).sort().pop() }] : [])
+    .concat(POSTS.map((p) => ({ loc: `${SITE_ORIGIN}/blog/${p.slug}`, lastmod: postDate(p) })))
+    .concat((rows || []).map((g) => ({ loc: `${SITE_ORIGIN}/gift/${g.row_id}` })));
   return (
     `<?xml version="1.0" encoding="UTF-8"?>\n` +
     `<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n` +
-    urls.map((u) => `  <url><loc>${escapeHtml(u)}</loc></url>`).join("\n") +
+    urls
+      .map((u) => `  <url><loc>${escapeHtml(u.loc)}</loc>${u.lastmod ? `<lastmod>${u.lastmod}</lastmod>` : ""}</url>`)
+      .join("\n") +
     `\n</urlset>\n`
   );
 }
 
-/** /sitemap.xml: static routes + one entry per live gift, prebuilt in KV. */
+/** /sitemap.xml: static routes, the blog, and one entry per live gift, prebuilt in KV. */
 async function serveSitemap(event) {
   let body = null;
   try {
@@ -459,4 +484,226 @@ async function serveSitemap(event) {
       "Cache-Control": "public, max-age=3600",
     },
   });
+}
+
+/**
+ * Blog: /blog and /blog/:slug get their own title, meta, canonical, OG tags,
+ * JSON-LD, and a static copy of the page for crawlers, built from the post
+ * data in src/data/posts.ts (the same file the React pages read).
+ */
+
+const BLOG_TITLE = "Gift guides · GiftPicker";
+const BLOG_DESCRIPTION =
+  "Gift guides from GiftPicker: practical advice for choosing gifts for coworkers, partners, family, and friends, with picks from our hand-curated catalog.";
+const DEFAULT_OG_IMAGE = `${SITE_ORIGIN}/og-image.png?v=20261003`;
+const ORG = {
+  "@type": "Organization",
+  name: "GiftPicker",
+  url: `${SITE_ORIGIN}/`,
+  logo: { "@type": "ImageObject", url: `${SITE_ORIGIN}/logo512.png` },
+};
+const STATIC_WRAP =
+  'style="max-width:720px;margin:0 auto;padding:48px 24px;font-family:Geist,system-ui,sans-serif;color:#231410;background:#FBF1E1;line-height:1.6;"';
+const LINK_STYLE = 'style="color:#C4477E;"';
+
+/** JSON for a <script> tag; "<" is escaped so text can never close the tag. */
+function jsonLdScript(data) {
+  return `<script type="application/ld+json">${JSON.stringify(data).replace(/</g, "\\u003c")}</script>`;
+}
+
+/** Several schema.org nodes as one JSON-LD graph. */
+function jsonLdGraph(nodes) {
+  return jsonLdScript({ "@context": "https://schema.org", "@graph": nodes });
+}
+
+function breadcrumbs(items) {
+  return {
+    "@type": "BreadcrumbList",
+    itemListElement: items.map(([name, item], i) => ({ "@type": "ListItem", position: i + 1, name, item })),
+  };
+}
+
+function blogMetaBlock({ title, description, url, type, image = DEFAULT_OG_IMAGE, imageAlt, extra = "", jsonLd }) {
+  const t = escapeHtml(title);
+  const d = escapeHtml(description);
+  const alt = escapeHtml(imageAlt || title);
+  return `
+	<meta name="description" content="${d}"/>
+	<link rel="canonical" href="${url}"/>
+	<meta name="robots" content="index, follow, max-image-preview:large"/>
+	<meta property="og:type" content="${type}"/>
+	<meta property="og:site_name" content="GiftPicker"/>
+	<meta property="og:title" content="${t}"/>
+	<meta property="og:description" content="${d}"/>
+	<meta property="og:url" content="${url}"/>
+	<meta property="og:image" content="${image}"/>
+	<meta property="og:image:width" content="1200"/>
+	<meta property="og:image:height" content="630"/>
+	<meta property="og:image:alt" content="${alt}"/>${extra}
+	<meta name="twitter:card" content="summary_large_image"/>
+	<meta name="twitter:title" content="${t}"/>
+	<meta name="twitter:description" content="${d}"/>
+	<meta name="twitter:image" content="${image}"/>
+	<meta name="twitter:image:alt" content="${alt}"/>
+	${jsonLdGraph(jsonLd)}`;
+}
+
+/**
+ * Post text to HTML. Gift links point at the gift page while the gift is live
+ * (`live` is null when the catalog couldn't be read, and then links stay).
+ */
+function inlineHtml(text, live) {
+  return parseInline(text)
+    .map((s) => {
+      const target = segmentHref(s, live);
+      if (!target) return escapeHtml(s.text);
+      const href = target.startsWith("/") ? `${SITE_ORIGIN}${target}` : target;
+      return `<a href="${escapeHtml(href)}" ${LINK_STYLE}>${escapeHtml(s.text)}</a>`;
+    })
+    .join("");
+}
+
+function withPage(html, title, metaBlock, staticBlock) {
+  let out = replaceBetween(html, "<!--gp-meta-->", "<!--/gp-meta-->", metaBlock);
+  if (staticBlock) out = replaceBetween(out, "<!--gp-static-->", "<!--/gp-static-->", staticBlock);
+  return out.replace(/<title>[^<]*<\/title>/, `<title>${escapeHtml(title)}</title>`);
+}
+
+function blogIndexHtml(html) {
+  const url = `${SITE_ORIGIN}/blog`;
+  const blog = {
+    "@type": "Blog",
+    "@id": `${url}#blog`,
+    name: "GiftPicker gift guides",
+    description: BLOG_DESCRIPTION,
+    url,
+    publisher: ORG,
+    blogPost: POSTS.map((p) => ({
+      "@type": "BlogPosting",
+      headline: p.title,
+      description: p.description,
+      url: `${url}/${p.slug}`,
+      datePublished: p.published,
+      dateModified: p.updated || p.published,
+      image: `${SITE_ORIGIN}${postShareImage(p)}`,
+    })),
+  };
+  const jsonLd = [blog, breadcrumbs([["Home", `${SITE_ORIGIN}/`], ["Gift guides", url]])];
+  const items = POSTS.map(
+    (p) => `
+			<li style="margin:0 0 20px;"><a href="${url}/${p.slug}" ${LINK_STYLE}>${escapeHtml(p.title)}</a><br/>
+			<span style="font-size:14px;color:#8a7a72;">${formatPostDate(p.published)}</span><br/>${escapeHtml(p.description)}</li>`
+  ).join("");
+  const staticBlock = `
+	<div ${STATIC_WRAP}>
+		<nav aria-label="Breadcrumb" style="font-size:14px;margin:0 0 16px;"><a href="${SITE_ORIGIN}/" ${LINK_STYLE}>Home</a> › Gift guides</nav>
+		<h1 style="font-size:40px;line-height:1.1;margin:0 0 12px;">Gift guides</h1>
+		<p>Practical advice for choosing a gift, with picks from the GiftPicker catalog.</p>
+		<ul style="padding-left:20px;">${items}
+		</ul>
+		<p><a href="${SITE_ORIGIN}/quiz" ${LINK_STYLE}>Take the GiftPicker quiz</a> to get gift picks for the person you have in mind.</p>
+	</div>`;
+  return withPage(html, BLOG_TITLE, blogMetaBlock({ title: BLOG_TITLE, description: BLOG_DESCRIPTION, url, type: "website", jsonLd }), staticBlock);
+}
+
+function blogPostHtml(html, post, gifts) {
+  const url = `${SITE_ORIGIN}/blog/${post.slug}`;
+  const title = postTitleTag(post);
+  const modified = post.updated || post.published;
+  const image = `${SITE_ORIGIN}${postShareImage(post)}`;
+  const imageAlt = `${post.title}: a GiftPicker gift guide, with photos of gifts it recommends`;
+  const byId = gifts ? new Map(gifts.map((g) => [g.row_id, g])) : null;
+  const live = byId ? new Set(byId.keys()) : null;
+
+  const body = post.body
+    .map((b) => {
+      if (b.kind === "h2") return `<h2 style="font-size:26px;line-height:1.2;margin:32px 0 8px;">${escapeHtml(b.text)}</h2>`;
+      if (b.kind === "p") return `<p>${inlineHtml(b.text, live)}</p>`;
+      if (b.kind === "list") return `<ul>${b.items.map((item) => `<li>${inlineHtml(item, live)}</li>`).join("")}</ul>`;
+      // Gift rows need the catalog for names and prices; without it the prose still links each gift.
+      const rows = byId ? b.ids.map((id) => byId.get(id)).filter(Boolean) : [];
+      if (!rows.length) return "";
+      const lis = rows.map((g) => {
+        const label = priceLabel(g);
+        return `<li><a href="${SITE_ORIGIN}/gift/${escapeHtml(g.row_id)}" ${LINK_STYLE}>${escapeHtml(g.Gift)}</a>${g.Brand ? ` by ${escapeHtml(g.Brand)}` : ""}${label ? `, ${escapeHtml(label)}` : ""}</li>`;
+      });
+      return `<ul>${lis.join("")}</ul>`;
+    })
+    .join("\n\t\t\t");
+
+  // The gifts the post links to that are live right now, in reading order.
+  const linked = byId
+    ? [...new Set(post.body.flatMap((b) => (b.kind === "gifts" ? b.ids : [])))].map((id) => byId.get(id)).filter(Boolean)
+    : [];
+  const jsonLd = [
+    {
+      "@type": "BlogPosting",
+      "@id": `${url}#article`,
+      headline: post.title,
+      description: post.description,
+      image: [image],
+      datePublished: post.published,
+      dateModified: modified,
+      author: { "@type": "Organization", name: "GiftPicker", url: `${SITE_ORIGIN}/` },
+      publisher: ORG,
+      mainEntityOfPage: { "@type": "WebPage", "@id": url },
+      isPartOf: { "@type": "Blog", "@id": `${SITE_ORIGIN}/blog#blog`, name: "GiftPicker gift guides" },
+      url,
+    },
+    breadcrumbs([["Home", `${SITE_ORIGIN}/`], ["Gift guides", `${SITE_ORIGIN}/blog`], [post.title, url]]),
+  ];
+  if (linked.length) {
+    jsonLd.push({
+      "@type": "ItemList",
+      name: `Gifts in "${post.title}"`,
+      numberOfItems: linked.length,
+      itemListElement: linked.map((g, i) => ({
+        "@type": "ListItem",
+        position: i + 1,
+        url: `${SITE_ORIGIN}/gift/${g.row_id}`,
+        name: g.Brand ? `${g.Gift} by ${g.Brand}` : String(g.Gift),
+      })),
+    });
+  }
+  const related = relatedPosts(post)
+    .map((p) => `<li><a href="${SITE_ORIGIN}/blog/${p.slug}" ${LINK_STYLE}>${escapeHtml(p.title)}</a></li>`)
+    .join("");
+  const extra = `
+	<meta property="article:published_time" content="${post.published}"/>
+	<meta property="article:modified_time" content="${modified}"/>`;
+  const staticBlock = `
+	<div ${STATIC_WRAP}>
+		<nav aria-label="Breadcrumb" style="font-size:14px;margin:0 0 16px;"><a href="${SITE_ORIGIN}/" ${LINK_STYLE}>Home</a> › <a href="${SITE_ORIGIN}/blog" ${LINK_STYLE}>Gift guides</a></nav>
+		<article>
+			<h1 style="font-size:36px;line-height:1.1;margin:0 0 12px;">${escapeHtml(post.title)}</h1>
+			<p style="font-size:14px;color:#8a7a72;">By GiftPicker · <time datetime="${post.published}">${formatPostDate(post.published)}</time></p>
+			${post.intro.map((p) => `<p>${inlineHtml(p, live)}</p>`).join("\n\t\t\t")}
+			${body}
+			<p>${escapeHtml(post.cta)} <a href="${SITE_ORIGIN}/quiz" ${LINK_STYLE}>Take the GiftPicker quiz</a>.</p>
+		</article>
+		<h2 style="font-size:22px;margin:32px 0 8px;">More gift guides</h2>
+		<ul>${related}</ul>
+		<p style="font-size:12px;color:#8a7a72;">As an Amazon Associate, GiftPicker earns from qualifying purchases.</p>
+	</div>`;
+  return withPage(html, title, blogMetaBlock({ title, description: post.description, url, type: "article", image, imageAlt, extra, jsonLd }), staticBlock);
+}
+
+async function prerenderBlog(event, response, slug) {
+  const post = slug ? findPost(slug) : null;
+  // Read the catalog before the body, so nothing can fail after the body is consumed.
+  const gifts = post ? await loadGifts(event) : null;
+  const html = await response.text();
+  let out = html;
+  let status = response.status;
+  try {
+    if (!slug) out = blogIndexHtml(html);
+    else if (post) out = blogPostHtml(html, post, gifts);
+    else {
+      status = 404;
+      out = withPage(html, "Article not found · GiftPicker", `\n\t<meta name="robots" content="noindex"/>`);
+    }
+  } catch (e) {
+    out = html;
+  }
+  return new Response(out, { status, headers: response.headers });
 }

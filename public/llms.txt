@@ -1,6 +1,6 @@
 # GiftPicker
 
-> GiftPicker (giftpicker.io) is a free gift finder quiz by Presently. Users answer five questions about the recipient (relationship and age, occasion, interests, vibe, budget) and receive ranked, personalized gift picks from a hand-curated catalog of more than 500 gifts from 300+ brands, with direct buy links to the brand's site or Amazon. No account required.
+> GiftPicker (giftpicker.io) is a free 60-second gift finder quiz by Presently. Users answer five questions about the recipient (relationship and age, occasion, interests, vibe, budget) and receive ranked, personalized gift picks from a hand-curated catalog of more than 500 gifts from 600+ brands, with direct buy links to the brand's site or Amazon. No account required.
 
 ## What it does
 
@@ -10,7 +10,7 @@
 - Vibes: Fun, Practical, Sentimental, Luxurious.
 - Every gift in the catalog is hand-curated by the GiftPicker team, then matched to the quiz answers by a weighted scoring algorithm (interests weighted heaviest, then relationship, then budget fit, age fit, and vibe, with occasion adjustments). Only strong matches are shown, scored 0-100.
 - Results pages can be shared via URL; the link reproduces the same picks.
-- Gifts are hand-curated from 300+ brands including Apple, Lululemon, Patagonia, Pottery Barn, Anthropologie, Peloton, Aesop, Le Creuset, Diptyque, Le Labo, Smeg, and Bose.
+- Gifts are hand-curated from 600+ brands including Apple, Lululemon, Patagonia, Pottery Barn, Anthropologie, Peloton, Aesop, Le Creuset, Diptyque, Le Labo, Smeg, and Bose.
 
 ## Gift pages
 
@@ -21,7 +21,20 @@ Every gift has a permanent, indexable page at https://giftpicker.io/gift/{id} (m
 - [Home](https://giftpicker.io/): product overview and quiz entry point.
 - [Quiz](https://giftpicker.io/quiz): the five-question gift finder quiz.
 - [For brands](https://giftpicker.io/brands): how brands submit a product for free editorial review or request a sponsored placement. Sponsored gifts pass the same review, only appear in results they match, and are always labeled.
-- [Sitemap](https://giftpicker.io/sitemap.xml): every indexable page, meaning the home page and every live gift page.
+- [Gift guides](https://giftpicker.io/blog): the GiftPicker blog, practical gift guides that link to the gifts they recommend.
+- [Sitemap](https://giftpicker.io/sitemap.xml): every indexable page, meaning the home page, the blog and each post, and every live gift page.
+
+## Gift guides
+
+Each guide is a full article with sections, plain-text ideas, and links to the gift pages it recommends, plus BlogPosting, BreadcrumbList, and ItemList structured data.
+
+- [How to choose a gift by love language](https://giftpicker.io/blog/how-to-choose-a-gift-by-love-language): Learn the everyday clues that show which love language someone speaks, then find gift ideas for quality time, words, acts of service, touch, and gifts.
+- [Just-because gifts for your partner](https://giftpicker.io/blog/just-because-gifts-for-your-partner): Surprise gifts for your partner for no reason at all: ideas for a night in, a night out, a little pampering, sentimental keepsakes, and small treats.
+- [Gifts for Mom and Dad, from morning coffee to lights out](https://giftpicker.io/blog/gifts-for-mom-and-dad-from-morning-to-night): A short list of gifts for Mom and Dad: a better morning coffee, dinners with a night off, weekend trips, a way to stay close, and a family video montage.
+- [Gifts for your brother or sister, from game night to their first apartment](https://giftpicker.io/blog/gifts-for-your-brother-or-sister): Gift ideas for every kind of sibling, from the game night champion to the one who just moved into their first place, plus a few ideas that cost nothing.
+- [How much to spend on a coworker gift, with picks at every price](https://giftpicker.io/blog/how-much-to-spend-on-a-coworker-gift): Budget guidance for coworker gifts from you or the whole team, with picks for birthdays, promotions, weddings, new babies, farewells, and hard times.
+- [What to send someone who is sick, recovering, or grieving](https://giftpicker.io/blog/what-to-send-someone-who-is-sick-or-grieving): Thoughtful, low-pressure gifts for a friend, relative, or colleague who is ill, recovering, or grieving a person or a pet, plus free ways to help.
+- [Gifts for the man who says he doesn't need anything](https://giftpicker.io/blog/gifts-for-men-who-say-they-dont-need-anything): Four ways to shop for a man who already owns what he needs: an experience, an everyday upgrade, something he'll use up, or a new hobby.
 
 Note: /results pages are per-visitor quiz output and are not meant to be indexed or cited as a canonical source. Use the gift pages above instead.
 

@@ -42,4 +42,7 @@ export const CHANGES: SiteChange[] = [
   { date: "2026-10-17", title: "Gardening & Plants interest added" },
   { date: "2026-10-17", title: "Homepage \"How it works\" steps restyled as cream cards with coral numbers" },
   { date: "2026-10-17", title: "Twin gifts row renamed to \"Similar picks\"" },
+  { date: "2026-10-18", title: "Blog launched with seven gift guides, a Blog link in the header, a Gift guides row on the homepage, and Featured in links on gift pages" },
+  { date: "2026-10-18", title: "Brand count updated to 600+" },
+  { date: "2026-10-18", title: "SEO: page title, search descriptions, and footer name the free 60-second gift finder quiz; related gifts became crawlable links" },
 ];

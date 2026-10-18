@@ -144,7 +144,7 @@ export function BrandsPage() {
             </h1>
             <p style={{ fontFamily: SANS, fontSize: isMobile ? 16 : 17, lineHeight: 1.6, color: "rgba(35,20,16,0.68)", margin: "18px 0 0" }}>
               Shoppers tell GiftPicker who they're buying for, the occasion, and their budget, and we match them to gifts
-              from 300+ brands.
+              from 600+ brands.
             </p>
           </div>
 

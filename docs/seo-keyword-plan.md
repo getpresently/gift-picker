@@ -40,7 +40,7 @@ Checked 17 October through web search and by fetching the top pages (a US web in
 
 ## What this branch changes
 
-- **Title:** "Free Gift Finder Quiz: Pick a Gift in a Minute · GiftPicker". It leads with the main query, carries "pick a gift", and keeps the brand.
+- **Title:** "GiftPicker: Free Gift Finder Quiz and Gift Ideas" (Dalia's pick 10/18: brand first). It leads with the main query, carries "pick a gift", and keeps the brand.
 - **Meta description:** "GiftPicker is a free gift finder quiz. Answer a few questions about the person and pick a present matched to their interests, the occasion, and your budget." It carries "gift finder quiz", "pick a present", and "interests".
 - **Open Graph and Twitter descriptions** and the image alt text drop "30-second" for "gift finder quiz".
 - **Structured data:** WebApplication gains `alternateName`, `isAccessibleForFree`, and `browserRequirements`; a WebSite block names the site "GiftPicker" with "Gift Picker" as an alternate name.

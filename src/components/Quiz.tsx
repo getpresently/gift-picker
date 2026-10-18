@@ -200,7 +200,7 @@ export function Quiz() {
       <div style={{ position: "relative", minHeight: "100vh", display: "flex", flexDirection: "column" }}>
         <AmbientGlow variant="quiz" />
 
-        <SiteHeader onLogoClick={() => { clearAnswers(); navigate("/"); }} />
+        <SiteHeader nav={false} onLogoClick={() => { clearAnswers(); navigate("/"); }} />
 
         <div
           style={{

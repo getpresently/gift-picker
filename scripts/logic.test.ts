@@ -1,7 +1,7 @@
 /**
  * Logic checks for the parts of the site that decide what a shopper sees and
  * where a Buy click goes: twins, buy links, the Treat-myself filter, interest
- * credit, and answer cleanup. Run with `npm test` (scripts/test.mjs bundles
+ * credit, answer cleanup, and the blog post data. Run with `npm test` (scripts/test.mjs bundles
  * this file with esbuild and runs it on node:test). Run it before a deploy.
  */
 import { test } from "node:test";
@@ -9,8 +9,11 @@ import assert from "node:assert/strict";
 import { foldTwins, rankGifts, scoreGift, twinSeed, twinsOf, type Gift, type RankedGift } from "../src/data/gifts";
 import { affiliateUrl, AMAZON_TAG, buyLinks, isAmazonUrl, primaryBuy } from "../src/data/affiliate";
 import { QUESTIONS, questionLabel, reconcileAnswers, type Answers } from "../src/data/questions";
-import { decodeAnswers, encodeAnswers } from "../src/data/share";
+import { buildGiftShareUrl, decodeAnswers, encodeAnswers, hasShareRef } from "../src/data/share";
+import { budgetBand, searchShape } from "../src/data/analytics";
 import { relatedGifts } from "../src/data/related";
+import { findPost, formatPostDate, isPendingGift, parseInline, PENDING_GIFTS, postGiftIds, POSTS, postsFeaturing, postShareImage, postTitleTag, relatedPosts, segmentHref } from "../src/data/posts";
+import { existsSync, readFileSync } from "node:fs";
 
 function gift(id: string, over: Partial<Gift> = {}): Gift {
   return {
@@ -207,4 +210,123 @@ test("share links round-trip and shed unknown codes", () => {
   const answers: Answers = { recipient: "partner", age: "adult", occasion: "bday", interests: ["cooking", "home"], vibe: ["fun"], budget: 150, budgetMin: 40, gender: "her" };
   assert.deepEqual(decodeAnswers(encodeAnswers(answers)), answers);
   assert.deepEqual(decodeAnswers("r=friend&a=adult&i=cooking,made-up")?.interests, ["cooking"]);
+});
+
+test("post links: gift: links go to the gift page, other links stay as written", () => {
+  assert.deepEqual(parseInline("See [the mug](gift:r293) or [this guide](/blog/x)."), [
+    { text: "See " },
+    { text: "the mug", href: "/gift/r293", giftId: "r293" },
+    { text: " or " },
+    { text: "this guide", href: "/blog/x" },
+    { text: "." },
+  ]);
+  assert.deepEqual(parseInline("No links here"), [{ text: "No links here" }]);
+});
+
+test("post dates read as the calendar day in any time zone", () => {
+  assert.equal(formatPostDate("2026-10-17"), "October 17, 2026");
+  assert.equal(formatPostDate("2027-01-02"), "January 2, 2027");
+});
+
+test("blog posts: unique slugs, sheet-style gift IDs, links to real posts, and house style", () => {
+  const slugs = POSTS.map((p) => p.slug);
+  assert.equal(new Set(slugs).size, slugs.length, "duplicate slug");
+  for (const post of POSTS) {
+    assert.match(post.slug, /^[a-z0-9]+(-[a-z0-9]+)*$/, post.slug);
+    assert.match(post.published, /^\d{4}-\d{2}-\d{2}$/, post.slug);
+    assert.ok(postGiftIds(post).length > 0, `${post.slug}: no gifts`);
+    for (const id of postGiftIds(post)) assert.match(id, /^r\d+$/, `${post.slug}: ${id}`);
+    const texts = [post.title, post.description, post.cta, ...post.intro];
+    for (const b of post.body) {
+      if (b.kind === "list") texts.push(...b.items);
+      else if (b.kind !== "gifts") texts.push(b.text);
+    }
+    for (const t of texts) {
+      assert.ok(!t.includes("\u2014"), `${post.slug}: em-dash in "${t.slice(0, 40)}"`);
+      assert.ok(!/presently/i.test(t), `${post.slug}: mentions Presently`);
+      for (const s of parseInline(t)) {
+        const blog = s.href?.match(/^\/blog\/(.+)$/);
+        if (blog) assert.ok(findPost(blog[1]), `${post.slug}: links to missing post ${blog[1]}`);
+      }
+    }
+  }
+});
+
+test("every gift in a post is both a card and a link in the text", () => {
+  for (const post of POSTS) {
+    const cards = new Set(post.body.flatMap((b) => (b.kind === "gifts" ? b.ids : [])));
+    const texts = [...post.intro];
+    for (const b of post.body) {
+      if (b.kind === "list") texts.push(...b.items);
+      else if (b.kind !== "gifts") texts.push(b.text);
+    }
+    const linked = new Set(texts.flatMap((t) => parseInline(t).flatMap((s) => (s.giftId ? [s.giftId] : []))));
+    for (const id of cards) assert.ok(linked.has(id), `${post.slug}: ${id} has a card but no link in the text`);
+    for (const id of linked) assert.ok(cards.has(id), `${post.slug}: ${id} is linked in the text but has no card`);
+  }
+});
+
+test("posts run newest first, with publish dates no later than their revision", () => {
+  for (let i = 1; i < POSTS.length; i++) assert.ok(POSTS[i - 1].published >= POSTS[i].published, "POSTS out of order");
+  for (const p of POSTS) if (p.updated) assert.ok(p.published <= p.updated, `${p.slug}: published after updated`);
+});
+
+test("a gift link reads as plain text once its gift leaves the site, and stays a link while unknown", () => {
+  const [seg] = parseInline("[mug](gift:r293)");
+  assert.equal(segmentHref(seg, new Set(["r293"])), "/gift/r293");
+  assert.equal(segmentHref(seg, new Set(["r1"])), null);
+  assert.equal(segmentHref(seg, null), "/gift/r293");
+  assert.equal(segmentHref({ text: "plain" }, null), null);
+});
+
+test("Featured in lists every post that recommends a gift, newest first", () => {
+  const id = postGiftIds(POSTS[0])[0];
+  const featured = postsFeaturing(id);
+  assert.ok(featured.includes(POSTS[0]));
+  assert.deepEqual(featured, POSTS.filter((p) => postGiftIds(p).includes(id)));
+  assert.deepEqual(postsFeaturing("r0"), []);
+});
+
+test("a pending gift links only once the live catalog has it, and every PENDING_GIFTS entry is used by a post", () => {
+  const used = new Set(POSTS.flatMap((p) => postGiftIds(p)));
+  for (const id of Object.keys(PENDING_GIFTS)) {
+    assert.match(id, /^r\d+$/, `${id} should be a sheet ID`);
+    assert.ok(used.has(id), `${id} is listed in PENDING_GIFTS but no post uses it`);
+  }
+  const id = Object.keys(PENDING_GIFTS)[0];
+  if (!id) return;
+  assert.ok(isPendingGift(id));
+  const [seg] = parseInline(`[a gift](gift:${id})`);
+  assert.equal(segmentHref(seg, null), null, "unknown catalog: pending stays plain text");
+  assert.equal(segmentHref(seg, new Set(["r1"])), null, "not approved yet: plain text");
+  assert.equal(segmentHref(seg, new Set([id])), `/gift/${id}`, "approved and live: a link, with no code change");
+});
+
+test("SEO basics: short, unique title tags and descriptions; related posts; share images; llms.txt", () => {
+  const titles = POSTS.map(postTitleTag);
+  const descriptions = POSTS.map((p) => p.description);
+  assert.equal(new Set(titles).size, titles.length, "duplicate title tag");
+  assert.equal(new Set(descriptions).size, descriptions.length, "duplicate meta description");
+  const llms = readFileSync("public/llms.txt", "utf8");
+  for (const post of POSTS) {
+    const title = postTitleTag(post);
+    assert.ok(title.length <= 60, `${post.slug}: title tag is ${title.length} characters: ${title}`);
+    assert.ok(post.description.length <= 155, `${post.slug}: description is ${post.description.length} characters`);
+    const related = relatedPosts(post);
+    assert.ok(related.length >= 2 && related.length <= 3, `${post.slug}: ${related.length} related posts`);
+    assert.ok(!related.includes(post), `${post.slug}: links to itself`);
+    for (const slug of post.related ?? []) assert.ok(findPost(slug), `${post.slug}: related post ${slug} does not exist`);
+    assert.ok(existsSync(`public${postShareImage(post)}`), `${post.slug}: no share image at public${postShareImage(post)} (run scripts/make-share-images.mjs)`);
+    assert.ok(llms.includes(`https://giftpicker.io/blog/${post.slug}`), `${post.slug}: missing from public/llms.txt`);
+  }
+});
+
+test("share events: budget bands, search shape without free text, and the gift link ref", () => {
+  assert.deepEqual([10, 49, 50, 99, 100, 249, 250, 500].map(budgetBand), ["under 50", "under 50", "50 to 99", "50 to 99", "100 to 249", "100 to 249", "250 plus", "250 plus"]);
+  assert.equal(budgetBand(undefined), undefined);
+  const shape = searchShape({ recipient: "friend", age: "adult", occasion: "other", occasionOther: "my cat's birthday", interests: ["books", "music"], budget: 75 });
+  assert.deepEqual(shape, { recipient: "friend", occasion: "other", age: "adult", interests_count: 2, budget_band: "50 to 99" });
+  assert.ok(!JSON.stringify(shape).includes("cat"), "the typed occasion never goes to GA");
+  assert.equal(buildGiftShareUrl("r12"), "/gift/r12?ref=share", "no window in node, so no origin");
+  assert.ok(hasShareRef("?ref=share") && hasShareRef("?x=1&ref=share") && !hasShareRef("?ref=producthunt") && !hasShareRef(""));
 });

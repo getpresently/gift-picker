@@ -5,6 +5,7 @@ import {
   Routes,
   useLocation,
 } from "react-router-dom";
+import { BlogIndex, BlogPostPage } from "./components/Blog";
 import { BrandsPage } from "./components/Brands";
 import { GiftPage } from "./components/GiftPage";
 import { PrivacyPage, TermsPage } from "./components/Legal";
@@ -47,6 +48,9 @@ function App(): JSX.Element {
           <Route path="/privacy" element={<PrivacyPage />} />
           <Route path="/terms" element={<TermsPage />} />
           <Route path="/brands" element={<BrandsPage />} />
+          {/* Gift guides; posts live in src/data/posts.ts and the worker prerenders both routes. */}
+          <Route path="/blog" element={<BlogIndex />} />
+          <Route path="/blog/:slug" element={<BlogPostPage />} />
           {/* Internal, password-gated catalog review tool (noindex via worker + robots). */}
           <Route path="/review" element={<Review />} />
           {/* Catch-all: any unknown route falls back to Landing. SPA fallback at the

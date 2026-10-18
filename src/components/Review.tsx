@@ -223,7 +223,7 @@ function PasswordGate({ unlock }: { unlock: UnlockState }) {
     <div style={{ background: "#FBF1E1", minHeight: "100vh", position: "relative" }}>
       <AmbientGlow variant="quiz" />
       <div style={{ position: "relative", zIndex: 1, minHeight: "100vh" }}>
-        <SiteHeader onLogoClick={() => navigate("/")} />
+        <SiteHeader nav={false} onLogoClick={() => navigate("/")} />
         <div style={{ maxWidth: 420, margin: "0 auto", padding: isMobile ? "40px 20px" : "88px 20px" }}>
           <ClaySurface tint="cream" style={{ padding: isMobile ? 22 : 32 }}>
             <div
@@ -1287,7 +1287,7 @@ function ReviewShell({ hidden = false, header, onSignOut, mobileBottom, after, c
     <div style={{ background: "#FBF1E1", minHeight: "100vh", position: "relative", display: hidden ? "none" : undefined }}>
       <div style={{ position: "relative", minHeight: "100vh" }}>
         <AmbientGlow variant="results" />
-        <SiteHeader onLogoClick={() => navigate("/")}>
+        <SiteHeader nav={false} onLogoClick={() => navigate("/")}>
           {header}
           <Pillow tone="ink" size="sm" onClick={onSignOut}>
             Sign out
