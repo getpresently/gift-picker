@@ -4,6 +4,8 @@
  * (src/data/posts.ts) must be live on the site (Status Live and Review status
  * TRUE), and each post, rendered with the real page component, must show every
  * one of those gifts as a link to its /gift/:id page and as a gift card.
+ * Gifts still waiting for a catalog row (`new-<key>` in PENDING_GIFTS) are
+ * reported as pending, not failed, and must render as plain text.
  *
  *   node scripts/check-posts.mjs
  *
@@ -29,7 +31,7 @@ await build({
       export { renderToString } from "react-dom/server";
       export { MemoryRouter } from "react-router-dom";
       export { BlogPostView } from "./src/components/Blog";
-      export { POSTS, postGiftIds } from "./src/data/posts";
+      export { POSTS, postGiftIds, isPendingGift, PENDING_GIFTS } from "./src/data/posts";
       export { adaptRow, isShownOnSite, API_ENDPOINT } from "./src/data/giftsApi";
     `,
     resolveDir: root,
@@ -79,12 +81,18 @@ const live = new Set(byId.keys());
 const esc = (s) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#x27;");
 
 let failed = 0;
+const pendingAll = new Set();
 for (const post of M.POSTS) {
   const html = M.renderToString(
     M.createElement(M.MemoryRouter, null, M.createElement(M.BlogPostView, { post, byId, loading: false, live })),
   );
   const problems = [];
-  for (const id of M.postGiftIds(post)) {
+  const pending = M.postGiftIds(post).filter(M.isPendingGift);
+  for (const id of pending) {
+    pendingAll.add(id);
+    if (html.includes(`/gift/${id}"`)) problems.push(`${id} is pending but rendered as a link`);
+  }
+  for (const id of M.postGiftIds(post).filter((id) => !M.isPendingGift(id))) {
     const gift = byId.get(id);
     if (!gift) {
       problems.push(`${id} is not live on the site`);
@@ -97,8 +105,12 @@ for (const post of M.POSTS) {
     failed++;
     console.log(`FAIL  ${post.slug}\n      ${problems.join("\n      ")}`);
   } else {
-    console.log(`ok    ${post.slug}: ${M.postGiftIds(post).length} gifts live, linked, and carded`);
+    const live = M.postGiftIds(post).length - pending.length;
+    console.log(`ok    ${post.slug}: ${live} gifts live, linked, and carded${pending.length ? `; ${pending.length} pending (${pending.join(", ")})` : ""}`);
   }
+}
+if (pendingAll.size) {
+  console.log(`\nPending catalog rows (not failures): ${[...pendingAll].map((k) => `${k} (${M.PENDING_GIFTS[k]?.name ?? "?"})`).join("; ")}`);
 }
 console.log(failed ? `\n${failed} post(s) failed` : `\nAll posts check out against ${gifts.length} live gifts`);
 process.exit(failed ? 1 : 0);

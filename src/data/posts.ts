@@ -76,12 +76,44 @@ export function formatPostDate(iso: string): string {
 }
 
 /**
+ * Gifts proposed for the catalog that have no sheet ID yet, referenced in posts
+ * as `gift:new-<key>`. They read as plain text, with no link and no card, until
+ * the row exists: then replace every `new-<key>` in this file with its rID and
+ * delete the entry. The rows themselves are in
+ * ~/Sites/gift-picker-batches/blog/batch_presently_gifts.json, whose Feedback
+ * names each placeholder key.
+ */
+export const PENDING_GIFTS: Record<string, { name: string; presentlySource: string }> = {
+  "new-sephora": { name: "Sephora Gift Card", presentlySource: "Ultimate Gift Ideas For The 5 Love Languages" },
+  "new-amazon-card": { name: "Amazon Gift Card", presentlySource: "27 Best Gift Ideas For Coworkers By Occasion; 10 Get Well Soon and Thinking of You Gifts for Coworkers" },
+  "new-starbucks": { name: "Starbucks Gift Card", presentlySource: "27 Best Gift Ideas For Coworkers By Occasion" },
+  "new-ws-card": { name: "Williams Sonoma Gift Card", presentlySource: "27 Best Gift Ideas For Coworkers By Occasion" },
+  "new-cb-card": { name: "Crate & Barrel Gift Card", presentlySource: "27 Best Gift Ideas For Coworkers By Occasion" },
+  "new-hotels-card": { name: "Hotels.com Gift Card", presentlySource: "27 Best Gift Ideas For Coworkers By Occasion" },
+  "new-wine-tasting": { name: "Cooper's Hawk Winery Gift Card (in-person wine tasting)", presentlySource: "27 Best Gift Ideas For Coworkers By Occasion (wine for a wedding)" },
+  "new-sommselect": { name: "SommSelect Wine Club Gift Membership (3 Months)", presentlySource: "27 Best Gift Ideas For Coworkers By Occasion" },
+  "new-hellofresh": { name: "HelloFresh Gift Card", presentlySource: "10 Get Well Soon and Thinking of You Gifts for Coworkers" },
+  "new-stonewall": { name: "Stonewall Kitchen Best of the Best Gift Basket (20 Items)", presentlySource: "10 Get Well Soon and Thinking of You Gifts for Coworkers" },
+  "new-teaspressa": { name: "Teaspressa Champagne Bellini Mixer Kit (18 Cubes)", presentlySource: "10 Get Well Soon and Thinking of You Gifts for Coworkers" },
+  "new-littlemarket": { name: "Prosperity Candle In Loving Memory Personalized Candle (The Little Market's maker)", presentlySource: "10 Get Well Soon and Thinking of You Gifts for Coworkers" },
+  "new-truelove": { name: "Truelove Seeds African Diaspora Collection Seed Packets and Postcards", presentlySource: "10 Get Well Soon and Thinking of You Gifts for Coworkers" },
+  "new-goldbelly": { name: "Goldbelly Monthly Restaurant Food Box Subscription (3 to 12 Months)", presentlySource: "Holiday Gifting For Your Grandparents: 6 Gifts To Help You Achieve Favorite Grandchild Status" },
+  "new-omaha": { name: "Omaha Steaks Steak Sampler (8 Steaks and Seasoning)", presentlySource: "7 Best Gift Ideas for Men Who Already Have Everything" },
+};
+
+export function isPendingGift(id: string): boolean {
+  return id.startsWith("new-");
+}
+
+/**
  * Where a text segment links, or null to show it as plain text. A gift link
  * stays a link while its gift is live; `live` is null when the catalog isn't
  * known (still loading, or it failed to load), and then every link stays.
+ * Pending gifts never link.
  */
 export function segmentHref(seg: InlineSegment, live: Set<string> | null): string | null {
   if (!seg.href) return null;
+  if (seg.giftId && isPendingGift(seg.giftId)) return null;
   if (seg.giftId && live && !live.has(seg.giftId)) return null;
   return seg.href;
 }
@@ -120,7 +152,7 @@ const ALL_POSTS: Post[] = [
     title: "How to choose a gift by love language",
     description:
       "Learn the everyday clues that show which love language someone speaks, then find gift ideas for quality time, words, acts of service, touch, and gifts.",
-    published: "2026-07-22",
+    published: "2026-10-08",
     updated: REVISED,
     intro: [
       "The idea of love languages comes from author Gary Chapman, who described five ways people tend to give and receive affection: quality time, words of affirmation, acts of service, physical touch, and receiving gifts. Most people respond to all five to some degree, though one or two usually matter more than the rest.",
@@ -195,9 +227,13 @@ const ALL_POSTS: Post[] = [
       },
       {
         kind: "p",
+        text: "A weighted blanket is about as close to a hug as a gift can get. The [Gravity Weighted Blanket](gift:r139) spreads its weight evenly across the body for that settled, held feeling, on the couch or in bed.",
+      },
+      {
+        kind: "p",
         text: "The [RENPHO Shiatsu Foot Massager](gift:r372) kneads with heat and runs from a remote, which suits someone who is on their feet all day. For a stiff lower back after long drives or desk days, the [Hyperice Venom 2](gift:r958) wraps around the waist with three heat levels and three vibration patterns, and it runs cordless for about three hours. [The Comfy](gift:r938) is an oversized wearable blanket with a sherpa lining, a deep hood, and a front pocket, made for couch nights and cold mornings.",
       },
-      { kind: "gifts", ids: ["r372", "r958", "r938"] },
+      { kind: "gifts", ids: ["r139", "r372", "r958", "r938"] },
 
       { kind: "h2", text: "For receiving gifts: something chosen with care" },
       {
@@ -208,7 +244,11 @@ const ALL_POSTS: Post[] = [
         kind: "p",
         text: "A [custom star map print](gift:r944) shows the sky over a chosen place and date, such as the night you met, along with a message of your own. The [solid walnut musical keepsake](gift:r706) is a palm-sized wind-up box that plays one tune you choose from hundreds. For someone who loves finding a package on the doorstep, a [Book of the Month membership](gift:r615) lets them pick a new hardcover or audiobook each month, so the gift keeps arriving long after the occasion.",
       },
-      { kind: "gifts", ids: ["r944", "r706", "r615"] },
+      {
+        kind: "p",
+        text: "Jewelry with a message works the same way: Little Words Project's [custom word bracelet](gift:r929) spells out any word or name you choose in handmade beads, so it carries something only the two of you understand. And if they love to browse, a [Sephora gift card](gift:new-sephora) turns into a small shopping spree on makeup, skincare, or fragrance, and it never expires.",
+      },
+      { kind: "gifts", ids: ["r944", "r706", "r615", "r929", "new-sephora"] },
 
       { kind: "h2", text: "When they speak two languages" },
       {
@@ -258,9 +298,9 @@ const ALL_POSTS: Post[] = [
       },
       {
         kind: "p",
-        text: "The [Shun Classic 8-Inch Chef's Knife](gift:r739) is handmade in Japan with a VG-MAX steel core and 68 layers of Damascus cladding, and it handles most of the chopping, slicing, and mincing in a home kitchen. The [Timex Marlin Automatic](gift:r960) reissues a 1960s design with a 21-jewel automatic movement, a green dial, and a black leather strap, and it never needs a battery. For his morning coffee or tea, the [Fellow Stagg EKG Pro](gift:r532) is a gooseneck electric kettle that heats water to the exact degree, which pour-over fans appreciate. And if he runs the grill, the [MEATER Pro](gift:r373) is a fully wireless smart probe that tracks the temperature of whatever he is cooking.",
+        text: "The [Shun Classic 8-Inch Chef's Knife](gift:r739) is handmade in Japan with a VG-MAX steel core and 68 layers of Damascus cladding, and it handles most of the chopping, slicing, and mincing in a home kitchen. The [Timex Marlin Automatic](gift:r960) reissues a 1960s design with a 21-jewel automatic movement, a green dial, and a black leather strap, and it never needs a battery. For his morning coffee or tea, the [Fellow Stagg EKG Pro](gift:r532) is a gooseneck electric kettle that heats water to the exact degree, which pour-over fans appreciate.",
       },
-      { kind: "gifts", ids: ["r739", "r960", "r532", "r373"] },
+      { kind: "gifts", ids: ["r739", "r960", "r532"] },
 
       { kind: "h2", text: "Give him something he'll use up" },
       {
@@ -269,9 +309,9 @@ const ALL_POSTS: Post[] = [
       },
       {
         kind: "p",
-        text: "The [Hot Ones 10 Pack](gift:r468) from Heatonist holds all ten craft hot sauces from a season of the Hot Ones interview show, boxed in order from mild to extreme. A man with a full beard will get real use out of the [Beardbrand Bold Fortune Grooming Set](gift:r924), which pairs beard oil, a matching cologne, and a large comb in a warm, smoky scent of leather, whiskey, saffron, and tobacco. If he runs the grill, the [Spiceology rub collection](gift:r586) gives him twelve mini jars of seasoning blends to work through, including Smoky Honey Habanero and Korean BBQ.",
+        text: "The [Hot Ones 10 Pack](gift:r468) from Heatonist holds all ten craft hot sauces from a season of the Hot Ones interview show, boxed in order from mild to extreme. A man with a full beard will get real use out of the [Beardbrand Bold Fortune Grooming Set](gift:r924), which pairs beard oil, a matching cologne, and a large comb in a warm, smoky scent of leather, whiskey, saffron, and tobacco. If he runs the grill, Omaha Steaks' [Steak Sampler](gift:new-omaha) sends eight steaks in four cuts, from T-bones to filet mignon, and the [Spiceology rub collection](gift:r586) gives him twelve mini jars of seasoning blends to try on them, including Smoky Honey Habanero and Korean BBQ.",
       },
-      { kind: "gifts", ids: ["r468", "r924", "r586"] },
+      { kind: "gifts", ids: ["r468", "r924", "new-omaha", "r586"] },
 
       { kind: "h2", text: "Hand him a new hobby" },
       {
@@ -339,9 +379,9 @@ const ALL_POSTS: Post[] = [
       },
       {
         kind: "p",
-        text: "For the coworker who can't start the day without coffee, the [Onyx Coffee Lab Blend Discovery Box](gift:r425) holds three small boxes of whole bean coffee in dark, balanced, and light roasts from the award-winning Arkansas roaster. Queen Majesty's [Hot Sauce Trinity](gift:r418) is a gift box of three small-batch New York sauces, from Jalapeño Tequila Lime to Red Habanero Black Coffee. For the office cook, Jacobsen Salt Co.'s [Sea Salt Slide Tin Trio](gift:r424) packs hand-harvested Oregon sea salt into three illustrated pocket tins, including a pinot noir infused salt.",
+        text: "For the coworker who can't go a day without their latte, a [Starbucks gift card](gift:new-starbucks) in any amount from $5 to $100 loads straight into the Starbucks app. Queen Majesty's [Hot Sauce Trinity](gift:r418) is a gift box of three small-batch New York sauces, from Jalapeño Tequila Lime to Red Habanero Black Coffee. For the office cook, Jacobsen Salt Co.'s [Sea Salt Slide Tin Trio](gift:r424) packs hand-harvested Oregon sea salt into three illustrated pocket tins, including a pinot noir infused salt.",
       },
-      { kind: "gifts", ids: ["r425", "r418", "r424"] },
+      { kind: "gifts", ids: ["new-starbucks", "r418", "r424"] },
 
       { kind: "h2", text: "$25 to $60: a close colleague or a bigger milestone" },
       {
@@ -361,19 +401,19 @@ const ALL_POSTS: Post[] = [
       },
       {
         kind: "p",
-        text: "For a promotion or a new role, a year of [MasterClass](gift:r362) gives them online classes from experts across every field, a good fit for someone who loves to learn. Leatherology's [monogrammed leather valet tray](gift:r497) gives their keys, watch, and phone a home on the desk, debossed or hand-painted with their initials.",
+        text: "For a promotion or a new role, a year of [MasterClass](gift:r362) gives them online classes from experts across every field, a good fit for someone who loves to learn. Smythson's [Panama weekly journal](gift:r662) is the pocket diary the London stationer introduced in 1908, bound in navy lambskin with week-to-view pages for the year ahead, a polished way to start a new job.",
       },
-      { kind: "gifts", ids: ["r362", "r497"] },
+      { kind: "gifts", ids: ["r362", "r662"] },
       {
         kind: "p",
-        text: "For a coworker's wedding, think about the home the couple is building together. Crate & Barrel's [36-inch cheese board](gift:r12) is a long collage of acacia wood made for hosting, and Williams-Sonoma's [monogrammed kitchen tool set](gift:r191) puts their initials on the tools they will reach for every day. If they enjoy a good bottle, a [virtual wine tasting package](gift:r313) from Priority Wine Pass ships wines from a small winery along with a live tasting session they can turn into a date night.",
+        text: "For a coworker's wedding, a gift card lets the couple choose what their new home needs. A [Williams Sonoma gift card](gift:new-ws-card) covers cookware, cutlery, and tabletop, and it also works at Pottery Barn and West Elm, while a [Crate & Barrel gift card](gift:new-cb-card) goes toward dinnerware, glassware, and furniture at Crate & Barrel and CB2. If they enjoy a good bottle, a [Cooper's Hawk Winery gift card](gift:new-wine-tasting) pays for a guided tasting of seven or eight wines in the tasting room of any of its 78 winery restaurants, with dinner after if they like; check for a location near them first.",
       },
-      { kind: "gifts", ids: ["r12", "r191", "r313"] },
+      { kind: "gifts", ids: ["new-ws-card", "new-cb-card", "new-wine-tasting"] },
       {
         kind: "p",
-        text: "The first months with a new baby leave very little time for grocery runs. A [Farm Fresh To You produce box](gift:r180) brings seasonal fruit and vegetables to the door, and an [Uber and Uber Eats gift card](gift:r135), in whatever amount the group collects, covers takeout on the nights when cooking is out of the question.",
+        text: "The first months with a new baby leave very little time for cooking. An [Uber and Uber Eats gift card](gift:r135), in whatever amount the group collects, covers takeout on the nights when making dinner is out of the question.",
       },
-      { kind: "gifts", ids: ["r180", "r135"] },
+      { kind: "gifts", ids: ["r135"] },
       {
         kind: "p",
         text: "For a farewell, help them hold on to the good memories and rest up before the next chapter. The Fujifilm [smartphone photo printer](gift:r274) prints credit-card-size photos from a phone in seconds, which comes in handy at the goodbye party and on whatever comes next. A [ResortPass gift card](gift:r1005) books a day at one of more than 2,700 hotel pools and spas, so they can take a real break between jobs.",
@@ -381,9 +421,9 @@ const ALL_POSTS: Post[] = [
       { kind: "gifts", ids: ["r274", "r1005"] },
       {
         kind: "p",
-        text: "When a colleague is going through a hard time, a team gift is a quiet way to show up for them. Spoonful of Comfort's [care package](gift:r600) brings two quarts of soup, six rolls, six cookies, a keepsake ladle, and a card with your message. A year of [Calm](gift:r601), the meditation and sleep app, can arrive by email on the day you choose, and the [Serenity Gift Box](gift:r263) from Loved and Found gathers natural spa products for a slow evening at home.",
+        text: "When a colleague is going through a hard time, a care package is a quiet way to show up for them. Spoonful of Comfort's [care package](gift:r600) brings two quarts of soup, six rolls, six cookies, a keepsake ladle, and a card with your message, and the [Serenity Gift Box](gift:r263) from Loved and Found gathers natural spa products for a slow evening at home. For a coworker who has lost someone, [It's OK That You're Not OK](gift:r772) by psychotherapist Megan Devine speaks to grieving people directly, with practical help for the hardest weeks.",
       },
-      { kind: "gifts", ids: ["r600", "r601", "r263"] },
+      { kind: "gifts", ids: ["r600", "r263", "r772"] },
 
       { kind: "h2", text: "$150 and up: a gift from the whole team" },
       {
@@ -397,19 +437,19 @@ const ALL_POSTS: Post[] = [
       { kind: "gifts", ids: ["r39", "r595"] },
       {
         kind: "p",
-        text: "For a wedding or a long-awaited retirement trip, Away's [Carry-On Suitcase](gift:r571) has a hard shell, spinner wheels, and an interior compression system, and an [Airbnb gift card](gift:r309) goes toward the stay itself, whether that is a honeymoon or a farewell adventure.",
+        text: "For a wedding or a long-awaited retirement trip, Away's [Carry-On Suitcase](gift:r571) has a hard shell, spinner wheels, and an interior compression system. A [Hotels.com gift card](gift:new-hotels-card) never expires, so the couple can save it for the honeymoon, and an [Airbnb gift card](gift:r309) works the same way for a farewell adventure. For a couple who loves wine, SommSelect's [three-month wine club membership](gift:new-sommselect) sends bottles chosen by a team led by a Master Sommelier, each with tasting notes and food pairings.",
       },
-      { kind: "gifts", ids: ["r571", "r309"] },
+      { kind: "gifts", ids: ["r571", "new-hotels-card", "r309", "new-sommselect"] },
       {
         kind: "p",
-        text: "For a milestone birthday or a big promotion, a splurge from the team goes a long way. Sony's [WH-1000XM6 headphones](gift:r596) block out a noisy office with adaptive noise canceling and up to 30 hours of battery. The [LARQ PureVis pitcher](gift:r597) filters water and treats it with UV-C light, a nice upgrade for anyone serious about staying hydrated. Plant lovers will be thrilled with The Sill's [Best Sellers Duo](gift:r598), a monstera and a snake plant that arrive potted in ceramic planters. And for the coffee lover who drinks espresso all day, the [Breville Barista Pro](gift:r50) is a home espresso machine with a built-in grinder.",
+        text: "For a milestone birthday or a big promotion, a splurge from the team goes a long way. Sony's [WH-1000XM6 headphones](gift:r596) block out a noisy office with adaptive noise canceling and up to 30 hours of battery. Plant lovers will be thrilled with The Sill's [Best Sellers Duo](gift:r598), a monstera and a snake plant that arrive potted in ceramic planters. And for the coworker who spends weekends outdoors, the [GoPro HERO12 Black](gift:r369) is a rugged, waterproof action camera that records stabilized video of every hike, ride, and trip.",
       },
-      { kind: "gifts", ids: ["r596", "r597", "r598", "r50"] },
+      { kind: "gifts", ids: ["r596", "r598", "r369"] },
       {
         kind: "p",
-        text: "If the team can't settle on an object, cash in a card signed by everyone is always welcome, especially at a farewell. And if they would rather do some good, a [TisBest Charity Gift Card](gift:r769) lets the recipient give the money to any of about 1.8 million US charities.",
+        text: "If the team can't settle on an object, cash in a card signed by everyone is always welcome, especially at a farewell, and an [Amazon gift card](gift:new-amazon-card) works almost as well. If they would rather do some good, a [TisBest Charity Gift Card](gift:r769) lets the recipient give the money to any of about 1.8 million US charities.",
       },
-      { kind: "gifts", ids: ["r769"] },
+      { kind: "gifts", ids: ["new-amazon-card", "r769"] },
 
       { kind: "h2", text: "Keeping it comfortable" },
       {
@@ -467,16 +507,16 @@ const ALL_POSTS: Post[] = [
       },
       {
         kind: "p",
-        text: "Cotopaxi's [Allpa 35L Travel Pack](gift:r569) is a carry-on backpack that opens like a suitcase, with zippered mesh compartments and shoulder straps that tuck away. For long flights and train rides, the [Trtl travel pillow](gift:r970) wraps around the neck like a soft fleece scarf, with an internal support that holds the head upright, and it weighs less than a phone.",
+        text: "Cotopaxi's [Allpa 35L Travel Pack](gift:r569) is a carry-on backpack that opens like a suitcase, with zippered mesh compartments and shoulder straps that tuck away. For long flights and train rides, the [Trtl travel pillow](gift:r970) wraps around the neck like a soft fleece scarf, with an internal support that holds the head upright, and it weighs less than a phone. To keep track of it all, a [scratch-off travel map](gift:r261) lets them reveal each country they have visited on a 23-by-33-inch world map poster.",
       },
-      { kind: "gifts", ids: ["r569", "r970"] },
+      { kind: "gifts", ids: ["r569", "r970", "r261"] },
 
       { kind: "h2", text: "For the youngest in the family" },
       {
         kind: "p",
-        text: "Shopping for a younger sibling is a chance to be the cool one. The [Camp Snap](gift:r454) is a pocket digital camera with no screen and six film-style filters, so every photo stays a surprise until it is uploaded. For a teen who wants a story to tell at school, an [iFLY gift card](gift:r1051) pays for indoor skydiving, where first-time flyers get training from a certified instructor and then fly twice with one-on-one coaching.",
+        text: "Shopping for a younger sibling is a chance to be the cool one. The [Camp Snap](gift:r454) is a pocket digital camera with no screen and six film-style filters, so every photo stays a surprise until it is uploaded. For a teen who wants a story to tell at school, an [iFLY gift card](gift:r1051) pays for indoor skydiving, where first-time flyers get training from a certified instructor and then fly twice with one-on-one coaching. And the [Nintendo Switch Lite](gift:r205) is a compact handheld console made for playing Switch games anywhere, which makes the next long family drive go a lot faster.",
       },
-      { kind: "gifts", ids: ["r454", "r1051"] },
+      { kind: "gifts", ids: ["r454", "r1051", "r205"] },
 
       { kind: "h2", text: "For the one who remembers everything you did as kids" },
       {
@@ -485,9 +525,9 @@ const ALL_POSTS: Post[] = [
       },
       {
         kind: "p",
-        text: "The [RetroViewer with a custom photo reel](gift:r733) pairs a classic stereo viewer with a reel of seven of your own photos, made by a company founded by a former View-Master employee. Shutterfly's [custom photo playing cards](gift:r992) put a family picture on the back of every card, which makes the next card game at the holidays a lot more personal.",
+        text: "The [RetroViewer with a custom photo reel](gift:r733) pairs a classic stereo viewer with a reel of seven of your own photos, made by a company founded by a former View-Master employee. Shutterfly's [custom photo playing cards](gift:r992) put a family picture on the back of every card, which makes the next card game at the holidays a lot more personal. For the full archive, Artifact Uprising's [hardcover photo book](gift:r637) is fabric-bound and holds up to 200 pictures, enough for every bad haircut and school portrait.",
       },
-      { kind: "gifts", ids: ["r733", "r992"] },
+      { kind: "gifts", ids: ["r733", "r992", "r637"] },
       {
         kind: "p",
         text: "A free idea for this sibling: dig out an old family photo, recreate it together with the same poses and as close to the same outfits as you can manage, and frame the two pictures side by side.",
@@ -496,9 +536,9 @@ const ALL_POSTS: Post[] = [
       { kind: "h2", text: "For the sibling you don't see enough" },
       {
         kind: "p",
-        text: "When life has spread you across different cities or different schedules, the best gift might be a plan. [Concert tickets](gift:r1072) to see their favorite artist put a date on the calendar, and Bandsintown makes it easy to find a show near them and buy from the official seller.",
+        text: "When life has spread you across different cities or different schedules, the best gift might be a plan. [Concert tickets](gift:r1072) to see their favorite artist put a date on the calendar, and Bandsintown makes it easy to find a show near them and buy from the official seller. A [Hipcamp gift card](gift:r680) pays for a campsite, cabin, or treehouse on private land near parks, lakes, and beaches, so you can plan a weekend away together. For an afternoon closer to home, a [Topgolf gift card](gift:r994) covers play, food, and drinks at Topgolf venues across the US; check that there is one near them first.",
       },
-      { kind: "gifts", ids: ["r1072"] },
+      { kind: "gifts", ids: ["r1072", "r680", "r994"] },
       {
         kind: "p",
         text: "If the budget is tight, a sibling day costs very little. Pick a morning, plan the whole thing yourself, from breakfast at the diner you went to as kids to a long walk somewhere new, and send them the itinerary as the gift.",
@@ -512,7 +552,7 @@ const ALL_POSTS: Post[] = [
     title: "What to send someone who is sick, recovering, or grieving",
     description:
       "Thoughtful, low-pressure gifts for a friend, relative, or colleague who is ill, recovering, or grieving a person or a pet, plus free ways to help.",
-    published: "2026-09-09",
+    published: "2026-07-22",
     updated: REVISED,
     intro: [
       "When someone you care about is ill, recovering from surgery, or grieving, it is natural to want to do something, and just as natural to worry about getting it wrong. A good gift in these moments is easy to receive. It asks nothing of them, needs no thank-you note, and fits what they are actually going through.",
@@ -548,14 +588,14 @@ const ALL_POSTS: Post[] = [
       },
       {
         kind: "p",
-        text: "An [Instacart gift card](gift:r768) covers groceries, delivery fees, and tips, and it never expires, so they can use it whenever they need a restock. An [Uber and Uber Eats gift card](gift:r135) handles takeout on the nights when nobody feels like cooking. If they live in BoyceMode's delivery area, a [weekly plant-based meal subscription](gift:r318) brings fresh dishes they pick themselves.",
+        text: "An [Instacart gift card](gift:r768) covers groceries, delivery fees, and tips, and it never expires, so they can use it whenever they need a restock. An [Uber and Uber Eats gift card](gift:r135) handles takeout on the nights when nobody feels like cooking, and a [HelloFresh gift card](gift:new-hellofresh) brings meal kits with pre-measured ingredients for the days they feel up to cooking, without starting a subscription. For anything else they need, an [Amazon gift card](gift:new-amazon-card) arrives by email and never expires.",
       },
-      { kind: "gifts", ids: ["r768", "r135", "r318"] },
+      { kind: "gifts", ids: ["r768", "r135", "new-hellofresh", "new-amazon-card"] },
       {
         kind: "p",
-        text: "Then something sweet. American Spoon's [Up North Breakfast Box](gift:r519) is full of small-batch Michigan preserves, lemon curd, maple syrup, and pancake mix for a slow breakfast in bed. For someone who eats keto or gluten-free, Wonder Monday's [keto cheesecakes](gift:r158) come in four flavors with zero grains or gluten. Sugarfina's [Champagne Bears](gift:r650) are gummies made with Dom Pérignon champagne that contain no alcohol, and they arrive in a festive bottle. For someone who loves a good cocktail, the [Robert Simonson Old-Fashioned Set](gift:r708) is a lovely thing to tuck away for the day they are feeling like themselves again.",
+        text: "Then something sweet. Stonewall Kitchen's [Best of the Best Gift Basket](gift:new-stonewall) packs twenty of its favorites, from Wild Maine Blueberry Jam to pancake mix and pasta sauce, into a reusable wicker basket, enough for easy breakfasts and dinners while they recover. For someone who eats keto or gluten-free, Wonder Monday's [keto cheesecakes](gift:r158) come in four flavors with zero grains or gluten. Sugarfina's [Champagne Bears](gift:r650) are gummies made with Dom Pérignon champagne that contain no alcohol, and Teaspressa's [Champagne Bellini Mixer Kit](gift:new-teaspressa) holds 18 handmade fruit cubes to drop into prosecco, or into sparkling water for a mocktail, on the day they feel like celebrating.",
       },
-      { kind: "gifts", ids: ["r519", "r158", "r650", "r708"] },
+      { kind: "gifts", ids: ["new-stonewall", "r158", "r650", "new-teaspressa"] },
 
       { kind: "h2", text: "For the long days on the couch" },
       {
@@ -580,14 +620,14 @@ const ALL_POSTS: Post[] = [
       },
       {
         kind: "p",
-        text: "Living plants bring some green to a room that hasn't seen much fresh air lately. The Sill's [Houseplant of the Month Club](gift:r1075) delivers a new plant in a ceramic planter every month, and its [Best Sellers Duo](gift:r598) sends a monstera and a snake plant at once. For someone who likes to grow their own, the self-watering [Click & Grow Smart Garden 3](gift:r613) grows herbs and greens on the counter under its own lights, and a [heirloom tomato seed bundle](gift:r1074) gives a gardener something hopeful to plan for next season.",
+        text: "Living plants bring some green to a room that hasn't seen much fresh air lately. The Sill's [Houseplant of the Month Club](gift:r1075) delivers a new plant in a ceramic planter every month, and its [Best Sellers Duo](gift:r598) sends a monstera and a snake plant at once. For someone who likes to grow their own, the self-watering [Click & Grow Smart Garden 3](gift:r613) grows herbs and greens on the counter under its own lights, and Truelove Seeds' [African Diaspora Collection](gift:new-truelove) pairs four heritage seed packets, including the Paul Robeson tomato, with illustrated postcards that tell each seed's story, something hopeful to plant next spring.",
       },
-      { kind: "gifts", ids: ["r1075", "r598", "r613", "r1074"] },
+      { kind: "gifts", ids: ["r1075", "r598", "r613", "new-truelove"] },
       {
         kind: "p",
-        text: "A favorite photo makes a thoughtful addition to their space. Framebridge's [custom framed photo](gift:r766) prints your picture, frames it behind a white mat, and ships it in a gift box with a personal note. Voluspa's [customized candle set](gift:r88) lets you pick three mini candles in the scents you think they would like.",
+        text: "A favorite photo makes a thoughtful addition to their space. Framebridge's [custom framed photo](gift:r766) prints your picture, frames it behind a white mat, and ships it in a gift box with a personal note.",
       },
-      { kind: "gifts", ids: ["r766", "r88"] },
+      { kind: "gifts", ids: ["r766"] },
 
       { kind: "h2", text: "If they've lost someone" },
       {
@@ -596,9 +636,9 @@ const ALL_POSTS: Post[] = [
       },
       {
         kind: "p",
-        text: "Harry & David's [Sympathy Gift Box](gift:r767) holds pears, apples, cheddar, summer sausage, crackers, and baked goods, packed in a box that can be set out when visitors come by. [Healing After Loss](gift:r774) by Martha Whitmore Hickman offers a short reading for every day of the year, which suits the days when a whole book feels impossible. A [TisBest Charity Gift Card](gift:r769) lets the family give to a charity the person they lost cared about.",
+        text: "Harry & David's [Sympathy Gift Box](gift:r767) holds pears, apples, cheddar, summer sausage, crackers, and baked goods, packed in a box that can be set out when visitors come by. [Healing After Loss](gift:r774) by Martha Whitmore Hickman offers a short reading for every day of the year, which suits the days when a whole book feels impossible. A [TisBest Charity Gift Card](gift:r769) lets the family give to a charity the person they lost cared about. And The Little Market's candles, now made by Prosperity Candle, include an [In Loving Memory personalized candle](gift:new-littlemarket) with the name and date you choose, hand-poured by a woman artisan who came to the US as a refugee.",
       },
-      { kind: "gifts", ids: ["r767", "r774", "r769"] },
+      { kind: "gifts", ids: ["r767", "r774", "r769", "new-littlemarket"] },
 
       { kind: "h2", text: "If they've lost a pet" },
       {
@@ -636,58 +676,50 @@ const ALL_POSTS: Post[] = [
     slug: "gifts-for-mom-and-dad-from-morning-to-night",
     title: "Gifts for Mom and Dad, from morning coffee to lights out",
     description:
-      "Gift ideas for parents that fit their daily routine, from a better morning coffee to dinner at home, weekend trips, and slow evenings.",
-    published: "2026-09-24",
+      "A short list of gifts for parents that fit their day: a better morning coffee, dinners with a night off, weekend trips, and a way to stay close from far away.",
+    published: "2026-09-09",
     updated: REVISED,
     intro: [
       "Parents spend years looking after everyone else, then insist they don't need a thing when their own birthday comes around. Finding a gift that feels worthy of all that can be a lot of pressure.",
-      "It helps to picture an ordinary day in their house. Where do they start the morning, what is for dinner, and how do they wind down at night? The gifts below follow that day from the first cup of coffee to lights out, and each one makes some part of it a little nicer. Most work for one parent or for both, and a few are the kind of thing the whole family can chip in on.",
+      "It helps to picture an ordinary day in their house. Where do they start the morning, what is for dinner, and how do they wind down at night? The gifts below follow that day from the first cup of coffee to lights out. There are only a handful, each one chosen to make some part of the day a little nicer, and most are the kind of thing the whole family can chip in on.",
     ],
     body: [
       { kind: "h2", text: "For their morning coffee" },
       {
         kind: "p",
-        text: "In plenty of houses the day starts with coffee, so begin there. The [Ember Mug 3](gift:r293) holds coffee or tea at the exact temperature they choose, adjustable on the mug or in the app, so the first cup doesn't go cold while they read the news. For parents who love a café drink, Nespresso's [Vertuo Next with the Aeroccino3 milk frother](gift:r606) makes espresso, coffee, cappuccinos, and lattes at home.",
+        text: "In plenty of houses the day starts with coffee, so begin there. The [Ember Mug 3](gift:r293) holds coffee or tea at the exact temperature they choose, adjustable on the mug or in the app, so the first cup doesn't go cold while they read the news. For parents who love a café drink, Nespresso's [Vertuo Next with the Aeroccino3 milk frother](gift:r606) makes espresso, coffee, cappuccinos, and lattes at home, with the frother turning milk into foam at the press of a button.",
       },
-      {
-        kind: "p",
-        text: "For the kitchen counter, Tivoli Audio's [Model One BT radio](gift:r754) is a classic Henry Kloss design in a handmade wood cabinet, now with Bluetooth, so the morning news or their favorite station plays with full sound.",
-      },
-      { kind: "gifts", ids: ["r293", "r606", "r754"] },
+      { kind: "gifts", ids: ["r293", "r606"] },
 
       { kind: "h2", text: "For dinner at home" },
       {
         kind: "p",
-        text: "Busy weeks make it hard to cook a real meal, even for parents who love to. If they live in BoyceMode's delivery area, a [weekly plant-based meal subscription](gift:r318) lets them pick the week's dishes and have them arrive fresh. For the parent who likes to cook, the [AeroGarden Harvest](gift:r368) grows fresh herbs and greens on the counter all year with no soil, so the basil is always a snip away. And Fat Gold's [olive oil subscription](gift:r361) sends four tins of small-batch California olive oil over the year, each from a different harvest.",
+        text: "Decades of cooking for the family earn a few nights off. Goldbelly's [monthly restaurant food box subscription](gift:new-goldbelly) sends famous dishes from restaurants and bakeries around the country, like pizza, barbecue, cakes, and pies, and each box serves at least four. For the nights they do cook, Le Creuset's [cast iron round oven](gift:r62) is the enameled Dutch oven that turns a Sunday roast or a pot of soup into a family tradition, and the [AeroGarden Harvest](gift:r368) grows fresh herbs and greens on the counter all year with no soil, so the basil is always a snip away.",
       },
-      { kind: "gifts", ids: ["r318", "r368", "r361"] },
+      { kind: "gifts", ids: ["new-goldbelly", "r62", "r368"] },
 
       { kind: "h2", text: "For the weekends" },
       {
         kind: "p",
-        text: "Weekends are for getting out of the house. The [National Parks Annual Pass](gift:r201) covers entry to federal recreation lands for a full year and admits everyone in the car, so it works for a road trip with the grandkids too. On rainy weekends, [Wingspan](gift:r855) is a beautifully illustrated board game about attracting birds to your wildlife preserves; it plays one to five people and won the 2019 Kennerspiel des Jahres. (If your parents keep a bird feeder, this one is an easy choice.)",
+        text: "Weekends are for getting out of the house. The [National Parks Annual Pass](gift:r201) covers entry to federal recreation lands for a full year and admits everyone in the car, so it works for a road trip with the grandkids too.",
       },
-      { kind: "gifts", ids: ["r201", "r855"] },
+      { kind: "gifts", ids: ["r201"] },
 
-      { kind: "h2", text: "For slow evenings and lights out" },
+      { kind: "h2", text: "For staying close at night" },
       {
         kind: "p",
-        text: "Evenings are when parents finally get to sit down. UGG's [Tasman II slipper](gift:r429) is a suede slipper lined in a wool blend, with a sole sturdy enough for a trip to the mailbox. Aromatherapy Associates' [bath and shower oil collection](gift:r703) holds ten small bottles, including Deep Relax for sleep and De-Stress Muscle for sore muscles, in a navy drawer box that looks lovely on a bathroom shelf.",
+        text: "If you live far away, a pair of [Long Distance Friendship Lamps](gift:r173) lets you say goodnight without a phone call: touch yours, and theirs lights up with the same glow, wherever they are. It is a small, daily reminder that someone is thinking of them, and it works just as well for grandparents.",
       },
-      {
-        kind: "p",
-        text: "If you live far away, a pair of [Long Distance Friendship Lamps](gift:r173) lets you say goodnight without a phone call: touch yours, and theirs lights up with the same glow, wherever they are. And for lights out, the [Hatch Restore 3](gift:r538) combines a sunrise alarm clock, a sound machine, and a bedside light, so the phone can stay in another room.",
-      },
-      { kind: "gifts", ids: ["r429", "r703", "r173", "r538"] },
+      { kind: "gifts", ids: ["r173"] },
 
       { kind: "h2", text: "Making it a family gift" },
       {
         kind: "p",
-        text: "Several of these, like the Nespresso machine or the friendship lamps, are easy to split among siblings. Agree on one gift early, let one person handle the ordering, and ask everyone to add a line to the card, so your parents get to open one thoughtful present from all of you together.",
+        text: "Several of these, like the Nespresso machine, the Le Creuset, or the Goldbelly subscription, are easy to split among siblings. Agree on one gift early, let one person handle the ordering, and ask everyone to add a line to the card, so your parents get to open one thoughtful present from all of you together.",
       },
       {
         kind: "p",
-        text: "If you live nearby, the best addition costs nothing. Show up one evening to cook dinner with them, using the herbs from the AeroGarden or the new olive oil, and stay for the board game afterward.",
+        text: "If you live nearby, the best addition costs nothing. Show up one evening to cook dinner with them, using the herbs from the AeroGarden, and stay for dessert.",
       },
     ],
     cta: "Shopping for just one of them? Tell the quiz about Mom or Dad, their interests, and your budget, and it will rank gifts from our catalog.",
@@ -698,7 +730,7 @@ const ALL_POSTS: Post[] = [
     title: "Just-because gifts for your partner",
     description:
       "Surprise gifts for your partner for no reason at all: ideas for a night in, a night out, a little pampering, sentimental keepsakes, and small treats.",
-    published: "2026-10-08",
+    published: "2026-09-24",
     updated: REVISED,
     intro: [
       "Birthdays and anniversaries come with a deadline, so those gifts tend to get planned. The surprises your partner remembers, though, are often the ones that show up on an ordinary Tuesday for no reason except that you were thinking of them.",
@@ -708,9 +740,13 @@ const ALL_POSTS: Post[] = [
       { kind: "h2", text: "For a night in" },
       {
         kind: "p",
-        text: "Some of the best dates happen on the couch. [We're Not Really Strangers: Couples Edition](gift:r406) is a card game for two with 150 questions across three levels, written to help couples learn something new about each other. [The Fox in the Forest Duet](gift:r404) is a cooperative card game for exactly two players, in which you move through a storybook forest as a team without talking strategy. For a slower project, Red Head Barrels' [custom engraved oak aging barrel](gift:r1048) holds two liters of whiskey, rum, or a batched cocktail, and the oak flavors it in about four to six weeks, which gives you a reason to plan a tasting night.",
+        text: "Some of the best dates happen on the couch. [We're Not Really Strangers: Couples Edition](gift:r406) is a card game for two with 150 questions across three levels, written to help couples learn something new about each other. [The Fox in the Forest Duet](gift:r404) is a cooperative card game for exactly two players, in which you move through a storybook forest as a team without talking strategy.",
       },
-      { kind: "gifts", ids: ["r406", "r404", "r1048"] },
+      {
+        kind: "p",
+        text: "For a date night that comes to you, Priority Wine Pass's [virtual wine tasting package](gift:r313) ships wines from a small winery along with a live tasting session, and Dandelion Chocolate's [virtual chocolate tasting class](gift:r1015) sends five single-origin bars and a code for a live hour-long class on how to taste them. If you would rather cook, Williams Sonoma's [DIY Sushi Kit](gift:r96) has the ingredients for seasoned sushi rice and a rolling mat, so dinner becomes something you make together.",
+      },
+      { kind: "gifts", ids: ["r406", "r404", "r313", "r1015", "r96"] },
 
       { kind: "h2", text: "For a night out" },
       {
@@ -722,23 +758,23 @@ const ALL_POSTS: Post[] = [
       { kind: "h2", text: "For a little pampering" },
       {
         kind: "p",
-        text: "Treat the partner who never makes time for themselves. Olfactory NYC's [at-home custom scent experience](gift:r919) lets them sample scents at home, order blends of their favorites, and finish with a 50 ml bottle of their own fragrance with their name on the label. Mount Lai's [jade facial spa set](gift:r920) pairs a gua sha and a roller for a few calm minutes of facial massage, and the gua sha won a 2022 Allure Best of Beauty award. For a bath night, Herbivore's [Coco Milk bath soak](gift:r894) is a powdered coconut milk and vanilla soak that leaves skin soft.",
+        text: "Treat the partner who never makes time for themselves. Olfactory NYC's [at-home custom scent experience](gift:r919) lets them sample scents at home, order blends of their favorites, and finish with a 50 ml bottle of their own fragrance with their name on the label. Mount Lai's [jade facial spa set](gift:r920) pairs a gua sha and a roller for a few calm minutes of facial massage, and the gua sha won a 2022 Allure Best of Beauty award. For a bath night, Herbivore's [Coco Milk bath soak](gift:r894) is a powdered coconut milk and vanilla soak that leaves skin soft. And after a long day at a screen, Hukka's [Orbits Eye Stones](gift:r893) are two rings of Finnish soapstone that hold the cold from the fridge and rest on tired eyes.",
       },
-      { kind: "gifts", ids: ["r919", "r920", "r894"] },
+      { kind: "gifts", ids: ["r919", "r920", "r894", "r893"] },
 
       { kind: "h2", text: "For the sentimental one" },
       {
         kind: "p",
-        text: "A just-because gift can say a lot in a few words. Patricia Carlin's [Intersection of Love print](gift:r731) is a black-and-white photo of two crossing street signs printed with your names and the years that matter to you. YELLOWPOP's [custom LED neon sign](gift:r641) lets you design your own words, font, and color, and it usually ships ready to hang within two to three weeks. For someone who still loves getting letters, Artisaire's [monogram wax seal stamp](gift:r946) is engraved with your two initials, ready for the next note you leave on their pillow.",
+        text: "The most sentimental gifts hold something only the two of you share. Patricia Carlin's [Intersection of Love print](gift:r731) is a black-and-white photo of two crossing street signs printed with your names and the years that matter to you. Liberty Puzzles turns a favorite photo of the two of you into a [custom wooden jigsaw](gift:r943) with whimsy pieces shaped like animals and objects, which doubles as a night-in project. And if they keep a drawer of old concert and team T-shirts they can't part with, a [Project Repat T-shirt quilt gift card](gift:r764) turns them into a fleece-backed quilt sewn in North Carolina.",
       },
-      { kind: "gifts", ids: ["r731", "r641", "r946"] },
+      { kind: "gifts", ids: ["r731", "r943", "r764"] },
 
       { kind: "h2", text: "Small surprises for an ordinary day" },
       {
         kind: "p",
-        text: "Not every just-because gift needs a big moment. Hukka's [Orbits Eye Stones](gift:r893) are two rings of Finnish soapstone that hold the cold from the fridge and rest on tired eyes after a long day at a screen. Companion Candles' [Cuddle Me Cozy Candle](gift:r331) smells of fresh linen, clean cotton, and warm musk, and it is made to be pet-friendly. For the whiskey fan, Pop Chart's [Whiskeys scratch-off chart](gift:r1047) hides famous bottles under scratch-off panels that they reveal one tasting at a time.",
+        text: "Not every just-because gift needs a big moment. Companion Candles' [Cuddle Me Cozy Candle](gift:r331) smells of fresh linen, clean cotton, and warm musk, and it is made to be pet-friendly. Runamok's [Sugarmaker's Cut maple syrup](gift:r421) is organic Vermont syrup from the season's best runs, in a heavy glass bottle that makes Saturday pancakes feel like an occasion. For the tea drinker, Tea Forté's [KATI steeping cup](gift:r651) is a double-walled ceramic tumbler with an infuser, so a good cup of loose tea is only a few minutes away.",
       },
-      { kind: "gifts", ids: ["r893", "r331", "r1047"] },
+      { kind: "gifts", ids: ["r331", "r421", "r651"] },
 
       { kind: "h2", text: "And a few that cost nothing" },
       {

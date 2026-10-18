@@ -15,7 +15,7 @@ import { useGifts } from "../data/giftsApi";
 import { track } from "../data/analytics";
 import { loadSaved, saveSaved } from "../data/saved";
 import { SECONDARY_TONES, type Gift } from "../data/gifts";
-import { findPost, formatPostDate, parseInline, postGiftIds, POSTS, segmentHref, type Post } from "../data/posts";
+import { findPost, formatPostDate, isPendingGift, parseInline, postGiftIds, POSTS, segmentHref, type Post } from "../data/posts";
 
 /**
  * The blog: an index at /blog and one page per post at /blog/:slug, with the
@@ -267,8 +267,10 @@ function GiftRow({
 }) {
   const isMobile = useIsMobile();
   const navigate = useNavigate();
-  const gifts = ids.map((id) => byId.get(id)).filter((g): g is Gift => !!g);
-  const count = loading ? ids.length : gifts.length;
+  // Gifts still waiting for a catalog row (see PENDING_GIFTS) get no card.
+  const shown = ids.filter((id) => !isPendingGift(id));
+  const gifts = shown.map((id) => byId.get(id)).filter((g): g is Gift => !!g);
+  const count = loading ? shown.length : gifts.length;
   if (!count) return null;
   const cols = isMobile ? 2 : rowColumns(count);
   return (
@@ -283,7 +285,7 @@ function GiftRow({
       }}
     >
       {loading
-        ? ids.map((id) => (
+        ? shown.map((id) => (
             <ClaySurface key={id} tint="cream" style={{ padding: 16 }}>
               <div style={{ aspectRatio: "1/1", borderRadius: 16, background: "linear-gradient(160deg, #FBF1E1, #E8D7B8)" }} />
               <div style={{ height: 52 }} />

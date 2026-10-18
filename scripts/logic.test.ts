@@ -11,7 +11,7 @@ import { affiliateUrl, AMAZON_TAG, buyLinks, isAmazonUrl, primaryBuy } from "../
 import { QUESTIONS, questionLabel, reconcileAnswers, type Answers } from "../src/data/questions";
 import { decodeAnswers, encodeAnswers } from "../src/data/share";
 import { relatedGifts } from "../src/data/related";
-import { findPost, formatPostDate, parseInline, postGiftIds, POSTS, postsFeaturing, segmentHref } from "../src/data/posts";
+import { findPost, formatPostDate, isPendingGift, parseInline, PENDING_GIFTS, postGiftIds, POSTS, postsFeaturing, segmentHref } from "../src/data/posts";
 
 function gift(id: string, over: Partial<Gift> = {}): Gift {
   return {
@@ -234,7 +234,10 @@ test("blog posts: unique slugs, sheet-style gift IDs, links to real posts, and h
     assert.match(post.published, /^\d{4}-\d{2}-\d{2}$/, post.slug);
     assert.ok(post.description.length <= 160, `${post.slug}: description is ${post.description.length} characters`);
     assert.ok(postGiftIds(post).length > 0, `${post.slug}: no gifts`);
-    for (const id of postGiftIds(post)) assert.match(id, /^r\d+$/, `${post.slug}: ${id}`);
+    for (const id of postGiftIds(post)) {
+      if (isPendingGift(id)) assert.ok(PENDING_GIFTS[id], `${post.slug}: ${id} is not listed in PENDING_GIFTS`);
+      else assert.match(id, /^r\d+$/, `${post.slug}: ${id}`);
+    }
     const texts = [post.title, post.description, post.cta, ...post.intro];
     for (const b of post.body) {
       if (b.kind === "list") texts.push(...b.items);
@@ -284,5 +287,13 @@ test("Featured in lists every post that recommends a gift, newest first", () => 
   assert.ok(featured.includes(POSTS[0]));
   assert.deepEqual(featured, POSTS.filter((p) => postGiftIds(p).includes(id)));
   assert.deepEqual(postsFeaturing("r0"), []);
+});
+
+test("pending gifts never link, and every PENDING_GIFTS entry is still used by a post", () => {
+  const [seg] = parseInline("[Spa gift card](gift:new-example)");
+  assert.equal(segmentHref(seg, null), null);
+  assert.equal(segmentHref(seg, new Set(["new-example"])), null);
+  const used = new Set(POSTS.flatMap((p) => postGiftIds(p).filter(isPendingGift)));
+  for (const key of Object.keys(PENDING_GIFTS)) assert.ok(used.has(key), `${key} is listed but no post uses it`);
 });
 
