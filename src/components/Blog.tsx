@@ -15,7 +15,7 @@ import { useGifts } from "../data/giftsApi";
 import { track } from "../data/analytics";
 import { loadSaved, saveSaved } from "../data/saved";
 import { SECONDARY_TONES, type Gift } from "../data/gifts";
-import { findPost, formatPostDate, parseInline, postGiftIds, POSTS, type Post } from "../data/posts";
+import { findPost, formatPostDate, parseInline, postGiftIds, POSTS, segmentHref, type Post } from "../data/posts";
 
 /**
  * The blog: an index at /blog and one page per post at /blog/:slug, with the
@@ -62,10 +62,11 @@ function RichText({ text, live, slug }: { text: string; live: Set<string> | null
   return (
     <>
       {parseInline(text).map((s, i) => {
-        if (!s.href || (s.giftId && live && !live.has(s.giftId))) return <Fragment key={i}>{s.text}</Fragment>;
-        if (!s.href.startsWith("/")) {
+        const href = segmentHref(s, live);
+        if (!href) return <Fragment key={i}>{s.text}</Fragment>;
+        if (!href.startsWith("/")) {
           return (
-            <a key={i} href={s.href} target="_blank" rel="noopener" style={LINK}>
+            <a key={i} href={href} target="_blank" rel="noopener" style={LINK}>
               {s.text}
             </a>
           );
@@ -74,7 +75,7 @@ function RichText({ text, live, slug }: { text: string; live: Set<string> | null
         return (
           <AppLink
             key={i}
-            to={s.href}
+            to={href}
             style={LINK}
             onClick={giftId ? () => track("blog_gift_open", { slug, gift_id: giftId, from: "text" }) : undefined}
           >
@@ -242,6 +243,12 @@ export function BlogIndex() {
   );
 }
 
+/** Desktop columns for a card row: up to four, laid out so the last row isn't a lone card. */
+function rowColumns(count: number): number {
+  if (count <= 4) return count;
+  return count % 4 === 0 || count % 4 === 3 ? 4 : 3;
+}
+
 /** A post's card row: up to four across on desktop, two on phones. */
 function GiftRow({
   ids,
@@ -263,7 +270,7 @@ function GiftRow({
   const gifts = ids.map((id) => byId.get(id)).filter((g): g is Gift => !!g);
   const count = loading ? ids.length : gifts.length;
   if (!count) return null;
-  const cols = isMobile ? 2 : Math.min(count, 4);
+  const cols = isMobile ? 2 : rowColumns(count);
   return (
     <div
       style={{
@@ -301,11 +308,34 @@ function GiftRow({
 }
 
 export function BlogPostPage() {
-  const navigate = useNavigate();
-  const isMobile = useIsMobile();
   const { slug = "" } = useParams<{ slug: string }>();
   const post = findPost(slug);
   const { byId, loading, live } = useGiftIndex();
+
+  useEffect(() => {
+    document.title = post ? `${post.title} · GiftPicker` : "Article not found · GiftPicker";
+  }, [post]);
+
+  return <BlogPostView post={post} byId={byId} loading={loading} live={live} />;
+}
+
+/**
+ * A post page drawn from its data, with no fetching of its own, so
+ * scripts/check-posts.mjs can render every post against the live catalog.
+ */
+export function BlogPostView({
+  post,
+  byId,
+  loading,
+  live,
+}: {
+  post: Post | undefined;
+  byId: Map<string, Gift>;
+  loading: boolean;
+  live: Set<string> | null;
+}) {
+  const navigate = useNavigate();
+  const isMobile = useIsMobile();
 
   const [saved, setSaved] = useState<Set<string>>(() => loadSaved());
   const toggleSave = (id: string) => {
@@ -318,10 +348,6 @@ export function BlogPostPage() {
       return next;
     });
   };
-
-  useEffect(() => {
-    document.title = post ? `${post.title} · GiftPicker` : "Article not found · GiftPicker";
-  }, [post]);
 
   if (!post) {
     return (

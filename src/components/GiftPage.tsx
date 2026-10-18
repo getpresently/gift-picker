@@ -20,6 +20,7 @@ import { BuyButtons } from "./clay/BuyButtons";
 import { SECONDARY_TONES, twinsOf } from "../data/gifts";
 import { relatedGifts } from "../data/related";
 import { loadSaved, saveSaved } from "../data/saved";
+import { postsFeaturing } from "../data/posts";
 
 /**
  * Standalone, shareable page for a single gift at /gift/:giftId.
@@ -45,6 +46,7 @@ export function GiftPage() {
 
   const twins = useMemo(() => (gift ? twinsOf(gift, allGifts) : []), [gift, allGifts]);
   const related = useMemo(() => (gift ? relatedGifts(gift, allGifts) : []), [gift, allGifts]);
+  const featuredIn = useMemo(() => (gift ? postsFeaturing(gift.id) : []), [gift]);
   const [saved, setSaved] = useState<Set<string>>(() => loadSaved());
   const toggleSave = (id: string) => {
     setSaved((prev) => {
@@ -283,6 +285,38 @@ export function GiftPage() {
                       window.scrollTo({ top: 0 });
                     }}
                   />
+
+                  {/* The gift guides that recommend this gift (from src/data/posts.ts). */}
+                  {featuredIn.length > 0 && (
+                    <p
+                      style={{
+                        fontFamily: "Geist, sans-serif",
+                        fontSize: 13,
+                        lineHeight: 1.5,
+                        color: "rgba(35,20,16,0.55)",
+                        margin: "4px 0 0",
+                      }}
+                    >
+                      Featured in:{" "}
+                      {featuredIn.map((p, i) => (
+                        <span key={p.slug}>
+                          {i > 0 && ", "}
+                          <a
+                            href={`/blog/${p.slug}`}
+                            onClick={(e) => {
+                              if (e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+                              e.preventDefault();
+                              track("gift_featured_in_open", { gift_id: gift.id, slug: p.slug });
+                              navigate(`/blog/${p.slug}`);
+                            }}
+                            style={{ color: "rgba(35,20,16,0.75)", textDecoration: "underline", textUnderlineOffset: 3 }}
+                          >
+                            {p.title}
+                          </a>
+                        </span>
+                      ))}
+                    </p>
+                  )}
                 </div>
               </div>
             </ClaySurface>

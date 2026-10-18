@@ -10,6 +10,7 @@ import { FooterLinks } from "./clay/FooterLinks";
 import { TestimonialCarousel } from "./clay/TestimonialCarousel";
 import { FooterBrand } from "./clay/FooterBrand";
 import { HowSteps, type HowStep } from "./clay/HowSteps";
+import { HomeGuides } from "./HomeGuides";
 
 const HOW_STEPS: HowStep[] = [
   { n: "01", title: "Tell us about them", body: "Closeness, vibes, budget. Five questions, no account." },
@@ -353,6 +354,8 @@ export function Landing() {
               Submit a product →
             </Pillow>
           </section>
+
+          <HomeGuides />
 
           {/* Footer */}
           <footer

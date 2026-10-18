@@ -11,7 +11,7 @@ import { affiliateUrl, AMAZON_TAG, buyLinks, isAmazonUrl, primaryBuy } from "../
 import { QUESTIONS, questionLabel, reconcileAnswers, type Answers } from "../src/data/questions";
 import { decodeAnswers, encodeAnswers } from "../src/data/share";
 import { relatedGifts } from "../src/data/related";
-import { findPost, formatPostDate, parseInline, postGiftIds, POSTS } from "../src/data/posts";
+import { findPost, formatPostDate, parseInline, postGiftIds, POSTS, postsFeaturing, segmentHref } from "../src/data/posts";
 
 function gift(id: string, over: Partial<Gift> = {}): Gift {
   return {
@@ -249,5 +249,40 @@ test("blog posts: unique slugs, sheet-style gift IDs, links to real posts, and h
       }
     }
   }
+});
+
+test("every gift in a post is both a card and a link in the text", () => {
+  for (const post of POSTS) {
+    const cards = new Set(post.body.flatMap((b) => (b.kind === "gifts" ? b.ids : [])));
+    const texts = [...post.intro];
+    for (const b of post.body) {
+      if (b.kind === "list") texts.push(...b.items);
+      else if (b.kind !== "gifts") texts.push(b.text);
+    }
+    const linked = new Set(texts.flatMap((t) => parseInline(t).flatMap((s) => (s.giftId ? [s.giftId] : []))));
+    for (const id of cards) assert.ok(linked.has(id), `${post.slug}: ${id} has a card but no link in the text`);
+    for (const id of linked) assert.ok(cards.has(id), `${post.slug}: ${id} is linked in the text but has no card`);
+  }
+});
+
+test("posts run newest first, with publish dates no later than their revision", () => {
+  for (let i = 1; i < POSTS.length; i++) assert.ok(POSTS[i - 1].published >= POSTS[i].published, "POSTS out of order");
+  for (const p of POSTS) if (p.updated) assert.ok(p.published <= p.updated, `${p.slug}: published after updated`);
+});
+
+test("a gift link reads as plain text once its gift leaves the site, and stays a link while unknown", () => {
+  const [seg] = parseInline("[mug](gift:r293)");
+  assert.equal(segmentHref(seg, new Set(["r293"])), "/gift/r293");
+  assert.equal(segmentHref(seg, new Set(["r1"])), null);
+  assert.equal(segmentHref(seg, null), "/gift/r293");
+  assert.equal(segmentHref({ text: "plain" }, null), null);
+});
+
+test("Featured in lists every post that recommends a gift, newest first", () => {
+  const id = postGiftIds(POSTS[0])[0];
+  const featured = postsFeaturing(id);
+  assert.ok(featured.includes(POSTS[0]));
+  assert.deepEqual(featured, POSTS.filter((p) => postGiftIds(p).includes(id)));
+  assert.deepEqual(postsFeaturing("r0"), []);
 });
 

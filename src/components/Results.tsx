@@ -288,7 +288,7 @@ export function Results() {
       <div style={{ position: "relative", minHeight: "100vh" }}>
         <AmbientGlow variant="results" />
 
-        <SiteHeader onLogoClick={goHome}>
+        <SiteHeader nav={false} onLogoClick={goHome}>
           {flaggedCount > 0 && (
                 <div
                   style={{

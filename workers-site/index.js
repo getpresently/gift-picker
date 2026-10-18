@@ -4,7 +4,7 @@ import {
 } from "@cloudflare/kv-asset-handler";
 import { serveAnalytics } from "./analytics.js";
 import { APPS_SCRIPT_URL } from "./config.js";
-import { POSTS, findPost, formatPostDate, parseInline } from "../src/data/posts.ts";
+import { POSTS, findPost, formatPostDate, parseInline, postsFeaturing, segmentHref } from "../src/data/posts.ts";
 
 /**
  * The DEBUG flag will do two things that help during development:
@@ -349,7 +349,7 @@ async function prerenderGiftPage(event, response, giftId) {
 		<h1 style="font-size:36px;line-height:1.1;margin:0 0 12px;">${name}</h1>
 		${label ? `<p style="font-size:20px;margin:0 0 12px;">${escapeHtml(label)}</p>` : ""}
 		${desc ? `<p>${desc}</p>` : ""}
-		<p><a href="${buyLink}" rel="sponsored noopener" style="color:#C4477E;">Buy this gift</a></p>
+		<p><a href="${buyLink}" rel="sponsored noopener" style="color:#C4477E;">Buy this gift</a></p>${featuredInHtml(giftId)}
 		<p>This is a hand-curated gift pick on <a href="${SITE_ORIGIN}/" style="color:#C4477E;">GiftPicker</a>, a free 30-second quiz that recommends genuinely good gifts from 300+ brands. <a href="${SITE_ORIGIN}/quiz" style="color:#C4477E;">Take the quiz</a> to get picks tailored to your recipient.</p>
 		<p style="font-size:12px;color:#8a7a72;">As an Amazon Associate, GiftPicker earns from qualifying purchases.</p>
 	</div>`;
@@ -363,6 +363,16 @@ async function prerenderGiftPage(event, response, giftId) {
     status: 200,
     headers: response.headers,
   });
+}
+
+/** "Featured in" links to the blog posts that recommend a gift (empty when none do). */
+function featuredInHtml(giftId) {
+  const posts = postsFeaturing(giftId);
+  if (!posts.length) return "";
+  const links = posts
+    .map((p) => `<a href="${SITE_ORIGIN}/blog/${p.slug}" style="color:#C4477E;">${escapeHtml(p.title)}</a>`)
+    .join(", ");
+  return `\n\t\t<p>Featured in: ${links}</p>`;
 }
 
 function replaceBetween(html, startMarker, endMarker, replacement) {
@@ -516,8 +526,9 @@ function blogMetaBlock({ title, description, url, type, extra = "", jsonLd }) {
 function inlineHtml(text, live) {
   return parseInline(text)
     .map((s) => {
-      if (!s.href || (s.giftId && live && !live.has(s.giftId))) return escapeHtml(s.text);
-      const href = s.href.startsWith("/") ? `${SITE_ORIGIN}${s.href}` : s.href;
+      const target = segmentHref(s, live);
+      if (!target) return escapeHtml(s.text);
+      const href = target.startsWith("/") ? `${SITE_ORIGIN}${target}` : target;
       return `<a href="${escapeHtml(href)}" ${LINK_STYLE}>${escapeHtml(s.text)}</a>`;
     })
     .join("");
