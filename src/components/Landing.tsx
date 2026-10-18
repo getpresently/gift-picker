@@ -249,7 +249,7 @@ export function Landing() {
                   marginBottom: 18,
                 }}
               >
-                Curated from 300+ brands · including
+                Curated from 600+ brands · including
               </div>
               {/* 6×2 grid on desktop, 3×4 on mobile, even rows, consistent
                   serif treatment so the strip reads as one cohesive band. */}

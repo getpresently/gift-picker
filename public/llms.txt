@@ -1,6 +1,6 @@
 # GiftPicker
 
-> GiftPicker (giftpicker.io) is a free 30-second gift-recommendation quiz by Presently. Users answer five questions about the recipient (relationship and age, occasion, interests, vibe, budget) and receive ranked, personalized gift picks from a hand-curated catalog of more than 500 gifts from 300+ brands, with direct buy links to the brand's site or Amazon. No account required.
+> GiftPicker (giftpicker.io) is a free 30-second gift-recommendation quiz by Presently. Users answer five questions about the recipient (relationship and age, occasion, interests, vibe, budget) and receive ranked, personalized gift picks from a hand-curated catalog of more than 500 gifts from 600+ brands, with direct buy links to the brand's site or Amazon. No account required.
 
 ## What it does
 
@@ -10,7 +10,7 @@
 - Vibes: Fun, Practical, Sentimental, Luxurious.
 - Every gift in the catalog is hand-curated by the GiftPicker team, then matched to the quiz answers by a weighted scoring algorithm (interests weighted heaviest, then relationship, then budget fit, age fit, and vibe, with occasion adjustments). Only strong matches are shown, scored 0-100.
 - Results pages can be shared via URL; the link reproduces the same picks.
-- Gifts are hand-curated from 300+ brands including Apple, Lululemon, Patagonia, Pottery Barn, Anthropologie, Peloton, Aesop, Le Creuset, Diptyque, Le Labo, Smeg, and Bose.
+- Gifts are hand-curated from 600+ brands including Apple, Lululemon, Patagonia, Pottery Barn, Anthropologie, Peloton, Aesop, Le Creuset, Diptyque, Le Labo, Smeg, and Bose.
 
 ## Gift pages
 
