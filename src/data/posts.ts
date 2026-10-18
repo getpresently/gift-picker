@@ -88,15 +88,7 @@ export function formatPostDate(iso: string): string {
  * reports these as pending, says when one has gone live (then delete its entry
  * here), and fails if she rejects one, so its sentence can be rewritten.
  */
-export const PENDING_GIFTS: Record<string, { name: string; presentlySource: string }> = {
-  "r1092": { name: "SommSelect Wine Club Gift Membership (3 Months)", presentlySource: "27 Best Gift Ideas For Coworkers By Occasion" },
-  "r1093": { name: "Stonewall Kitchen Best of the Best Gift Basket (20 Items)", presentlySource: "10 Get Well Soon and Thinking of You Gifts for Coworkers" },
-  "r1095": { name: "Teaspressa Champagne Bellini Mixer Kit (18 Cubes)", presentlySource: "10 Get Well Soon and Thinking of You Gifts for Coworkers" },
-  "r1096": { name: "Prosperity Candle In Loving Memory Personalized Candle (The Little Market's maker)", presentlySource: "10 Get Well Soon and Thinking of You Gifts for Coworkers" },
-  "r1097": { name: "Truelove Seeds African Diaspora Collection Seed Packets and Postcards", presentlySource: "10 Get Well Soon and Thinking of You Gifts for Coworkers" },
-  "r1091": { name: "Goldbelly Monthly Restaurant Food Box Subscription (3 to 12 Months)", presentlySource: "Holiday Gifting For Your Grandparents: 6 Gifts To Help You Achieve Favorite Grandchild Status" },
-  "r1094": { name: "Omaha Steaks Steak Sampler (8 Steaks and Seasoning)", presentlySource: "7 Best Gift Ideas for Men Who Already Have Everything" },
-};
+export const PENDING_GIFTS: Record<string, { name: string; presentlySource: string }> = {};
 
 export function isPendingGift(id: string): boolean {
   return Object.prototype.hasOwnProperty.call(PENDING_GIFTS, id);
