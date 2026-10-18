@@ -26,10 +26,14 @@ export type PostBlock =
 
 export type Post = {
   slug: string;
-  /** Used for the H1 and, with " · GiftPicker" added, the tab title. */
+  /** The H1, and with " · GiftPicker" added the title tag, unless metaTitle is set. */
   title: string;
-  /** Meta description and the blurb on /blog. Keep it under 160 characters. */
+  /** A shorter title tag, for when the H1 plus " · GiftPicker" runs past 60 characters. */
+  metaTitle?: string;
+  /** Meta description and the blurb on /blog: 155 characters or fewer, unique per post. */
   description: string;
+  /** Slugs of two or three related posts, linked at the end of the post. */
+  related?: string[];
   /** ISO date, YYYY-MM-DD. */
   published: string;
   updated?: string;
@@ -85,15 +89,7 @@ export function formatPostDate(iso: string): string {
  * here), and fails if she rejects one, so its sentence can be rewritten.
  */
 export const PENDING_GIFTS: Record<string, { name: string; presentlySource: string }> = {
-  "r1083": { name: "Sephora Gift Card", presentlySource: "Ultimate Gift Ideas For The 5 Love Languages" },
-  "r1084": { name: "Amazon Gift Card", presentlySource: "27 Best Gift Ideas For Coworkers By Occasion; 10 Get Well Soon and Thinking of You Gifts for Coworkers" },
-  "r1085": { name: "Starbucks Gift Card", presentlySource: "27 Best Gift Ideas For Coworkers By Occasion" },
-  "r1086": { name: "Williams Sonoma Gift Card", presentlySource: "27 Best Gift Ideas For Coworkers By Occasion" },
-  "r1087": { name: "Crate & Barrel Gift Card", presentlySource: "27 Best Gift Ideas For Coworkers By Occasion" },
-  "r1088": { name: "Hotels.com Gift Card", presentlySource: "27 Best Gift Ideas For Coworkers By Occasion" },
-  "r1090": { name: "Cooper's Hawk Winery Gift Card (in-person wine tasting)", presentlySource: "27 Best Gift Ideas For Coworkers By Occasion (wine for a wedding)" },
   "r1092": { name: "SommSelect Wine Club Gift Membership (3 Months)", presentlySource: "27 Best Gift Ideas For Coworkers By Occasion" },
-  "r1089": { name: "HelloFresh Gift Card", presentlySource: "10 Get Well Soon and Thinking of You Gifts for Coworkers" },
   "r1093": { name: "Stonewall Kitchen Best of the Best Gift Basket (20 Items)", presentlySource: "10 Get Well Soon and Thinking of You Gifts for Coworkers" },
   "r1095": { name: "Teaspressa Champagne Bellini Mixer Kit (18 Cubes)", presentlySource: "10 Get Well Soon and Thinking of You Gifts for Coworkers" },
   "r1096": { name: "Prosperity Candle In Loving Memory Personalized Candle (The Little Market's maker)", presentlySource: "10 Get Well Soon and Thinking of You Gifts for Coworkers" },
@@ -121,6 +117,26 @@ export function segmentHref(seg: InlineSegment, live: Set<string> | null): strin
 /** The posts that recommend a gift, newest first (for "Featured in" on gift pages). */
 export function postsFeaturing(giftId: string): Post[] {
   return POSTS.filter((p) => postGiftIds(p).includes(giftId));
+}
+
+/** The page's <title>: 60 characters or fewer (checked in scripts/logic.test.ts). */
+export function postTitleTag(post: Post): string {
+  return post.metaTitle ?? `${post.title} · GiftPicker`;
+}
+
+/** The post's share image (1200x630, in public/blog/og/, made by scripts/make-share-images.mjs). */
+export function postShareImage(post: Post): string {
+  return `/blog/og/${post.slug}.jpg`;
+}
+
+/** Two or three posts to link at the end of a post: its `related` list, topped up with the newest others. */
+export function relatedPosts(post: Post, count = 3): Post[] {
+  const picked = (post.related ?? []).map(findPost).filter((p): p is Post => !!p && p.slug !== post.slug);
+  for (const p of POSTS) {
+    if (picked.length >= count) break;
+    if (p.slug !== post.slug && !picked.includes(p)) picked.push(p);
+  }
+  return picked.slice(0, count);
 }
 
 export function findPost(slug: string): Post | undefined {
@@ -152,6 +168,7 @@ const ALL_POSTS: Post[] = [
     title: "How to choose a gift by love language",
     description:
       "Learn the everyday clues that show which love language someone speaks, then find gift ideas for quality time, words, acts of service, touch, and gifts.",
+    related: ["just-because-gifts-for-your-partner", "gifts-for-mom-and-dad-from-morning-to-night", "gifts-for-men-who-say-they-dont-need-anything"],
     published: "2026-10-08",
     updated: REVISED,
     intro: [
@@ -246,9 +263,9 @@ const ALL_POSTS: Post[] = [
       },
       {
         kind: "p",
-        text: "Jewelry with a message works the same way: Little Words Project's [custom word bracelet](gift:r929) spells out any word or name you choose in handmade beads, so it carries something only the two of you understand. And if they love to browse, a [Sephora gift card](gift:r1083) turns into a small shopping spree on makeup, skincare, or fragrance, and it never expires.",
+        text: "Jewelry with a message works the same way: Little Words Project's [custom word bracelet](gift:r929) spells out any word or name you choose in handmade beads, so it carries something only the two of you understand. And if they love to browse, a gift card to their favorite store, like Sephora for the beauty lover, turns into a small shopping spree they get to plan themselves.",
       },
-      { kind: "gifts", ids: ["r944", "r706", "r615", "r929", "r1083"] },
+      { kind: "gifts", ids: ["r944", "r706", "r615", "r929"] },
 
       { kind: "h2", text: "When they speak two languages" },
       {
@@ -268,7 +285,9 @@ const ALL_POSTS: Post[] = [
     slug: "gifts-for-men-who-say-they-dont-need-anything",
     title: "Gifts for the man who says he doesn't need anything",
     description:
-      "Four ways to shop for a man who already owns what he needs: give an experience, upgrade something he uses daily, pick something he'll use up, or start a hobby.",
+      "Four ways to shop for a man who already owns what he needs: an experience, an everyday upgrade, something he'll use up, or a new hobby.",
+    metaTitle: "Gifts for men who say they need nothing · GiftPicker",
+    related: ["gifts-for-mom-and-dad-from-morning-to-night", "just-because-gifts-for-your-partner", "gifts-for-your-brother-or-sister"],
     published: "2026-07-08",
     updated: REVISED,
     intro: [
@@ -348,7 +367,9 @@ const ALL_POSTS: Post[] = [
     slug: "how-much-to-spend-on-a-coworker-gift",
     title: "How much to spend on a coworker gift, with picks at every price",
     description:
-      "Budget guidance for coworker gifts from you alone or from the whole team, with picks for birthdays, promotions, weddings, new babies, farewells, and hard times.",
+      "Budget guidance for coworker gifts from you or the whole team, with picks for birthdays, promotions, weddings, new babies, farewells, and hard times.",
+    metaTitle: "How much to spend on a coworker gift · GiftPicker",
+    related: ["what-to-send-someone-who-is-sick-or-grieving", "gifts-for-men-who-say-they-dont-need-anything", "how-to-choose-a-gift-by-love-language"],
     published: "2026-08-05",
     updated: REVISED,
     intro: [
@@ -379,9 +400,9 @@ const ALL_POSTS: Post[] = [
       },
       {
         kind: "p",
-        text: "For the coworker who can't go a day without their latte, a [Starbucks gift card](gift:r1085) in any amount from $5 to $100 loads straight into the Starbucks app. Queen Majesty's [Hot Sauce Trinity](gift:r418) is a gift box of three small-batch New York sauces, from Jalapeño Tequila Lime to Red Habanero Black Coffee. For the office cook, Jacobsen Salt Co.'s [Sea Salt Slide Tin Trio](gift:r424) packs hand-harvested Oregon sea salt into three illustrated pocket tins, including a pinot noir infused salt.",
+        text: "For the coworker who can't go a day without their latte, a gift card to their favorite coffee shop, or to Starbucks, covers a week of coffee runs. Queen Majesty's [Hot Sauce Trinity](gift:r418) is a gift box of three small-batch New York sauces, from Jalapeño Tequila Lime to Red Habanero Black Coffee. For the office cook, Jacobsen Salt Co.'s [Sea Salt Slide Tin Trio](gift:r424) packs hand-harvested Oregon sea salt into three illustrated pocket tins, including a pinot noir infused salt.",
       },
-      { kind: "gifts", ids: ["r1085", "r418", "r424"] },
+      { kind: "gifts", ids: ["r418", "r424"] },
 
       { kind: "h2", text: "$25 to $60: a close colleague or a bigger milestone" },
       {
@@ -406,9 +427,8 @@ const ALL_POSTS: Post[] = [
       { kind: "gifts", ids: ["r362", "r662"] },
       {
         kind: "p",
-        text: "For a coworker's wedding, a gift card lets the couple choose what their new home needs. A [Williams Sonoma gift card](gift:r1086) covers cookware, cutlery, and tabletop, and it also works at Pottery Barn and West Elm, while a [Crate & Barrel gift card](gift:r1087) goes toward dinnerware, glassware, and furniture at Crate & Barrel and CB2. If they enjoy a good bottle, a [Cooper's Hawk Winery gift card](gift:r1090) pays for a guided tasting of seven or eight wines in the tasting room of any of its 78 winery restaurants, with dinner after if they like; check for a location near them first.",
+        text: "For a coworker's wedding, a gift card lets the couple choose what their new home needs, and a Williams Sonoma or Crate & Barrel card goes toward anything from cookware to glassware, including the pieces left over on their registry. If they enjoy a good bottle, treat them to a tasting at a winery near them, where they can try a flight of wines together and bring home a bottle they liked.",
       },
-      { kind: "gifts", ids: ["r1086", "r1087", "r1090"] },
       {
         kind: "p",
         text: "The first months with a new baby leave very little time for cooking. An [Uber and Uber Eats gift card](gift:r135), in whatever amount the group collects, covers takeout on the nights when making dinner is out of the question.",
@@ -437,9 +457,9 @@ const ALL_POSTS: Post[] = [
       { kind: "gifts", ids: ["r39", "r595"] },
       {
         kind: "p",
-        text: "For a wedding or a long-awaited retirement trip, Away's [Carry-On Suitcase](gift:r571) has a hard shell, spinner wheels, and an interior compression system. A [Hotels.com gift card](gift:r1088) never expires, so the couple can save it for the honeymoon, and an [Airbnb gift card](gift:r309) works the same way for a farewell adventure. For a couple who loves wine, SommSelect's [three-month wine club membership](gift:r1092) sends bottles chosen by a team led by a Master Sommelier, each with tasting notes and food pairings.",
+        text: "For a wedding or a long-awaited retirement trip, Away's [Carry-On Suitcase](gift:r571) has a hard shell, spinner wheels, and an interior compression system. A gift card toward the stay itself, from Hotels.com or [Airbnb](gift:r309), covers a night or two of the honeymoon or a farewell adventure. For a couple who loves wine, SommSelect's [three-month wine club membership](gift:r1092) sends bottles chosen by a team led by a Master Sommelier, each with tasting notes and food pairings.",
       },
-      { kind: "gifts", ids: ["r571", "r1088", "r309", "r1092"] },
+      { kind: "gifts", ids: ["r571", "r309", "r1092"] },
       {
         kind: "p",
         text: "For a milestone birthday or a big promotion, a splurge from the team goes a long way. Sony's [WH-1000XM6 headphones](gift:r596) block out a noisy office with adaptive noise canceling and up to 30 hours of battery. Plant lovers will be thrilled with The Sill's [Best Sellers Duo](gift:r598), a monstera and a snake plant that arrive potted in ceramic planters. And for the coworker who spends weekends outdoors, the [GoPro HERO12 Black](gift:r369) is a rugged, waterproof action camera that records stabilized video of every hike, ride, and trip.",
@@ -447,9 +467,9 @@ const ALL_POSTS: Post[] = [
       { kind: "gifts", ids: ["r596", "r598", "r369"] },
       {
         kind: "p",
-        text: "If the team can't settle on an object, cash in a card signed by everyone is always welcome, especially at a farewell, and an [Amazon gift card](gift:r1084) works almost as well. If they would rather do some good, a [TisBest Charity Gift Card](gift:r769) lets the recipient give the money to any of about 1.8 million US charities.",
+        text: "If the team can't settle on an object, cash in a card signed by everyone is always welcome, especially at a farewell, and an Amazon gift card works almost as well. If they would rather do some good, a [TisBest Charity Gift Card](gift:r769) lets the recipient give the money to any of about 1.8 million US charities.",
       },
-      { kind: "gifts", ids: ["r1084", "r769"] },
+      { kind: "gifts", ids: ["r769"] },
 
       { kind: "h2", text: "Keeping it comfortable" },
       {
@@ -471,6 +491,8 @@ const ALL_POSTS: Post[] = [
     title: "Gifts for your brother or sister, from game night to their first apartment",
     description:
       "Gift ideas for every kind of sibling, from the game night champion to the one who just moved into their first place, plus a few ideas that cost nothing.",
+    metaTitle: "Gifts for your brother or sister · GiftPicker",
+    related: ["gifts-for-mom-and-dad-from-morning-to-night", "just-because-gifts-for-your-partner", "gifts-for-men-who-say-they-dont-need-anything"],
     published: "2026-08-19",
     updated: REVISED,
     intro: [
@@ -552,6 +574,8 @@ const ALL_POSTS: Post[] = [
     title: "What to send someone who is sick, recovering, or grieving",
     description:
       "Thoughtful, low-pressure gifts for a friend, relative, or colleague who is ill, recovering, or grieving a person or a pet, plus free ways to help.",
+    metaTitle: "What to send someone who is sick or grieving · GiftPicker",
+    related: ["how-much-to-spend-on-a-coworker-gift", "gifts-for-mom-and-dad-from-morning-to-night", "how-to-choose-a-gift-by-love-language"],
     published: "2026-07-22",
     updated: REVISED,
     intro: [
@@ -588,9 +612,9 @@ const ALL_POSTS: Post[] = [
       },
       {
         kind: "p",
-        text: "An [Instacart gift card](gift:r768) covers groceries, delivery fees, and tips, and it never expires, so they can use it whenever they need a restock. An [Uber and Uber Eats gift card](gift:r135) handles takeout on the nights when nobody feels like cooking, and a [HelloFresh gift card](gift:r1089) brings meal kits with pre-measured ingredients for the days they feel up to cooking, without starting a subscription. For anything else they need, an [Amazon gift card](gift:r1084) arrives by email and never expires.",
+        text: "An [Instacart gift card](gift:r768) covers groceries, delivery fees, and tips, and it never expires, so they can use it whenever they need a restock. An [Uber and Uber Eats gift card](gift:r135) handles takeout on the nights when nobody feels like cooking, and a HelloFresh gift card brings meal kits with pre-measured ingredients for the days they feel up to cooking. For anything else they need, an Amazon gift card arrives by email the same day.",
       },
-      { kind: "gifts", ids: ["r768", "r135", "r1089", "r1084"] },
+      { kind: "gifts", ids: ["r768", "r135"] },
       {
         kind: "p",
         text: "Then something sweet. Stonewall Kitchen's [Best of the Best Gift Basket](gift:r1093) packs twenty of its favorites, from Wild Maine Blueberry Jam to pancake mix and pasta sauce, into a reusable wicker basket, enough for easy breakfasts and dinners while they recover. For someone who eats keto or gluten-free, Wonder Monday's [keto cheesecakes](gift:r158) come in four flavors with zero grains or gluten. Sugarfina's [Champagne Bears](gift:r650) are gummies made with Dom Pérignon champagne that contain no alcohol, and Teaspressa's [Champagne Bellini Mixer Kit](gift:r1095) holds 18 handmade fruit cubes to drop into prosecco, or into sparkling water for a mocktail, on the day they feel like celebrating.",
@@ -676,7 +700,9 @@ const ALL_POSTS: Post[] = [
     slug: "gifts-for-mom-and-dad-from-morning-to-night",
     title: "Gifts for Mom and Dad, from morning coffee to lights out",
     description:
-      "A short list of gifts for parents that fit their day: a better morning coffee, dinners with a night off, weekend trips, and a way to stay close from far away.",
+      "A short list of gifts for Mom and Dad: a better morning coffee, dinners with a night off, weekend trips, a way to stay close, and a family video montage.",
+    metaTitle: "Thoughtful gifts for Mom and Dad · GiftPicker",
+    related: ["gifts-for-men-who-say-they-dont-need-anything", "gifts-for-your-brother-or-sister", "how-to-choose-a-gift-by-love-language"],
     published: "2026-09-09",
     updated: REVISED,
     intro: [
@@ -712,6 +738,22 @@ const ALL_POSTS: Post[] = [
       },
       { kind: "gifts", ids: ["r173"] },
 
+      { kind: "h2", text: "A video montage from the whole family" },
+      {
+        kind: "p",
+        text: "One of the gifts parents love most costs nothing but a little organizing: a short video of the people they love, each sharing a memory or a wish. It works for a milestone birthday, an anniversary, or a retirement, and it is something they will watch again and again.",
+      },
+      {
+        kind: "list",
+        items: [
+          "Pick a deadline two or three weeks before the day, and ask family and friends to record a clip of 30 seconds or less on their phones, held sideways, somewhere quiet and well lit.",
+          "Give everyone the same simple prompt, such as a favorite memory with them or something they taught you, so the clips fit together.",
+          "Collect everything in one shared folder or album, for example a shared Google Drive folder, and add a few old photos and home videos while you are at it.",
+          "Put it together in a free editor such as iMovie, keep the finished video under about five minutes, and end with the whole family saying happy birthday or congratulations together.",
+          "Play it at the celebration with everyone in the room, then send them the file so they can watch it whenever they like.",
+        ],
+      },
+
       { kind: "h2", text: "Making it a family gift" },
       {
         kind: "p",
@@ -730,6 +772,7 @@ const ALL_POSTS: Post[] = [
     title: "Just-because gifts for your partner",
     description:
       "Surprise gifts for your partner for no reason at all: ideas for a night in, a night out, a little pampering, sentimental keepsakes, and small treats.",
+    related: ["how-to-choose-a-gift-by-love-language", "gifts-for-your-brother-or-sister", "gifts-for-mom-and-dad-from-morning-to-night"],
     published: "2026-09-24",
     updated: REVISED,
     intro: [
@@ -751,9 +794,9 @@ const ALL_POSTS: Post[] = [
       { kind: "h2", text: "For a night out" },
       {
         kind: "p",
-        text: "If your partner would rather do something than own something, plan the outing for them. A [Board & Brush gift card](gift:r1013) covers a workshop where an instructor guides you through staining and stenciling a wood sign or tray, and the studios are BYOB. A [Melting Pot gift card](gift:r1012) turns dinner into a long evening of cheese fondue, a main course cooked at the table, and chocolate fondue to finish. For a true surprise, a [sunrise hot air balloon ride](gift:r365) ends with a champagne toast. Check for a nearby location before buying any of the three.",
+        text: "If your partner would rather do something than own something, plan the outing for them. A [Board & Brush gift card](gift:r1013) covers a workshop where an instructor guides you through staining and stenciling a wood sign or tray, and the studios are BYOB. Dinner at a fondue restaurant, such as The Melting Pot, turns a weeknight into a long evening of cheese fondue, a main course cooked at the table, and chocolate to finish. For a true surprise, a [sunrise hot air balloon ride](gift:r365) ends with a champagne toast. Check that the studio and the balloon flights are near them before you buy.",
       },
-      { kind: "gifts", ids: ["r1013", "r1012", "r365"] },
+      { kind: "gifts", ids: ["r1013", "r365"] },
 
       { kind: "h2", text: "For a little pampering" },
       {

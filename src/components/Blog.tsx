@@ -15,7 +15,7 @@ import { useGifts } from "../data/giftsApi";
 import { track } from "../data/analytics";
 import { loadSaved, saveSaved } from "../data/saved";
 import { SECONDARY_TONES, type Gift } from "../data/gifts";
-import { findPost, formatPostDate, isPendingGift, parseInline, postGiftIds, POSTS, segmentHref, type Post } from "../data/posts";
+import { findPost, formatPostDate, isPendingGift, parseInline, postGiftIds, POSTS, postTitleTag, relatedPosts, segmentHref, type Post } from "../data/posts";
 
 /**
  * The blog: an index at /blog and one page per post at /blog/:slug, with the
@@ -150,7 +150,7 @@ function Thumb({ gift, size }: { gift?: Gift; size: number }) {
       }}
     >
       {gift?.image && !failed && (
-        <img src={gift.image} alt="" onError={onError} style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
+        <img src={gift.image} alt={gift.brand ? `${gift.name} by ${gift.brand}` : gift.name} onError={onError} style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
       )}
     </div>
   );
@@ -316,7 +316,7 @@ export function BlogPostPage() {
   const { byId, loading, live } = useGiftIndex();
 
   useEffect(() => {
-    document.title = post ? `${post.title} · GiftPicker` : "Article not found · GiftPicker";
+    document.title = post ? postTitleTag(post) : "Article not found · GiftPicker";
   }, [post]);
 
   return <BlogPostView post={post} byId={byId} loading={loading} live={live} />;
@@ -377,7 +377,7 @@ export function BlogPostView({
     color: "rgba(35,20,16,0.8)",
     margin: "0 0 18px",
   };
-  const others = POSTS.filter((p) => p.slug !== post.slug).slice(0, 3);
+  const others = relatedPosts(post);
 
   return (
     <BlogShell>

@@ -4,7 +4,7 @@ import {
 } from "@cloudflare/kv-asset-handler";
 import { serveAnalytics } from "./analytics.js";
 import { APPS_SCRIPT_URL } from "./config.js";
-import { POSTS, findPost, formatPostDate, parseInline, postsFeaturing, segmentHref } from "../src/data/posts.ts";
+import { POSTS, findPost, formatPostDate, parseInline, postShareImage, postsFeaturing, postTitleTag, relatedPosts, segmentHref } from "../src/data/posts.ts";
 
 /**
  * The DEBUG flag will do two things that help during development:
@@ -498,25 +498,41 @@ function jsonLdScript(data) {
   return `<script type="application/ld+json">${JSON.stringify(data).replace(/</g, "\\u003c")}</script>`;
 }
 
-function blogMetaBlock({ title, description, url, type, extra = "", jsonLd }) {
+/** Several schema.org nodes as one JSON-LD graph. */
+function jsonLdGraph(nodes) {
+  return jsonLdScript({ "@context": "https://schema.org", "@graph": nodes });
+}
+
+function breadcrumbs(items) {
+  return {
+    "@type": "BreadcrumbList",
+    itemListElement: items.map(([name, item], i) => ({ "@type": "ListItem", position: i + 1, name, item })),
+  };
+}
+
+function blogMetaBlock({ title, description, url, type, image = DEFAULT_OG_IMAGE, imageAlt, extra = "", jsonLd }) {
   const t = escapeHtml(title);
   const d = escapeHtml(description);
+  const alt = escapeHtml(imageAlt || title);
   return `
 	<meta name="description" content="${d}"/>
 	<link rel="canonical" href="${url}"/>
+	<meta name="robots" content="index, follow, max-image-preview:large"/>
 	<meta property="og:type" content="${type}"/>
 	<meta property="og:site_name" content="GiftPicker"/>
 	<meta property="og:title" content="${t}"/>
 	<meta property="og:description" content="${d}"/>
 	<meta property="og:url" content="${url}"/>
-	<meta property="og:image" content="${DEFAULT_OG_IMAGE}"/>
+	<meta property="og:image" content="${image}"/>
 	<meta property="og:image:width" content="1200"/>
-	<meta property="og:image:height" content="630"/>${extra}
+	<meta property="og:image:height" content="630"/>
+	<meta property="og:image:alt" content="${alt}"/>${extra}
 	<meta name="twitter:card" content="summary_large_image"/>
 	<meta name="twitter:title" content="${t}"/>
 	<meta name="twitter:description" content="${d}"/>
-	<meta name="twitter:image" content="${DEFAULT_OG_IMAGE}"/>
-	${jsonLdScript(jsonLd)}`;
+	<meta name="twitter:image" content="${image}"/>
+	<meta name="twitter:image:alt" content="${alt}"/>
+	${jsonLdGraph(jsonLd)}`;
 }
 
 /**
@@ -542,9 +558,9 @@ function withPage(html, title, metaBlock, staticBlock) {
 
 function blogIndexHtml(html) {
   const url = `${SITE_ORIGIN}/blog`;
-  const jsonLd = {
-    "@context": "https://schema.org",
+  const blog = {
     "@type": "Blog",
+    "@id": `${url}#blog`,
     name: "GiftPicker gift guides",
     description: BLOG_DESCRIPTION,
     url,
@@ -556,8 +572,10 @@ function blogIndexHtml(html) {
       url: `${url}/${p.slug}`,
       datePublished: p.published,
       dateModified: p.updated || p.published,
+      image: `${SITE_ORIGIN}${postShareImage(p)}`,
     })),
   };
+  const jsonLd = [blog, breadcrumbs([["Home", `${SITE_ORIGIN}/`], ["Gift guides", url]])];
   const items = POSTS.map(
     (p) => `
 			<li style="margin:0 0 20px;"><a href="${url}/${p.slug}" ${LINK_STYLE}>${escapeHtml(p.title)}</a><br/>
@@ -565,6 +583,7 @@ function blogIndexHtml(html) {
   ).join("");
   const staticBlock = `
 	<div ${STATIC_WRAP}>
+		<nav aria-label="Breadcrumb" style="font-size:14px;margin:0 0 16px;"><a href="${SITE_ORIGIN}/" ${LINK_STYLE}>Home</a> › Gift guides</nav>
 		<h1 style="font-size:40px;line-height:1.1;margin:0 0 12px;">Gift guides</h1>
 		<p>Practical advice for choosing a gift, with picks from the GiftPicker catalog.</p>
 		<ul style="padding-left:20px;">${items}
@@ -576,8 +595,10 @@ function blogIndexHtml(html) {
 
 function blogPostHtml(html, post, gifts) {
   const url = `${SITE_ORIGIN}/blog/${post.slug}`;
-  const title = `${post.title} · GiftPicker`;
+  const title = postTitleTag(post);
   const modified = post.updated || post.published;
+  const image = `${SITE_ORIGIN}${postShareImage(post)}`;
+  const imageAlt = `${post.title}: a GiftPicker gift guide, with photos of gifts it recommends`;
   const byId = gifts ? new Map(gifts.map((g) => [g.row_id, g])) : null;
   const live = byId ? new Set(byId.keys()) : null;
 
@@ -597,25 +618,49 @@ function blogPostHtml(html, post, gifts) {
     })
     .join("\n\t\t\t");
 
-  const jsonLd = {
-    "@context": "https://schema.org",
-    "@type": "Article",
-    headline: post.title,
-    description: post.description,
-    image: [DEFAULT_OG_IMAGE],
-    datePublished: post.published,
-    dateModified: modified,
-    author: { "@type": "Organization", name: "GiftPicker", url: `${SITE_ORIGIN}/` },
-    publisher: ORG,
-    mainEntityOfPage: { "@type": "WebPage", "@id": url },
-    url,
-  };
+  // The gifts the post links to that are live right now, in reading order.
+  const linked = byId
+    ? [...new Set(post.body.flatMap((b) => (b.kind === "gifts" ? b.ids : [])))].map((id) => byId.get(id)).filter(Boolean)
+    : [];
+  const jsonLd = [
+    {
+      "@type": "BlogPosting",
+      "@id": `${url}#article`,
+      headline: post.title,
+      description: post.description,
+      image: [image],
+      datePublished: post.published,
+      dateModified: modified,
+      author: { "@type": "Organization", name: "GiftPicker", url: `${SITE_ORIGIN}/` },
+      publisher: ORG,
+      mainEntityOfPage: { "@type": "WebPage", "@id": url },
+      isPartOf: { "@type": "Blog", "@id": `${SITE_ORIGIN}/blog#blog`, name: "GiftPicker gift guides" },
+      url,
+    },
+    breadcrumbs([["Home", `${SITE_ORIGIN}/`], ["Gift guides", `${SITE_ORIGIN}/blog`], [post.title, url]]),
+  ];
+  if (linked.length) {
+    jsonLd.push({
+      "@type": "ItemList",
+      name: `Gifts in "${post.title}"`,
+      numberOfItems: linked.length,
+      itemListElement: linked.map((g, i) => ({
+        "@type": "ListItem",
+        position: i + 1,
+        url: `${SITE_ORIGIN}/gift/${g.row_id}`,
+        name: g.Brand ? `${g.Gift} by ${g.Brand}` : String(g.Gift),
+      })),
+    });
+  }
+  const related = relatedPosts(post)
+    .map((p) => `<li><a href="${SITE_ORIGIN}/blog/${p.slug}" ${LINK_STYLE}>${escapeHtml(p.title)}</a></li>`)
+    .join("");
   const extra = `
 	<meta property="article:published_time" content="${post.published}"/>
 	<meta property="article:modified_time" content="${modified}"/>`;
   const staticBlock = `
 	<div ${STATIC_WRAP}>
-		<p style="font-size:14px;margin:0 0 16px;"><a href="${SITE_ORIGIN}/blog" ${LINK_STYLE}>GiftPicker gift guides</a></p>
+		<nav aria-label="Breadcrumb" style="font-size:14px;margin:0 0 16px;"><a href="${SITE_ORIGIN}/" ${LINK_STYLE}>Home</a> › <a href="${SITE_ORIGIN}/blog" ${LINK_STYLE}>Gift guides</a></nav>
 		<article>
 			<h1 style="font-size:36px;line-height:1.1;margin:0 0 12px;">${escapeHtml(post.title)}</h1>
 			<p style="font-size:14px;color:#8a7a72;">By GiftPicker · <time datetime="${post.published}">${formatPostDate(post.published)}</time></p>
@@ -623,9 +668,11 @@ function blogPostHtml(html, post, gifts) {
 			${body}
 			<p>${escapeHtml(post.cta)} <a href="${SITE_ORIGIN}/quiz" ${LINK_STYLE}>Take the GiftPicker quiz</a>.</p>
 		</article>
+		<h2 style="font-size:22px;margin:32px 0 8px;">More gift guides</h2>
+		<ul>${related}</ul>
 		<p style="font-size:12px;color:#8a7a72;">As an Amazon Associate, GiftPicker earns from qualifying purchases.</p>
 	</div>`;
-  return withPage(html, title, blogMetaBlock({ title, description: post.description, url, type: "article", extra, jsonLd }), staticBlock);
+  return withPage(html, title, blogMetaBlock({ title, description: post.description, url, type: "article", image, imageAlt, extra, jsonLd }), staticBlock);
 }
 
 async function prerenderBlog(event, response, slug) {

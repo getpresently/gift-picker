@@ -11,7 +11,8 @@ import { affiliateUrl, AMAZON_TAG, buyLinks, isAmazonUrl, primaryBuy } from "../
 import { QUESTIONS, questionLabel, reconcileAnswers, type Answers } from "../src/data/questions";
 import { decodeAnswers, encodeAnswers } from "../src/data/share";
 import { relatedGifts } from "../src/data/related";
-import { findPost, formatPostDate, isPendingGift, parseInline, PENDING_GIFTS, postGiftIds, POSTS, postsFeaturing, segmentHref } from "../src/data/posts";
+import { findPost, formatPostDate, isPendingGift, parseInline, PENDING_GIFTS, postGiftIds, POSTS, postsFeaturing, postShareImage, postTitleTag, relatedPosts, segmentHref } from "../src/data/posts";
+import { existsSync, readFileSync } from "node:fs";
 
 function gift(id: string, over: Partial<Gift> = {}): Gift {
   return {
@@ -232,7 +233,6 @@ test("blog posts: unique slugs, sheet-style gift IDs, links to real posts, and h
   for (const post of POSTS) {
     assert.match(post.slug, /^[a-z0-9]+(-[a-z0-9]+)*$/, post.slug);
     assert.match(post.published, /^\d{4}-\d{2}-\d{2}$/, post.slug);
-    assert.ok(post.description.length <= 160, `${post.slug}: description is ${post.description.length} characters`);
     assert.ok(postGiftIds(post).length > 0, `${post.slug}: no gifts`);
     for (const id of postGiftIds(post)) assert.match(id, /^r\d+$/, `${post.slug}: ${id}`);
     const texts = [post.title, post.description, post.cta, ...post.intro];
@@ -299,5 +299,24 @@ test("a pending gift links only once the live catalog has it, and every PENDING_
   assert.equal(segmentHref(seg, null), null, "unknown catalog: pending stays plain text");
   assert.equal(segmentHref(seg, new Set(["r1"])), null, "not approved yet: plain text");
   assert.equal(segmentHref(seg, new Set([id])), `/gift/${id}`, "approved and live: a link, with no code change");
+});
+
+test("SEO basics: short, unique title tags and descriptions; related posts; share images; llms.txt", () => {
+  const titles = POSTS.map(postTitleTag);
+  const descriptions = POSTS.map((p) => p.description);
+  assert.equal(new Set(titles).size, titles.length, "duplicate title tag");
+  assert.equal(new Set(descriptions).size, descriptions.length, "duplicate meta description");
+  const llms = readFileSync("public/llms.txt", "utf8");
+  for (const post of POSTS) {
+    const title = postTitleTag(post);
+    assert.ok(title.length <= 60, `${post.slug}: title tag is ${title.length} characters: ${title}`);
+    assert.ok(post.description.length <= 155, `${post.slug}: description is ${post.description.length} characters`);
+    const related = relatedPosts(post);
+    assert.ok(related.length >= 2 && related.length <= 3, `${post.slug}: ${related.length} related posts`);
+    assert.ok(!related.includes(post), `${post.slug}: links to itself`);
+    for (const slug of post.related ?? []) assert.ok(findPost(slug), `${post.slug}: related post ${slug} does not exist`);
+    assert.ok(existsSync(`public${postShareImage(post)}`), `${post.slug}: no share image at public${postShareImage(post)} (run scripts/make-share-images.mjs)`);
+    assert.ok(llms.includes(`https://giftpicker.io/blog/${post.slug}`), `${post.slug}: missing from public/llms.txt`);
+  }
 });
 
