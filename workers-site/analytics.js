@@ -17,11 +17,11 @@
  * bundler compiles those TypeScript imports.
  */
 
-import { APPS_SCRIPT_URL } from "./config.js";
+import { APPS_SCRIPT_URL, GIFT_PATH, GIFTS_KEY } from "./config.js";
 import { CHANGES } from "../src/data/changes.ts";
 import {
-  addDays, beforeAfter, fallbackFunnel, fillDays, giftStats, kpis, lowClickGifts, mostCopiedGifts, shareBreakdown, shareTotals,
-  takeaways, todayIn,
+  addDays, beforeAfter, fallbackFunnel, fillDays, giftStats, kpis, lowClickGifts, mostCopiedGifts, mostOpenedGifts, rarelyTappedGifts,
+  shareBreakdown, shareTotals, takeaways, todayIn,
 } from "../src/data/insights.ts";
 
 const MEASUREMENT_ID = "G-4TNQSM74DH";
@@ -38,7 +38,10 @@ const ALLOWED_DAYS = [7, 30, 90];
 // once it is registered as an event-scoped custom dimension, from that day on.
 const CUSTOM_DIMS = [
   "destination", "gift_name", "step_index", "question_id", "recipient", "interest", "results_band", "occasion", "method", "share_type",
+  "source",
 ];
+// gift_open sources that are a tap on a results card (modal_nav is browsing with the modal's arrows).
+const CARD_SOURCES = ["top_pick", "grid"];
 
 const SERIES_DAYS = 90;
 const DAILY_EVENTS = ["quiz_start", "quiz_step_view", "quiz_complete", "gift_open", "gift_buy_click"];
@@ -66,7 +69,7 @@ export async function serveAnalytics(request, url) {
 
   const days = ALLOWED_DAYS.includes(Number(url.searchParams.get("days"))) ? Number(url.searchParams.get("days")) : 30;
   const fresh = url.searchParams.get("fresh") === "1";
-  const cacheKey = `analytics:v3:${days}`;
+  const cacheKey = `analytics:v4:${days}`;
   if (!fresh) {
     const cached = await GIFTS_CACHE.get(cacheKey);
     if (cached) return respond(cached);
@@ -346,8 +349,14 @@ async function buildReport(days, fresh) {
   if (has("destination")) named.destinations = byEvent("destination", "gift_buy_click");
   if (has("gift_name")) {
     named.gifts = { dateRanges: current, dimensions: [{ name: "eventName" }, { name: "customEvent:gift_name" }], metrics: [{ name: "eventCount" }],
-      dimensionFilter: inList("eventName", ["gift_open", "gift_buy_click", "gift_link_copy"]),
-      orderBys: [{ metric: { metricName: "eventCount" }, desc: true }], limit: 1000 };
+      dimensionFilter: inList("eventName", ["gift_open", "gift_buy_click", "gift_link_copy", "gift_impression"]),
+      orderBys: [{ metric: { metricName: "eventCount" }, desc: true }], limit: 5000 };
+    if (has("source")) {
+      named.giftTaps = { dateRanges: current, dimensions: [{ name: "customEvent:gift_name" }], metrics: [{ name: "eventCount" }],
+        dimensionFilter: { andGroup: { expressions: [eq("eventName", "gift_open"), inList("customEvent:source", CARD_SOURCES)] } }, limit: 5000 };
+    }
+    named.giftPages = { dateRanges: current, dimensions: [{ name: "pagePath" }], metrics: [{ name: "screenPageViews" }],
+      dimensionFilter: begins("pagePath", "/gift/"), limit: 5000 };
   }
   if (has("step_index")) {
     named.quizSteps = { dateRanges: current, dimensions: [{ name: "customEvent:step_index" }], metrics: [{ name: "totalUsers" }],
@@ -371,7 +380,7 @@ async function buildReport(days, fresh) {
   if (has("interest")) named.interests = byEvent("interest", "quiz_interest");
   if (has("results_band")) named.resultsBands = byEvent("results_band", "results_view");
 
-  const [r, series, funnel] = await Promise.all([runReports(id, named), dailySeries(id, fresh), funnelReport(id, [range])]);
+  const [r, series, funnel, giftNames] = await Promise.all([runReports(id, named), dailySeries(id, fresh), funnelReport(id, [range]), liveGiftNames()]);
 
   const t = byRange(rows(r.totals));
   const e = byRange(rows(r.events));
@@ -408,6 +417,13 @@ async function buildReport(days, fresh) {
     const { current: cur, previous: prev } = byRange(rows(report));
     return { current: tally(cur), previous: tally(prev) };
   };
+  const taps = r.giftTaps ? Object.fromEntries(rows(r.giftTaps).map((x) => [x["customEvent:gift_name"], x.eventCount])) : null;
+  // Gift page views by gift name; pages of gifts no longer live have no name and stay out.
+  const pageViews = {};
+  for (const x of rows(r.giftPages)) {
+    const name = giftNames[(x.pagePath.match(GIFT_PATH) || [])[1]];
+    if (name) pageViews[name] = (pageViews[name] || 0) + x.screenPageViews;
+  }
   const methods = countsBy(r.shareMethods, "method");
   const openTypes = countsBy(r.shareOpens, "share_type");
 
@@ -426,6 +442,8 @@ async function buildReport(days, fresh) {
     destinations: r.destinations ? rows(r.destinations) : null,
     gifts: gifts && gifts.filter((g) => g.opens || g.clicks).slice(0, 40),
     lowClickGifts: gifts && lowClickGifts(gifts),
+    openedGifts: gifts && { fromCards: taps != null, gifts: mostOpenedGifts(gifts, taps, pageViews) },
+    rarelyTapped: gifts && taps && rarelyTappedGifts(gifts, taps),
     quizSteps: r.quizSteps ? rows(r.quizSteps) : null,
     recipients: recipientRows && recipientRows
       .filter((x) => x.eventName === "quiz_complete" && notSet(x.value))
@@ -440,6 +458,16 @@ async function buildReport(days, fresh) {
     shareRecipients,
     shareOccasions: occasionRows && shareBreakdown(occasionRows),
   };
+}
+
+/** Live gift names by row id, from the catalog the cron keeps in KV (empty if it can't be read). */
+async function liveGiftNames() {
+  try {
+    const cached = await GIFTS_CACHE.get(GIFTS_KEY, "json");
+    return Object.fromEntries(((cached && cached.rows) || []).map((g) => [g.row_id, String(g.Gift || "")]));
+  } catch {
+    return {};
+  }
 }
 
 /** Closed funnel by user: each step counts people who also did every earlier step. */

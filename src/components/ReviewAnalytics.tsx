@@ -7,10 +7,10 @@ import { INTEREST_LABELS } from "../data/gifts";
 import { RESULTS_BANDS } from "../data/analytics";
 import { CHANGES } from "../data/changes";
 import {
-  addDays, beforeAfter, change, fmt, fmtKpi, fmtRate, fmtShare, giftStats, kpis, lowClickGifts, mostCopiedGifts, NA, per100,
-  shareBreakdown, shareTotals, takeaways,
-  type ChangeImpact, type CopiedGift, type DailyRow, type Funnel, type GiftStat, type KpiKey, type Kpis, type PeriodData,
-  type ShareBreakdown, type ShareTotals, type SourceRow, type WindowStats,
+  addDays, beforeAfter, change, fmt, fmtKpi, fmtRate, fmtShare, giftStats, kpis, lowClickGifts, mostCopiedGifts, mostOpenedGifts, NA,
+  per100, rarelyTappedGifts, shareBreakdown, shareTotals, takeaways,
+  type ChangeImpact, type CopiedGift, type DailyRow, type Funnel, type GiftStat, type KpiKey, type Kpis, type OpenedGift,
+  type PeriodData, type SeenGift, type ShareBreakdown, type ShareTotals, type SourceRow, type WindowStats,
 } from "../data/insights";
 
 /**
@@ -41,6 +41,9 @@ type Report = {
   destinations: { "customEvent:destination": string; eventCount: number }[] | null;
   gifts: GiftStat[] | null;
   lowClickGifts: { perOpen: number | null; gifts: GiftStat[] } | null;
+  /** fromCards: detail opens count only taps on results cards (false until the source dimension is registered). */
+  openedGifts: { fromCards: boolean; gifts: OpenedGift[] } | null;
+  rarelyTapped: { per100: number | null; gifts: SeenGift[] } | null;
   quizSteps: { "customEvent:step_index": string; totalUsers: number }[] | null;
   recipients: { recipient: string; count: number }[] | null;
   interests: { interest: string; count: number }[] | null;
@@ -461,6 +464,49 @@ function SharesSection({ r }: { r: Report }) {
   );
 }
 
+/* ---------------- what gets opened ---------------- */
+
+function OpenedSection({ r }: { r: Report }) {
+  const opened = r.openedGifts;
+  const opensLabel = opened?.fromCards === false ? "Details opened, with arrow browsing" : "Details opened";
+  const rare = r.rarelyTapped;
+  const missing = (dims: string[]) => needsDim(dims.find((d) => r.missingDims.includes(d)) ?? dims[0]);
+  return (
+    <>
+      <div style={{ margin: "30px 0 14px" }}>
+        <h2 style={{ fontFamily: SANS, fontWeight: 600, fontSize: 20, color: INK, margin: 0 }}>What gets opened</h2>
+        <div style={{ fontFamily: SANS, fontSize: 13, color: INK_2, marginTop: 4, lineHeight: 1.45 }}>
+          How often people go from a gift's tile to its details, in the results modal or on its gift page, and which cards get seen but rarely tapped.
+        </div>
+      </div>
+      <Card
+        title="Most opened gifts"
+        sub={opened?.fromCards === false
+          ? "Top 12 by details opened plus gift page views. Until the source custom dimension is registered, details opened also counts browsing with the arrows in the details."
+          : "Top 12 by details opened from a results tile plus gift page views, with store clicks and link copies for context"}
+        table={opened?.gifts.length ? <DataTable head={["Gift", opensLabel, "Gift page views", "Total", "Store clicks", "Copied"]}
+          rows={opened.gifts.map((g) => [g.name, fmt(g.opens), fmt(g.pageViews), fmt(g.total), fmt(g.clicks), fmt(g.copies)])} /> : undefined}
+      >
+        {opened ? (opened.gifts.length ? (
+          <HBars items={opened.gifts.map((g) => ({
+            label: g.name, value: g.total,
+            tip: `${g.name}: ${fmt(g.opens)} ${opensLabel.toLowerCase()}, ${fmt(g.pageViews)} gift page views, ${fmt(g.clicks)} store clicks, ${fmt(g.copies)} copied`,
+          }))} />
+        ) : <Empty text="No gift details opened in this period." />) : <Empty text={needsDim("gift_name")} />}
+      </Card>
+      <Card
+        title="Seen but rarely tapped"
+        sub={`Seen at least 20 times on results, with fewer taps per 100 seen than all gifts together${rare?.per100 != null ? ` (${fmtRate(rare.per100)} per 100 seen)` : ""}. Cards lower on the page get fewer taps, so a gift here may need a better photo or title, or may just rank low.`}
+      >
+        {rare ? (rare.gifts.length
+          ? <DataTable head={["Gift", "Seen", "Taps", "Per 100 seen"]} rows={rare.gifts.slice(0, 12).map((g) => [g.name, fmt(g.seen), fmt(g.taps), fmtRate(g.tapsPer100Seen)])} />
+          : <Empty text={rare.per100 == null ? FILLS_IN : "No gift fits this in the period."} />)
+          : <Empty text={missing(["gift_name", "source"])} />}
+      </Card>
+    </>
+  );
+}
+
 /* ---------------- the page ---------------- */
 
 const RANGES = [7, 30, 90] as const;
@@ -752,6 +798,7 @@ function Dashboard({ r }: { r: Report }) {
       </div>
 
       <SharesSection r={r} />
+      <OpenedSection r={r} />
 
       <div style={twoUp}>
         <Card title="Devices" sub="Visits by device; the second number is store clicks per 100 visits"
@@ -839,16 +886,22 @@ function mockReport(days: number, variant: string | null): Report {
     { sessionSource: "linkedin.com", sessions: n(60), engagedSessions: n(35), storeClicks: n(4) },
     { sessionSource: "reddit.com", sessions: 6, engagedSessions: 4, storeClicks: 3 },
   ];
+  // name, opens, store clicks, copies, times seen, taps from a tile, gift page views
   const giftRows = [
-    ["Sound Clock: Alarmo", 96, 41, 6], ["Fluff Yeah Slippers", 71, 33, 3], ["Exploding Kittens: Original Edition", 58, 19, 4],
-    ["Ember Mug 2", 44, 6, 1], ["Personalized Star Map", 31, 4, 9], ["Le Creuset Mini Cocotte", 22, 9, 0], ["Bonsai Starter Kit", 17, 2, 2],
-    ["Vinyl Record Frame", 9, 1, 0], ["Polaroid Go Gen 2", 6, 3, 1], ["Mystery Book Box", 2, 0, 2],
+    ["Sound Clock: Alarmo", 96, 41, 6, 610, 81, 22], ["Fluff Yeah Slippers", 71, 33, 3, 540, 60, 9], ["Exploding Kittens: Original Edition", 58, 19, 4, 480, 47, 14],
+    ["Ember Mug 2", 44, 6, 1, 520, 31, 3], ["Personalized Star Map", 31, 4, 9, 300, 24, 31], ["Le Creuset Mini Cocotte", 22, 9, 0, 410, 15, 2],
+    ["Bonsai Starter Kit", 17, 2, 2, 380, 12, 6], ["Vinyl Record Frame", 9, 1, 0, 260, 7, 0], ["Polaroid Go Gen 2", 6, 3, 1, 90, 5, 4],
+    ["Mystery Book Box", 2, 0, 2, 15, 2, 1], ["Hand-Knit Wool Throw", 0, 0, 1, 0, 0, 12],
   ] as const;
-  const gifts = giftStats(giftRows.flatMap(([name, o, c, k]) => [
+  const gifts = giftStats(giftRows.flatMap(([name, o, c, k, seen]) => [
     { eventName: "gift_open", name, eventCount: n(o) }, { eventName: "gift_buy_click", name, eventCount: n(c) },
-    { eventName: "gift_link_copy", name, eventCount: n(k) },
+    { eventName: "gift_link_copy", name, eventCount: n(k) }, { eventName: "gift_impression", name, eventCount: n(seen) },
   ]));
   const missing = variant === "missing";
+  // ?mock=nosource: everything but the source dimension, so detail opens fall back to every gift_open.
+  const noSource = variant === "nosource";
+  const taps = noSource ? null : Object.fromEntries(giftRows.map(([name, , , , , t]) => [name, n(t)]));
+  const giftPageViews = Object.fromEntries(giftRows.map(([name, , , , , , pv]) => [name, n(pv)]));
   // gift_share by method and share_open by share_type, as GA would split them.
   const methodsOf = (p: PeriodData) => {
     const all = p.events.gift_share?.eventCount ?? 0;
@@ -876,7 +929,7 @@ function mockReport(days: number, variant: string | null): Report {
   ]));
   return {
     ok: true, days, generatedAt: new Date().toISOString(), today,
-    missingDims: missing ? ["gift_name", "recipient", "interest", "results_band", "occasion", "method", "share_type"] : [],
+    missingDims: missing ? ["gift_name", "recipient", "interest", "results_band", "occasion", "method", "share_type", "source"] : noSource ? ["source"] : [],
     totals: current.totals, events: current.events, results: current.results,
     kpis: { current: kpis(current), previous: kpis(previous) },
     takeaways: takeaways({ days, current, previous, funnel, sources, shareRecipients }),
@@ -891,8 +944,10 @@ function mockReport(days: number, variant: string | null): Report {
     ],
     newVsReturning: [{ newVsReturning: "new", activeUsers: Math.round(v * 0.8) }, { newVsReturning: "returning", activeUsers: Math.round(v * 0.2) }],
     destinations: [{ "customEvent:destination": "amazon", eventCount: n(140) }, { "customEvent:destination": "brand", eventCount: n(101) }],
-    gifts: missing ? null : gifts,
+    gifts: missing ? null : gifts.filter((g) => g.opens || g.clicks),
     lowClickGifts: missing ? null : lowClickGifts(gifts),
+    openedGifts: missing ? null : { fromCards: taps != null, gifts: mostOpenedGifts(gifts, taps, giftPageViews) },
+    rarelyTapped: missing || !taps ? null : rarelyTappedGifts(gifts, taps),
     quizSteps: [0, 1, 2, 3, 4, 5].map((s) => ({ "customEvent:step_index": String(s), totalUsers: Math.round(v * 0.56 * Math.pow(0.9, s)) })),
     recipients: missing ? null : [
       ["partner", 310], ["friend", 220], ["parent", 180], ["sibling", 96], ["self", 74], ["child", 61], ["coworker", 40], ["grandparent", 22], ["mentor", 12],

@@ -2,7 +2,7 @@
 /**
  * Checks the pure math behind the /review Analytics tab (src/data/insights.ts)
  * on hand-made cases: KPI changes, the takeaways, the before/after windows
- * around site changes, the opened-but-rarely-clicked list, and sharing.
+ * around site changes, the per-gift lists (opened, seen, clicked), and sharing.
  *
  *   node scripts/check-insights.mjs
  *
@@ -228,6 +228,52 @@ check("giftStats and lowClickGifts", () => {
   assert.equal(low.perOpen, 36 / 166);
   assert.deepEqual(low.gifts.map((g) => g.name), ["B", "C"], "D has under 3 opens; A and E click above the average");
   assert.deepEqual(I.lowClickGifts([]), { perOpen: null, gifts: [] });
+});
+
+/* ---------- opened and seen ---------- */
+
+const statRows = (list) => list.flatMap(([name, opens, clicks, copies, seen]) => [
+  { eventName: "gift_open", name, eventCount: opens }, { eventName: "gift_buy_click", name, eventCount: clicks },
+  { eventName: "gift_link_copy", name, eventCount: copies }, { eventName: "gift_impression", name, eventCount: seen },
+]);
+
+check("giftStats counts gift_impression as times seen", () => {
+  const [a] = I.giftStats(statRows([["A", 5, 1, 0, 40]]));
+  assert.deepEqual(a, { name: "A", opens: 5, clicks: 1, copies: 0, seen: 40 });
+});
+
+check("mostOpenedGifts: tile taps plus gift page views, most first", () => {
+  const stats = I.giftStats(statRows([["A", 30, 6, 1, 200], ["B", 12, 1, 0, 150], ["C", 2, 0, 3, 40], ["D", 0, 0, 0, 90]]));
+  // A's 30 opens include arrow browsing; only 20 were taps on its tile. E was only ever visited on its gift page.
+  const out = I.mostOpenedGifts(stats, { A: 20, B: 10, C: 1, "(not set)": 7 }, { A: 4, C: 15, E: 9, "(not set)": 3 });
+  assert.deepEqual(out.map((g) => [g.name, g.opens, g.pageViews, g.total]), [["A", 20, 4, 24], ["C", 1, 15, 16], ["B", 10, 0, 10], ["E", 0, 9, 9]]);
+  assert.deepEqual(out[0], { name: "A", opens: 20, pageViews: 4, total: 24, clicks: 6, copies: 1 });
+  assert.ok(!out.some((g) => g.name === "D"), "seen but never opened stays out");
+  assert.equal(I.mostOpenedGifts(stats, { A: 20, B: 10 }, {}, 1).length, 1);
+});
+
+check("mostOpenedGifts: without the source dimension, every gift_open counts", () => {
+  const stats = I.giftStats(statRows([["A", 30, 6, 1, 200], ["B", 12, 1, 0, 150]]));
+  assert.deepEqual(I.mostOpenedGifts(stats, null, { B: 25 }).map((g) => [g.name, g.opens, g.total]), [["B", 12, 37], ["A", 30, 30]]);
+  assert.deepEqual(I.mostOpenedGifts([], null, {}), []);
+});
+
+check("rarelyTappedGifts: below the all-gift rate, seen 20+ times, most seen first", () => {
+  const stats = I.giftStats(statRows([["A", 0, 0, 0, 200], ["B", 0, 0, 0, 100], ["C", 0, 0, 0, 19], ["D", 0, 0, 0, 50], ["E", 0, 0, 0, 0]]));
+  // all seen gifts: 30 + 2 + 0 + 2 = 34 taps over 369 seen; E's taps came before gift_impression existed
+  const out = I.rarelyTappedGifts(stats, { A: 30, B: 2, D: 2, E: 40 });
+  assert.equal(out.per100, (34 / 369) * 100);
+  assert.deepEqual(out.gifts.map((g) => [g.name, g.seen, g.taps, g.tapsPer100Seen]), [["B", 100, 2, 2], ["D", 50, 2, 4]],
+    "A taps above the average; C was seen only 19 times; E never seen");
+});
+
+check("rarelyTappedGifts: nothing seen yet gives n/a and no list", () => {
+  assert.deepEqual(I.rarelyTappedGifts([], {}), { per100: null, gifts: [] });
+  const stats = I.giftStats(statRows([["A", 10, 2, 0, 0]]));
+  assert.deepEqual(I.rarelyTappedGifts(stats, { A: 10 }), { per100: null, gifts: [] });
+  const none = I.rarelyTappedGifts(I.giftStats(statRows([["A", 0, 0, 0, 30], ["B", 0, 0, 0, 30]])), {});
+  assert.equal(none.per100, 0);
+  assert.deepEqual(none.gifts, [], "no taps anywhere: nothing is below the average");
 });
 
 /* ---------- sharing ---------- */

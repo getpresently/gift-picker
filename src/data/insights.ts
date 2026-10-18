@@ -1,7 +1,7 @@
 /**
  * The pure numbers behind the Analytics tab in /review: KPI values and their
  * change against the previous period, the takeaway sentences, before/after
- * windows around site changes, per-gift click rates, and what gets shared.
+ * windows around site changes, per-gift opens and click rates, and what gets shared.
  *
  * No I/O here. The worker (workers-site/analytics.js) runs these on GA4 rows,
  * the dev mock in ReviewAnalytics.tsx runs them on sample rows, and
@@ -63,7 +63,8 @@ export type ChangeImpact = {
   after: WindowStats | null;
 };
 
-export type GiftStat = { name: string; opens: number; clicks: number; copies: number };
+/** Per gift from GA events: opens (every gift_open), store clicks, link copies, and times its card was seen on results. */
+export type GiftStat = { name: string; opens: number; clicks: number; copies: number; seen: number };
 
 /* ---------------- formatting (shared by the worker's sentences and the page) ---------------- */
 
@@ -330,15 +331,16 @@ export function beforeAfter(daily: DailyRow[], seriesStart: string, today: strin
 
 /* ---------------- gifts ---------------- */
 
-/** Opens, store clicks, and link copies per gift from GA rows of (eventName, gift_name, eventCount). */
+/** Per-gift numbers from GA rows of (eventName, gift_name, eventCount). */
 export function giftStats(rows: { eventName: string; name: string; eventCount: number }[]): GiftStat[] {
   const m = new Map<string, GiftStat>();
   for (const r of rows) {
     if (!r.name || r.name === "(not set)") continue;
-    const g = m.get(r.name) ?? { name: r.name, opens: 0, clicks: 0, copies: 0 };
+    const g = m.get(r.name) ?? { name: r.name, opens: 0, clicks: 0, copies: 0, seen: 0 };
     if (r.eventName === "gift_open") g.opens += r.eventCount;
     else if (r.eventName === "gift_buy_click") g.clicks += r.eventCount;
     else if (r.eventName === "gift_link_copy") g.copies += r.eventCount;
+    else if (r.eventName === "gift_impression") g.seen += r.eventCount;
     m.set(r.name, g);
   }
   return [...m.values()].sort((a, b) => b.clicks - a.clicks || b.opens - a.opens);
@@ -357,6 +359,54 @@ export function lowClickGifts(stats: GiftStat[], minOpens = MIN_GIFT_OPENS): { p
     .filter((g) => g.opens >= minOpens && g.clicks / g.opens < perOpen)
     .sort((a, b) => b.opens - a.opens || a.clicks - b.clicks);
   return { perOpen, gifts };
+}
+
+/* ---------------- opened and seen ---------------- */
+
+export type OpenedGift = { name: string; opens: number; pageViews: number; total: number; clicks: number; copies: number };
+
+/**
+ * Gifts by how often people went from a tile to the gift's details: detail
+ * opens plus gift page views, most first. `taps` is gift_open from a results
+ * card (top pick or grid) by gift name; while it is null (the source dimension
+ * is unregistered), detail opens fall back to every gift_open, which includes
+ * browsing with the modal's arrows.
+ */
+export function mostOpenedGifts(stats: GiftStat[], taps: Record<string, number> | null, pageViews: Record<string, number>, limit = 12): OpenedGift[] {
+  const byName = new Map(stats.map((g) => [g.name, g]));
+  const names = new Set([...byName.keys(), ...Object.keys(taps ?? {}), ...Object.keys(pageViews)]);
+  names.delete("(not set)");
+  return [...names]
+    .map((name) => {
+      const g = byName.get(name);
+      const opens = taps ? taps[name] ?? 0 : g?.opens ?? 0;
+      const views = pageViews[name] ?? 0;
+      return { name, opens, pageViews: views, total: opens + views, clicks: g?.clicks ?? 0, copies: g?.copies ?? 0 };
+    })
+    .filter((g) => g.total > 0)
+    .sort((a, b) => b.total - a.total || b.clicks - a.clicks)
+    .slice(0, limit);
+}
+
+/** A card needs this many views before its taps per view mean anything. */
+const MIN_SEEN = 20;
+
+export type SeenGift = { name: string; seen: number; taps: number; tapsPer100Seen: number };
+
+/**
+ * Gifts seen at least `minSeen` times whose taps per 100 seen are below the
+ * rate across all seen gifts, most seen first. Taps on gifts never seen (before
+ * gift_impression existed) stay out of the rate.
+ */
+export function rarelyTappedGifts(stats: GiftStat[], taps: Record<string, number>, minSeen = MIN_SEEN): { per100: number | null; gifts: SeenGift[] } {
+  const seenGifts = stats.filter((g) => g.seen > 0).map((g) => ({ name: g.name, seen: g.seen, taps: taps[g.name] ?? 0 }));
+  const per100All = per100(seenGifts.reduce((a, g) => a + g.taps, 0), seenGifts.reduce((a, g) => a + g.seen, 0));
+  if (per100All == null) return { per100: null, gifts: [] };
+  const gifts = seenGifts
+    .map((g) => ({ ...g, tapsPer100Seen: (g.taps / g.seen) * 100 }))
+    .filter((g) => g.seen >= minSeen && g.tapsPer100Seen < per100All)
+    .sort((a, b) => b.seen - a.seen || a.taps - b.taps);
+  return { per100: per100All, gifts };
 }
 
 /* ---------------- sharing ---------------- */
