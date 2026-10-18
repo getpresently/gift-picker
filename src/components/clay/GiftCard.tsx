@@ -23,6 +23,12 @@ type CommonProps = {
   onToggleSave: (id: string) => void;
   isMobile: boolean;
   onOpenDetails?: () => void;
+  /**
+   * The gift's own page. When set, the name becomes a real link to it so
+   * crawlers can follow card to card; a plain click still goes through
+   * onOpenDetails, and Cmd or Ctrl click opens the page in a new tab.
+   */
+  href?: string;
   feedback?: FeedbackRecord;
   onReport?: (option: FeedbackOption, detail?: string) => void;
   onUndoReport?: () => void;
@@ -111,7 +117,7 @@ function clampLines(n: number): React.CSSProperties {
 }
 
 export function GiftCard(props: Props) {
-  const { gift, tone, saved, onToggleSave, isMobile, onOpenDetails, feedback, onReport, onUndoReport } = props;
+  const { gift, tone, saved, onToggleSave, isMobile, onOpenDetails, href, feedback, onReport, onUndoReport } = props;
   const hero = "hero" in props && props.hero === true;
   const badge = hero ? (props as { badge?: string }).badge : undefined;
   const [hovered, setHovered] = useState(false);
@@ -319,7 +325,20 @@ export function GiftCard(props: Props) {
             ...clampLines(2),
           }}
         >
-          {gift.name}
+          {href ? (
+            <a
+              href={href}
+              onClick={(e) => {
+                if (e.metaKey || e.ctrlKey || e.shiftKey || e.button !== 0) e.stopPropagation();
+                else e.preventDefault();
+              }}
+              style={{ color: "inherit", textDecoration: "none" }}
+            >
+              {gift.name}
+            </a>
+          ) : (
+            gift.name
+          )}
         </div>
 
         {hero && gift.description && (

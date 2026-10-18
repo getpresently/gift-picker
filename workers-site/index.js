@@ -58,6 +58,16 @@ addEventListener("fetch", (event) => {
 async function handleEvent(event) {
   const url = new URL(event.request.url);
 
+  // One address per page for search engines: www and the old /home URL
+  // redirect permanently to the apex home page.
+  if (url.hostname === "www.giftpicker.io") {
+    url.hostname = "giftpicker.io";
+    return Response.redirect(url.toString(), 301);
+  }
+  if (url.pathname.replace(/\/+$/, "") === "/home") {
+    return Response.redirect(`${SITE_ORIGIN}/${url.search}`, 301);
+  }
+
   // Dynamic sitemap: /, /quiz, plus one URL per live gift.
   if (url.pathname === "/sitemap.xml") {
     return serveSitemap(event);
@@ -140,6 +150,11 @@ async function handleEvent(event) {
     // Results are per-visitor quiz output: previews still work, search skips them.
     if (url.pathname.startsWith("/results")) {
       response.headers.set("X-Robots-Tag", "noindex, follow");
+    }
+
+    // The workers.dev copy of the site must not compete with giftpicker.io in search.
+    if (url.hostname.endsWith(".workers.dev")) {
+      response.headers.set("X-Robots-Tag", "noindex");
     }
 
     response.headers.set("X-XSS-Protection", "1; mode=block");
@@ -338,7 +353,7 @@ async function prerenderGiftPage(event, response, giftId) {
 		${label ? `<p style="font-size:20px;margin:0 0 12px;">${escapeHtml(label)}</p>` : ""}
 		${desc ? `<p>${desc}</p>` : ""}
 		<p><a href="${buyLink}" rel="sponsored noopener" style="color:#C4477E;">Buy this gift</a></p>
-		<p>This is a hand-curated gift pick on <a href="${SITE_ORIGIN}/" style="color:#C4477E;">GiftPicker</a>, a free 30-second quiz that recommends genuinely good gifts from 300+ brands. <a href="${SITE_ORIGIN}/quiz" style="color:#C4477E;">Take the quiz</a> to get picks tailored to your recipient.</p>
+		<p>This is a hand-curated gift pick on <a href="${SITE_ORIGIN}/" style="color:#C4477E;">GiftPicker</a>, a free gift finder quiz that recommends genuinely good gifts from 300+ brands. <a href="${SITE_ORIGIN}/quiz" style="color:#C4477E;">Take the quiz</a> to get picks tailored to your recipient.</p>
 		<p style="font-size:12px;color:#8a7a72;">As an Amazon Associate, GiftPicker earns from qualifying purchases.</p>
 	</div>`;
 
@@ -412,7 +427,7 @@ async function prerenderStaticPage(response, path, page) {
 	<div style="max-width:720px;margin:0 auto;padding:48px 24px;font-family:Geist,system-ui,sans-serif;color:#231410;background:#FBF1E1;line-height:1.6;">
 		<h1 style="font-size:36px;line-height:1.1;margin:0 0 12px;">${escapeHtml(page.title.split(" · ")[0])}</h1>
 		<p>${escapeHtml(page.body)}</p>
-		<p><a href="${SITE_ORIGIN}/" style="color:#C4477E;">GiftPicker</a> is a free 30-second gift quiz with hand-curated picks from 300+ brands.</p>
+		<p><a href="${SITE_ORIGIN}/" style="color:#C4477E;">GiftPicker</a> is a free gift finder quiz with hand-curated picks from 300+ brands.</p>
 	</div>`;
     out = replaceBetween(out, "<!--gp-static-->", "<!--/gp-static-->", staticBlock);
   }

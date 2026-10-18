@@ -129,8 +129,8 @@ export function Landing() {
                   textWrap: "pretty" as never,
                 }}
               >
-                Five questions. A shortlist of gifts they'll actually love. Built for the indecisive and the deeply
-                caring.
+                GiftPicker is a free gift finder quiz for the indecisive and the deeply caring. Answer five quick
+                questions about the person and get a shortlist of gifts they'll actually love.
               </p>
 
               <div style={{ display: "flex", gap: 12, marginTop: 28, flexWrap: "wrap" }}>

@@ -319,6 +319,7 @@ export function GiftPage() {
                     saved={saved.has(g.id)}
                     onToggleSave={toggleSave}
                     isMobile={isMobile}
+                    href={`/gift/${g.id}`}
                     onOpenDetails={() => {
                       track("gift_related_open", { from: gift.id, to: g.id });
                       navigate(`/gift/${g.id}`);
