@@ -57,7 +57,6 @@ addEventListener("fetch", (event) => {
 
 async function handleEvent(event) {
   const url = new URL(event.request.url);
-
   // One address per page for search engines: www and the old /home URL
   // redirect permanently to the apex home page.
   if (url.hostname === "www.giftpicker.io") {
