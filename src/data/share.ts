@@ -1,5 +1,6 @@
 import type { Answers } from "./questions";
 import { reconcileAnswers, saveAnswers } from "./questions";
+import { searchShape, track } from "./analytics";
 
 /**
  * Share-link encoding. We pack the quiz answers into short URL params
@@ -68,7 +69,34 @@ export function hydrateAnswersFromShareUrl(): Answers | null {
   if (!fromUrl) return null;
   saveAnswers(fromUrl);
   window.history.replaceState(window.history.state, "", window.location.pathname);
+  // Counts once per landing: the params are gone from the address bar now, so
+  // a second call (React's dev double render, a reload) finds nothing.
+  track("share_open", { share_type: "results", ...searchShape(fromUrl) });
   return fromUrl;
+}
+
+/**
+ * Copied gift links carry ?ref=share, so the gift page can count opens of
+ * shared links (share_open). The canonical URL stays /gift/:id.
+ */
+const SHARE_REF = "share";
+
+export function buildGiftShareUrl(giftId: string): string {
+  const origin = typeof window !== "undefined" ? window.location.origin : "";
+  return `${origin}/gift/${giftId}?ref=${SHARE_REF}`;
+}
+
+export function hasShareRef(search: string): boolean {
+  return new URLSearchParams(search).get("ref") === SHARE_REF;
+}
+
+/** Drops ?ref=share from the address bar, keeping any other params. */
+export function dropShareRef(): void {
+  if (typeof window === "undefined" || !hasShareRef(window.location.search)) return;
+  const params = new URLSearchParams(window.location.search);
+  params.delete("ref");
+  const qs = params.toString();
+  window.history.replaceState(window.history.state, "", `${window.location.pathname}${qs ? `?${qs}` : ""}${window.location.hash}`);
 }
 
 /**

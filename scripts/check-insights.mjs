@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 /**
  * Checks the pure math behind the /review Analytics tab (src/data/insights.ts)
- * on hand-made cases: KPI changes, the three takeaways, the before/after
- * windows around site changes, and the opened-but-rarely-clicked list.
+ * on hand-made cases: KPI changes, the takeaways, the before/after windows
+ * around site changes, the opened-but-rarely-clicked list, and sharing.
  *
  *   node scripts/check-insights.mjs
  *
@@ -123,7 +123,7 @@ check("takeaway (c): direct traffic, a lone source, and a 0-visit source", () =>
   assert.equal(I.bestSource([src("google", 50, 0), src("t.co", 40, 0)], 90, 0), null, "no clicks anywhere, no sentence");
 });
 
-check("takeaways: at most three, none invented", () => {
+check("takeaways: three without share data, none invented", () => {
   const t = I.takeaways({ days: 30, current: cur, previous: prev, funnel: steps(true, [1000, 280, 200, 195, 120, 60]), sources: [src("google", 400, 40), src("producthunt.com", 200, 36)] });
   assert.equal(t.length, 3);
   assert.deepEqual(I.takeaways({ days: 7, current: period(), previous: period(), funnel: { closed: false, steps: [] }, sources: [] }), []);
@@ -228,6 +228,131 @@ check("giftStats and lowClickGifts", () => {
   assert.equal(low.perOpen, 36 / 166);
   assert.deepEqual(low.gifts.map((g) => g.name), ["B", "C"], "D has under 3 opens; A and E click above the average");
   assert.deepEqual(I.lowClickGifts([]), { perOpen: null, gifts: [] });
+});
+
+/* ---------- sharing ---------- */
+
+check("shareTotals: no shares at all gives zeros and n/a rates, not NaN", () => {
+  const t = I.shareTotals(period(), {}, {});
+  assert.deepEqual(
+    [t.resultsShares, t.shared, t.copied, t.giftCopies, t.opens, t.resultsOpens, t.giftOpens],
+    [0, 0, 0, 0, 0, 0, 0],
+  );
+  assert.equal(t.opensPerShare, null);
+  assert.equal(t.opensPerResultsShare, null);
+  assert.equal(t.opensPerGiftCopy, null);
+  assert.equal(I.fmtRate(t.opensPerShare), "n/a");
+});
+
+check("shareTotals: failed copies are not shares; unsplit days still count", () => {
+  const p = period({ events: { gift_share: [50, 40], gift_link_copy: [30, 25], share_open: [120, 90] } });
+  // 8 shares from before method was registered report as (not set)
+  const t = I.shareTotals(p, { shared: 14, copied: 26, failed: 2, "(not set)": 8 }, { results: 60, gift: 45, "(not set)": 15 });
+  assert.equal(t.resultsShares, 48);
+  assert.equal(t.shared, 14);
+  assert.equal(t.copied, 26);
+  assert.equal(t.opensPerShare, 120 / 78);
+  assert.equal(t.opensPerResultsShare, 60 / 48);
+  assert.equal(t.opensPerGiftCopy, 1.5);
+});
+
+check("shareTotals: unregistered method and share_type give null splits, totals still count", () => {
+  const p = period({ events: { gift_share: [12, 10], gift_link_copy: [3, 3], share_open: [9, 9] } });
+  const t = I.shareTotals(p, null, null);
+  assert.equal(t.resultsShares, 12, "without method, failed copies cannot be taken out");
+  assert.equal(t.shared, null);
+  assert.equal(t.copied, null);
+  assert.equal(t.resultsOpens, null);
+  assert.equal(t.giftOpens, null);
+  assert.equal(t.opensPerResultsShare, null);
+  assert.equal(t.opensPerShare, 9 / 15);
+});
+
+check("shareTotals: a previous period with no shares reads as new", () => {
+  const cur = I.shareTotals(period({ events: { gift_share: [6, 6], share_open: [4, 4] } }), { shared: 2, copied: 4 }, { results: 4 });
+  const prev = I.shareTotals(period(), { }, { });
+  assert.deepEqual(I.change(cur.resultsShares, prev.resultsShares), { kind: "new" });
+  assert.deepEqual(I.change(cur.opensPerShare, prev.opensPerShare), { kind: "new" }, "rate with nothing to divide by before");
+  assert.equal(I.change(cur.giftCopies, prev.giftCopies), null, "none in either period shows no change line");
+});
+
+check("giftStats counts copies; mostCopiedGifts ranks them and guards the per-open rate", () => {
+  const rows = [
+    ["A", 40, 10, 6], ["B", 2, 0, 9], ["C", 0, 0, 3], ["D", 12, 1, 0], ["E", 3, 1, 6], ["(not set)", 0, 0, 50],
+  ].flatMap(([name, o, c, k]) => [
+    { eventName: "gift_open", name, eventCount: o }, { eventName: "gift_buy_click", name, eventCount: c }, { eventName: "gift_link_copy", name, eventCount: k },
+  ]);
+  const stats = I.giftStats(rows);
+  assert.equal(stats.find((g) => g.name === "B").copies, 9);
+  const top = I.mostCopiedGifts(stats);
+  assert.deepEqual(top.map((g) => g.name), ["B", "A", "E", "C"], "most copied first, ties by opens; D was never copied; (not set) dropped");
+  assert.equal(top.find((g) => g.name === "A").copiesPer100Opens, 15);
+  assert.equal(top.find((g) => g.name === "E").copiesPer100Opens, 200, "copies can pass opens: gift page copies have no open");
+  assert.equal(top.find((g) => g.name === "B").copiesPer100Opens, null, "under 3 opens");
+  assert.equal(top.find((g) => g.name === "C").copiesPer100Opens, null, "copied from a gift page, never opened on results");
+  assert.equal(I.mostCopiedGifts(stats, 2).length, 2);
+  assert.deepEqual(I.mostCopiedGifts([]), []);
+});
+
+const answerRows = (list) => list.flatMap(([value, quizzes, shares]) => [
+  { eventName: "quiz_complete", value, eventCount: quizzes }, { eventName: "gift_share", value, eventCount: shares },
+]);
+
+check("shareBreakdown: rates per 100 quizzes, n/a under 10 quizzes, (not set) left out", () => {
+  const b = I.shareBreakdown([
+    ...answerRows([["partner", 200, 16], ["friend", 100, 3], ["mentor", 6, 2], ["(not set)", 0, 40]]),
+    { eventName: "gift_share", value: "coworker", eventCount: 1 }, // a reshare from a shared link: no quiz for it
+  ]);
+  assert.deepEqual(b.segments.map((s) => s.value), ["partner", "friend", "mentor", "coworker"], "most shares first");
+  assert.equal(b.segments[0].per100, 8);
+  assert.equal(b.segments[1].per100, 3);
+  assert.equal(b.segments[2].per100, null, "6 quizzes is too few for a rate");
+  assert.equal(b.segments[3].per100, null, "no quizzes at all");
+  assert.equal(b.shares, 22);
+  assert.equal(b.quizzes, 306);
+  assert.equal(b.per100, (22 / 306) * 100);
+});
+
+check("shareBreakdown: no rows, and quizzes without shares", () => {
+  assert.deepEqual(I.shareBreakdown([]), { segments: [], shares: 0, quizzes: 0, per100: null });
+  const b = I.shareBreakdown(answerRows([["partner", 50, 0]]));
+  assert.equal(b.per100, 0);
+  assert.equal(b.segments[0].per100, 0);
+});
+
+check("takeaway (d): the recipient shared most often, against the average", () => {
+  const b = I.shareBreakdown(answerRows([["partner", 200, 18], ["friend", 300, 6], ["parent", 300, 3], ["mentor", 4, 3]]));
+  // partner 9 per 100; mentor (4 quizzes) gets no rate of its own but counts in the average, 30 / 804 = 3.7 per 100
+  assert.equal(
+    I.mostSharedRecipient(b),
+    "People shopping for a partner shared their picks 2.4 times as often as average, 9.0 shares per 100 finished quizzes compared with 3.7 across all recipients.",
+  );
+  const self = I.shareBreakdown(answerRows([["self", 40, 8], ["friend", 300, 6], ["parent", 300, 6]]));
+  assert.match(I.mostSharedRecipient(self), /^People shopping for themselves shared/);
+});
+
+check("takeaway (d): small numbers and close rates give no sentence", () => {
+  assert.equal(I.mostSharedRecipient(null), null, "recipient not registered");
+  assert.equal(I.mostSharedRecipient(I.shareBreakdown([])), null, "no data");
+  assert.equal(I.mostSharedRecipient(I.shareBreakdown(answerRows([["partner", 40, 5], ["friend", 300, 3]]))), null, "8 shares in all is under 10");
+  assert.equal(I.mostSharedRecipient(I.shareBreakdown(answerRows([["partner", 200, 20], ["friend", 9, 0]]))), null, "only one recipient has 10+ quizzes");
+  assert.equal(I.mostSharedRecipient(I.shareBreakdown(answerRows([["partner", 200, 12], ["friend", 200, 9]]))), null, "6 vs 5.3 per 100 is not 1.5 times the average");
+  assert.equal(I.mostSharedRecipient(I.shareBreakdown(answerRows([["partner", 200, 0], ["friend", 200, 0]]))), null, "no shares anywhere");
+  assert.match(
+    I.mostSharedRecipient(I.shareBreakdown(answerRows([["mentor", 12, 2], ["partner", 200, 18], ["friend", 300, 6]]))),
+    /^People shopping for a partner/,
+    "2 shares from 12 quizzes (16.7 per 100) is too few shares to win",
+  );
+  assert.equal(I.mostSharedRecipient(I.shareBreakdown(answerRows([["mentor", 15, 4], ["friend", 300, 6], ["parent", 300, 3]]))), null, "no recipient has 5 shares");
+});
+
+check("takeaways: the share sentence joins the list only when it qualifies", () => {
+  const base = { days: 30, current: cur, previous: prev, funnel: steps(true, [1000, 280, 200, 195, 120, 60]), sources: [src("google", 400, 40), src("producthunt.com", 200, 36)] };
+  const shareRecipients = I.shareBreakdown(answerRows([["partner", 200, 18], ["friend", 300, 6], ["parent", 300, 3]]));
+  const t = I.takeaways({ ...base, shareRecipients });
+  assert.equal(t.length, 4);
+  assert.match(t[3], /^People shopping for a partner/);
+  assert.equal(I.takeaways({ ...base, shareRecipients: null }).length, 3);
 });
 
 console.log(failed ? `\n${failed} check(s) failed` : "\nAll checks passed");

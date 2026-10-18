@@ -6,6 +6,7 @@ import { PriceDisplay } from "./PriceDisplay";
 import { TwinRow } from "./TwinRow";
 import { useImageFallback } from "../../hooks/useImageFallback";
 import { track } from "../../data/analytics";
+import { buildGiftShareUrl } from "../../data/share";
 import type { RankedGift } from "../../data/gifts";
 import type { FeedbackOption, FeedbackRecord } from "../../data/feedback";
 
@@ -115,9 +116,9 @@ export function ProductModal({
   const copyGiftLink = async () => {
     if (!gift) return;
     try {
-      await navigator.clipboard.writeText(`${window.location.origin}/gift/${gift.id}`);
+      await navigator.clipboard.writeText(buildGiftShareUrl(gift.id));
       setLinkCopied(true);
-      track("gift_link_copy", { gift_id: gift.id, source: "modal" });
+      track("gift_link_copy", { gift_id: gift.id, gift_name: gift.name, brand: gift.brand, price: gift.price, source: "modal" });
       setTimeout(() => setLinkCopied(false), 2000);
     } catch {
       // Clipboard unavailable; leave the button as-is.

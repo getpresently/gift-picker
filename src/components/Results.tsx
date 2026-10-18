@@ -13,7 +13,7 @@ import { isDemoting, NOTIFY_OPT_IN_LIVE, postFeedback, postRequest, type Feedbac
 import { NotifyOptIn } from "./clay/NotifyOptIn";
 import { loadSaved, saveSaved } from "../data/saved";
 import { buildShareUrl, hydrateAnswersFromShareUrl, shareOrCopy } from "../data/share";
-import { resultsBand, track } from "../data/analytics";
+import { resultsBand, searchShape, track } from "../data/analytics";
 import { AffiliateDisclosure } from "./clay/AffiliateDisclosure";
 import { buyLinks } from "../data/affiliate";
 import { SiteHeader } from "./clay/SiteHeader";
@@ -118,7 +118,7 @@ export function Results() {
     const url = buildShareUrl(answers);
     const result = await shareOrCopy(url);
     setShareStatus(result);
-    track("gift_share", { method: result });
+    track("gift_share", { method: result, ...searchShape(answers), results_count: picks.length });
     setTimeout(() => setShareStatus("idle"), 2200);
   };
 
