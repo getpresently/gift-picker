@@ -79,10 +79,6 @@ code {
   animation-timing-function: linear;
   animation-iteration-count: infinite;
 }
-.gift-marquee-wrap:hover .gift-marquee,
-.gift-marquee-wrap:focus-within .gift-marquee {
-  animation-play-state: paused;
-}
 @media (prefers-reduced-motion: reduce) {
   .gift-marquee { animation: none; }
   .gift-marquee-wrap { overflow-x: auto !important; }

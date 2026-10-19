@@ -20,9 +20,11 @@ const HOW_STEPS: HowStep[] = [
 ];
 
 // 12 brands → renders cleanly as 6×2 on desktop, 3×4 on mobile.
+// Brands with live gifts in the catalog. Sized to fill two even lines on desktop.
 const BRANDS = [
   "Apple", "Lululemon", "Patagonia", "Pottery Barn", "Anthropologie", "Peloton",
-  "Aesop", "Le Creuset", "Diptyque", "Le Labo", "Smeg", "Bose",
+  "Aesop", "Le Creuset", "Le Labo", "Smeg", "Bose", "LEGO",
+  "Williams Sonoma", "Nintendo", "Jellycat", "Mejuri", "Ray-Ban",
 ];
 
 // The 2021 launch, where the badge's "#3 Product of the Day" comes from.

@@ -90,9 +90,9 @@ function Row({ gifts, size, row }: { gifts: ShowcaseGift[]; size: number; row: n
 
 /**
  * Two full-width rows of gift photos drifting slowly left on a loop, out of
- * step with each other. Hovering pauses them; with reduced motion they are
- * still rows you can scroll (styles in index.css). The gifts alternate
- * between the rows, so neighbors in SHOWCASE_IDS never sit side by side.
+ * step with each other. With reduced motion they are still rows you can
+ * scroll (styles in index.css). The gifts alternate between the rows, so
+ * neighbors in SHOWCASE_IDS never sit side by side.
  */
 export function GiftCarousel({ isMobile }: { isMobile: boolean }) {
   const [gifts, setGifts] = useState<ShowcaseGift[]>([]);

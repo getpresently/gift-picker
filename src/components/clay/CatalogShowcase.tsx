@@ -76,7 +76,7 @@ export function CatalogShowcase({
             textWrap: "balance" as never,
           }}
         >
-          More than 800 gifts from 600+ brands. The quiz finds the ones that fit the person you're shopping for.
+          More than 1,000 gifts from 600+ brands. The quiz finds the ones that fit the person you're shopping for.
         </p>
       </div>
 
