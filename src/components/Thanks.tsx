@@ -8,15 +8,13 @@ import { liveThanks, THANKS_INTRO, THANKS_UPDATED } from "../data/thanks";
 
 /**
  * /thanks: credits for the people and lists that led us to gifts in the
- * catalog (data in src/data/thanks.ts). Only live gifts are listed; a local
- * preview (npm run dev) shows every gift, marking the ones still in review.
+ * catalog (data in src/data/thanks.ts). Only live gifts are listed.
  */
 export function ThanksPage() {
   const navigate = useNavigate();
   const { data, loading, error } = useGifts();
   const live = useMemo(() => new Set(data.map((g) => g.id)), [data]);
-  const preview = import.meta.env.DEV;
-  const sources = liveThanks(preview || loading || error ? null : live);
+  const sources = liveThanks(error ? null : live);
   const openGift = (id: string) => (e: MouseEvent<HTMLAnchorElement>) => {
     if (e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
     e.preventDefault();
@@ -50,7 +48,6 @@ export function ThanksPage() {
                   <a href={`/gift/${g.id}`} onClick={openGift(g.id)} style={linkStyle}>
                     {g.label}
                   </a>
-                  {preview && !live.has(g.id) && <span style={{ color: "rgba(35,20,16,0.45)" }}> (in review)</span>}
                 </span>
               ))}
               .

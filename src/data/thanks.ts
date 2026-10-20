@@ -7,8 +7,7 @@
  *
  * A gift is listed only while it is live on the site, and a source with no
  * live gifts is left out, so rejecting or retiring a gift needs no edit here.
- * Each gift carries its own short label so local previews can show gifts
- * still waiting in /review. Credit only what the source actually recommends
+ * Each gift carries its own short label for the credit line. Credit only what the source actually recommends
  * (check the page before adding), and add a source whenever a batch of gifts
  * comes from someone else's list. House style: no em-dashes, the Oxford comma.
  * Links in a note use the blog's [label](url) form (parseInline in posts.ts).
@@ -76,7 +75,7 @@ export const THANKS: ThanksSource[] = [
   },
 ];
 
-/** The sources and gifts to show, given the live gift IDs (null shows every gift, for local previews). */
+/** The sources and gifts to show, given the live gift IDs (null, when the catalog can't load, shows every gift). */
 export function liveThanks(live: Set<string> | null): ThanksSource[] {
   return THANKS.map((s) => ({ ...s, gifts: live ? s.gifts.filter((g) => live.has(g.id)) : s.gifts })).filter((s) => s.gifts.length > 0);
 }
