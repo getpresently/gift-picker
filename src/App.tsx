@@ -9,6 +9,7 @@ import { BlogIndex, BlogPostPage } from "./components/Blog";
 import { BrandsPage } from "./components/Brands";
 import { GiftPage } from "./components/GiftPage";
 import { PrivacyPage, TermsPage } from "./components/Legal";
+import { ThanksPage } from "./components/Thanks";
 import { Review } from "./components/Review";
 import { Landing } from "./components/Landing";
 import { Quiz } from "./components/Quiz";
@@ -47,6 +48,7 @@ function App(): JSX.Element {
           <Route path="/gift/:giftId" element={<GiftPage />} />
           <Route path="/privacy" element={<PrivacyPage />} />
           <Route path="/terms" element={<TermsPage />} />
+          <Route path="/thanks" element={<ThanksPage />} />
           <Route path="/brands" element={<BrandsPage />} />
           {/* Gift guides; posts live in src/data/posts.ts and the worker prerenders both routes. */}
           <Route path="/blog" element={<BlogIndex />} />

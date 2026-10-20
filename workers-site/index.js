@@ -5,6 +5,7 @@ import {
 import { serveAnalytics } from "./analytics.js";
 import { APPS_SCRIPT_URL, GIFT_PATH, GIFTS_KEY } from "./config.js";
 import { SHOWCASE_IDS } from "../src/data/showcase.ts";
+import { liveThanks, THANKS_INTRO } from "../src/data/thanks.ts";
 import { POSTS, findPost, formatPostDate, parseInline, postShareImage, postsFeaturing, postTitleTag, relatedPosts, segmentHref } from "../src/data/posts.ts";
 
 /**
@@ -68,7 +69,7 @@ async function handleEvent(event) {
     return Response.redirect(`${SITE_ORIGIN}/${url.search}`, 301);
   }
 
-  // Dynamic sitemap: /, /brands, the blog, plus one URL per live gift.
+  // Dynamic sitemap: /, /brands, /thanks, the blog, plus one URL per live gift.
   if (url.pathname === "/sitemap.xml") {
     return serveSitemap(event);
   }
@@ -145,7 +146,9 @@ async function handleEvent(event) {
     const staticPage = STATIC_PAGES[url.pathname.replace(/\/+$/, "") || "/"];
     if (staticPage) {
       try {
-        response = await prerenderStaticPage(response, url.pathname.replace(/\/+$/, ""), staticPage);
+        // /thanks lists only the gifts that are live right now.
+        const page = staticPage.thanks ? { ...staticPage, html: thanksHtml(await loadGifts(event)) } : staticPage;
+        response = await prerenderStaticPage(response, url.pathname.replace(/\/+$/, ""), page);
       } catch (e) {
         // fall through with the plain SPA shell
       }
@@ -441,7 +444,31 @@ const STATIC_PAGES = {
     title: "Terms of Use · GiftPicker",
     description: "The terms for using GiftPicker, a free gift recommendation quiz with hand-curated picks from independent merchants.",
   },
+  "/thanks": {
+    title: "Thanks · GiftPicker",
+    description: "The people and gift guides that led us to gifts in GiftPicker's hand-curated catalog, and the gifts each one inspired.",
+    thanks: true,
+  },
 };
+
+/** /thanks crawler copy from src/data/thanks.ts, listing only live gifts (none if the catalog can't load). */
+function thanksHtml(rows) {
+  const live = new Set((rows || []).map((g) => g.row_id));
+  const sources = liveThanks(live)
+    .map(
+      (s) => `
+		<h2>${escapeHtml(s.by)}</h2>
+		<p>${inlineHtml(s.note, live)}</p>
+		<ul>${s.gifts.map((g) => `<li><a href="${SITE_ORIGIN}/gift/${g.id}" ${LINK_STYLE}>${escapeHtml(g.label)}</a></li>`).join("")}</ul>`,
+    )
+    .join("");
+  return `
+	<div style="max-width:720px;margin:0 auto;padding:48px 24px;font-family:Geist,system-ui,sans-serif;color:#231410;background:#FBF1E1;line-height:1.6;">
+		<h1 style="font-size:36px;line-height:1.1;margin:0 0 12px;">Thanks</h1>
+		<p>${escapeHtml(THANKS_INTRO)}</p>${sources}
+		<p><a href="${SITE_ORIGIN}/" style="color:#C4477E;">GiftPicker</a> is a free 60-second gift finder quiz with hand-curated picks from 800+ brands.</p>
+	</div>`;
+}
 
 async function prerenderStaticPage(response, path, page) {
   const html = await response.text();
@@ -464,7 +491,9 @@ async function prerenderStaticPage(response, path, page) {
 	<meta name="twitter:description" content="${desc}"/>
 	<meta name="twitter:image" content="${DEFAULT_OG_IMAGE}"/>`;
   let out = replaceBetween(html, "<!--gp-meta-->", "<!--/gp-meta-->", metaBlock);
-  if (page.body) {
+  if (page.html) {
+    out = replaceBetween(out, "<!--gp-static-->", "<!--/gp-static-->", page.html);
+  } else if (page.body) {
     const staticBlock = `
 	<div style="max-width:720px;margin:0 auto;padding:48px 24px;font-family:Geist,system-ui,sans-serif;color:#231410;background:#FBF1E1;line-height:1.6;">
 		<h1 style="font-size:36px;line-height:1.1;margin:0 0 12px;">${escapeHtml(page.title.split(" · ")[0])}</h1>
@@ -479,7 +508,7 @@ async function prerenderStaticPage(response, path, page) {
 
 function buildSitemap(rows) {
   const postDate = (p) => p.updated || p.published;
-  const urls = [{ loc: `${SITE_ORIGIN}/` }, { loc: `${SITE_ORIGIN}/brands` }]
+  const urls = [{ loc: `${SITE_ORIGIN}/` }, { loc: `${SITE_ORIGIN}/brands` }, { loc: `${SITE_ORIGIN}/thanks` }]
     .concat(POSTS.length ? [{ loc: `${SITE_ORIGIN}/blog`, lastmod: POSTS.map(postDate).sort().pop() }] : [])
     .concat(POSTS.map((p) => ({ loc: `${SITE_ORIGIN}/blog/${p.slug}`, lastmod: postDate(p) })))
     .concat((rows || []).map((g) => ({ loc: `${SITE_ORIGIN}/gift/${g.row_id}` })));

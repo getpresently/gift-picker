@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 
 const LINKS: { label: string; to: string }[] = [
   { label: "For brands", to: "/brands" },
+  { label: "Thanks", to: "/thanks" },
   { label: "Privacy", to: "/privacy" },
   { label: "Terms", to: "/terms" },
 ];

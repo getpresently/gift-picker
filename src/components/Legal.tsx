@@ -12,14 +12,18 @@ import { AFFILIATE_DISCLOSURE } from "../data/affiliate";
 const LAST_UPDATED = "September 21, 2026";
 
 /**
- * Shared shell for the two legal pages: same header, reading column, and
- * footer as the rest of the site so /privacy and /terms don't feel bolted on.
+ * Shared shell for the plain text pages (/privacy, /terms, /thanks): same
+ * header, reading column, and footer as the rest of the site so they don't
+ * feel bolted on.
  */
-function LegalShell({
+export function LegalShell({
   title,
+  updated = LAST_UPDATED,
   children,
 }: {
   title: string;
+  /** The "Last updated" date, as shown. */
+  updated?: string;
   children: ReactNode;
 }) {
   const navigate = useNavigate();
@@ -79,7 +83,7 @@ function LegalShell({
                 margin: "0 0 32px",
               }}
             >
-              Last updated: {LAST_UPDATED}
+              Last updated: {updated}
             </p>
 
             <div
@@ -115,7 +119,7 @@ function LegalShell({
   );
 }
 
-const sectionHeadingStyle: CSSProperties = {
+export const sectionHeadingStyle: CSSProperties = {
   fontFamily: '"Instrument Serif", serif',
   fontSize: 22,
   fontWeight: 400,
@@ -123,11 +127,11 @@ const sectionHeadingStyle: CSSProperties = {
   margin: "28px 0 10px",
 };
 
-const paragraphStyle: CSSProperties = {
+export const paragraphStyle: CSSProperties = {
   margin: "0 0 14px",
 };
 
-const linkStyle: CSSProperties = {
+export const linkStyle: CSSProperties = {
   color: "#C4477E",
   textDecoration: "underline",
   textUnderlineOffset: 2,
