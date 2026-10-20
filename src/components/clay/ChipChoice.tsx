@@ -16,6 +16,7 @@ export function ChipChoice({ option, selected, atMax, onClick }: Props) {
   return (
     <button
       type="button"
+      aria-pressed={selected}
       onClick={!disabled ? onClick : undefined}
       onMouseEnter={() => !disabled && setHovered(true)}
       onMouseLeave={() => {
@@ -58,7 +59,7 @@ export function ChipChoice({ option, selected, atMax, onClick }: Props) {
         outline: "none",
       }}
     >
-      {option.e && <span style={{ fontSize: 18, lineHeight: 1, flexShrink: 0 }}>{option.e}</span>}
+      {option.e && <span aria-hidden="true" style={{ fontSize: 18, lineHeight: 1, flexShrink: 0 }}>{option.e}</span>}
       <span style={{ lineHeight: 1.2 }}>{option.l}</span>
     </button>
   );

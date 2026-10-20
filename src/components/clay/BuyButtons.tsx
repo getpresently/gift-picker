@@ -1,11 +1,11 @@
 import type { CSSProperties } from "react";
 import { Pillow } from "./Pillow";
 import { track } from "../../data/analytics";
-import { buyLinks, openBuyLink } from "../../data/affiliate";
+import { affiliateUrl, buyLinks } from "../../data/affiliate";
 import type { Gift } from "../../data/gifts";
 
-/** Logs gift_buy_click and opens the store (with the Amazon tag) in a new tab. */
-export function openGiftBuy(gift: Gift, url: string, destination: "amazon" | "brand", source: string) {
+/** Logs gift_buy_click. */
+function trackGiftBuy(gift: Gift, destination: "amazon" | "brand", source: string) {
   track("gift_buy_click", {
     gift_id: gift.id,
     gift_name: gift.name,
@@ -14,7 +14,26 @@ export function openGiftBuy(gift: Gift, url: string, destination: "amazon" | "br
     source,
     destination,
   });
-  openBuyLink(url);
+}
+
+/**
+ * Link props that turn a Pillow into the real store link (with the Amazon
+ * tag), so the store URL is in the page for crawlers and AI agents. The
+ * browser opens it in a new tab; the click logs gift_buy_click on the way.
+ * Amazon links are marked sponsored, since they carry the affiliate tag.
+ * No `noreferrer`, so merchants and Amazon can see the traffic came from
+ * giftpicker.io.
+ */
+export function buyLinkProps(gift: Gift, url: string, destination: "amazon" | "brand", source: string) {
+  return {
+    href: affiliateUrl(url),
+    external: true,
+    rel: destination === "amazon" ? "sponsored noopener" : "noopener",
+    onClick: (e?: { stopPropagation?: () => void }) => {
+      e?.stopPropagation?.();
+      trackGiftBuy(gift, destination, source);
+    },
+  };
 }
 
 type Props = {
@@ -36,16 +55,12 @@ type Props = {
  */
 export function BuyButtons({ gift, source, oneRow, style }: Props) {
   const { amazon, brand } = buyLinks(gift);
-  const buy = (url: string, destination: "amazon" | "brand") => (e?: { stopPropagation?: () => void }) => {
-    e?.stopPropagation?.();
-    openGiftBuy(gift, url, destination, source);
-  };
   const storeLabel = `Buy on ${gift.brand || "store"}`;
 
   return (
     <div style={{ display: "flex", gap: 10, flexWrap: oneRow ? "nowrap" : "wrap", ...style }}>
       {amazon && (
-        <Pillow tone="coral" size="md" onClick={buy(amazon, "amazon")} style={oneRow ? { flexShrink: 0, whiteSpace: "nowrap" } : undefined}>
+        <Pillow tone="coral" size="md" {...buyLinkProps(gift, amazon, "amazon", source)} style={oneRow ? { flexShrink: 0, whiteSpace: "nowrap" } : undefined}>
           Buy on Amazon →
         </Pillow>
       )}
@@ -53,7 +68,7 @@ export function BuyButtons({ gift, source, oneRow, style }: Props) {
         <Pillow
           tone={amazon ? "ink" : "coral"}
           size="md"
-          onClick={buy(brand, "brand")}
+          {...buyLinkProps(gift, brand, "brand", source)}
           style={oneRow ? { minWidth: 0, display: "inline-flex", whiteSpace: "nowrap" } : undefined}
         >
           {oneRow ? (

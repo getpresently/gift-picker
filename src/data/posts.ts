@@ -152,7 +152,7 @@ export function postGiftIds(post: Post): string[] {
 }
 
 /** The real date the current text was written; published dates are spread over the months before it. */
-const REVISED = "2026-10-17";
+const REVISED = "2026-10-18";
 
 const ALL_POSTS: Post[] = [
   {
@@ -162,13 +162,13 @@ const ALL_POSTS: Post[] = [
       "Learn the everyday clues that show which love language someone speaks, then find gift ideas for quality time, words, acts of service, touch, and gifts.",
     related: ["just-because-gifts-for-your-partner", "gifts-for-mom-and-dad-from-morning-to-night", "gifts-for-men-who-say-they-dont-need-anything"],
     published: "2026-10-08",
-    updated: REVISED,
+    updated: "2026-10-19",
     intro: [
       "The idea of love languages comes from author Gary Chapman, who described five ways people tend to give and receive affection: quality time, words of affirmation, acts of service, physical touch, and receiving gifts. Most people respond to all five to some degree, though one or two usually matter more than the rest.",
       "That makes the idea useful when you are choosing a present. A gift that matches how someone feels cared for tends to land well, even when it costs less than something picked at random. The hard part is working out which language your person speaks, so this guide starts there before it gets to the gifts.",
     ],
     body: [
-      { kind: "h2", text: "Start with how they show love" },
+      { kind: "h2", text: "Which love language do they speak?" },
       {
         kind: "p",
         text: "People often express love in the way they hope to receive it, so pay attention to what they do for you and for the people around them. A few patterns to look for:",
@@ -359,13 +359,13 @@ const ALL_POSTS: Post[] = [
     metaTitle: "How much to spend on a coworker gift · GiftPicker",
     related: ["what-to-send-someone-who-is-sick-or-grieving", "gifts-for-men-who-say-they-dont-need-anything", "how-to-choose-a-gift-by-love-language"],
     published: "2026-08-05",
-    updated: REVISED,
+    updated: "2026-10-19",
     intro: [
       "Most workplace gift questions depend on who the gift is from and how big the moment is. A birthday treat from the person at the next desk calls for something different from a farewell collection taken up by a whole department, and the budget follows from there.",
       "This guide is organized by price. Each tier lists the occasions it usually fits, along with gifts from our catalog that suit a work relationship, meaning friendly and thoughtful without being too personal.",
     ],
     body: [
-      { kind: "h2", text: "A rough guide to spending" },
+      { kind: "h2", text: "How much should you spend on a coworker gift?" },
       { kind: "p", text: "There is no fixed rule, but these ranges keep most offices comfortable:" },
       {
         kind: "list",

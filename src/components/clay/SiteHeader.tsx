@@ -50,9 +50,9 @@ export function SiteHeader({
             height: isMobile ? 38 : 44,
           }}
         >
-          <Wordmark size={isMobile ? "md" : "lg"} onClick={onLogoClick} />
+          <Wordmark size={isMobile ? "md" : "lg"} onClick={onLogoClick} href={onLogoClick ? "/" : undefined} />
           {(nav || children) && (
-            <div style={{ display: "flex", alignItems: "center", gap: isMobile ? 14 : 22, flexShrink: 0 }}>
+            <nav aria-label="Site" style={{ display: "flex", alignItems: "center", gap: isMobile ? 14 : 22, flexShrink: 0 }}>
               {nav && (
                 <a
                   href="/blog"
@@ -71,7 +71,7 @@ export function SiteHeader({
                 </a>
               )}
               {children}
-            </div>
+            </nav>
           )}
         </div>
       </div>

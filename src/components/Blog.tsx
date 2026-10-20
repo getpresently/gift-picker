@@ -97,7 +97,7 @@ function BlogShell({ children }: { children: ReactNode }) {
         <AmbientGlow variant="results" />
 
         <SiteHeader onLogoClick={() => navigate("/")}>
-          <Pillow tone="coral" size="sm" onClick={() => navigate("/quiz")}>
+          <Pillow tone="coral" size="sm" href="/quiz" onClick={() => navigate("/quiz")}>
             Find a gift →
           </Pillow>
         </SiteHeader>
@@ -111,8 +111,10 @@ function BlogShell({ children }: { children: ReactNode }) {
             margin: "0 auto",
           }}
         >
+          <main>
           {children}
 
+          </main>
           <footer
             style={{
               marginTop: isMobile ? 40 : 56,
@@ -300,6 +302,7 @@ function GiftRow({
               saved={saved.has(g.id)}
               onToggleSave={onToggleSave}
               isMobile={isMobile}
+              href={`/gift/${g.id}`}
               onOpenDetails={() => {
                 track("blog_gift_open", { slug, gift_id: g.id, from: "card" });
                 navigate(`/gift/${g.id}`);
@@ -362,7 +365,7 @@ export function BlogPostView({
           <p style={{ fontFamily: SANS, fontSize: 15, color: "rgba(35,20,16,0.6)", margin: "0 0 24px" }}>
             It may have moved. The rest of our gift guides are one click away.
           </p>
-          <Pillow tone="coral" size="lg" onClick={() => navigate("/blog")}>
+          <Pillow tone="coral" size="lg" href="/blog" onClick={() => navigate("/blog")}>
             See all gift guides
           </Pillow>
         </div>
@@ -402,6 +405,11 @@ export function BlogPostView({
           </h1>
           <div style={{ fontFamily: SANS, fontSize: 13, color: DIM, marginBottom: isMobile ? 22 : 30 }}>
             By GiftPicker · <time dateTime={post.published}>{formatPostDate(post.published)}</time>
+            {post.updated && post.updated !== post.published && (
+              <>
+                {" "}· Updated <time dateTime={post.updated}>{formatPostDate(post.updated)}</time>
+              </>
+            )}
           </div>
           {post.intro.map((p, i) => (
             <p key={i} style={{ ...text, fontSize: isMobile ? 18 : 20, lineHeight: 1.6, color: "rgba(35,20,16,0.78)" }}>
@@ -476,6 +484,7 @@ export function BlogPostView({
           <Pillow
             tone="coral"
             size="lg"
+            href="/quiz"
             onClick={() => {
               track("blog_quiz_click", { slug: post.slug });
               navigate("/quiz");

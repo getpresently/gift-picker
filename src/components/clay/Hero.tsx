@@ -9,7 +9,7 @@ import { useImageFallback } from "../../hooks/useImageFallback";
 import type { RankedGift } from "../../data/gifts";
 import type { FeedbackOption, FeedbackRecord } from "../../data/feedback";
 import { primaryBuy } from "../../data/affiliate";
-import { openGiftBuy } from "./BuyButtons";
+import { buyLinkProps } from "./BuyButtons";
 
 type Props = {
   gift: RankedGift;
@@ -50,6 +50,7 @@ export function Hero({
   // icon, which is the loudest possible failure mode on a hero card.
   const { failed: imgFailed, onError: onImgError, loaded: imgLoaded, onLoad: onImgLoad } = useImageFallback(gift.image);
   const match = typeof gift.matchScore === "number" ? Math.round(gift.matchScore) : null;
+  const buy = primaryBuy(gift);
   const eyebrowText = match !== null ? `TOP PICK · ${match}% MATCH` : "TOP PICK";
 
   return (
@@ -156,16 +157,8 @@ export function Hero({
                 More details
               </Pillow>
             )}
-            <Pillow
-              tone="coral"
-              size="md"
-              onClick={(e) => {
-                e?.stopPropagation?.();
-                // Prefer Amazon if available, otherwise the brand's product link.
-                const { url, destination } = primaryBuy(gift);
-                openGiftBuy(gift, url, destination, "hero");
-              }}
-            >
+            {/* Prefer Amazon if available, otherwise the brand's product link. */}
+            <Pillow tone="coral" size="md" {...buyLinkProps(gift, buy.url, buy.destination, "hero")}>
               Buy gift →
             </Pillow>
           </div>

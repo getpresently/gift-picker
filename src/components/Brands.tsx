@@ -113,7 +113,7 @@ export function BrandsPage() {
         <AmbientGlow variant="results" />
 
         <SiteHeader onLogoClick={() => navigate("/")}>
-          <Pillow tone="coral" size="sm" onClick={() => navigate("/quiz")}>
+          <Pillow tone="coral" size="sm" href="/quiz" onClick={() => navigate("/quiz")}>
             Find a gift →
           </Pillow>
         </SiteHeader>
@@ -127,6 +127,7 @@ export function BrandsPage() {
             margin: "0 auto",
           }}
         >
+          <main>
           <div style={{ maxWidth: 640 }}>
             <h1
               style={{
@@ -234,7 +235,7 @@ export function BrandsPage() {
                   <Pillow tone="cream" size="md" onClick={reset}>
                     Submit another product
                   </Pillow>
-                  <Pillow tone="coral" size="md" onClick={() => navigate("/")}>
+                  <Pillow tone="coral" size="md" href="/" onClick={() => navigate("/")}>
                     Back to GiftPicker
                   </Pillow>
                 </div>
@@ -334,6 +335,7 @@ export function BrandsPage() {
             )}
           </ClaySurface>
 
+          </main>
           <footer
             style={{
               marginTop: isMobile ? 40 : 56,

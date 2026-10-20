@@ -16,6 +16,7 @@ export function ChoiceTile({ option, selected, onClick, big, disabled }: Props) 
   return (
     <button
       type="button"
+      aria-pressed={selected}
       onClick={!disabled ? onClick : undefined}
       onMouseEnter={() => !disabled && setHovered(true)}
       onMouseLeave={() => {
@@ -58,7 +59,7 @@ export function ChoiceTile({ option, selected, onClick, big, disabled }: Props) 
         WebkitTapHighlightColor: "transparent",
       }}
     >
-      {option.e && <span style={{ fontSize: big ? 22 : 18, lineHeight: 1 }}>{option.e}</span>}
+      {option.e && <span aria-hidden="true" style={{ fontSize: big ? 22 : 18, lineHeight: 1 }}>{option.e}</span>}
       <span style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "flex-start" }}>
         <span>{option.l}</span>
         {option.hint && (

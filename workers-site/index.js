@@ -456,13 +456,13 @@ async function prerenderStaticPage(response, path, page) {
 	<meta property="og:title" content="${title}"/>
 	<meta property="og:description" content="${desc}"/>
 	<meta property="og:url" content="${pageUrl}"/>
-	<meta property="og:image" content="${SITE_ORIGIN}/og-image.png?v=20261003"/>
+	<meta property="og:image" content="${DEFAULT_OG_IMAGE}"/>
 	<meta property="og:image:width" content="1200"/>
 	<meta property="og:image:height" content="630"/>
 	<meta name="twitter:card" content="summary_large_image"/>
 	<meta name="twitter:title" content="${title}"/>
 	<meta name="twitter:description" content="${desc}"/>
-	<meta name="twitter:image" content="${SITE_ORIGIN}/og-image.png?v=20261003"/>`;
+	<meta name="twitter:image" content="${DEFAULT_OG_IMAGE}"/>`;
   let out = replaceBetween(html, "<!--gp-meta-->", "<!--/gp-meta-->", metaBlock);
   if (page.body) {
     const staticBlock = `
@@ -517,7 +517,7 @@ async function serveSitemap(event) {
 const BLOG_TITLE = "Gift guides · GiftPicker";
 const BLOG_DESCRIPTION =
   "Gift guides from GiftPicker: practical advice for choosing gifts for coworkers, partners, family, and friends, with picks from our hand-curated catalog.";
-const DEFAULT_OG_IMAGE = `${SITE_ORIGIN}/og-image.png?v=20261003`;
+const DEFAULT_OG_IMAGE = `${SITE_ORIGIN}/og-image.png?v=20261019`;
 const ORG = {
   "@type": "Organization",
   name: "GiftPicker",
@@ -698,7 +698,7 @@ function blogPostHtml(html, post, gifts) {
 		<nav aria-label="Breadcrumb" style="font-size:14px;margin:0 0 16px;"><a href="${SITE_ORIGIN}/" ${LINK_STYLE}>Home</a> › <a href="${SITE_ORIGIN}/blog" ${LINK_STYLE}>Gift guides</a></nav>
 		<article>
 			<h1 style="font-size:36px;line-height:1.1;margin:0 0 12px;">${escapeHtml(post.title)}</h1>
-			<p style="font-size:14px;color:#8a7a72;">By GiftPicker · <time datetime="${post.published}">${formatPostDate(post.published)}</time></p>
+			<p style="font-size:14px;color:#8a7a72;">By GiftPicker · <time datetime="${post.published}">${formatPostDate(post.published)}</time>${post.updated && post.updated !== post.published ? ` · Updated <time datetime="${post.updated}">${formatPostDate(post.updated)}</time>` : ""}</p>
 			${post.intro.map((p) => `<p>${inlineHtml(p, live)}</p>`).join("\n\t\t\t")}
 			${body}
 			<p>${escapeHtml(post.cta)} <a href="${SITE_ORIGIN}/quiz" ${LINK_STYLE}>Take the GiftPicker quiz</a>.</p>

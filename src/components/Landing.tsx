@@ -58,6 +58,7 @@ export function Landing() {
           <Pillow
               tone={isMobile ? "coral" : "ink"}
               size="sm"
+              href="/quiz"
               onClick={goStart}
               style={isMobile ? { fontSize: 13, padding: "8px 14px" } : undefined}
             >
@@ -74,6 +75,7 @@ export function Landing() {
             margin: "0 auto",
           }}
         >
+          <main>
           {/* Hero */}
           <section
             style={{
@@ -138,7 +140,7 @@ export function Landing() {
               </p>
 
               <div style={{ display: "flex", gap: 12, marginTop: 28, flexWrap: "wrap" }}>
-                <Pillow tone="coral" size="lg" onClick={goStart}>
+                <Pillow tone="coral" size="lg" href="/quiz" onClick={goStart}>
                   Take the quiz · 60s
                 </Pillow>
               </div>
@@ -267,7 +269,7 @@ export function Landing() {
             >
               They deserve better than <em style={{ color: "#C4477E", fontStyle: "italic" }}>another</em> scented candle.
             </h2>
-            <Pillow tone="coral" size="lg" onClick={goStart}>Take the quiz →</Pillow>
+            <Pillow tone="coral" size="lg" href="/quiz" onClick={goStart}>Take the quiz →</Pillow>
           </section>
 
           {/* For brands */}
@@ -309,7 +311,7 @@ export function Landing() {
                 Make something people love to give? Submit it for review.
               </div>
             </div>
-            <Pillow tone="cream" size="md" onClick={() => navigate("/brands")} style={{ flexShrink: 0 }}>
+            <Pillow tone="cream" size="md" href="/brands" onClick={() => navigate("/brands")} style={{ flexShrink: 0 }}>
               Submit a product →
             </Pillow>
           </section>
@@ -317,6 +319,7 @@ export function Landing() {
           <HomeGuides />
 
           {/* Footer */}
+          </main>
           <footer
             style={{
               marginTop: isMobile ? 40 : 56,

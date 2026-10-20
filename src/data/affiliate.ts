@@ -67,13 +67,4 @@ export function affiliateUrl(url: string): string {
   }
 }
 
-/**
- * Open a buy link in a new tab. Keeps the referrer (no `noreferrer`) so
- * merchants and Amazon can see the traffic came from giftpicker.io.
- */
-export function openBuyLink(url: string): void {
-  if (!url) return;
-  window.open(affiliateUrl(url), "_blank", "noopener");
-}
-
 export const AFFILIATE_DISCLOSURE = "As an Amazon Associate, GiftPicker earns from qualifying purchases.";

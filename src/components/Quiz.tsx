@@ -202,7 +202,7 @@ export function Quiz() {
 
         <SiteHeader nav={false} onLogoClick={() => { clearAnswers(); navigate("/"); }} />
 
-        <div
+        <main
           style={{
             position: "relative",
             zIndex: 1,
@@ -487,7 +487,7 @@ export function Quiz() {
               </div>
             )}
           </div>
-        </div>
+        </main>
       </div>
     </div>
   );

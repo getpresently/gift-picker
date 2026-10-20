@@ -1,3 +1,4 @@
+import type { CSSProperties } from "react";
 import { BowLogo } from "./BowLogo";
 
 type Size = "sm" | "md" | "lg";
@@ -6,6 +7,8 @@ type Props = {
   size?: Size;
   light?: boolean;
   onClick?: () => void;
+  /** Makes the logo a real link (the home page); a plain click still runs onClick. */
+  href?: string;
 };
 
 // `lift` raises the mark so the red box sits on the wordmark's baseline with
@@ -17,24 +20,22 @@ const sizes: Record<Size, { gap: number; logo: number; font: number; lift: numbe
   lg: { gap: 10, logo: 36, font: 22, lift: 4 },
 };
 
-export function Wordmark({ size = "md", light = false, onClick }: Props) {
+export function Wordmark({ size = "md", light = false, onClick, href }: Props) {
   const s = sizes[size];
-  return (
-    <button
-      onClick={onClick}
-      aria-label="GiftPicker home"
-      style={{
-        display: "flex",
-        alignItems: "center",
-        gap: s.gap,
-        background: "transparent",
-        border: "none",
-        padding: 0,
-        cursor: onClick ? "pointer" : "default",
-        WebkitTapHighlightColor: "transparent",
-        outline: "none",
-      }}
-    >
+  const look: CSSProperties = {
+    display: "flex",
+    alignItems: "center",
+    gap: s.gap,
+    background: "transparent",
+    border: "none",
+    padding: 0,
+    cursor: onClick ? "pointer" : "default",
+    WebkitTapHighlightColor: "transparent",
+    outline: "none",
+    textDecoration: "none",
+  };
+  const mark = (
+    <>
       <span style={{ display: "block", transform: `translateY(-${s.lift}px)` }}>
         <BowLogo size={s.logo} />
       </span>
@@ -49,6 +50,27 @@ export function Wordmark({ size = "md", light = false, onClick }: Props) {
       >
         giftpicker<span style={{ color: "#C4477E" }}>.</span>
       </span>
+    </>
+  );
+  if (href) {
+    return (
+      <a
+        href={href}
+        aria-label="GiftPicker home"
+        onClick={(e) => {
+          if (e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+          e.preventDefault();
+          onClick?.();
+        }}
+        style={look}
+      >
+        {mark}
+      </a>
+    );
+  }
+  return (
+    <button onClick={onClick} aria-label="GiftPicker home" style={look}>
+      {mark}
     </button>
   );
 }

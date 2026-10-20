@@ -94,7 +94,7 @@ export function GiftPage() {
         <AmbientGlow variant="results" />
 
         <SiteHeader onLogoClick={() => navigate("/")}>
-          <Pillow tone="coral" size="sm" onClick={() => navigate("/quiz")}>
+          <Pillow tone="coral" size="sm" href="/quiz" onClick={() => navigate("/quiz")}>
               Find a gift →
             </Pillow>
         </SiteHeader>
@@ -108,6 +108,7 @@ export function GiftPage() {
             margin: "0 auto",
           }}
         >
+          <main>
           {loading && (
             <p
               style={{
@@ -145,7 +146,7 @@ export function GiftPage() {
                 It may have been retired from the catalog. Take the quiz and
                 we'll find you something even better.
               </p>
-              <Pillow tone="coral" size="lg" onClick={() => navigate("/quiz")}>
+              <Pillow tone="coral" size="lg" href="/quiz" onClick={() => navigate("/quiz")}>
                 Take the quiz · 60s
               </Pillow>
             </div>
@@ -395,12 +396,13 @@ export function GiftPage() {
               >
                 Not quite it? Find their <em style={{ color: "#C4477E" }}>perfect</em> gift.
               </p>
-              <Pillow tone="ink" size="lg" onClick={() => navigate("/quiz")}>
+              <Pillow tone="ink" size="lg" href="/quiz" onClick={() => navigate("/quiz")}>
                 Take the 60-second quiz →
               </Pillow>
             </div>
           )}
 
+          </main>
           <footer
             style={{
               marginTop: isMobile ? 40 : 56,

@@ -47,4 +47,5 @@ export const CHANGES: SiteChange[] = [
   { date: "2026-10-18", title: "SEO: page title, search descriptions, and footer name the free 60-second gift finder quiz; related gifts became crawlable links" },
   { date: "2026-10-18", title: "Homepage catalog section with two rows of gift photos and more brand names; testimonials show two quotes per page" },
   { date: "2026-10-19", title: "Gift and brand counts updated to 1,000+ gifts and 800+ brands" },
+  { date: "2026-10-19", title: "Gift guides show their updated date, and the coworker and love-language guides open with a question heading" },
 ];

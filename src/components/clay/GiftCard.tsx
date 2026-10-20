@@ -11,7 +11,7 @@ import { useImageFallback } from "../../hooks/useImageFallback";
 import type { Gift } from "../../data/gifts";
 import { isDemoting, type FeedbackOption, type FeedbackRecord } from "../../data/feedback";
 import { primaryBuy } from "../../data/affiliate";
-import { openGiftBuy } from "./BuyButtons";
+import { buyLinkProps } from "./BuyButtons";
 
 /** Cards may receive a ranked gift; matchScore is optional for non-ranked uses. */
 type CardGift = Gift & { matchScore?: number };
@@ -130,6 +130,7 @@ export function GiftCard(props: Props) {
   const { failed: imgFailed, onError: onImgError, loaded: imgLoaded, onLoad: onImgLoad } = useImageFallback(gift.image);
 
   const imgGradient = TONE_IMAGE_GRADIENT[hero ? "plum" : tone];
+  const buy = primaryBuy(gift);
   const boxColor = pickBoxColor(hero ? "plum" : tone);
   const imgRatio = hero ? (isMobile ? "4/3" : "3/2") : "1/1";
   const boxSize = hero ? (isMobile ? 160 : 220) : 110;
@@ -370,16 +371,12 @@ export function GiftCard(props: Props) {
         }}
       >
         <PriceDisplay gift={gift} variant={hero ? "hero" : "card"} invert={hero} />
+        {/* Amazon first (Dalia's default, matching the top pick), then the
+            brand's own page when the gift isn't sold on Amazon. */}
         <Pillow
           tone={hero ? "coral" : "ink"}
           size={hero ? "md" : "sm"}
-          onClick={(e) => {
-            e?.stopPropagation?.();
-            // Amazon first (Dalia's default, matching the top pick), then
-            // the brand's own page when the gift isn't sold on Amazon.
-            const { url, destination } = primaryBuy(gift);
-            openGiftBuy(gift, url, destination, hero ? "hero_card" : "card");
-          }}
+          {...buyLinkProps(gift, buy.url, buy.destination, hero ? "hero_card" : "card")}
         >
           {hero ? "Buy gift →" : "Buy →"}
         </Pillow>

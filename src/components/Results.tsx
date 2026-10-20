@@ -360,6 +360,7 @@ export function Results() {
             margin: "0 auto",
           }}
         >
+          <main>
           {/* Reveal headline */}
           <div style={{ textAlign: "center", marginBottom: isMobile ? 32 : 48 }}>
             <div
@@ -505,6 +506,7 @@ export function Results() {
                             saved={saved.has(g.id)}
                             onToggleSave={toggleSave}
                             isMobile={isMobile}
+                            href={g.id ? `/gift/${g.id}` : undefined}
                             onOpenDetails={() => openModal(i + 1)}
                             feedback={feedbackById[g.id]}
                             onReport={handleReport(g)}
@@ -612,6 +614,7 @@ export function Results() {
             </>
           )}
 
+          </main>
           <footer
             style={{
               marginTop: isMobile ? 40 : 56,

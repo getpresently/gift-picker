@@ -43,7 +43,16 @@ type Props = {
   children: ReactNode;
   tone?: PillowTone;
   size?: PillowSize;
-  onClick?: (e?: MouseEvent<HTMLButtonElement>) => void;
+  onClick?: (e?: MouseEvent<HTMLElement>) => void;
+  /**
+   * Renders the pillow as a real link, so crawlers and AI agents can follow
+   * it. A site path ("/quiz") still runs onClick on a plain click (which does
+   * the in-app navigation) and leaves Cmd or Ctrl click to the browser.
+   */
+  href?: string;
+  /** With href: an outside store. Opens in a new tab; onClick runs too (for tracking). */
+  external?: boolean;
+  rel?: string;
   style?: CSSProperties;
   fullWidth?: boolean;
   disabled?: boolean;
@@ -59,6 +68,9 @@ export function Pillow({
   fullWidth,
   disabled,
   type = "button",
+  href,
+  external,
+  rel,
 }: Props) {
   const [pressed, setPressed] = useState(false);
   const [hovered, setHovered] = useState(false);
@@ -71,43 +83,63 @@ export function Pillow({
       ? `inset 0 1.4px 0 rgba(255,255,255,0.5), 0 12px 20px -6px rgba(${t.shadow}, 0.5), 0 2px 0 rgba(0,0,0,0.12), inset 0 -2px 0 rgba(0,0,0,0.15)`
       : `inset 0 1.4px 0 rgba(255,255,255,0.5), 0 8px 14px -4px rgba(${t.shadow}, 0.45), 0 2px 0 rgba(0,0,0,0.12), inset 0 -2px 0 rgba(0,0,0,0.15)`;
 
+  const events = {
+    onMouseEnter: () => setHovered(true),
+    onMouseLeave: () => {
+      setHovered(false);
+      setPressed(false);
+    },
+    onMouseDown: () => setPressed(true),
+    onMouseUp: () => setPressed(false),
+    onTouchStart: () => setPressed(true),
+    onTouchEnd: () => setPressed(false),
+  };
+  const look: CSSProperties = {
+    background: hovered && !pressed ? t.hoverBg : t.bg,
+    color: t.fg,
+    border: "none",
+    padding: `${s.py}px ${s.px}px`,
+    fontSize: s.font,
+    fontFamily: "Geist, system-ui, sans-serif",
+    fontWeight: 600,
+    letterSpacing: "-0.01em",
+    borderRadius: s.radius,
+    cursor: disabled ? "not-allowed" : "pointer",
+    opacity: disabled ? 0.5 : 1,
+    width: fullWidth ? "100%" : "auto",
+    // Hover lifts the pillow and deepens the shadow beneath it; no halo,
+    // which read as a grey smudge around the dark buttons.
+    transform: pressed ? "translateY(2px)" : hovered && !disabled ? "translateY(-1px)" : "translateY(0)",
+    boxShadow: shadow,
+    transition: "transform 140ms cubic-bezier(.22,1.4,.4,1), box-shadow 200ms ease, background 200ms ease",
+    outline: "none",
+    WebkitTapHighlightColor: "transparent",
+  };
+
+  if (href) {
+    return (
+      <a
+        href={href}
+        target={external ? "_blank" : undefined}
+        rel={rel ?? (external ? "noopener" : undefined)}
+        onClick={(e) => {
+          if (!external) {
+            if (e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+            e.preventDefault();
+          }
+          onClick?.(e);
+        }}
+        {...events}
+        // A button's own layout, so the link looks exactly like the button it replaced.
+        style={{ ...look, display: "inline-block", textAlign: "center", textDecoration: "none", ...style }}
+      >
+        {children}
+      </a>
+    );
+  }
+
   return (
-    <button
-      type={type}
-      onClick={onClick}
-      disabled={disabled}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => {
-        setHovered(false);
-        setPressed(false);
-      }}
-      onMouseDown={() => setPressed(true)}
-      onMouseUp={() => setPressed(false)}
-      onTouchStart={() => setPressed(true)}
-      onTouchEnd={() => setPressed(false)}
-      style={{
-        background: hovered && !pressed ? t.hoverBg : t.bg,
-        color: t.fg,
-        border: "none",
-        padding: `${s.py}px ${s.px}px`,
-        fontSize: s.font,
-        fontFamily: "Geist, system-ui, sans-serif",
-        fontWeight: 600,
-        letterSpacing: "-0.01em",
-        borderRadius: s.radius,
-        cursor: disabled ? "not-allowed" : "pointer",
-        opacity: disabled ? 0.5 : 1,
-        width: fullWidth ? "100%" : "auto",
-        // Hover lifts the pillow and deepens the shadow beneath it; no halo,
-        // which read as a grey smudge around the dark buttons.
-        transform: pressed ? "translateY(2px)" : hovered && !disabled ? "translateY(-1px)" : "translateY(0)",
-        boxShadow: shadow,
-        transition: "transform 140ms cubic-bezier(.22,1.4,.4,1), box-shadow 200ms ease, background 200ms ease",
-        outline: "none",
-        WebkitTapHighlightColor: "transparent",
-        ...style,
-      }}
-    >
+    <button type={type} onClick={onClick} disabled={disabled} {...events} style={{ ...look, ...style }}>
       {children}
     </button>
   );

@@ -35,7 +35,7 @@ function LegalShell({
         <AmbientGlow variant="results" />
 
         <SiteHeader onLogoClick={() => navigate("/")}>
-          <Pillow tone="coral" size="sm" onClick={() => navigate("/quiz")}>
+          <Pillow tone="coral" size="sm" href="/quiz" onClick={() => navigate("/quiz")}>
             Find a gift →
           </Pillow>
         </SiteHeader>
@@ -49,6 +49,7 @@ function LegalShell({
             margin: "0 auto",
           }}
         >
+          <main>
           <ClaySurface
             tint="cream"
             style={{
@@ -93,6 +94,7 @@ function LegalShell({
             </div>
           </ClaySurface>
 
+          </main>
           <footer
             style={{
               marginTop: isMobile ? 40 : 56,

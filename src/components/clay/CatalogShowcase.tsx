@@ -127,12 +127,14 @@ export function CatalogShowcase({
             gap: isMobile ? 14 : 24,
           }}
         >
-          <Pillow tone="cream" size="lg" onClick={onStart}>
+          <Pillow tone="cream" size="lg" href="/quiz" onClick={onStart}>
             Find their gift →
           </Pillow>
-          <button
-            type="button"
-            onClick={() => {
+          <a
+            href="/blog"
+            onClick={(e) => {
+              if (e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+              e.preventDefault();
               track("home_catalog_guides_click");
               navigate("/blog");
             }}
@@ -150,7 +152,7 @@ export function CatalogShowcase({
             }}
           >
             Or browse our gift guides
-          </button>
+          </a>
         </div>
       </div>
     </section>
