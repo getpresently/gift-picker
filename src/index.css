@@ -47,6 +47,10 @@ body {
 	.card-in { animation: none; }
 }
 
+/* Edit answers dropdowns: a soft coral ring for keyboard focus. */
+.refine-select { outline: none; }
+.refine-select:focus-visible { box-shadow: 0 0 0 3px rgba(230,75,69,0.3) !important; }
+
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;

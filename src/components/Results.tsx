@@ -135,11 +135,23 @@ export function Results() {
   };
 
   const [refineOpen, setRefineOpen] = useState(false);
+  // After Update picks, the results show a short "Updating your picks" spinner
+  // and the new cards ease in, so the change reads as a fresh search even
+  // when the ranking itself is instant (Dalia, 10/24).
+  const [refreshing, setRefreshing] = useState(false);
+  const refreshTimer = useRef<number>();
+  useEffect(() => () => window.clearTimeout(refreshTimer.current), []);
   const applyRefine = (next: Answers) => {
     setAnswers(next);
     saveAnswers(next);
     setRequestSent(false);
     setRefineOpen(false);
+    setRefreshing(true);
+    window.clearTimeout(refreshTimer.current);
+    refreshTimer.current = window.setTimeout(() => {
+      setRefreshing(false);
+      setAnimateFrom(0);
+    }, 700);
     track("results_refine", {
       recipient: next.recipient,
       age: next.age,
@@ -148,6 +160,7 @@ export function Results() {
       vibe_count: next.vibe?.length ?? 0,
       budget: next.budget,
       gender: next.gender ?? "any",
+      amazon_only: !!next.amazonOnly,
     });
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
@@ -247,6 +260,7 @@ export function Results() {
   // part (inside a nowrap span) so it never wraps onto a line of its own.
   const summaryParts = [
     genderLabel,
+    answers.amazonOnly ? "Amazon only" : null,
     occasionLabel,
     interestsLabel,
     typeof budget === "number"
@@ -373,8 +387,8 @@ export function Results() {
                 marginBottom: 16,
               }}
             >
-              {loading
-                ? "Finding your picks…"
+              {loading || refreshing
+                ? refreshing ? "Updating your picks…" : "Finding your picks…"
                 : error
                   ? "Couldn't reach the gift database"
                   : `${picks.length} picks tailored for ${answers.recipient === "self" ? "you" : "them"}`}
@@ -437,15 +451,15 @@ export function Results() {
           </div>
 
           {/* States: loading, error, empty, results */}
-          {loading && <LoadingState />}
-          {!loading && error && <ErrorState message={error} onRetry={() => window.location.reload()} />}
-          {!loading && !error && picks.length === 0 && (
+          {(loading || refreshing) && <LoadingState tall={refreshing} />}
+          {!loading && !refreshing && error && <ErrorState message={error} onRetry={() => window.location.reload()} />}
+          {!loading && !refreshing && !error && picks.length === 0 && (
             <EmptyState onRestart={restart} onRequestMore={handleRequestMore} requestSent={requestSent} answers={answers} />
           )}
 
-          {!loading && !error && hero && (
+          {!loading && !refreshing && !error && hero && (
             <>
-              <div ref={seenRef(hero.id)} style={{ marginBottom: isMobile ? 28 : 36 }}>
+              <div ref={seenRef(hero.id)} className={animateFrom === 0 ? "card-in" : undefined} style={{ marginBottom: isMobile ? 28 : 36 }}>
                 <Hero
                   gift={hero}
                   saved={saved.has(hero.id)}
@@ -651,7 +665,8 @@ export function Results() {
   );
 }
 
-function LoadingState() {
+// While picks update, `tall` holds the page's height so the footer doesn't jump up.
+function LoadingState({ tall = false }: { tall?: boolean }) {
   return (
     <div
       style={{
@@ -660,6 +675,7 @@ function LoadingState() {
         alignItems: "center",
         gap: 8,
         padding: "48px 0",
+        minHeight: tall ? "70vh" : undefined,
       }}
     >
       <div

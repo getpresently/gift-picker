@@ -207,8 +207,10 @@ test("reconcileAnswers drops interests the quiz doesn't offer, or hides for the 
 });
 
 test("share links round-trip and shed unknown codes", () => {
-  const answers: Answers = { recipient: "partner", age: "adult", occasion: "bday", interests: ["cooking", "home"], vibe: ["fun"], budget: 150, budgetMin: 40, gender: "her" };
+  const answers: Answers = { recipient: "partner", age: "adult", occasion: "bday", interests: ["cooking", "home"], vibe: ["fun"], budget: 150, budgetMin: 40, gender: "her", amazonOnly: true };
   assert.deepEqual(decodeAnswers(encodeAnswers(answers)), answers);
+  assert.ok(encodeAnswers(answers).includes("amz=1"));
+  assert.equal(decodeAnswers("r=friend&amz=0")?.amazonOnly, undefined, "only amz=1 turns it on");
   assert.deepEqual(decodeAnswers("r=friend&a=adult&i=cooking,made-up")?.interests, ["cooking"]);
 });
 
@@ -329,4 +331,17 @@ test("share events: budget bands, search shape without free text, and the gift l
   assert.ok(!JSON.stringify(shape).includes("cat"), "the typed occasion never goes to GA");
   assert.equal(buildGiftShareUrl("r12"), "/gift/r12?ref=share", "no window in node, so no origin");
   assert.ok(hasShareRef("?ref=share") && hasShareRef("?x=1&ref=share") && !hasShareRef("?ref=producthunt") && !hasShareRef(""));
+});
+
+test("Amazon only keeps gifts with an Amazon link (theirs or the alt listing) and drops the rest", () => {
+  const onAmazon = gift("1", { link: "https://www.amazon.com/dp/B000000001" });
+  const altOnAmazon = gift("2", { amazonLink: "https://www.amazon.com/dp/B000000002" });
+  const brandOnly = gift("3");
+  const a: Answers = { recipient: "friend", age: "adult", occasion: "bday", interests: ["cooking"], budget: 100 };
+  assert.ok(scoreGift(brandOnly, a) >= 0, "without the option every gift can show");
+  const amz = { ...a, amazonOnly: true };
+  assert.ok(scoreGift(onAmazon, amz) >= 0);
+  assert.ok(scoreGift(altOnAmazon, amz) >= 0);
+  assert.equal(scoreGift(brandOnly, amz), -1);
+  assert.deepEqual(ids(rankGifts([onAmazon, altOnAmazon, brandOnly], amz)).sort(), ["1", "2"]);
 });

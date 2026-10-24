@@ -7,6 +7,8 @@ type Props = {
   min: number;
   max: number;
   step: number;
+  /** Smaller amount and tighter spacing, for the Edit answers sheet. */
+  compact?: boolean;
 };
 
 // Two native range inputs share one track. Their tracks ignore the pointer and
@@ -62,7 +64,7 @@ const PRESETS: { label: string; lo: number | null; hi: number | null }[] = [
   { label: "$200+", lo: 200, hi: null },
 ];
 
-export function BudgetSlider({ value, onChange, minValue, onMinChange, min, max, step }: Props) {
+export function BudgetSlider({ value, onChange, minValue, onMinChange, min, max, step, compact = false }: Props) {
   const toPct = (v: number) => ((v - min) / (max - min)) * 100;
   const pct = toPct(value);
   const ranged = typeof minValue === "number" && !!onMinChange;
@@ -70,12 +72,12 @@ export function BudgetSlider({ value, onChange, minValue, onMinChange, min, max,
   const floorPct = toPct(floor);
   const hasFloor = ranged && floor > min;
   return (
-    <div style={{ padding: "8px 0" }}>
-      <div style={{ display: "flex", alignItems: "baseline", justifyContent: "center", gap: 4, marginBottom: 20 }}>
+    <div style={{ padding: compact ? "0" : "8px 0" }}>
+      <div style={{ display: "flex", alignItems: "baseline", justifyContent: "center", gap: 4, marginBottom: compact ? 10 : 20 }}>
         <span
           style={{
             fontFamily: '"Instrument Serif", serif',
-            fontSize: 72,
+            fontSize: compact ? 40 : 72,
             color: "#231410",
             lineHeight: 1,
             letterSpacing: "-0.03em",
@@ -153,7 +155,7 @@ export function BudgetSlider({ value, onChange, minValue, onMinChange, min, max,
         <span>${max}+</span>
       </div>
 
-      <div style={{ display: "flex", gap: 8, marginTop: 20, flexWrap: "wrap", justifyContent: "center" }}>
+      <div style={{ display: "flex", gap: 8, marginTop: compact ? 12 : 20, flexWrap: "wrap", justifyContent: "center" }}>
         {PRESETS.map((p) => {
           const lo = p.lo ?? min;
           const hi = p.hi ?? max;

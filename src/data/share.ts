@@ -9,6 +9,7 @@ import { searchShape, track } from "./analytics";
  * hasn't shifted underneath them.
  *
  * URL shape: /results?r=partner&a=adult&o=bday&i=cooking,home,food&v=sentimental&b=150
+ * (plus bmin for a budget floor, g for For him / For her, amz=1 for Amazon only)
  */
 
 export function encodeAnswers(answers: Answers): string {
@@ -24,6 +25,7 @@ export function encodeAnswers(answers: Answers): string {
   if (typeof answers.budget === "number") params.set("b", String(answers.budget));
   if (typeof answers.budgetMin === "number") params.set("bmin", String(answers.budgetMin));
   if (answers.gender && answers.gender !== "any") params.set("g", answers.gender);
+  if (answers.amazonOnly) params.set("amz", "1");
   return params.toString();
 }
 
@@ -37,6 +39,7 @@ export function decodeAnswers(search: string): Answers | null {
   const i = params.get("i"); if (i) out.interests = i.split(",").filter(Boolean);
   const v = params.get("v"); if (v) out.vibe = v.split(",").filter(Boolean);
   const g = params.get("g"); if (g === "him" || g === "her") out.gender = g;
+  if (params.get("amz") === "1") out.amazonOnly = true;
   const b = params.get("b");
   if (b !== null && b !== "") {
     const n = Number(b);

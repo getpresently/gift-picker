@@ -56,6 +56,8 @@ export type Answers = {
   budgetMin?: number;
   /** Optional refinement from the results page; never asked in the quiz. */
   gender?: Gender;
+  /** Results-page option for shoppers in a hurry: only gifts with an Amazon link. */
+  amazonOnly?: boolean;
 };
 
 export type Gender = "any" | "him" | "her";
@@ -401,6 +403,7 @@ export function humanizeAnswers(answers: Answers): Record<string, unknown> {
   if (answers.gender && answers.gender !== "any") {
     out.gender = GENDER_OPTIONS.find((g) => g.v === answers.gender)?.l ?? answers.gender;
   }
+  if (answers.amazonOnly) out.store = "Amazon only";
 
   return out;
 }

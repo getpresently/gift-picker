@@ -6,9 +6,11 @@ type Props = {
   selected: boolean;
   atMax: boolean;
   onClick: () => void;
+  /** Smaller pill for the Edit answers sheet, where many chips wrap in rows. */
+  compact?: boolean;
 };
 
-export function ChipChoice({ option, selected, atMax, onClick }: Props) {
+export function ChipChoice({ option, selected, atMax, onClick, compact = false }: Props) {
   const [pressed, setPressed] = useState(false);
   const [hovered, setHovered] = useState(false);
   const disabled = atMax;
@@ -29,8 +31,8 @@ export function ChipChoice({ option, selected, atMax, onClick }: Props) {
       onTouchEnd={() => setPressed(false)}
       disabled={disabled}
       style={{
-        padding: "12px 14px",
-        borderRadius: 14,
+        padding: compact ? "8px 13px" : "12px 14px",
+        borderRadius: compact ? 999 : 14,
         background: selected
           ? "linear-gradient(160deg, #FF8C71 0%, #E64B45 100%)"
           : hovered
@@ -41,11 +43,11 @@ export function ChipChoice({ option, selected, atMax, onClick }: Props) {
         cursor: disabled ? "not-allowed" : "pointer",
         opacity: disabled ? 0.45 : 1,
         fontFamily: "Geist, sans-serif",
-        fontSize: 14,
+        fontSize: compact ? 13 : 14,
         fontWeight: 500,
-        display: "flex",
+        display: compact ? "inline-flex" : "flex",
         alignItems: "center",
-        gap: 8,
+        gap: compact ? 6 : 8,
         textAlign: "left",
         letterSpacing: "-0.005em",
         transform: pressed ? "translateY(1px) scale(0.99)" : "translateY(0)",
@@ -59,7 +61,7 @@ export function ChipChoice({ option, selected, atMax, onClick }: Props) {
         outline: "none",
       }}
     >
-      {option.e && <span aria-hidden="true" style={{ fontSize: 18, lineHeight: 1, flexShrink: 0 }}>{option.e}</span>}
+      {option.e && <span aria-hidden="true" style={{ fontSize: compact ? 15 : 18, lineHeight: 1, flexShrink: 0 }}>{option.e}</span>}
       <span style={{ lineHeight: 1.2 }}>{option.l}</span>
     </button>
   );

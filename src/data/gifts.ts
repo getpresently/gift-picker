@@ -1,3 +1,4 @@
+import { buyLinks } from "./affiliate";
 import { QUESTIONS, type Answers } from "./questions";
 import { buildSimilarity, productType } from "./similarity";
 
@@ -473,6 +474,8 @@ export function scoreGift(gift: Gift, answers: Answers): number {
   // Optional "For him / For her" refinement: hide gifts made for the other gender.
   if (answers.gender === "him" && gift.gender === "women") return -1;
   if (answers.gender === "her" && gift.gender === "men") return -1;
+  // Optional "Amazon only" refinement, for shoppers who need it soon.
+  if (answers.amazonOnly && !buyLinks(gift).amazon) return -1;
 
   // Hard filter: way over budget. Skip for "Your choice" gift cards.
   if (
