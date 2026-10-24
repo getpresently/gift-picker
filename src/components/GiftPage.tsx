@@ -19,7 +19,7 @@ import { TwinRow } from "./clay/TwinRow";
 import { BuyButtons } from "./clay/BuyButtons";
 import { SECONDARY_TONES, twinsOf } from "../data/gifts";
 import { relatedGifts } from "../data/related";
-import { loadSaved, saveSaved } from "../data/saved";
+import { toggleSaved, useSaved } from "../data/saved";
 import { postsFeaturing } from "../data/posts";
 import { buildGiftShareUrl, dropShareRef, hasShareRef } from "../data/share";
 
@@ -48,16 +48,9 @@ export function GiftPage() {
   const twins = useMemo(() => (gift ? twinsOf(gift, allGifts) : []), [gift, allGifts]);
   const related = useMemo(() => (gift ? relatedGifts(gift, allGifts) : []), [gift, allGifts]);
   const featuredIn = useMemo(() => (gift ? postsFeaturing(gift.id) : []), [gift]);
-  const [saved, setSaved] = useState<Set<string>>(() => loadSaved());
+  const saved = useSaved();
   const toggleSave = (id: string) => {
-    setSaved((prev) => {
-      const next = new Set(prev);
-      if (next.has(id)) next.delete(id);
-      else next.add(id);
-      saveSaved(next);
-      track("gift_save_toggle", { gift_id: id, saved: next.has(id), source: "gift_page_related" });
-      return next;
-    });
+    track("gift_save_toggle", { gift_id: id, saved: toggleSaved(id), source: "gift_page_related" });
   };
 
   // A copied gift link ends in ?ref=share. Read it once on load (the twin and

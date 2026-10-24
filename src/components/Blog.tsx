@@ -1,4 +1,4 @@
-import { Fragment, useEffect, useMemo, useState } from "react";
+import { Fragment, useEffect, useMemo } from "react";
 import type { CSSProperties, MouseEvent, ReactNode } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { AmbientGlow } from "./clay/AmbientGlow";
@@ -13,7 +13,7 @@ import { useIsMobile } from "../hooks/useIsMobile";
 import { useImageFallback } from "../hooks/useImageFallback";
 import { useGifts } from "../data/giftsApi";
 import { track } from "../data/analytics";
-import { loadSaved, saveSaved } from "../data/saved";
+import { toggleSaved, useSaved } from "../data/saved";
 import { SECONDARY_TONES, type Gift } from "../data/gifts";
 import { findPost, formatPostDate, isPendingGift, parseInline, postGiftIds, POSTS, postTitleTag, relatedPosts, segmentHref, type Post } from "../data/posts";
 
@@ -343,16 +343,9 @@ export function BlogPostView({
   const navigate = useNavigate();
   const isMobile = useIsMobile();
 
-  const [saved, setSaved] = useState<Set<string>>(() => loadSaved());
+  const saved = useSaved();
   const toggleSave = (id: string) => {
-    setSaved((prev) => {
-      const next = new Set(prev);
-      if (next.has(id)) next.delete(id);
-      else next.add(id);
-      saveSaved(next);
-      track("gift_save_toggle", { gift_id: id, saved: next.has(id), source: "blog" });
-      return next;
-    });
+    track("gift_save_toggle", { gift_id: id, saved: toggleSaved(id), source: "blog" });
   };
 
   if (!post) {

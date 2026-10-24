@@ -12,6 +12,8 @@
  *     "request"  -> append to Requests
  *     "notify"   -> optional email for a request, written to Requests "email"
  *     "brand"    -> append to Brands (the /brands submission form)
+ *     "savedlist"-> append to Emails (a shopper emailed their saved gifts;
+ *                   posted by the worker after it sends the email)
  *     "review"   -> internal review tool (password-gated), see handleReview_
  *
  * The review password is NOT in this file. Set it once under
@@ -37,6 +39,9 @@ const REQUEST_HEADERS = [
   "at", "type", "recipient", "age", "occasion",
   "interests", "vibe", "budget", "clientId"
 ];
+
+// Private: never add Emails to PUBLIC_TABS.
+const EMAIL_HEADERS = ["at", "email", "optIn", "gifts", "clientId"];
 
 const BRAND_HEADERS = [
   "Submitted", "Placement", "Brand", "Contact name", "Email", "Website",
@@ -203,13 +208,14 @@ function doPost(e) {
 
     if (type === "review")   return jsonOut_(handleReview_(body));
     // Over the limit: answer as if it worked, so a bot learns nothing.
-    if (["feedback", "request", "notify", "brand"].indexOf(type) !== -1 && !allowWrite_(body.clientId)) {
+    if (["feedback", "request", "notify", "brand", "savedlist"].indexOf(type) !== -1 && !allowWrite_(body.clientId)) {
       return jsonOut_({ ok: true });
     }
     if (type === "feedback") return jsonOut_(handleFeedback_(body));
     if (type === "request")  return jsonOut_(handleRequest_(body));
     if (type === "notify")   return jsonOut_(handleNotify_(body));
     if (type === "brand")    return jsonOut_(handleBrand_(body));
+    if (type === "savedlist") return jsonOut_(handleSavedList_(body));
     return jsonOut_({ error: "Unknown type: " + type });
   } catch (err) {
     return jsonOut_({ error: String(err) });
@@ -528,4 +534,29 @@ function jsonOut_(obj) {
   return ContentService
     .createTextOutput(JSON.stringify(obj))
     .setMimeType(ContentService.MimeType.JSON);
+}
+
+/**
+ * "Email my saved gifts": the worker sends the email itself (Resend), then
+ * posts here so the address lands in the private Emails tab. optIn is TRUE
+ * only when the shopper ticked "Also send me gift ideas now and then".
+ */
+function handleSavedList_(p) {
+  const email = String(p.email || "").trim().slice(0, 254);
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return { ok: false };
+  const lock = LockService.getScriptLock();
+  lock.waitLock(10000);
+  try {
+    const sheet = ensureSheet_("Emails", EMAIL_HEADERS);
+    sheet.appendRow([
+      p.at || new Date().toISOString(),
+      email,
+      p.optIn === true,
+      (Array.isArray(p.ids) ? p.ids : []).slice(0, 50).join(", "),
+      String(p.clientId || "").slice(0, 80),
+    ]);
+  } finally {
+    lock.releaseLock();
+  }
+  return { ok: true };
 }

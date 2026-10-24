@@ -6,6 +6,7 @@ import { serveAnalytics } from "./analytics.js";
 import { APPS_SCRIPT_URL, GIFT_PATH, GIFTS_KEY } from "./config.js";
 import { SHOWCASE_IDS } from "../src/data/showcase.ts";
 import { liveThanks, THANKS_INTRO } from "../src/data/thanks.ts";
+import { MAX_EMAIL_GIFTS, isValidEmail } from "../src/data/emailList.ts";
 import { POSTS, findPost, formatPostDate, parseInline, postShareImage, postsFeaturing, postTitleTag, relatedPosts, segmentHref } from "../src/data/posts.ts";
 
 /**
@@ -95,6 +96,11 @@ async function handleEvent(event) {
   // homepage never downloads the full catalog.
   if (url.pathname === "/api/showcase") {
     return serveShowcase(event);
+  }
+
+  // "Email my saved gifts" from the saved-gifts sheet.
+  if (url.pathname === "/api/email-list") {
+    return serveEmailList(event);
   }
 
   let options = {};
@@ -422,6 +428,128 @@ function replaceBetween(html, startMarker, endMarker, replacement) {
     replacement +
     html.slice(end)
   );
+}
+
+/* ------------------------------------------------------------------ *
+ * "Email my saved gifts" (POST /api/email-list, from SavedSheet.tsx).
+ * The worker sends the list through Resend, from hello@giftpicker.io, with
+ * the API key in the RESEND_API_KEY secret (set by Dalia with
+ * `npx wrangler secret put RESEND_API_KEY`). Then it posts the address to
+ * the Apps Script ("savedlist"), which keeps it in the private Emails tab.
+ * Limits stop the form from being used to email strangers: 5 sends an hour
+ * per IP address and 3 a day per recipient, counted in KV.
+ * ------------------------------------------------------------------ */
+const EMAIL_FROM = "GiftPicker <hello@giftpicker.io>";
+const EMAIL_SENDS_PER_IP_HOUR = 5;
+const EMAIL_SENDS_PER_TO_DAY = 3;
+
+const jsonResponse = (obj, status = 200) =>
+  new Response(JSON.stringify(obj), { status, headers: { "Content-Type": "application/json", "Cache-Control": "no-store" } });
+
+async function sha256Hex(text) {
+  const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(text));
+  return [...new Uint8Array(buf)].map((b) => b.toString(16).padStart(2, "0")).join("");
+}
+
+/** Adds one to a KV counter and reports whether it was already at the limit. */
+async function overLimit(key, limit, ttl) {
+  const count = Number((await GIFTS_CACHE.get(key)) || 0);
+  if (count >= limit) return true;
+  await GIFTS_CACHE.put(key, String(count + 1), { expirationTtl: ttl });
+  return false;
+}
+
+/** Amazon first, like the site's primaryBuy (src/data/affiliate.ts), with the tag added. */
+function rowBuyUrl(row) {
+  const isAmazon = (u) => /(^|\.)amazon\.com$/i.test((() => { try { return new URL(u).hostname; } catch { return ""; } })());
+  const amazon = isAmazon(row.Link) ? row.Link : row.AmazonAltLink;
+  return affiliateUrl(amazon || row.Link || "");
+}
+
+function rowPrice(row) {
+  const p = Number(row.Price);
+  if (!Number.isFinite(p) || p <= 0) return "";
+  const fmt = (n) => `$${Number.isInteger(n) ? n : n.toFixed(2)}`;
+  const max = Number(row.PriceMax);
+  const range = Number.isFinite(max) && max > p ? `${fmt(p)} to ${fmt(max)}` : String(row.PriceMax || "").toLowerCase() === "open" ? `${fmt(p)}+` : fmt(p);
+  return row.BillingPeriod === "monthly" ? `${range}/month` : row.BillingPeriod === "weekly" ? `${range}/week` : range;
+}
+
+function savedListEmail(rows) {
+  const items = rows
+    .map((r) => {
+      const page = `${SITE_ORIGIN}/gift/${r.row_id}`;
+      const buy = rowBuyUrl(r);
+      const img = r.PhotoAddress
+        ? `<td width="96" style="padding:0 16px 0 0;vertical-align:top;"><a href="${escapeHtml(page)}"><img src="${escapeHtml(r.PhotoAddress)}" width="96" height="96" alt="" style="display:block;width:96px;height:96px;object-fit:cover;border-radius:14px;"/></a></td>`
+        : "";
+      return `<tr><td style="padding:14px 0;border-top:1px solid #eadfcf;"><table role="presentation" cellpadding="0" cellspacing="0"><tr>${img}<td style="vertical-align:top;font-family:Helvetica,Arial,sans-serif;">
+        <div style="font-size:11px;letter-spacing:0.06em;text-transform:uppercase;color:#8a7a72;">${escapeHtml(r.Brand || "")}</div>
+        <div style="font-size:16px;font-weight:bold;margin:2px 0 4px;"><a href="${escapeHtml(page)}" style="color:#231410;text-decoration:none;">${escapeHtml(r.Gift || "")}</a></div>
+        <div style="font-size:14px;color:#231410;">${escapeHtml(rowPrice(r))}${buy ? ` &nbsp;·&nbsp; <a href="${escapeHtml(buy)}" style="color:#C4477E;font-weight:bold;text-decoration:none;">Buy →</a>` : ""}</div>
+      </td></tr></table></td></tr>`;
+    })
+    .join("");
+  const html = `<!doctype html><html><body style="margin:0;background:#FBF1E1;">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#FBF1E1;"><tr><td align="center" style="padding:32px 16px;">
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:560px;background:#FFFCF5;border-radius:20px;padding:28px;">
+      <tr><td style="font-family:Georgia,serif;font-size:28px;color:#231410;padding-bottom:6px;">Your saved gifts</td></tr>
+      <tr><td style="font-family:Helvetica,Arial,sans-serif;font-size:14px;color:#6b5a52;padding-bottom:12px;">Here are the gifts you saved on GiftPicker, ready when you are.</td></tr>
+      ${items}
+      <tr><td style="font-family:Helvetica,Arial,sans-serif;font-size:13px;color:#8a7a72;padding-top:20px;border-top:1px solid #eadfcf;">Looking for more? <a href="${SITE_ORIGIN}/quiz" style="color:#C4477E;">Take the free 60-second gift quiz</a>.<br/>You asked for this email on giftpicker.io. As an Amazon Associate, GiftPicker earns from qualifying purchases.</td></tr>
+    </table>
+  </td></tr></table></body></html>`;
+  const text = ["Your saved gifts from GiftPicker", ""]
+    .concat(rows.map((r) => `${r.Gift}${r.Brand ? ` (${r.Brand})` : ""}${rowPrice(r) ? `, ${rowPrice(r)}` : ""}\n${SITE_ORIGIN}/gift/${r.row_id}`))
+    .concat(["", `Find more at ${SITE_ORIGIN}/quiz`])
+    .join("\n");
+  return { html, text };
+}
+
+async function serveEmailList(event) {
+  const req = event.request;
+  if (req.method !== "POST") return jsonResponse({ error: "method" }, 405);
+  if (Number(req.headers.get("content-length") || 0) > 8000) return jsonResponse({ error: "too large" }, 413);
+  let body;
+  try {
+    body = await req.json();
+  } catch {
+    return jsonResponse({ error: "bad json" }, 400);
+  }
+  // The honeypot: people never fill it, so answer as if it worked.
+  if (body.hp) return jsonResponse({ ok: true });
+  const email = String(body.email || "").trim();
+  const ids = Array.isArray(body.ids) ? body.ids.filter((x) => /^r\d{1,6}$/.test(String(x))).slice(0, MAX_EMAIL_GIFTS) : [];
+  if (!isValidEmail(email) || !ids.length) return jsonResponse({ error: "invalid" }, 400);
+  if (typeof RESEND_API_KEY === "undefined" || !RESEND_API_KEY) return jsonResponse({ error: "not configured" }, 503);
+
+  const ip = req.headers.get("CF-Connecting-IP") || "unknown";
+  const hour = Math.floor(Date.now() / 3600e3);
+  const day = Math.floor(Date.now() / 864e5);
+  const toKey = await sha256Hex(email.toLowerCase());
+  if (await overLimit(`email:ip:${ip}:${hour}`, EMAIL_SENDS_PER_IP_HOUR, 3600)) return jsonResponse({ error: "limit" }, 429);
+  if (await overLimit(`email:to:${toKey}:${day}`, EMAIL_SENDS_PER_TO_DAY, 86400)) return jsonResponse({ error: "limit" }, 429);
+
+  const rows = (await loadGifts(event)) || [];
+  const byId = new Map(rows.map((r) => [r.row_id, r]));
+  const picked = ids.map((id) => byId.get(id)).filter(Boolean);
+  if (!picked.length) return jsonResponse({ error: "no gifts" }, 400);
+
+  const { html, text } = savedListEmail(picked);
+  const sent = await fetch("https://api.resend.com/emails", {
+    method: "POST",
+    headers: { Authorization: `Bearer ${RESEND_API_KEY}`, "Content-Type": "application/json" },
+    body: JSON.stringify({ from: EMAIL_FROM, to: [email], subject: "Your saved gifts from GiftPicker", html, text }),
+  });
+  if (!sent.ok) return jsonResponse({ error: "send failed" }, 502);
+
+  event.waitUntil(
+    fetch(APPS_SCRIPT_URL, {
+      method: "POST",
+      body: JSON.stringify({ type: "savedlist", email, optIn: body.optIn === true, ids: picked.map((r) => r.row_id), clientId: String(body.clientId || "").slice(0, 80), at: new Date().toISOString() }),
+    }).catch(() => {}),
+  );
+  return jsonResponse({ ok: true });
 }
 
 /**

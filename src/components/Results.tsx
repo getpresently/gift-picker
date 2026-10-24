@@ -12,7 +12,7 @@ import { buildMatchReasons, foldTwins, rankGifts, SECONDARY_TONES, twinSeed, typ
 import { useGifts } from "../data/giftsApi";
 import { isDemoting, NOTIFY_OPT_IN_LIVE, postFeedback, postRequest, type FeedbackOption, type FeedbackRecord } from "../data/feedback";
 import { NotifyOptIn } from "./clay/NotifyOptIn";
-import { loadSaved, saveSaved } from "../data/saved";
+import { toggleSaved, useSaved } from "../data/saved";
 import { buildShareUrl, hydrateAnswersFromShareUrl, shareOrCopy } from "../data/share";
 import { resultsBand, searchShape, track } from "../data/analytics";
 import { AffiliateDisclosure } from "./clay/AffiliateDisclosure";
@@ -26,7 +26,7 @@ export function Results() {
   const navigate = useNavigate();
   const isMobile = useIsMobile();
   const { data: allGifts, loading, error } = useGifts();
-  const [saved, setSaved] = useState<Set<string>>(() => loadSaved());
+  const saved = useSaved();
 
   // A share link (/results?r=partner&...) wins over answers this tab saved
   // earlier, so opening someone's shared picks never shows your own. With no
@@ -166,36 +166,27 @@ export function Results() {
   }, [answers, navigate]);
 
   const toggleSave = (id: string) => {
-    setSaved((prev) => {
-      const next = new Set(prev);
-      const adding = !next.has(id);
-      if (adding) next.add(id);
-      else next.delete(id);
-      saveSaved(next);
-      // Log every heart-on event to the Feedback sheet as reason: heart.
-      // Useful as a positive signal alongside the negative "Something off" reports.
-      if (adding) {
-        // A twin opened inside the modal is not in picks, so search those too.
-        const gift = picks.flatMap((p) => [p, ...(p.twins ?? [])]).find((p) => p.id === id);
-        if (gift) {
-          postFeedback({
-            giftId: gift.id,
-            giftName: gift.name,
-            brand: gift.brand,
-            reason: "heart",
-            reasonLabel: "Saved (heart)",
-            answers,
-            at: new Date().toISOString(),
-          });
-          track("gift_save", {
-            gift_id: gift.id,
-            brand: gift.brand,
-            price: gift.price,
-          });
-        }
-      }
-      return next;
-    });
+    // Log every heart-on event to the Feedback sheet as reason: heart.
+    // Useful as a positive signal alongside the negative "Something off" reports.
+    if (!toggleSaved(id)) return;
+    // A twin opened inside the modal is not in picks, so search those too.
+    const gift = picks.flatMap((p) => [p, ...(p.twins ?? [])]).find((p) => p.id === id);
+    if (gift) {
+      postFeedback({
+        giftId: gift.id,
+        giftName: gift.name,
+        brand: gift.brand,
+        reason: "heart",
+        reasonLabel: "Saved (heart)",
+        answers,
+        at: new Date().toISOString(),
+      });
+      track("gift_save", {
+        gift_id: gift.id,
+        brand: gift.brand,
+        price: gift.price,
+      });
+    }
   };
 
   // "Start over" wipes the current answers and drops the user back at

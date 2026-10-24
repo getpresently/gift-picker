@@ -9,7 +9,7 @@ import { FooterBrand } from "./clay/FooterBrand";
 import { useIsMobile } from "../hooks/useIsMobile";
 import { AFFILIATE_DISCLOSURE } from "../data/affiliate";
 
-const LAST_UPDATED = "September 21, 2026";
+const LAST_UPDATED = "October 24, 2026";
 
 /**
  * Shared shell for the plain text pages (/privacy, /terms, /thanks): same
@@ -149,9 +149,9 @@ export function PrivacyPage() {
       <h2 style={sectionHeadingStyle}>No accounts</h2>
       <p style={paragraphStyle}>
         GiftPicker does not ask you to create an account. We do not ask for
-        your name or any payment information. The only time we ask for an
-        email address is the optional heads-up after a request, described
-        below.
+        your name or any payment information. We only ask for an email
+        address when you choose to give one: for a heads-up after a request,
+        or to email yourself your saved gifts. Both are described below.
       </p>
 
       <h2 style={sectionHeadingStyle}>Your quiz answers</h2>
@@ -167,7 +167,8 @@ export function PrivacyPage() {
       <h2 style={sectionHeadingStyle}>Hearted gifts</h2>
       <p style={paragraphStyle}>
         Gifts you heart, or save, while browsing are kept in your browser's
-        session storage.
+        local storage on this device, so they're still there when you come
+        back. You can remove them from the Saved list at any time.
       </p>
 
       <h2 style={sectionHeadingStyle}>Anonymous ID</h2>
@@ -237,6 +238,16 @@ export function PrivacyPage() {
         leave your email for a heads-up. We keep it with that request and use
         it only to send you one note when we add gifts for it. We don't add it
         to a mailing list or share it with anyone.
+      </p>
+
+      <h2 style={sectionHeadingStyle}>Emailing your saved gifts</h2>
+      <p style={paragraphStyle}>
+        If you ask us to email your saved gifts, we send that email to the
+        address you type, through our email provider, Resend. We keep the
+        address with a note of which gifts were in the list. If you also tick
+        "Also send me gift ideas now and then," we may send you an occasional
+        email with gift ideas, and each one will let you unsubscribe. We don't
+        sell or share your address.
       </p>
 
       <h2 style={sectionHeadingStyle}>Brand submissions</h2>
