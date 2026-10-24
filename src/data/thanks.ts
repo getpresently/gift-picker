@@ -9,7 +9,9 @@
  * live gifts is left out, so rejecting or retiring a gift needs no edit here.
  * Each gift carries its own short label for the credit line. Credit only what the source actually recommends
  * (check the page before adding), and add a source whenever a batch of gifts
- * comes from someone else's list. House style: no em-dashes, the Oxford comma.
+ * comes from someone else's list. A source that inspired only one generic
+ * gift (an iPad) is not credited unless its list has other good ideas
+ * (Dalia, 10/24). House style: no em-dashes, the Oxford comma.
  * Links in a note use the blog's [label](url) form (parseInline in posts.ts).
  */
 
@@ -57,11 +59,6 @@ export const THANKS: ThanksSource[] = [
       { id: "r1116", label: "100 Cookies by Sarah Kieffer" },
       { id: "r1117", label: "Kayla's Cake French macarons" },
     ],
-  },
-  {
-    by: "Jeremiah Shoaf",
-    note: "[40 Products on Amazon for Designers](https://www.typewolf.com/amazon), on Typewolf, his site about type and design.",
-    gifts: [{ id: "r1112", label: "iPad" }],
   },
   {
     by: "Brett and Kate McKay",
