@@ -440,6 +440,8 @@ function replaceBetween(html, startMarker, endMarker, replacement) {
  * per IP address and 3 a day per recipient, counted in KV.
  * ------------------------------------------------------------------ */
 const EMAIL_FROM = "GiftPicker <hello@giftpicker.io>";
+// hello@giftpicker.io is an alias that reaches Dalia, so replies land with her.
+const EMAIL_REPLY_TO = "hello@giftpicker.io";
 const EMAIL_SENDS_PER_IP_HOUR = 5;
 const EMAIL_SENDS_PER_TO_DAY = 3;
 
@@ -539,7 +541,7 @@ async function serveEmailList(event) {
   const sent = await fetch("https://api.resend.com/emails", {
     method: "POST",
     headers: { Authorization: `Bearer ${RESEND_API_KEY}`, "Content-Type": "application/json" },
-    body: JSON.stringify({ from: EMAIL_FROM, to: [email], subject: "Your saved gifts from GiftPicker", html, text }),
+    body: JSON.stringify({ from: EMAIL_FROM, to: [email], reply_to: EMAIL_REPLY_TO, subject: "Your saved gifts from GiftPicker", html, text }),
   });
   if (!sent.ok) return jsonResponse({ error: "send failed" }, 502);
 
