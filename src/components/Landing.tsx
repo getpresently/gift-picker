@@ -153,7 +153,7 @@ export function Landing() {
                     <div style={{ display: "flex", gap: 1 }}>
                       {[0, 1, 2, 3, 4].map((i) => <Star key={i} />)}
                     </div>
-                    <strong style={{ fontFamily: "Geist, sans-serif", fontSize: 14, color: "#231410" }}>4.8/5</strong>
+                    <strong style={{ fontFamily: "Geist, sans-serif", fontSize: 14, color: "#231410" }}>5/5</strong>
                   </div>
                   <div
                     style={{

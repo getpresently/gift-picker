@@ -49,4 +49,5 @@ export const CHANGES: SiteChange[] = [
   { date: "2026-10-19", title: "Gift and brand counts updated to 1,000+ gifts and 800+ brands" },
   { date: "2026-10-19", title: "Gift guides show their updated date, and the coworker and love-language guides open with a question heading" },
   { date: "2026-10-19", title: "Thanks page, linked from the footer, credits the lists that inspired gifts" },
+  { date: "2026-10-24", title: "Homepage hero rating shows 5/5, matching Product Hunt" },
 ];
