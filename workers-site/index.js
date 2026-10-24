@@ -435,7 +435,8 @@ function replaceBetween(html, startMarker, endMarker, replacement) {
  * The worker sends the list through Resend, from hello@giftpicker.io, with
  * the API key in the RESEND_API_KEY secret (set by Dalia with
  * `npx wrangler secret put RESEND_API_KEY`). Then it posts the address to
- * the Apps Script ("savedlist"), which keeps it in the private Emails tab.
+ * the Apps Script ("savedlist"), which keeps it in the private "Saved list
+ * emails" tab.
  * Limits stop the form from being used to email strangers: 5 sends an hour
  * per IP address and 3 a day per recipient, counted in KV.
  * ------------------------------------------------------------------ */

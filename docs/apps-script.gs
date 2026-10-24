@@ -12,7 +12,7 @@
  *     "request"  -> append to Requests
  *     "notify"   -> optional email for a request, written to Requests "email"
  *     "brand"    -> append to Brands (the /brands submission form)
- *     "savedlist"-> append to Emails (a shopper emailed their saved gifts;
+ *     "savedlist"-> append to "Saved list emails" (a shopper emailed their saved gifts;
  *                   posted by the worker after it sends the email)
  *     "review"   -> internal review tool (password-gated), see handleReview_
  *
@@ -40,7 +40,9 @@ const REQUEST_HEADERS = [
   "interests", "vibe", "budget", "clientId"
 ];
 
-// Private: never add Emails to PUBLIC_TABS.
+// Private: never add this tab to PUBLIC_TABS. Its own tab, because the
+// older "Emails" tab is a separate, header-less list of addresses.
+const SAVED_LIST_TAB = "Saved list emails";
 const EMAIL_HEADERS = ["at", "email", "optIn", "gifts", "clientId"];
 
 const BRAND_HEADERS = [
@@ -538,7 +540,7 @@ function jsonOut_(obj) {
 
 /**
  * "Email my saved gifts": the worker sends the email itself (Resend), then
- * posts here so the address lands in the private Emails tab. optIn is TRUE
+ * posts here so the address lands in the private "Saved list emails" tab. optIn is TRUE
  * only when the shopper ticked "Also send me gift ideas now and then".
  */
 function handleSavedList_(p) {
@@ -547,7 +549,7 @@ function handleSavedList_(p) {
   const lock = LockService.getScriptLock();
   lock.waitLock(10000);
   try {
-    const sheet = ensureSheet_("Emails", EMAIL_HEADERS);
+    const sheet = ensureSheet_(SAVED_LIST_TAB, EMAIL_HEADERS);
     sheet.appendRow([
       p.at || new Date().toISOString(),
       email,
