@@ -177,8 +177,8 @@ const ALL_POSTS: Post[] = [
     related: ["how-much-to-spend-on-a-coworker-gift", "holiday-gifts-for-kids-by-age", "how-to-choose-a-gift-by-love-language"],
     published: "2026-10-25",
     intro: [
-      "A coworker's baby shower is one of the happiest things an office gets to celebrate. The tricky part is choosing a gift that suits a work friendship and that new parents will use, since they are about to be short on sleep, time, and free hands.",
-      "This guide is organized by budget, starting with gifts you can give on your own and ending with bigger ones the whole team can go in on. It works whether you are bringing a gift to the shower or sending a baby gift after the birth, and the last sections cover planning the shower itself.",
+      "Welcoming a new baby is one of the most exciting milestones an office gets to celebrate together. Finding a gift that is both practical and memorable takes a little thought, though, especially for parents who are about to be short on sleep, time, and free hands.",
+      "So we gathered our favorite baby shower gifts for coworkers, organized by budget, from small gifts you can give on your own to bigger ones the whole team can go in on. They work whether you are bringing a gift to the shower or sending a baby gift after the birth, and the last sections cover planning the shower itself.",
     ],
     body: [
       { kind: "h2", text: "How much to spend on a coworker's baby shower gift" },
@@ -196,7 +196,7 @@ const ALL_POSTS: Post[] = [
       },
       {
         kind: "p",
-        text: "To see which tier your group lands in, multiply: eight coworkers at $15 to $20 each comes to $120 to $160. When you organize a collection, suggest an amount per person, collect it through a payment app or a shared card, and make it clear that any contribution, including none, is welcome.",
+        text: "For example, eight coworkers chipping in $15 to $20 each comes to $120 to $160. When you organize a collection, suggest an amount per person, collect it through a payment app or a shared card, and make it clear that any contribution, including none, is welcome.",
       },
 
       { kind: "h2", text: "Under $50: a gift from you" },
@@ -206,14 +206,14 @@ const ALL_POSTS: Post[] = [
       },
       {
         kind: "p",
-        text: "The [Hello, World! board books](gift:r821) introduce birds, bugs, dinosaurs, and the solar system with bright art and simple first facts, and the [Goodnight Little Me personalized book](gift:r736) puts the baby's name on the cover and throughout a bedtime story. Order the book only if the parents have shared the name, and allow time for printing.",
+        text: "The [Hello, World! board books](gift:r821) introduce birds, bugs, dinosaurs, and the solar system with bright art and simple first facts, and the [Goodnight Little Me personalized book](gift:r736) puts the baby's name on the cover and throughout a bedtime story. Order the book only if the parents have shared the name, and allow time for printing. You can also start the baby's bookshelf with a picture book you loved as a kid, with a note inside about why you chose it.",
       },
       { kind: "gifts", ids: ["r821", "r736"] },
       {
         kind: "p",
-        text: "Sophie la Girafe's [teether](gift:r292) has been a favorite first toy since 1961. She is made from natural rubber, sized for small hands, and squeaks when squeezed. Crate & Kids' [Monthly Milestone Mat](gift:r196) is a cotton canvas backdrop with an adjustable date, made for the month-by-month photos most new parents love to take.",
+        text: "Sophie la Girafe's [teether](gift:r292) has been a favorite first toy since 1961. She is made from natural rubber, sized for small hands, and squeaks when squeezed. Crate & Kids' [Monthly Milestone Mat](gift:r196) is a cotton canvas backdrop with an adjustable date, made for the month-by-month photos most new parents love to take. To help them capture those early days, a [Shoott gift card](gift:r828) puts credit toward a family photo session with a local photographer once the baby arrives.",
       },
-      { kind: "gifts", ids: ["r292", "r196"] },
+      { kind: "gifts", ids: ["r292", "r196", "r828"] },
 
       { kind: "h2", text: "$50 to $150: a gift from a few coworkers" },
       {
@@ -222,12 +222,12 @@ const ALL_POSTS: Post[] = [
       },
       {
         kind: "p",
-        text: "Solly Baby's [Wrap Carrier](gift:r554) is a light, stretchy wrap that keeps a newborn close while leaving the parent's hands free. Hatch's [sound machine and night light](gift:r250) plays white noise, glows softly for night feedings, and later works as a time-to-rise clock for toddlers, all controlled from an app. Savor's [Baby Deluxe Keepsake Box](gift:r611) has labeled, acid-free files and drawers for a baby's mementos from birth to age four. Babo Botanicals' [Sensitive Baby Care Essentials set](gift:r1173) brings four fragrance-free basics for a newborn's skin, a shampoo and wash, a lotion, a diaper rash cream spray, and a face cream, in a reusable pouch.",
+        text: "Solly Baby's [Wrap Carrier](gift:r554) is a light, stretchy wrap that keeps a newborn close while leaving the parent's hands free. Hatch's [sound machine and night light](gift:r250) plays white noise, glows softly for night feedings, and later works as a time-to-rise clock for toddlers, all controlled from an app. Savor's [Baby Deluxe Keepsake Box](gift:r611) has labeled, acid-free files and drawers for a baby's mementos from birth to age four. Babo Botanicals' [Sensitive Baby Care Essentials set](gift:r1173) brings four fragrance-free basics for a newborn's skin: a shampoo and wash, a lotion, a diaper rash cream spray, and a face cream, all in a reusable pouch.",
       },
       { kind: "gifts", ids: ["r554", "r250", "r611", "r1173"] },
       {
         kind: "p",
-        text: "Cooking is often the first thing to go with a newborn, so an [Uber Eats gift card](gift:r135) covers takeout on the nights nobody has time to cook. A DoorDash card does the same job.",
+        text: "Cooking is often the first thing to go with a newborn, so an [Uber Eats gift card](gift:r135) covers takeout on the nights nobody has time to cook. A DoorDash card works just as well.",
       },
       { kind: "gifts", ids: ["r135"] },
 
@@ -246,6 +246,10 @@ const ALL_POSTS: Post[] = [
         text: "New parents rarely get time to themselves, so a gift just for them is welcome too. A Spafinder gift card works at spas across the country and gives the parent-to-be a few hours off, now or after the baby arrives. If the team knows them well, RENPHO's [shiatsu foot massager](gift:r372) gives tired feet a deep-kneading massage with heat, without leaving the couch.",
       },
       { kind: "gifts", ids: ["r372"] },
+      {
+        kind: "p",
+        text: "And you can never go wrong with cash or a gift card. A Target or Amazon gift card lets the parents pick up whatever is still missing from the registry, when they need it, and cash tucked into a card signed by the team can just as easily go toward the baby's savings.",
+      },
 
       { kind: "h2", text: "Office baby shower ideas" },
       {
@@ -279,8 +283,8 @@ const ALL_POSTS: Post[] = [
     related: ["gifts-for-your-brother-or-sister", "baby-shower-gifts-for-a-coworker", "how-to-choose-a-gift-by-love-language"],
     published: "2026-10-25",
     intro: [
-      "The best gifts for kids hold their attention well past the morning they open them. That means something different at every age, from a toy a toddler can push and bang on to a project a ten-year-old can finish on their own.",
-      "This guide is sorted by age, and we chose each pick for how well it fits that age and how long it holds up. Most work just as well for a fall birthday, and the bigger ones make good group gifts when a few relatives want to chip in.",
+      "There is nothing quite like the look on a child's face when they open a gift they love. The best ones keep them busy long after the wrapping paper is gone, and they build creativity, imagination, and curiosity along the way.",
+      "This guide is sorted by age, from babies to teens, and we chose each pick for how well it fits that age and how long it holds up. Most work just as well for a fall birthday, and the bigger ones make good group gifts, so the family can choose one quality gift over a pile of small ones.",
     ],
     body: [
       { kind: "h2", text: "How to choose a gift for a child" },
@@ -303,7 +307,7 @@ const ALL_POSTS: Post[] = [
       },
       {
         kind: "p",
-        text: "Lovevery's [Play Kits](gift:r550) are boxes of toys made for a child's exact stage. You can prepay one to three kits, and each one is matched to the child's age when the parents activate it, so new toys arrive as the child grows.",
+        text: "Lovevery's [Play Kits](gift:r550) are Montessori-inspired boxes of toys, each designed for a child's exact stage of development. You can prepay one to three kits, and each one is matched to the child's age when the parents activate it, so new toys arrive as the child grows.",
       },
       {
         kind: "p",
@@ -314,7 +318,7 @@ const ALL_POSTS: Post[] = [
       { kind: "h2", text: "Ages 3 to 5" },
       {
         kind: "p",
-        text: "Preschoolers love to pretend and to build, and a gift that does either gets plenty of use.",
+        text: "Preschoolers love to pretend and to build. Pretend play is how they practice talking, sharing, and solving problems, so a gift that sparks it gets plenty of use.",
       },
       {
         kind: "p",
@@ -329,7 +333,7 @@ const ALL_POSTS: Post[] = [
       },
       {
         kind: "p",
-        text: "Tubelox's [Deluxe 220-Piece Set](gift:r1170) is a box of big plastic tubes and connectors that kids snap together into vehicles and forts large enough to sit in. It is a good one for grandparents and other relatives to go in on together. Elenco's [Snap Circuits Beginner kit](gift:r717), for ages 5 to 9, builds more than 20 working circuits, including a spinning fan, lights, and sounds, from picture-based instructions. Makedo's [cardboard construction kit](gift:r795), for ages 5 and up, comes with kid-safe saws and 120 reusable screws that turn delivery boxes into forts, costumes, and cars.",
+        text: "Tubelox's [Deluxe 220-Piece Set](gift:r1170) is a STEM building set of big plastic tubes and connectors that kids snap together into vehicles and forts large enough to sit in. At this size, it's a good one for grandparents and other relatives to go in on together. Elenco's [Snap Circuits Beginner kit](gift:r717), for ages 5 to 9, builds more than 20 working circuits, including a spinning fan, lights, and sounds, from picture-based instructions. Makedo's [cardboard construction kit](gift:r795), for ages 5 and up, comes with kid-safe saws and 120 reusable screws that turn delivery boxes into forts, costumes, and cars.",
       },
       { kind: "gifts", ids: ["r1170", "r717", "r795"] },
       {
@@ -345,14 +349,14 @@ const ALL_POSTS: Post[] = [
       },
       {
         kind: "p",
-        text: "National Geographic's [Kids' Pottery Wheel Kit](gift:r798), for ages 8 and up, is a plug-in wheel with air-dry clay, sculpting tools, and paints, so kids can shape small cups and bowls and paint them once they dry, with no kiln. Thames & Kosmos's [Chem C1000](gift:r725), for ages 10 and up, guides 125 experiments, from invisible ink to splitting water into hydrogen and oxygen. Sphero's [Mini coding robot](gift:r787), for ages 8 and up, is the size of a ping-pong ball, and kids drive it from a phone or tablet and learn to program it with the free app.",
+        text: "National Geographic's [Kids' Pottery Wheel Kit](gift:r798), for ages 8 and up, gives kids a creative outlet and the satisfaction of making something real. It comes with a plug-in wheel, air-dry clay, sculpting tools, and paints, so they can shape small cups and bowls and paint them once they dry, with no kiln. Thames & Kosmos's [Chem C1000](gift:r725), for ages 10 and up, guides 125 experiments, from invisible ink to splitting water into hydrogen and oxygen. Sphero's [Mini coding robot](gift:r787), for ages 8 and up, is the size of a ping-pong ball, and kids drive it from a phone or tablet and learn to program it with the free app.",
       },
       { kind: "gifts", ids: ["r798", "r725", "r787"] },
       {
         kind: "p",
-        text: "For readers, [The Wild Robot boxed set](gift:r1163) holds all three books about a robot who learns to survive on a wild island, and the [illustrated edition of Harry Potter and the Sorcerer's Stone](gift:r1164) has more than 100 full-color pictures by Jim Kay. Camp Snap's [screen-free camera](gift:r454) has six built-in film-style filters, and the photos stay a surprise until they're downloaded to a computer.",
+        text: "For readers, [The Wild Robot boxed set](gift:r1163) holds all three books about a robot who learns to survive on a wild island, and the [illustrated edition of Harry Potter and the Sorcerer's Stone](gift:r1164) has more than 100 full-color pictures by Jim Kay. For the doodlers and painters, Faber-Castell's [Young Artist Essentials set](gift:r800) comes in a wooden case with colored and watercolor pencils, oil pastels, markers, and paper. And Camp Snap's [screen-free camera](gift:r454) has six built-in film-style filters, and the photos stay a surprise until they're downloaded to a computer.",
       },
-      { kind: "gifts", ids: ["r1163", "r1164", "r454"] },
+      { kind: "gifts", ids: ["r1163", "r1164", "r800", "r454"] },
 
       { kind: "h2", text: "Teens" },
       {
@@ -361,7 +365,7 @@ const ALL_POSTS: Post[] = [
       },
       {
         kind: "p",
-        text: "Fujifilm's [Instax Mini 13](gift:r148) prints credit-card-size photos in about five seconds, the kind that end up taped to a mirror or a locker. For a teen who wants to learn guitar, Yamaha's [GigMaker Deluxe pack](gift:r1171) comes with a full-size acoustic guitar, a gig bag, a clip-on tuner, a strap, and picks. If they already play electric, Positive Grid's [Spark GO](gift:r756) is a palm-size practice amp whose app shows the chords to the songs they want to learn.",
+        text: "Fujifilm's [Instax Mini 13](gift:r148) prints credit-card-size photos in about five seconds, the kind that end up taped to a mirror or a locker. Learning an instrument is a good way to spend time away from screens, and for a teen who wants to learn guitar, Yamaha's [GigMaker Deluxe pack](gift:r1171) comes with a full-size acoustic guitar, a gig bag, a clip-on tuner, a strap, and picks. If they already play electric, Positive Grid's [Spark GO](gift:r756) is a palm-size practice amp whose app shows the chords to the songs they want to learn.",
       },
       { kind: "gifts", ids: ["r148", "r1171", "r756"] },
       {
@@ -384,7 +388,7 @@ const ALL_POSTS: Post[] = [
       { kind: "h2", text: "Gifts that support a charity" },
       {
         kind: "p",
-        text: "World Wildlife Fund's [polar bear adoption kit](gift:r812) funds conservation work and comes with a plush polar bear and an adoption certificate. You can also let a child pick a charity to donate to with you, such as Make-A-Wish, which grants wishes to children with critical illnesses, or a toy drive in your town.",
+        text: "Giving back is part of the holidays too, and kids enjoy it more when they get to choose the cause. World Wildlife Fund's [polar bear adoption kit](gift:r812) funds conservation work and comes with a plush polar bear and an adoption certificate. You can also donate together to a charity they pick, such as Make-A-Wish, which grants wishes to children with critical illnesses, Oceana for a kid who loves the ocean, or a toy drive in your town.",
       },
       { kind: "gifts", ids: ["r812"] },
     ],
@@ -619,14 +623,19 @@ const ALL_POSTS: Post[] = [
 
       { kind: "h2", text: "Coworker gift ideas by occasion" },
       {
+        kind: "p",
+        text: "Some of the best office memories come from celebrating milestones together. Here are quick ideas for the occasions that come up most, with the price tier for each, and more detail in the sections below.",
+      },
+      {
         kind: "list",
         items: [
+          "Baby shower: our guide to [baby shower gifts for a coworker](/blog/baby-shower-gifts-for-a-coworker) has picks at every budget, and Coterie's [diaper subscription](gift:r595) works well as a team gift ($150 and up).",
           "Birthday: from you, a small treat like Queen Majesty's [Hot Sauce Trinity](gift:r418) (under $25); for a milestone birthday, Sony's [noise-canceling headphones](gift:r596) from the whole team ($150 and up).",
-          "New baby: our guide to [baby shower gifts for a coworker](/blog/baby-shower-gifts-for-a-coworker) has picks at every budget, and Coterie's [diaper subscription](gift:r595) works well as a team gift ($150 and up).",
-          "Wedding: a gift card toward their registry, Away's [Carry-On](gift:r571) for the honeymoon, or, for a couple who enjoys wine, SommSelect's [wine club](gift:r1092) (both $150 and up, from a group).",
-          "Promotion or work anniversary: from you, a [Candlelight concert gift card](gift:r700) ($25 to $60); from a group, a year of [MasterClass](gift:r362) or Smythson's [Panama weekly journal](gift:r662) ($60 to $150).",
-          "Farewell or retirement: from a group, Fujifilm's [smartphone photo printer](gift:r274) for the send-off, or a [ResortPass gift card](gift:r1005) for a day off between jobs ($60 to $150).",
-          "Illness or loss: Spoonful of Comfort's [care package](gift:r600) or Loved and Found's [Serenity Gift Box](gift:r263), from a group ($60 to $150).",
+          "Wedding: a gift card toward their registry, Away's [Carry-On](gift:r571) for the honeymoon, or, for a couple who enjoys wine, SommSelect's [wine club](gift:r1092) (from a group, $150 and up).",
+          "Farewell or retirement: Fujifilm's [smartphone photo printer](gift:r274) for the send-off, or a [ResortPass gift card](gift:r1005) or a Spafinder card for some time off between jobs (from a group, $60 to $150).",
+          "Promotion or work anniversary: from you, a Starbucks card or a [Candlelight concert gift card](gift:r700) (under $60); from a group, a year of [MasterClass](gift:r362) or Smythson's [Panama weekly journal](gift:r662) ($60 to $150).",
+          "Thinking of you or sympathy: Spoonful of Comfort's [care package](gift:r600) or Loved and Found's [Serenity Gift Box](gift:r263) (from a group, $60 to $150).",
+          "Any occasion: cash tucked into a card, or an Amazon gift card, lets them choose for themselves.",
         ],
       },
 
@@ -712,6 +721,17 @@ const ALL_POSTS: Post[] = [
         text: "If the team can't settle on an object, cash tucked into a card signed by everyone is always welcome, especially at a farewell, and an Amazon gift card works almost as well. If they would rather do some good, a [TisBest Charity Gift Card](gift:r769) lets the recipient give the money to any of about 1.8 million US charities.",
       },
       { kind: "gifts", ids: ["r769"] },
+
+      { kind: "h2", text: "Holiday gifts at work" },
+      {
+        kind: "list",
+        items: [
+          "Secret Santa: stay at or just under the spending limit, which most offices set somewhere between $20 and $50, and pick something anyone would enjoy, like a treat or a small desk upgrade. The under-$25 picks above work well.",
+          "Your manager: holiday gifts usually go from managers to their team, so a card, or a group gift from everyone in the $60 to $150 range, is the comfortable choice.",
+          "The whole team, from you: one small, identical treat for each person, like good chocolate or a tin of tea, keeps it fair and simple.",
+          "A remote coworker: choose something that ships easily, or a gift that arrives by email, like a [Candlelight concert gift card](gift:r700) or a year of [MasterClass](gift:r362).",
+        ],
+      },
 
       { kind: "h2", text: "Keeping it comfortable" },
       {
