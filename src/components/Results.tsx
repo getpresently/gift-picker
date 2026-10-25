@@ -198,6 +198,7 @@ export function Results() {
         gift_id: gift.id,
         brand: gift.brand,
         price: gift.price,
+        source: "results",
       });
     }
   };

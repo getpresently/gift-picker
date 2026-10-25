@@ -462,12 +462,10 @@ async function overLimit(key, limit, ttl) {
   return false;
 }
 
-/** Amazon first, like the site's primaryBuy (src/data/affiliate.ts), with the tag added. */
-function rowBuyUrl(row) {
-  const isAmazon = (u) => /(^|\.)amazon\.com$/i.test((() => { try { return new URL(u).hostname; } catch { return ""; } })());
-  const amazon = isAmazon(row.Link) ? row.Link : row.AmazonAltLink;
-  return affiliateUrl(amazon || row.Link || "");
-}
+// Links in the saved-list email carry these tags, so GA credits the visits
+// (and any store clicks after them) to the email in the Sources report.
+const EMAIL_UTM = "utm_source=saved_list_email&utm_medium=email&utm_campaign=saved_list";
+const emailLink = (path) => `${SITE_ORIGIN}${path}?${EMAIL_UTM}`;
 
 function rowPrice(row) {
   const p = Number(row.Price);
@@ -478,33 +476,40 @@ function rowPrice(row) {
   return row.BillingPeriod === "monthly" ? `${range}/month` : row.BillingPeriod === "weekly" ? `${range}/week` : range;
 }
 
+/**
+ * The saved-list email. Every gift links back to its page on giftpicker.io
+ * (View gift), not to a store: the buy click then happens on the site, where
+ * it is tracked and tagged like any other, and the email needs no affiliate
+ * disclosure.
+ */
 function savedListEmail(rows) {
   const items = rows
     .map((r) => {
-      const page = `${SITE_ORIGIN}/gift/${r.row_id}`;
-      const buy = rowBuyUrl(r);
+      const page = emailLink(`/gift/${r.row_id}`);
       const img = r.PhotoAddress
         ? `<td width="96" style="padding:0 16px 0 0;vertical-align:top;"><a href="${escapeHtml(page)}"><img src="${escapeHtml(r.PhotoAddress)}" width="96" height="96" alt="" style="display:block;width:96px;height:96px;object-fit:cover;border-radius:14px;"/></a></td>`
         : "";
       return `<tr><td style="padding:14px 0;border-top:1px solid #eadfcf;"><table role="presentation" cellpadding="0" cellspacing="0"><tr>${img}<td style="vertical-align:top;font-family:Helvetica,Arial,sans-serif;">
         <div style="font-size:11px;letter-spacing:0.06em;text-transform:uppercase;color:#8a7a72;">${escapeHtml(r.Brand || "")}</div>
         <div style="font-size:16px;font-weight:bold;margin:2px 0 4px;"><a href="${escapeHtml(page)}" style="color:#231410;text-decoration:none;">${escapeHtml(r.Gift || "")}</a></div>
-        <div style="font-size:14px;color:#231410;">${escapeHtml(rowPrice(r))}${buy ? ` &nbsp;·&nbsp; <a href="${escapeHtml(buy)}" style="color:#C4477E;font-weight:bold;text-decoration:none;">Buy →</a>` : ""}</div>
+        <div style="font-size:14px;color:#231410;">${rowPrice(r) ? `${escapeHtml(rowPrice(r))} &nbsp;·&nbsp; ` : ""}<a href="${escapeHtml(page)}" style="color:#C4477E;font-weight:bold;text-decoration:none;">View gift →</a></div>
       </td></tr></table></td></tr>`;
     })
     .join("");
   const html = `<!doctype html><html><body style="margin:0;background:#FBF1E1;">
   <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#FBF1E1;"><tr><td align="center" style="padding:32px 16px;">
     <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:560px;background:#FFFCF5;border-radius:20px;padding:28px;">
+      <tr><td style="padding-bottom:18px;"><a href="${escapeHtml(emailLink("/"))}"><img src="${SITE_ORIGIN}/email-logo.png" width="155" height="48" alt="GiftPicker" style="display:block;width:155px;height:48px;border:0;"/></a></td></tr>
       <tr><td style="font-family:Georgia,serif;font-size:28px;color:#231410;padding-bottom:6px;">Your saved gifts</td></tr>
       <tr><td style="font-family:Helvetica,Arial,sans-serif;font-size:14px;color:#6b5a52;padding-bottom:12px;">Here are the gifts you saved on GiftPicker, ready when you are.</td></tr>
       ${items}
-      <tr><td style="font-family:Helvetica,Arial,sans-serif;font-size:13px;color:#8a7a72;padding-top:20px;border-top:1px solid #eadfcf;">Looking for more? <a href="${SITE_ORIGIN}/quiz" style="color:#C4477E;">Take the free 60-second gift quiz</a>.<br/>You asked for this email on giftpicker.io. As an Amazon Associate, GiftPicker earns from qualifying purchases.</td></tr>
+      <tr><td style="font-family:Helvetica,Arial,sans-serif;font-size:14px;color:#231410;padding-top:20px;border-top:1px solid #eadfcf;">Have any requests or suggestions? Reply to this email!</td></tr>
+      <tr><td style="font-family:Helvetica,Arial,sans-serif;font-size:13px;color:#8a7a72;padding-top:10px;">Looking for more? <a href="${escapeHtml(emailLink("/quiz"))}" style="color:#C4477E;">Take the free 60-second gift quiz</a>.<br/>You asked for this email on giftpicker.io.</td></tr>
     </table>
   </td></tr></table></body></html>`;
   const text = ["Your saved gifts from GiftPicker", ""]
-    .concat(rows.map((r) => `${r.Gift}${r.Brand ? ` (${r.Brand})` : ""}${rowPrice(r) ? `, ${rowPrice(r)}` : ""}\n${SITE_ORIGIN}/gift/${r.row_id}`))
-    .concat(["", `Find more at ${SITE_ORIGIN}/quiz`])
+    .concat(rows.map((r) => `${r.Gift}${r.Brand ? ` (${r.Brand})` : ""}${rowPrice(r) ? `, ${rowPrice(r)}` : ""}\n${emailLink(`/gift/${r.row_id}`)}`))
+    .concat(["", "Have any requests or suggestions? Reply to this email!", "", `Find more at ${emailLink("/quiz")}`])
     .join("\n");
   return { html, text };
 }

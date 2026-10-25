@@ -345,7 +345,7 @@ export function BlogPostView({
 
   const saved = useSaved();
   const toggleSave = (id: string) => {
-    track("gift_save_toggle", { gift_id: id, saved: toggleSaved(id), source: "blog" });
+    if (toggleSaved(id)) track("gift_save", { gift_id: id, source: "blog" });
   };
 
   if (!post) {

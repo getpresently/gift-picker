@@ -48,7 +48,10 @@ const DAILY_EVENTS = ["quiz_start", "quiz_step_view", "quiz_complete", "gift_ope
 const COUNT_EVENTS = [
   "quiz_start", "quiz_complete", "gift_open", "gift_buy_click", "results_load_more",
   "results_refine", "gift_save", "gift_share", "request_more", "gift_link_copy", "share_open",
+  "saved_open", "saved_email_sent",
 ];
+// Session source the saved-list email's links carry (utm_source in workers-site/index.js).
+const EMAIL_SOURCE = "saved_list_email";
 
 let tokenCache = null; // { token, exp } for this isolate
 
@@ -338,6 +341,8 @@ async function buildReport(days, fresh) {
     sources: { dateRanges: current, dimensions: [{ name: "sessionSource" }], metrics: [{ name: "sessions" }, { name: "engagedSessions" }],
       orderBys: [{ metric: { metricName: "sessions" }, desc: true }], limit: 10 },
     sourceClicks: { dateRanges: current, dimensions: [{ name: "sessionSource" }], metrics: [{ name: "eventCount" }], dimensionFilter: buyClicks },
+    // The top-10 sources table can leave the email out, so its visits get their own report.
+    emailVisits: { dateRanges: current, metrics: [{ name: "sessions" }], dimensionFilter: eq("sessionSource", EMAIL_SOURCE) },
     devices: { dateRanges: current, dimensions: [{ name: "deviceCategory" }], metrics: [{ name: "sessions" }] },
     deviceClicks: { dateRanges: current, dimensions: [{ name: "deviceCategory" }], metrics: [{ name: "eventCount" }], dimensionFilter: buyClicks },
     newVsReturning: { dateRanges: current, dimensions: [{ name: "newVsReturning" }], metrics: [{ name: "activeUsers" }] },
@@ -438,6 +443,7 @@ async function buildReport(days, fresh) {
       .map((d) => ({ date: d.date, visitors: d.visitors, quizzes: d.quizzes, storeClicks: d.storeClicks })),
     changes: beforeAfter(series.rows, series.start, series.today, CHANGES),
     sources, devices,
+    savedList: { visits: rows(r.emailVisits)[0]?.sessions ?? 0, storeClicks: sourceClicks[EMAIL_SOURCE] || 0 },
     newVsReturning: rows(r.newVsReturning),
     destinations: r.destinations ? rows(r.destinations) : null,
     gifts: gifts && gifts.filter((g) => g.opens || g.clicks).slice(0, 40),

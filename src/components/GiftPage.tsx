@@ -50,7 +50,7 @@ export function GiftPage() {
   const featuredIn = useMemo(() => (gift ? postsFeaturing(gift.id) : []), [gift]);
   const saved = useSaved();
   const toggleSave = (id: string) => {
-    track("gift_save_toggle", { gift_id: id, saved: toggleSaved(id), source: "gift_page_related" });
+    if (toggleSaved(id)) track("gift_save", { gift_id: id, source: "gift_page_related" });
   };
 
   // A copied gift link ends in ?ref=share. Read it once on load (the twin and

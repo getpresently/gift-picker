@@ -51,4 +51,7 @@ export const CHANGES: SiteChange[] = [
   { date: "2026-10-19", title: "Thanks page, linked from the footer, credits the lists that inspired gifts" },
   { date: "2026-10-24", title: "Homepage hero rating shows 5/5, matching Product Hunt" },
   { date: "2026-10-24", title: "Saved gifts: hearts stay on the device, a saved pill in the header opens the list, and shoppers can email the list to themselves" },
+  { date: "2026-10-24", title: "Edit answers is compact: dropdowns for one-answer questions, smaller pills, and just the budget slider" },
+  { date: "2026-10-24", title: "Amazon only option in Edit answers, for shoppers who need a gift fast" },
+  { date: "2026-10-24", title: "Updating picks shows a short spinner, then the new cards ease in" },
 ];

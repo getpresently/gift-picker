@@ -36,6 +36,8 @@ type Report = {
   trend: { date: string; visitors: number; quizzes: number; storeClicks: number }[];
   changes: ChangeImpact[];
   sources: SourceRow[];
+  /** Visits from links in the saved-list email, and store clicks in those visits. */
+  savedList: { visits: number; storeClicks: number };
   devices: { deviceCategory: string; sessions: number; storeClicks: number }[];
   newVsReturning: { newVsReturning: string; activeUsers: number }[];
   destinations: { "customEvent:destination": string; eventCount: number }[] | null;
@@ -625,6 +627,8 @@ function Dashboard({ r }: { r: Report }) {
     ["Results views", r.results.views], ["Opened a gift", opens.eventCount], ["Clicked to a store", clicks.eventCount],
     ["Loaded more", ev("results_load_more").eventCount], ["Refined answers", ev("results_refine").eventCount],
     ["Saved a gift", ev("gift_save").eventCount], ["Shared", ev("gift_share").eventCount], ["Asked for more", ev("request_more").eventCount],
+    ["Opened saved gifts", ev("saved_open").eventCount], ["Emailed their saved list", ev("saved_email_sent").eventCount],
+    ["Visits from that email", r.savedList.visits], ["Store clicks from those visits", r.savedList.storeClicks],
   ];
 
   const steps = (r.quizSteps ?? [])
@@ -864,6 +868,7 @@ function mockReport(days: number, variant: string | null): Report {
         gift_save: people(Math.round(sum("resultsViews") * 0.08), 1.5), gift_share: people(Math.round(sum("resultsViews") * (to >= "20261010" ? 0.034 : 0.026)), 1),
         request_more: people(Math.round(sum("resultsViews") * 0.02), 1),
         gift_link_copy: people(Math.round(sum("resultsViews") * 0.045), 1.1), share_open: people(Math.round(sum("resultsViews") * 0.07), 1),
+        saved_open: people(Math.round(sum("resultsViews") * 0.05), 1.4), saved_email_sent: people(Math.round(sum("resultsViews") * 0.012), 1),
       },
       results: { views: sum("resultsViews"), seconds: sum("resultsViews") * (to >= "20261003" ? 104 : 88), users: Math.round(sum("quizFinishers") * 0.98) },
     };
@@ -937,6 +942,7 @@ function mockReport(days: number, variant: string | null): Report {
     trend: series.slice(-days).map((d) => ({ date: d.date, visitors: d.visitors, quizzes: d.quizzes, storeClicks: d.storeClicks })),
     changes: beforeAfter(series, series[0].date, today, CHANGES),
     sources,
+    savedList: { visits: n(14), storeClicks: n(5) },
     devices: [
       { deviceCategory: "mobile", sessions: n(820), storeClicks: n(118) },
       { deviceCategory: "desktop", sessions: n(360), storeClicks: n(70) },

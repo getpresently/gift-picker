@@ -7,7 +7,7 @@ type Props = {
   min: number;
   max: number;
   step: number;
-  /** Smaller amount and tighter spacing, for the Edit answers sheet. */
+  /** Smaller amount, tighter spacing, and no price-range pills, for the Edit answers sheet. */
   compact?: boolean;
 };
 
@@ -155,7 +155,7 @@ export function BudgetSlider({ value, onChange, minValue, onMinChange, min, max,
         <span>${max}+</span>
       </div>
 
-      <div style={{ display: "flex", gap: 8, marginTop: compact ? 12 : 20, flexWrap: "wrap", justifyContent: "center" }}>
+      {!compact && <div style={{ display: "flex", gap: 8, marginTop: 20, flexWrap: "wrap", justifyContent: "center" }}>
         {PRESETS.map((p) => {
           const lo = p.lo ?? min;
           const hi = p.hi ?? max;
@@ -187,7 +187,7 @@ export function BudgetSlider({ value, onChange, minValue, onMinChange, min, max,
             </button>
           );
         })}
-      </div>
+      </div>}
     </div>
   );
 }
