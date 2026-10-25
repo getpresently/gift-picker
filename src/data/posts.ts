@@ -88,7 +88,19 @@ export function formatPostDate(iso: string): string {
  * reports these as pending, says when one has gone live (then delete its entry
  * here), and fails if she rejects one, so its sentence can be rewritten.
  */
-export const PENDING_GIFTS: Record<string, { name: string; presentlySource: string }> = {};
+export const PENDING_GIFTS: Record<string, { name: string; presentlySource: string }> = {
+  r1153: { name: "Razor A Kick Scooter", presentlySource: "gap-fill round 10/24 (kids' active)" },
+  r1156: { name: "Penny 22-Inch Board", presentlySource: "gap-fill round 10/24 (kids' active)" },
+  r1159: { name: "Fjällräven Kånken Classic Backpack", presentlySource: "gap-fill round 10/24 (kids' active)" },
+  r1162: { name: "Dog Man: The Supa Epic Collection", presentlySource: "gap-fill round 10/24 (kids' books)" },
+  r1163: { name: "The Wild Robot Hardcover Boxed Set", presentlySource: "gap-fill round 10/24 (kids' books)" },
+  r1164: { name: "Harry Potter and the Sorcerer's Stone: The Illustrated Edition", presentlySource: "gap-fill round 10/24 (kids' books)" },
+  r1167: { name: "Melissa & Doug Countdown to Christmas Wooden Advent Calendar", presentlySource: "gap-fill round 10/24 (kids' seasonal)" },
+  r1168: { name: "Where's Waldo? Advent Calendar", presentlySource: "gap-fill round 10/24 (kids' seasonal)" },
+  r1169: { name: "Super Smalls Hanukkah Activity Set", presentlySource: "gap-fill round 10/24 (kids' seasonal)" },
+  r1170: { name: "Tubelox Deluxe 220-Piece Set", presentlySource: "group-gifts-for-kids-this-holiday-season" },
+  r1171: { name: "Yamaha GigMaker Deluxe Acoustic Guitar Package", presentlySource: "group-gifts-for-kids-this-fall" },
+};
 
 export function isPendingGift(id: string): boolean {
   return Object.prototype.hasOwnProperty.call(PENDING_GIFTS, id);
@@ -155,6 +167,229 @@ export function postGiftIds(post: Post): string[] {
 const REVISED = "2026-10-18";
 
 const ALL_POSTS: Post[] = [
+  {
+    slug: "baby-shower-gifts-for-a-coworker",
+    title: "Baby shower gifts for a coworker, at every budget",
+    metaTitle: "Baby shower gifts for a coworker · GiftPicker",
+    description:
+      "Baby shower gifts for a coworker at every budget, from a small gift from you to a gift from the whole team, plus ideas for planning an office baby shower.",
+    related: ["how-much-to-spend-on-a-coworker-gift", "holiday-gifts-for-kids-by-age", "how-to-choose-a-gift-by-love-language"],
+    published: "2026-10-25",
+    intro: [
+      "A coworker's baby shower is one of the happiest things an office gets to celebrate. The tricky part is choosing a gift that suits a work friendship and that new parents will use, since they are about to be short on sleep, time, and free hands.",
+      "This guide is organized by budget, starting with gifts you can give on your own and ending with bigger ones the whole team can go in on. It works whether you are bringing a gift to the shower or sending a baby gift after the birth, and the last sections cover planning the shower itself.",
+    ],
+    body: [
+      { kind: "h2", text: "How much to spend on a coworker's baby shower gift" },
+      {
+        kind: "p",
+        text: "Check the registry first. Most expecting parents have one, and a registry gift is one you know they want. Ask whoever is hosting the shower for the link, or search the parent's name on Babylist, Amazon, or Target. If you shop off the registry, these ranges keep most offices comfortable:",
+      },
+      {
+        kind: "list",
+        items: [
+          "From you alone: $25 to $50.",
+          "From a few coworkers together: $50 to $150.",
+          "From the whole team: $150 and up, often for one of the bigger registry items nobody wants to buy alone.",
+        ],
+      },
+      {
+        kind: "p",
+        text: "To see which tier your group lands in, multiply: eight coworkers at $15 to $20 each comes to $120 to $160. When you organize a collection, suggest an amount per person, collect it through a payment app or a shared card, and make it clear that any contribution, including none, is welcome.",
+      },
+
+      { kind: "h2", text: "Under $50: a gift from you" },
+      {
+        kind: "p",
+        text: "A small gift is plenty when the parents can use it in the first weeks, or when it starts the baby's bookshelf. If the shower is only days away, choose a pick that ships quickly, or tuck a gift card into a signed card.",
+      },
+      {
+        kind: "p",
+        text: "The [Hello, World! board books](gift:r821) introduce birds, bugs, dinosaurs, and the solar system with bright art and simple first facts, and the [Goodnight Little Me personalized book](gift:r736) puts the baby's name on the cover and throughout a bedtime story. Order the book only if the parents have shared the name, and allow time for printing.",
+      },
+      { kind: "gifts", ids: ["r821", "r736"] },
+      {
+        kind: "p",
+        text: "Sophie la Girafe's [teether](gift:r292) has been a favorite first toy since 1961. She is made from natural rubber, sized for small hands, and squeaks when squeezed. Crate & Kids' [Monthly Milestone Mat](gift:r196) is a cotton canvas backdrop with an adjustable date, made for the month-by-month photos most new parents love to take.",
+      },
+      { kind: "gifts", ids: ["r292", "r196"] },
+
+      { kind: "h2", text: "$50 to $150: a gift from a few coworkers" },
+      {
+        kind: "p",
+        text: "Pooling money with a few colleagues opens up the gear parents rely on every day.",
+      },
+      {
+        kind: "p",
+        text: "Solly Baby's [Wrap Carrier](gift:r554) is a light, stretchy wrap that keeps a newborn close while leaving the parent's hands free. Hatch's [sound machine and night light](gift:r250) plays white noise, glows softly for night feedings, and later works as a time-to-rise clock for toddlers, all controlled from an app. Savor's [Baby Deluxe Keepsake Box](gift:r611) has labeled, acid-free files and drawers for a baby's mementos from birth to age four.",
+      },
+      { kind: "gifts", ids: ["r554", "r250", "r611"] },
+      {
+        kind: "p",
+        text: "Cooking is often the first thing to go with a newborn, so an [Uber Eats gift card](gift:r135) covers takeout on the nights nobody has time to cook. A DoorDash card does the same job.",
+      },
+      { kind: "gifts", ids: ["r135"] },
+
+      { kind: "h2", text: "$150 and up: a gift from the whole team" },
+      {
+        kind: "p",
+        text: "With the whole office chipping in, you can cover one of the bigger items, or something that keeps arriving for months.",
+      },
+      {
+        kind: "p",
+        text: "Coterie's [diaper and wipes gift subscription](gift:r595) sends monthly deliveries for 2 to 12 months, and the parents choose the size when they redeem it. Upon a Box's [Baby Book Library](gift:r39) is a set of classic and bestselling board books to read together from the first weeks. Lovevery's [Play Gym](gift:r237) is an activity gym and play mat designed by child development experts for tummy time and the whole first year. Indi's [diaper backpack](gift:r147) looks like an everyday backpack and holds everything a parent needs to leave the house with a baby.",
+      },
+      { kind: "gifts", ids: ["r595", "r39", "r237", "r147"] },
+      {
+        kind: "p",
+        text: "New parents rarely get time to themselves, so a gift just for them is welcome too. A Spafinder gift card works at spas across the country and gives the parent-to-be a few hours off, now or after the baby arrives. If the team knows them well, RENPHO's [shiatsu foot massager](gift:r372) gives tired feet a deep-kneading massage with heat, without leaving the couch.",
+      },
+      { kind: "gifts", ids: ["r372"] },
+
+      { kind: "h2", text: "Office baby shower ideas" },
+      {
+        kind: "list",
+        items: [
+          "Ask the parent-to-be first. Some people would rather not have a party at work, and a card and a group gift are a good alternative.",
+          "Pick a time a few weeks before their leave starts, when they still feel up for a party. Lunch or an afternoon break in a conference room works well.",
+          "Keep it short. Half an hour with cake and a card is plenty for most people.",
+          "Pass a card around, and invite remote teammates to sign a digital card or join by video.",
+          "Choose one group gift. A single present from everyone is easier to carry home than a pile of small ones.",
+          "Plan for after the baby arrives. A meal delivery gift card, or a meal train the team signs up for, is often the most welcome help in the first weeks at home.",
+        ],
+      },
+
+      { kind: "h2", text: "Giving in the baby's honor" },
+      {
+        kind: "p",
+        text: "If the parents would rather not receive more things, the team can donate in the baby's honor instead. A [TisBest Charity Gift Card](gift:r769) lets the parents give to any of about 1.8 million US charities, including March of Dimes and Every Mother Counts, which work for healthy pregnancies and safe births. Send it with a card the whole team signs.",
+      },
+      { kind: "gifts", ids: ["r769"] },
+    ],
+    cta: "Shopping for a different coworker or occasion? Tell the quiz who it's for and your budget, and it will rank gifts from our catalog.",
+  },
+
+  {
+    slug: "holiday-gifts-for-kids-by-age",
+    title: "Holiday gifts for kids, from toddlers to teens",
+    metaTitle: "Holiday gifts for kids by age · GiftPicker",
+    description:
+      "Holiday gifts for kids from toddlers to teens, sorted by age: toys, books, craft kits, games, and gear they keep using. Most work for fall birthdays too.",
+    related: ["gifts-for-your-brother-or-sister", "baby-shower-gifts-for-a-coworker", "how-to-choose-a-gift-by-love-language"],
+    published: "2026-10-25",
+    intro: [
+      "The best gifts for kids hold their attention well past the morning they open them. That means something different at every age, from a toy a toddler can push and bang on to a project a ten-year-old can finish on their own.",
+      "This guide is sorted by age, and we chose each pick for how well it fits that age and how long it holds up. Most work just as well for a fall birthday, and the bigger ones make good group gifts when a few relatives want to chip in.",
+    ],
+    body: [
+      { kind: "h2", text: "How to choose a gift for a child" },
+      {
+        kind: "list",
+        items: [
+          "Go by the age on the box. Age ratings help, since a gift that is too advanced often goes unused.",
+          "Ask the parents about space and noise. A drum set or a play kitchen is a big commitment in a small apartment.",
+          "Look for gifts that last: building sets, craft kits, and books with sequels keep kids busy for weeks.",
+          "For a bigger gift, pool money with grandparents, aunts, uncles, or family friends, so one well-made gift can replace several small ones.",
+          "Twins and close siblings can share a big gift like a building set, but each will want something of their own to open too.",
+          "Order by early December. Popular toys sell out, and deliveries slow down in the last weeks before the holidays.",
+        ],
+      },
+
+      { kind: "h2", text: "Babies and toddlers, 6 months to 3 years" },
+      {
+        kind: "p",
+        text: "Little ones learn with their hands and bodies, so look for toys they can climb, push, and bang on.",
+      },
+      {
+        kind: "p",
+        text: "Lovevery's [Play Kits](gift:r550) are boxes of toys made for a child's exact stage. You can prepay one to three kits, and each one is matched to the child's age when the parents activate it, so new toys arrive as the child grows.",
+      },
+      {
+        kind: "p",
+        text: "Hape's [Pound & Tap Bench](gift:r824) sends balls rolling over xylophone keys when a toddler hammers them through, and the xylophone slides out to play on its own. HABA's [First Orchard](gift:r716) is a first board game for ages 2 and up, where everyone works together to pick the chunky wooden fruit before the raven arrives.",
+      },
+      { kind: "gifts", ids: ["r550", "r824", "r716"] },
+
+      { kind: "h2", text: "Ages 3 to 5" },
+      {
+        kind: "p",
+        text: "Preschoolers love to pretend and to build, and a gift that does either gets plenty of use.",
+      },
+      {
+        kind: "p",
+        text: "Melissa & Doug's [Scoop and Serve Ice Cream Counter](gift:r907) comes with eight scoops, toppings, cones, and play money, and the counter stores every piece afterward. A [Magna-Tiles Classic 32-Piece Set](gift:r551) snaps together into towers, houses, and ramps, and its translucent tiles let the light through. For quiet time, the [Toniebox 2](gift:r549) plays songs and stories when a child sets a character figure on top, with no screen, and it comes with one figure to start.",
+      },
+      { kind: "gifts", ids: ["r907", "r551", "r549"] },
+
+      { kind: "h2", text: "Ages 6 to 8" },
+      {
+        kind: "p",
+        text: "Kids this age can follow instructions on their own, which opens up building kits, board games, and scooters.",
+      },
+      {
+        kind: "p",
+        text: "Tubelox's [Deluxe 220-Piece Set](gift:r1170) is a box of big plastic tubes and connectors that kids snap together into vehicles and forts large enough to sit in. It is a good one for grandparents and other relatives to go in on together. Elenco's [Snap Circuits Beginner kit](gift:r717), for ages 5 to 9, builds more than 20 working circuits, including a spinning fan, lights, and sounds, from picture-based instructions. Makedo's [cardboard construction kit](gift:r795), for ages 5 and up, comes with kid-safe saws and 120 reusable screws that turn delivery boxes into forts, costumes, and cars.",
+      },
+      { kind: "gifts", ids: ["r1170", "r717", "r795"] },
+      {
+        kind: "p",
+        text: "For family game night, [Ticket to Ride: First Journey](gift:r784) is the kids' version of the classic train game for ages 6 and up, and a round takes 15 to 30 minutes. The [Dog Man box set](gift:r1162) collects the first six of Dav Pilkey's graphic novels, which are popular with kids who don't usually pick up a book. And to get them outside, Razor's [A Kick Scooter](gift:r1153) folds flat to carry and suits riders 5 and up (add a helmet if they don't have one).",
+      },
+      { kind: "gifts", ids: ["r784", "r1162", "r1153"] },
+
+      { kind: "h2", text: "Ages 9 to 12" },
+      {
+        kind: "p",
+        text: "Older kids are ready for real tools, longer books, and projects that take an afternoon.",
+      },
+      {
+        kind: "p",
+        text: "National Geographic's [Kids' Pottery Wheel Kit](gift:r798), for ages 8 and up, is a plug-in wheel with air-dry clay, sculpting tools, and paints, so kids can shape small cups and bowls and paint them once they dry, with no kiln. Thames & Kosmos's [Chem C1000](gift:r725), for ages 10 and up, guides 125 experiments, from invisible ink to splitting water into hydrogen and oxygen. Sphero's [Mini coding robot](gift:r787), for ages 8 and up, is the size of a ping-pong ball, and kids drive it from a phone or tablet and learn to program it with the free app.",
+      },
+      { kind: "gifts", ids: ["r798", "r725", "r787"] },
+      {
+        kind: "p",
+        text: "For readers, [The Wild Robot boxed set](gift:r1163) holds all three books about a robot who learns to survive on a wild island, and the [illustrated edition of Harry Potter and the Sorcerer's Stone](gift:r1164) has more than 100 full-color pictures by Jim Kay. Camp Snap's [screen-free camera](gift:r454) has six built-in film-style filters, and the photos stay a surprise until they're downloaded to a computer.",
+      },
+      { kind: "gifts", ids: ["r1163", "r1164", "r454"] },
+
+      { kind: "h2", text: "Teens" },
+      {
+        kind: "p",
+        text: "Teenagers can be hard to shop for, so start with a hobby they already have or a skill they want to learn. If you aren't sure what that is, a quick question to a parent saves a guess.",
+      },
+      {
+        kind: "p",
+        text: "Fujifilm's [Instax Mini 13](gift:r148) prints credit-card-size photos in about five seconds, the kind that end up taped to a mirror or a locker. For a teen who wants to learn guitar, Yamaha's [GigMaker Deluxe pack](gift:r1171) comes with a full-size acoustic guitar, a gig bag, a clip-on tuner, a strap, and picks. If they already play electric, Positive Grid's [Spark GO](gift:r756) is a palm-size practice amp whose app shows the chords to the songs they want to learn.",
+      },
+      { kind: "gifts", ids: ["r148", "r1171", "r756"] },
+      {
+        kind: "p",
+        text: "Penny's original [22-inch board](gift:r1156) is a plastic cruiser small enough to fit in a backpack (a helmet makes a good add-on). Fjällräven designed the [Kånken backpack](gift:r1159) for schoolchildren in 1978, and it comes in 38 colors. And for a group of friends, the [Dungeons & Dragons Starter Set](gift:r856) is made so first-timers can start playing the same night.",
+      },
+      { kind: "gifts", ids: ["r1156", "r1159", "r856"] },
+
+      { kind: "h2", text: "Advent calendars and Hanukkah gifts" },
+      {
+        kind: "p",
+        text: "A countdown gift stretches the excitement across December. LEGO's [City Advent Calendar](gift:r802) hides 24 small builds behind numbered doors, and the box folds out into Santa's workshop. Melissa & Doug's [wooden advent calendar](gift:r1167) is a tree with 24 magnetic ornaments that comes out again every year, and the [Where's Waldo? Advent Calendar](gift:r1168) holds a tiny search-and-find book for each day.",
+      },
+      {
+        kind: "p",
+        text: "For Hanukkah, Super Smalls' [activity set](gift:r1169) lets kids paint their own ceramic menorah, which holds real candles once it's finished, and comes with a booklet of trivia and jokes for the eight nights.",
+      },
+      { kind: "gifts", ids: ["r802", "r1167", "r1168", "r1169"] },
+
+      { kind: "h2", text: "Gifts that support a charity" },
+      {
+        kind: "p",
+        text: "World Wildlife Fund's [polar bear adoption kit](gift:r812) funds conservation work and comes with a plush polar bear and an adoption certificate. You can also let a child pick a charity to donate to with you, such as Make-A-Wish, which grants wishes to children with critical illnesses, or a toy drive in your town.",
+      },
+      { kind: "gifts", ids: ["r812"] },
+    ],
+    cta: "Shopping for one child in particular? Tell the quiz their age, what they're into, and your budget, and it will rank gifts from our catalog.",
+  },
+
   {
     slug: "how-to-choose-a-gift-by-love-language",
     title: "How to choose a gift by love language",
@@ -353,16 +588,16 @@ const ALL_POSTS: Post[] = [
 
   {
     slug: "how-much-to-spend-on-a-coworker-gift",
-    title: "How much to spend on a coworker gift, with picks at every price",
+    title: "Coworker gifts for every occasion, and how much to spend",
     description:
-      "Budget guidance for coworker gifts from you or the whole team, with picks for birthdays, promotions, weddings, new babies, farewells, and hard times.",
-    metaTitle: "How much to spend on a coworker gift · GiftPicker",
+      "Coworker gift ideas by occasion and budget, from a small birthday treat to a team gift for a wedding, new baby, promotion, farewell, or a hard time.",
+    metaTitle: "Coworker gifts by occasion and budget · GiftPicker",
     related: ["what-to-send-someone-who-is-sick-or-grieving", "gifts-for-men-who-say-they-dont-need-anything", "how-to-choose-a-gift-by-love-language"],
     published: "2026-08-05",
-    updated: "2026-10-19",
+    updated: "2026-10-25",
     intro: [
-      "Most workplace gift questions depend on who the gift is from and how big the moment is. A birthday treat from the person at the next desk calls for something different from a farewell collection taken up by a whole department, and the budget follows from there.",
-      "This guide is organized by price. Each tier lists the occasions it usually fits, along with gifts from our catalog that suit a work relationship, meaning friendly and thoughtful without being too personal.",
+      "Most workplace gift questions depend on who the gift is from and how big the moment is. A birthday treat from the person at the next desk calls for something different from a farewell collection taken up by a whole department.",
+      "This guide starts with quick ideas by occasion, then goes through each price tier with gifts from our catalog that suit a work relationship, meaning friendly and thoughtful without being too personal.",
     ],
     body: [
       { kind: "h2", text: "How much should you spend on a coworker gift?" },
@@ -372,13 +607,26 @@ const ALL_POSTS: Post[] = [
         items: [
           "From you alone, for a birthday or a thank-you: under $25.",
           "From you alone, for a close work friend or a bigger milestone like a promotion: $25 to $60.",
-          "From a small group: $60 to $150, which works out to a modest amount per person.",
+          "From a small group: $60 to $150, which is about $10 to $20 each for six to eight people.",
           "From the whole team, for a retirement, a long-time colleague's last day, a wedding, or a new baby: $150 and up.",
         ],
       },
       {
         kind: "p",
-        text: "When you organize a collection, suggest an amount per person and make it clear that any contribution, including none, is welcome. Most teams include people on very different salaries, and nobody should feel watched. Gifts for a manager are also more comfortable as group gifts, since a solo gift sent upward can look like a bid for favor.",
+        text: "A big team needs only a small amount from each person: 25 people at $5 to $10 each raises $125 to $250. When you organize a collection, suggest an amount per person and make it clear that any contribution, including none, is welcome. Most teams include people on very different salaries, and nobody should feel watched. Gifts for a manager are also more comfortable as group gifts, since a solo gift sent upward can look like a bid for favor.",
+      },
+
+      { kind: "h2", text: "Coworker gift ideas by occasion" },
+      {
+        kind: "list",
+        items: [
+          "Birthday: from you, a small treat like Queen Majesty's [Hot Sauce Trinity](gift:r418) (under $25); for a milestone birthday, Sony's [noise-canceling headphones](gift:r596) from the whole team ($150 and up).",
+          "New baby: our guide to [baby shower gifts for a coworker](/blog/baby-shower-gifts-for-a-coworker) has picks at every budget, and Coterie's [diaper subscription](gift:r595) works well as a team gift ($150 and up).",
+          "Wedding: a gift card toward their registry, Away's [Carry-On](gift:r571) for the honeymoon, or, for a couple who enjoys wine, SommSelect's [wine club](gift:r1092) (both $150 and up, from a group).",
+          "Promotion or work anniversary: from you, a [Candlelight concert gift card](gift:r700) ($25 to $60); from a group, a year of [MasterClass](gift:r362) or Smythson's [Panama weekly journal](gift:r662) ($60 to $150).",
+          "Farewell or retirement: from a group, Fujifilm's [smartphone photo printer](gift:r274) for the send-off, or a [ResortPass gift card](gift:r1005) for a day off between jobs ($60 to $150).",
+          "Illness or loss: Spoonful of Comfort's [care package](gift:r600) or Loved and Found's [Serenity Gift Box](gift:r263), from a group ($60 to $150).",
+        ],
       },
 
       { kind: "h2", text: "Under $25: a birthday or a thank-you from you" },
@@ -406,7 +654,7 @@ const ALL_POSTS: Post[] = [
       { kind: "h2", text: "$60 to $150: when a few people chip in" },
       {
         kind: "p",
-        text: "Pooling a few contributions opens up gifts with real staying power, and this is the range where most team gifts land.",
+        text: "Pooling a few contributions opens up gifts that last, and this is where most small-group gifts land.",
       },
       {
         kind: "p",
@@ -432,6 +680,11 @@ const ALL_POSTS: Post[] = [
         text: "When a colleague is going through a hard time, send a care package. Spoonful of Comfort's [care package](gift:r600) brings two quarts of soup, six rolls, six cookies, a keepsake ladle, and a card with your message, and the [Serenity Gift Box](gift:r263) from Loved and Found gathers natural spa products for a slow evening at home. For a coworker who has lost someone, [It's OK That You're Not OK](gift:r772) by psychotherapist Megan Devine speaks to grieving people directly, with practical help for the hardest weeks.",
       },
       { kind: "gifts", ids: ["r600", "r263", "r772"] },
+      {
+        kind: "p",
+        text: "For a close colleague, a year of [Calm](gift:r601) adds guided meditations and sleep stories.",
+      },
+      { kind: "gifts", ids: ["r601"] },
 
       { kind: "h2", text: "$150 and up: a gift from the whole team" },
       {
@@ -455,7 +708,7 @@ const ALL_POSTS: Post[] = [
       { kind: "gifts", ids: ["r596", "r598", "r369"] },
       {
         kind: "p",
-        text: "If the team can't settle on an object, cash in a card signed by everyone is always welcome, especially at a farewell, and an Amazon gift card works almost as well. If they would rather do some good, a [TisBest Charity Gift Card](gift:r769) lets the recipient give the money to any of about 1.8 million US charities.",
+        text: "If the team can't settle on an object, cash tucked into a card signed by everyone is always welcome, especially at a farewell, and an Amazon gift card works almost as well. If they would rather do some good, a [TisBest Charity Gift Card](gift:r769) lets the recipient give the money to any of about 1.8 million US charities.",
       },
       { kind: "gifts", ids: ["r769"] },
 
@@ -467,6 +720,7 @@ const ALL_POSTS: Post[] = [
           "Ask about food before you send it. A quick question to a teammate about dietary restrictions avoids a box of treats nobody can eat.",
           "Check before giving alcohol. Some people don't drink, and some workplaces have rules about it.",
           "Pass a card around. A short note from each person often means as much as the gift, especially at a farewell.",
+          "When several occasions fall in the same month, give each a similar budget and collect separately for each, so nobody feels one person mattered more.",
           "When a colleague is ill or grieving, our guide to [what to send someone who is sick, recovering, or grieving](/blog/what-to-send-someone-who-is-sick-or-grieving) has more ideas.",
         ],
       },
