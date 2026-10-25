@@ -88,20 +88,7 @@ export function formatPostDate(iso: string): string {
  * reports these as pending, says when one has gone live (then delete its entry
  * here), and fails if she rejects one, so its sentence can be rewritten.
  */
-export const PENDING_GIFTS: Record<string, { name: string; presentlySource: string }> = {
-  r1153: { name: "Razor A Kick Scooter", presentlySource: "gap-fill round 10/24 (kids' active)" },
-  r1156: { name: "Penny 22-Inch Board", presentlySource: "gap-fill round 10/24 (kids' active)" },
-  r1159: { name: "Fjällräven Kånken Classic Backpack", presentlySource: "gap-fill round 10/24 (kids' active)" },
-  r1162: { name: "Dog Man: The Supa Epic Collection", presentlySource: "gap-fill round 10/24 (kids' books)" },
-  r1163: { name: "The Wild Robot Hardcover Boxed Set", presentlySource: "gap-fill round 10/24 (kids' books)" },
-  r1164: { name: "Harry Potter and the Sorcerer's Stone: The Illustrated Edition", presentlySource: "gap-fill round 10/24 (kids' books)" },
-  r1167: { name: "Melissa & Doug Countdown to Christmas Wooden Advent Calendar", presentlySource: "gap-fill round 10/24 (kids' seasonal)" },
-  r1168: { name: "Where's Waldo? Advent Calendar", presentlySource: "gap-fill round 10/24 (kids' seasonal)" },
-  r1169: { name: "Super Smalls Hanukkah Activity Set", presentlySource: "gap-fill round 10/24 (kids' seasonal)" },
-  r1170: { name: "Tubelox Deluxe 220-Piece Set", presentlySource: "group-gifts-for-kids-this-holiday-season" },
-  r1171: { name: "Yamaha GigMaker Deluxe Acoustic Guitar Package", presentlySource: "group-gifts-for-kids-this-fall" },
-  r1173: { name: "Babo Botanicals Sensitive Baby Care Essentials Gift Set", presentlySource: "18-best-baby-shower-gifts-for-your-coworker" },
-};
+export const PENDING_GIFTS: Record<string, { name: string; presentlySource: string }> = {};
 
 export function isPendingGift(id: string): boolean {
   return Object.prototype.hasOwnProperty.call(PENDING_GIFTS, id);
