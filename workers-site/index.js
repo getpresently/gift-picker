@@ -484,12 +484,12 @@ function rowPrice(row) {
  */
 function savedListEmail(rows) {
   const items = rows
-    .map((r) => {
+    .map((r, i) => {
       const page = emailLink(`/gift/${r.row_id}`);
       const img = r.PhotoAddress
         ? `<td width="96" style="padding:0 16px 0 0;vertical-align:top;"><a href="${escapeHtml(page)}"><img src="${escapeHtml(r.PhotoAddress)}" width="96" height="96" alt="" style="display:block;width:96px;height:96px;object-fit:cover;border-radius:14px;"/></a></td>`
         : "";
-      return `<tr><td style="padding:14px 0;border-top:1px solid #eadfcf;"><table role="presentation" cellpadding="0" cellspacing="0"><tr>${img}<td style="vertical-align:top;font-family:Helvetica,Arial,sans-serif;">
+      return `<tr><td style="padding:14px 0;${i ? "border-top:1px solid #eadfcf;" : ""}"><table role="presentation" cellpadding="0" cellspacing="0"><tr>${img}<td style="vertical-align:top;font-family:Helvetica,Arial,sans-serif;">
         <div style="font-size:11px;letter-spacing:0.06em;text-transform:uppercase;color:#8a7a72;">${escapeHtml(r.Brand || "")}</div>
         <div style="font-size:16px;font-weight:bold;margin:2px 0 4px;"><a href="${escapeHtml(page)}" style="color:#231410;text-decoration:none;">${escapeHtml(r.Gift || "")}</a></div>
         <div style="font-size:14px;color:#231410;">${rowPrice(r) ? `${escapeHtml(rowPrice(r))} &nbsp;·&nbsp; ` : ""}<a href="${escapeHtml(page)}" style="color:#C4477E;font-weight:bold;text-decoration:none;">View gift →</a></div>
@@ -499,17 +499,18 @@ function savedListEmail(rows) {
   const html = `<!doctype html><html><body style="margin:0;background:#FBF1E1;">
   <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#FBF1E1;"><tr><td align="center" style="padding:32px 16px;">
     <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:560px;background:#FFFCF5;border-radius:20px;padding:28px;">
-      <tr><td style="padding-bottom:18px;"><a href="${escapeHtml(emailLink("/"))}"><img src="${SITE_ORIGIN}/email-logo.png" width="155" height="48" alt="GiftPicker" style="display:block;width:155px;height:48px;border:0;"/></a></td></tr>
+      <tr><td align="center" style="padding-bottom:22px;border-bottom:1px solid #eadfcf;"><a href="${escapeHtml(emailLink("/"))}"><img src="${SITE_ORIGIN}/email-logo.png" width="210" height="65" alt="GiftPicker" style="display:block;width:210px;height:65px;border:0;margin:0 auto;"/></a></td></tr>
+      <tr><td style="height:22px;line-height:22px;font-size:0;">&nbsp;</td></tr>
       <tr><td style="font-family:Georgia,serif;font-size:28px;color:#231410;padding-bottom:6px;">Your saved gifts</td></tr>
-      <tr><td style="font-family:Helvetica,Arial,sans-serif;font-size:14px;color:#6b5a52;padding-bottom:12px;">Here are the gifts you saved on GiftPicker, ready when you are.</td></tr>
+      <tr><td style="font-family:Helvetica,Arial,sans-serif;font-size:14px;color:#6b5a52;padding-bottom:16px;">Here are the gifts you saved on GiftPicker, ready when you are.</td></tr>
       ${items}
-      <tr><td style="font-family:Helvetica,Arial,sans-serif;font-size:14px;color:#231410;padding-top:20px;border-top:1px solid #eadfcf;">Have any requests or suggestions? Reply to this email!</td></tr>
-      <tr><td style="font-family:Helvetica,Arial,sans-serif;font-size:13px;color:#8a7a72;padding-top:10px;">Looking for more? <a href="${escapeHtml(emailLink("/quiz"))}" style="color:#C4477E;">Take the free 60-second gift quiz</a>.<br/>You asked for this email on giftpicker.io.</td></tr>
+      <tr><td align="center" style="padding-top:26px;border-top:1px solid #eadfcf;"><a href="${escapeHtml(emailLink("/quiz"))}" style="display:inline-block;padding:12px 24px;border-radius:999px;background:#FBE3DA;color:#B83A6F;font-family:Helvetica,Arial,sans-serif;font-size:14px;font-weight:bold;text-decoration:none;">Find more gifts</a></td></tr>
     </table>
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:560px;"><tr><td align="center" style="padding:18px 8px 0;font-family:Helvetica,Arial,sans-serif;font-size:13px;line-height:1.5;color:#8a7a72;">Have any requests or suggestions? Reply to this email!</td></tr></table>
   </td></tr></table></body></html>`;
   const text = ["Your saved gifts from GiftPicker", ""]
     .concat(rows.map((r) => `${r.Gift}${r.Brand ? ` (${r.Brand})` : ""}${rowPrice(r) ? `, ${rowPrice(r)}` : ""}\n${emailLink(`/gift/${r.row_id}`)}`))
-    .concat(["", "Have any requests or suggestions? Reply to this email!", "", `Find more at ${emailLink("/quiz")}`])
+    .concat(["", `Find more gifts: ${emailLink("/quiz")}`, "", "Have any requests or suggestions? Reply to this email!"])
     .join("\n");
   return { html, text };
 }

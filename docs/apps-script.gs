@@ -13,7 +13,8 @@
  *     "notify"   -> optional email for a request, written to Requests "email"
  *     "brand"    -> append to Brands (the /brands submission form)
  *     "savedlist"-> append to "Saved list emails" (a shopper emailed their saved gifts;
- *                   posted by the worker after it sends the email)
+ *                   posted by the worker after it sends the email); if they ticked
+ *                   "Also send me gift ideas", the address also joins the Emails tab
  *     "review"   -> internal review tool (password-gated), see handleReview_
  *
  * The review password is NOT in this file. Set it once under
@@ -44,6 +45,9 @@ const REQUEST_HEADERS = [
 // older "Emails" tab is a separate, header-less list of addresses.
 const SAVED_LIST_TAB = "Saved list emails";
 const EMAIL_HEADERS = ["at", "email", "optIn", "gifts", "clientId"];
+// The mailing list: everyone who asked for gift ideas, with where they signed up.
+const MAILING_LIST_TAB = "Emails";
+const MAILING_LIST_HEADERS = ["email", "source", "added"];
 
 const BRAND_HEADERS = [
   "Submitted", "Placement", "Brand", "Contact name", "Email", "Website",
@@ -543,6 +547,15 @@ function jsonOut_(obj) {
  * posts here so the address lands in the private "Saved list emails" tab. optIn is TRUE
  * only when the shopper ticked "Also send me gift ideas now and then".
  */
+/** Adds an address to the Emails tab unless it is already there. Call inside the script lock. */
+function addToMailingList_(email, source, at) {
+  const sheet = ensureSheet_(MAILING_LIST_TAB, MAILING_LIST_HEADERS);
+  const rows = Math.max(sheet.getLastRow() - 1, 0);
+  const known = rows ? sheet.getRange(2, 1, rows, 1).getValues().map((r) => String(r[0]).trim().toLowerCase()) : [];
+  if (known.indexOf(email.toLowerCase()) !== -1) return;
+  sheet.appendRow([email, source, at || new Date().toISOString()]);
+}
+
 function handleSavedList_(p) {
   const email = String(p.email || "").trim().slice(0, 254);
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return { ok: false };
@@ -557,6 +570,7 @@ function handleSavedList_(p) {
       (Array.isArray(p.ids) ? p.ids : []).slice(0, 50).join(", "),
       String(p.clientId || "").slice(0, 80),
     ]);
+    if (p.optIn === true) addToMailingList_(email, "Saved gifts email (ticked Also send me gift ideas)", p.at);
   } finally {
     lock.releaseLock();
   }
