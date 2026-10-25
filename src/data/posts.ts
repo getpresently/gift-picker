@@ -100,7 +100,6 @@ export const PENDING_GIFTS: Record<string, { name: string; presentlySource: stri
   r1169: { name: "Super Smalls Hanukkah Activity Set", presentlySource: "gap-fill round 10/24 (kids' seasonal)" },
   r1170: { name: "Tubelox Deluxe 220-Piece Set", presentlySource: "group-gifts-for-kids-this-holiday-season" },
   r1171: { name: "Yamaha GigMaker Deluxe Acoustic Guitar Package", presentlySource: "group-gifts-for-kids-this-fall" },
-  r1172: { name: "Expecting Better", presentlySource: "18-best-baby-shower-gifts-for-your-coworker" },
   r1173: { name: "Babo Botanicals Sensitive Baby Care Essentials Gift Set", presentlySource: "18-best-baby-shower-gifts-for-your-coworker" },
 };
 
@@ -207,9 +206,9 @@ const ALL_POSTS: Post[] = [
       },
       {
         kind: "p",
-        text: "For the parent-to-be, economist Emily Oster's [Expecting Better](gift:r1172) walks through the research behind common pregnancy rules, from caffeine to prenatal screening, and many expecting parents find it reassuring. For the baby, the [Hello, World! board books](gift:r821) introduce birds, bugs, dinosaurs, and the solar system with bright art and simple first facts, and the [Goodnight Little Me personalized book](gift:r736) puts the baby's name on the cover and throughout a bedtime story. Order the book only if the parents have shared the name, and allow time for printing.",
+        text: "The [Hello, World! board books](gift:r821) introduce birds, bugs, dinosaurs, and the solar system with bright art and simple first facts, and the [Goodnight Little Me personalized book](gift:r736) puts the baby's name on the cover and throughout a bedtime story. Order the book only if the parents have shared the name, and allow time for printing.",
       },
-      { kind: "gifts", ids: ["r1172", "r821", "r736"] },
+      { kind: "gifts", ids: ["r821", "r736"] },
       {
         kind: "p",
         text: "Sophie la Girafe's [teether](gift:r292) has been a favorite first toy since 1961. She is made from natural rubber, sized for small hands, and squeaks when squeezed. Crate & Kids' [Monthly Milestone Mat](gift:r196) is a cotton canvas backdrop with an adjustable date, made for the month-by-month photos most new parents love to take.",
