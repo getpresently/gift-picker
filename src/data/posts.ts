@@ -204,9 +204,9 @@ const ALL_POSTS: Post[] = [
       { kind: "gifts", ids: ["r554", "r250", "r611", "r1173"] },
       {
         kind: "p",
-        text: "Cooking is usually the first thing to go once a newborn comes home, which makes a meal delivery gift card one of the most welcome gifts there is. An [Uber Eats gift card](gift:r135) covers takeout on the nights nobody has time to cook, and a DoorDash card works just as well.",
+        text: "Cooking is usually the first thing to go once a newborn comes home, which makes meals one of the most welcome gifts there is. An [Uber Eats gift card](gift:r135) covers takeout on the nights nobody has time to cook, and an [Instacart gift card](gift:r768) brings the groceries to the door, often the same day. From a bigger group, Goldbelly's [restaurant food box subscription](gift:r1091) sends a box of famous dishes from restaurants and bakeries around the country each month, like pizza, barbecue, or pie, with enough to feed four.",
       },
-      { kind: "gifts", ids: ["r135"] },
+      { kind: "gifts", ids: ["r135", "r768", "r1091"] },
 
       { kind: "h2", text: "Big gifts from the whole team" },
       {
@@ -218,9 +218,9 @@ const ALL_POSTS: Post[] = [
       { kind: "h2", text: "A little something for the parents" },
       {
         kind: "p",
-        text: "Parents need some looking after too! A Spafinder gift card works at spas across the country and gives a new parent a few hours to themselves once they're ready for a break. And for after the baby arrives, if the team knows them well, RENPHO's [shiatsu foot massager](gift:r372) treats tired feet to a deep-kneading massage with heat, right from the couch.",
+        text: "Parents need some looking after too! A [ResortPass gift card](gift:r1005) books a pool day or a spa treatment at more than 2,700 hotels and spas, for whenever a new parent is ready for a few hours to themselves. A year of [Calm](gift:r601) brings sleep stories and short meditations for the nights when sleep is in short supply. And for after the baby arrives, if the team knows them well, RENPHO's [shiatsu foot massager](gift:r372) treats tired feet to a deep-kneading massage with heat, right from the couch.",
       },
-      { kind: "gifts", ids: ["r372"] },
+      { kind: "gifts", ids: ["r1005", "r601", "r372"] },
       {
         kind: "p",
         text: "And you really can't go wrong with cash or a gift card. A Target or Amazon card lets the parents fill in whatever is still missing from the registry, and a little cash from the whole team can go straight into the baby's savings account.",
@@ -549,102 +549,125 @@ const ALL_POSTS: Post[] = [
 
   {
     slug: "how-much-to-spend-on-a-coworker-gift",
-    title: "Coworker gifts for every occasion, and how much to spend",
+    title: "How much to spend on a coworker gift, with picks at every price",
     description:
-      "Coworker gift ideas for every occasion, from Secret Santa gifts under $25 to team gifts for birthdays, babies, weddings, promotions, and goodbyes.",
-    metaTitle: "Coworker gifts by occasion and budget · GiftPicker",
-    related: ["baby-shower-gifts-for-a-coworker", "what-to-send-someone-who-is-sick-or-grieving", "gifts-for-men-who-say-they-dont-need-anything"],
+      "Budget guidance for coworker gifts from you or the whole team, with picks for birthdays, promotions, weddings, new babies, farewells, and hard times.",
+    metaTitle: "How much to spend on a coworker gift · GiftPicker",
+    related: ["what-to-send-someone-who-is-sick-or-grieving", "gifts-for-men-who-say-they-dont-need-anything", "how-to-choose-a-gift-by-love-language"],
     published: "2026-08-05",
-    updated: "2026-10-25",
+    updated: "2026-10-19",
     intro: [
-      "Celebrating together is one of the best parts of work, whether it's a birthday, a new baby, or a big promotion. The right gift for a coworker is friendly and thoughtful without being too personal, and it should feel like you picked it with them in mind.",
-      "Here are our favorite coworker gifts for every occasion. Secret Santa coming up? It's right at the top!",
+      "Most workplace gift questions depend on who the gift is from and how big the moment is. A birthday treat from the person at the next desk calls for something different from a farewell collection taken up by a whole department, and the budget follows from there.",
+      "This guide is organized by price. Each tier lists the occasions it usually fits, along with gifts from our catalog that suit a work relationship, meaning friendly and thoughtful without being too personal.",
     ],
     body: [
-      { kind: "h2", text: "How much to spend" },
-      {
-        kind: "p",
-        text: "From you alone, under $25 covers a birthday or a thank-you, and $25 to $60 is right for a close work friend or a big moment like a promotion. When a group chips in, $60 to $150 is typical, and a gift from the whole team for a wedding, a new baby, or a retirement often runs $150 or more. If you're collecting, suggest an amount and make it clear that any contribution, including none, is welcome.",
-      },
-
-      { kind: "h2", text: "Secret Santa gifts under $25" },
-      {
-        kind: "p",
-        text: "Drew the name of someone you barely know? Stay at or just under your office's limit, and go for a treat they'll enjoy or something that makes their desk a little nicer. L.A. Burdick's [Signature Chocolate Mice](gift:r417) are four hand-piped chocolates with ganache centers and silk ribbon tails, and they look like far more than they cost. For the coffee lover, Onyx Coffee Lab's [Blend Discovery Box](gift:r425) holds three small boxes of whole-bean coffee, from dark to light. And for the coworker who brings the best lunches, Diaspora Co.'s [Spice Sampler](gift:r420) packs ten single-origin spices into an illustrated box. Most of these are treats, so check for allergies or dietary rules if you can.",
-      },
-      { kind: "gifts", ids: ["r417", "r425", "r420"] },
-      {
-        kind: "p",
-        text: "Rifle Paper Co.'s [2027 Desk Calendar](gift:r989), with hand-painted farm illustrations for every month, is a safe bet when you know almost nothing about them. Queen Majesty's [Hot Sauce Trinity](gift:r418) is a gift box of three small-batch New York sauces for the one who puts hot sauce on everything, and Jacobsen Salt Co.'s [Sea Salt Slide Tin Trio](gift:r424) packs hand-harvested Oregon sea salt into three illustrated pocket tins. If your office's limit is a little higher, Vosges Haut-Chocolat's [Snowbound Little Gift](gift:r972) stacks dark chocolate caramels and holiday mini bars into a ribbon-tied tower.",
-      },
-      { kind: "gifts", ids: ["r989", "r418", "r424", "r972"] },
-
-      { kind: "h2", text: "Birthday gifts" },
-      {
-        kind: "p",
-        text: "For a birthday from you, think about a hobby they've mentioned. Chasing Threads' [Stitch Your Own Tea Towel kit](gift:r1027) comes with nine gold cocktail drawings to fill in with colored embroidery, plus everything a beginner needs. The tea drinker on your team will love Tea Forté's [Frank Lloyd Wright Terra Teapot](gift:r1049), a stoneware pot etched with an original Wright pattern. And for the colleague who lives by lists, Ugmonk's [Analog Starter Kit](gift:r652) keeps the day's priorities on cards in an aluminum stand.",
-      },
-      { kind: "gifts", ids: ["r1027", "r1049", "r652"] },
-      {
-        kind: "p",
-        text: "For a milestone birthday, pool your money for a splurge. Sometimes you just need to get in the zone, and Sony's [WH-1000XM6 headphones](gift:r596) block out a noisy office with up to 30 hours of battery. Calling all plant lovers! The Sill's [Best Sellers Duo](gift:r598) sends a monstera and a snake plant already potted in ceramic planters. And for the coworker who spends weekends outdoors, the [GoPro HERO12 Black](gift:r369) records stabilized video on every hike and ride.",
-      },
-      { kind: "gifts", ids: ["r596", "r598", "r369"] },
-
-      { kind: "h2", text: "Baby shower gifts" },
-      {
-        kind: "p",
-        text: "New parents have lots of new responsibilities and very little time for themselves. An [Uber Eats gift card](gift:r135) in whatever amount the group collects covers takeout on the nights dinner isn't happening. From the whole team, Upon a Box's [Baby Book Library](gift:r39) starts the baby's bookshelf with classic board books, and Coterie's [diaper and wipes gift subscription](gift:r595) arrives every month for up to a year. Our guide to [baby shower gifts for a coworker](/blog/baby-shower-gifts-for-a-coworker) has many more ideas at every budget.",
-      },
-      { kind: "gifts", ids: ["r135", "r39", "r595"] },
-
-      { kind: "h2", text: "Wedding gifts" },
-      {
-        kind: "p",
-        text: "If you can't find the right thing on their registry, a Williams Sonoma or Crate & Barrel gift card goes toward anything their new home still needs. Away's [Carry-On](gift:r571) is ready for the honeymoon, and an [Airbnb gift card](gift:r309) can cover a night or two of the trip. For a couple who loves wine, SommSelect's [three-month wine club membership](gift:r1092) sends bottles chosen by a team led by a Master Sommelier, each with tasting notes and food pairings.",
-      },
-      { kind: "gifts", ids: ["r571", "r309", "r1092"] },
-
-      { kind: "h2", text: "Promotion and work anniversary gifts" },
-      {
-        kind: "p",
-        text: "A new role deserves a little celebration! From you, a [Candlelight concert gift card](gift:r700) from Fever pays for a string quartet playing in a venue lit by thousands of candles, a lovely thank-you after a big stretch of work (check that there's a show near them first). From a few teammates, a year of [MasterClass](gift:r362) gives someone who loves to learn online classes from experts in every field, and Smythson's [Panama weekly journal](gift:r662), the pocket diary the London stationer introduced in 1908, is ready for the year ahead in the new job.",
-      },
-      { kind: "gifts", ids: ["r700", "r362", "r662"] },
-
-      { kind: "h2", text: "Farewell and retirement gifts" },
-      {
-        kind: "p",
-        text: "Saying goodbye to a coworker is hard, so send them off with something they'll use at the party or in the break before what's next. Fujifilm's [smartphone photo printer](gift:r274) turns the send-off photos into prints in seconds, and a [ResortPass gift card](gift:r1005) books a day at one of more than 2,700 hotel pools and spas. Cash tucked into a card signed by everyone is always welcome too, especially for a retirement.",
-      },
-      { kind: "gifts", ids: ["r274", "r1005"] },
-
-      { kind: "h2", text: "Thinking of you and sympathy gifts" },
-      {
-        kind: "p",
-        text: "When a colleague is going through a hard time, a thoughtful package from the team means a lot. Spoonful of Comfort's [care package](gift:r600) brings two quarts of soup, rolls, cookies, a keepsake ladle, and a card with your message, and Loved and Found's [Serenity Gift Box](gift:r263) gathers natural spa products for a slow evening at home. From a close colleague, [It's OK That You're Not OK](gift:r772) by psychotherapist Megan Devine speaks to grieving people directly. Our guide to [what to send someone who is sick, recovering, or grieving](/blog/what-to-send-someone-who-is-sick-or-grieving) has more ideas.",
-      },
-      { kind: "gifts", ids: ["r600", "r263", "r772"] },
-
-      { kind: "h2", text: "For any occasion" },
-      {
-        kind: "p",
-        text: "When the team can't settle on one thing, cash in a signed card or an Amazon gift card lets them choose for themselves. A year of [New York Times Games](gift:r1124) arrives as a gift code, which makes it an easy pick for a remote coworker. And if they'd rather do some good, a [TisBest Charity Gift Card](gift:r769) lets them give to any of about 1.8 million US charities.",
-      },
-      { kind: "gifts", ids: ["r1124", "r769"] },
-
-      { kind: "h2", text: "A few tips for gifting at work" },
+      { kind: "h2", text: "How much should you spend on a coworker gift?" },
+      { kind: "p", text: "There is no fixed rule, but these ranges keep most offices comfortable:" },
       {
         kind: "list",
         items: [
-          "Keep it neutral. Clothing, fragrance, and anything that depends on size or personal taste are risky with colleagues you don't know well.",
-          "Ask about food and drinks first. A quick question to a teammate about allergies, diets, or alcohol saves a gift nobody can enjoy.",
-          "Gifts for a manager work best as group gifts, since a solo gift sent upward can feel awkward.",
-          "Pass a card around. A short note from each person often means as much as the gift itself.",
+          "From you alone, for a birthday or a thank-you: under $25.",
+          "From you alone, for a close work friend or a bigger milestone like a promotion: $25 to $60.",
+          "From a small group: $60 to $150, which works out to a modest amount per person.",
+          "From the whole team, for a retirement, a long-time colleague's last day, a wedding, or a new baby: $150 and up.",
+        ],
+      },
+      {
+        kind: "p",
+        text: "When you organize a collection, suggest an amount per person and make it clear that any contribution, including none, is welcome. Most teams include people on very different salaries, and nobody should feel watched. Gifts for a manager are also more comfortable as group gifts, since a solo gift sent upward can look like a bid for favor.",
+      },
+
+      { kind: "h2", text: "Under $25: a birthday or a thank-you from you" },
+      {
+        kind: "p",
+        text: "At this price the goal is a small treat that feels chosen, ideally something a little nicer than they would pick up for themselves.",
+      },
+      {
+        kind: "p",
+        text: "For the coworker who can't go a day without their latte, a gift card to their favorite coffee shop, or to Starbucks, covers a week of coffee runs. Queen Majesty's [Hot Sauce Trinity](gift:r418) is a gift box of three small-batch New York sauces, from Jalapeño Tequila Lime to Red Habanero Black Coffee. For the office cook, Jacobsen Salt Co.'s [Sea Salt Slide Tin Trio](gift:r424) packs hand-harvested Oregon sea salt into three illustrated pocket tins, including a pinot noir infused salt.",
+      },
+      { kind: "gifts", ids: ["r418", "r424"] },
+
+      { kind: "h2", text: "$25 to $60: a close colleague or a bigger milestone" },
+      {
+        kind: "p",
+        text: "With a little more room, you can pick something tied to what they enjoy outside of work.",
+      },
+      {
+        kind: "p",
+        text: "Chasing Threads' [Stitch Your Own Tea Towel kit](gift:r1027) is a white tea towel printed with nine gold cocktail drawings to fill in with colored embroidery, with thread, a needle, and video lessons for a beginner. A [Candlelight concert gift card](gift:r700) from Fever pays for a string quartet or pianist playing classical pieces and pop tributes in a venue lit by thousands of candles, which makes a generous thank-you after a hard stretch of work. For the tea drinker, Tea Forté's [Frank Lloyd Wright Terra Teapot](gift:r1049) is a 20-ounce stoneware pot etched with an original Wright pattern, with an infuser that brews loose tea for two.",
+      },
+      { kind: "gifts", ids: ["r1027", "r700", "r1049"] },
+
+      { kind: "h2", text: "$60 to $150: when a few people chip in" },
+      {
+        kind: "p",
+        text: "Pooling a few contributions opens up gifts with real staying power, and this is the range where most team gifts land.",
+      },
+      {
+        kind: "p",
+        text: "For a promotion or a new role, a year of [MasterClass](gift:r362) gives someone who loves to learn online classes from experts across every field. Smythson's [Panama weekly journal](gift:r662) is the pocket diary the London stationer introduced in 1908, bound in navy lambskin with week-to-view pages for the year ahead in the new job.",
+      },
+      { kind: "gifts", ids: ["r362", "r662"] },
+      {
+        kind: "p",
+        text: "For a coworker's wedding, a gift card lets the couple choose what their new home needs, and a Williams Sonoma or Crate & Barrel card goes toward anything from cookware to glassware, including the pieces left over on their registry. If they enjoy a good bottle, treat them to a tasting at a winery near them, where they can try a flight of wines together and bring home a bottle they liked.",
+      },
+      {
+        kind: "p",
+        text: "The first months with a new baby leave very little time for cooking. An [Uber and Uber Eats gift card](gift:r135), in whatever amount the group collects, covers takeout on the nights when making dinner is out of the question.",
+      },
+      { kind: "gifts", ids: ["r135"] },
+      {
+        kind: "p",
+        text: "For a farewell, pick something they can use at the send-off or during the break before the new job. The Fujifilm [smartphone photo printer](gift:r274) prints credit-card-size photos from a phone in seconds, which comes in handy at the goodbye party and afterward. A [ResortPass gift card](gift:r1005) books a day at one of more than 2,700 hotel pools and spas, so they can take a real break between jobs.",
+      },
+      { kind: "gifts", ids: ["r274", "r1005"] },
+      {
+        kind: "p",
+        text: "When a colleague is going through a hard time, send a care package. Spoonful of Comfort's [care package](gift:r600) brings two quarts of soup, six rolls, six cookies, a keepsake ladle, and a card with your message, and the [Serenity Gift Box](gift:r263) from Loved and Found gathers natural spa products for a slow evening at home. For a coworker who has lost someone, [It's OK That You're Not OK](gift:r772) by psychotherapist Megan Devine speaks to grieving people directly, with practical help for the hardest weeks.",
+      },
+      { kind: "gifts", ids: ["r600", "r263", "r772"] },
+
+      { kind: "h2", text: "$150 and up: a gift from the whole team" },
+      {
+        kind: "p",
+        text: "With the whole team chipping in, you can afford something the person would hesitate to buy for themselves.",
+      },
+      {
+        kind: "p",
+        text: "For a new baby, Upon a Box's [Baby Book Library](gift:r39) is a set of classic and bestselling board books for the first years of story time, and Coterie's [diaper and wipes gift subscription](gift:r595) sends monthly deliveries for two to twelve months, with the parents choosing the size when they redeem it.",
+      },
+      { kind: "gifts", ids: ["r39", "r595"] },
+      {
+        kind: "p",
+        text: "For a wedding or a long-awaited retirement trip, Away's [Carry-On Suitcase](gift:r571) has a hard shell, spinner wheels, and an interior compression system. A gift card toward the stay itself, from Hotels.com or [Airbnb](gift:r309), covers a night or two of the honeymoon or a farewell adventure. For a couple who loves wine, SommSelect's [three-month wine club membership](gift:r1092) sends bottles chosen by a team led by a Master Sommelier, each with tasting notes and food pairings.",
+      },
+      { kind: "gifts", ids: ["r571", "r309", "r1092"] },
+      {
+        kind: "p",
+        text: "For a milestone birthday or a big promotion, pool the money for a splurge. Sony's [WH-1000XM6 headphones](gift:r596) block out a noisy office with adaptive noise canceling and up to 30 hours of battery. For a plant lover, The Sill's [Best Sellers Duo](gift:r598) sends a monstera and a snake plant already potted in ceramic planters. And for the coworker who spends weekends outdoors, the [GoPro HERO12 Black](gift:r369) is a rugged, waterproof action camera that records stabilized video on hikes and rides.",
+      },
+      { kind: "gifts", ids: ["r596", "r598", "r369"] },
+      {
+        kind: "p",
+        text: "If the team can't settle on an object, cash in a card signed by everyone is always welcome, especially at a farewell, and an Amazon gift card works almost as well. If they would rather do some good, a [TisBest Charity Gift Card](gift:r769) lets the recipient give the money to any of about 1.8 million US charities.",
+      },
+      { kind: "gifts", ids: ["r769"] },
+
+      { kind: "h2", text: "Keeping it comfortable" },
+      {
+        kind: "list",
+        items: [
+          "Choose something neutral. Clothing, fragrance, and anything that depends on size or personal taste are risky with colleagues you don't know well.",
+          "Ask about food before you send it. A quick question to a teammate about dietary restrictions avoids a box of treats nobody can eat.",
+          "Check before giving alcohol. Some people don't drink, and some workplaces have rules about it.",
+          "Pass a card around. A short note from each person often means as much as the gift, especially at a farewell.",
+          "When a colleague is ill or grieving, our guide to [what to send someone who is sick, recovering, or grieving](/blog/what-to-send-someone-who-is-sick-or-grieving) has more ideas.",
         ],
       },
     ],
-    cta: "Shopping for one coworker in particular? Tell the quiz the occasion, what they're into, and your budget, and it will pick gifts from our catalog for you.",
+    cta: "Shopping for one coworker in particular? Tell the quiz the occasion, their interests, and your budget, and it will rank gifts from our catalog.",
   },
 
   {

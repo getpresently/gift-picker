@@ -55,5 +55,4 @@ export const CHANGES: SiteChange[] = [
   { date: "2026-10-24", title: "Amazon only option in Edit answers, for shoppers who need a gift fast" },
   { date: "2026-10-24", title: "Updating picks shows a short spinner, then the new cards ease in" },
   { date: "2026-10-26", title: "New gift guides: baby shower gifts for a coworker, and holiday gifts for kids by age" },
-  { date: "2026-10-26", title: "Coworker gift guide rebuilt by occasion, with Secret Santa gifts under $25 first" },
 ];
