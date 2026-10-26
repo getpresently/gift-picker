@@ -164,10 +164,20 @@ const ALL_POSTS: Post[] = [
     related: ["how-much-to-spend-on-a-coworker-gift", "holiday-gifts-for-kids-by-age", "how-to-choose-a-gift-by-love-language"],
     published: "2026-10-25",
     intro: [
-      "Welcoming a new baby is one of the most exciting milestones an office gets to celebrate together. Finding a gift that is both practical and memorable takes a little thought, though, especially for parents who are about to be short on sleep, time, and free hands.",
-      "So we gathered our favorite baby shower gifts for coworkers, organized by budget, from small gifts you can give on your own to bigger ones the whole team can go in on. They work whether you are bringing a gift to the shower or sending a baby gift after the birth, and the last sections cover planning the shower itself.",
+      "When a coworker is expecting, the whole office usually wants to mark it, with a card, a cake in the break room, and a gift. The best baby shower gifts from colleagues are the ones new parents reach for again and again in the first months, when they are short on sleep, time, and free hands.",
+      "Below are gifts we like at every budget, from something small you can give on your own to a bigger gift the whole team can go in on, plus tips for planning the shower itself. They work whether you are bringing a gift to the shower or sending a baby gift after the birth.",
     ],
     body: [
+      { kind: "h2", text: "Why a group gift often works best" },
+      {
+        kind: "p",
+        text: "Small shower gifts tend to overlap. Between coworkers, friends, and family, new parents can end up with three of the same board book and a pile of tiny outfits, while the bigger things they registered for go unbought. When eight or ten coworkers each put in $15 or $20, the team can give one well-made gift the parents will use every day, like a good carrier, a sound machine, or a few months of diapers. The card everyone signs still carries each person's wishes, and nobody has to guess what the parents already have.",
+      },
+      {
+        kind: "p",
+        text: "A small gift from you is still a kind gesture, especially from a close work friend, and the picks under $50 below are easy to bring to the shower.",
+      },
+
       { kind: "h2", text: "How much to spend on a coworker's baby shower gift" },
       {
         kind: "p",
@@ -189,7 +199,7 @@ const ALL_POSTS: Post[] = [
       { kind: "h2", text: "Under $50: a gift from you" },
       {
         kind: "p",
-        text: "A small gift is plenty when the parents can use it in the first weeks, or when it starts the baby's bookshelf. If the shower is only days away, choose a pick that ships quickly, or tuck a gift card into a signed card.",
+        text: "A small gift is plenty if it gets used in the first weeks, or if it starts the baby's bookshelf. If the shower is only days away, choose a pick that ships quickly, or tuck a gift card into a signed card.",
       },
       {
         kind: "p",
@@ -235,7 +245,7 @@ const ALL_POSTS: Post[] = [
       { kind: "gifts", ids: ["r372"] },
       {
         kind: "p",
-        text: "And you can never go wrong with cash or a gift card. A Target or Amazon gift card lets the parents pick up whatever is still missing from the registry, when they need it, and cash tucked into a card signed by the team can just as easily go toward the baby's savings.",
+        text: "Cash or a gift card is always welcome too. A Target or Amazon gift card lets the parents fill in whatever is still missing from the registry once the baby arrives, and cash tucked into a card signed by the team can go straight into the baby's savings.",
       },
 
       { kind: "h2", text: "Office baby shower ideas" },
@@ -270,7 +280,7 @@ const ALL_POSTS: Post[] = [
     related: ["gifts-for-your-brother-or-sister", "baby-shower-gifts-for-a-coworker", "how-to-choose-a-gift-by-love-language"],
     published: "2026-10-25",
     intro: [
-      "There is nothing quite like the look on a child's face when they open a gift they love. The best ones keep them busy long after the wrapping paper is gone, and they build creativity, imagination, and curiosity along the way.",
+      "Most parents can tell you which holiday gifts were forgotten by New Year's and which were still out on the floor in February. At every age, the ones that last tend to build something, whether that is a tower, a story, a new skill, or a bit more curiosity about how things work.",
       "This guide is sorted by age, from babies to teens, and we chose each pick for how well it fits that age and how long it holds up. Most work just as well for a fall birthday, and the bigger ones make good group gifts, so the family can choose one quality gift over a pile of small ones.",
     ],
     body: [
@@ -368,7 +378,7 @@ const ALL_POSTS: Post[] = [
       },
       {
         kind: "p",
-        text: "For Hanukkah, Super Smalls' [activity set](gift:r1169) lets kids paint their own ceramic menorah, which holds real candles once it's finished, and comes with a booklet of trivia and jokes for the eight nights.",
+        text: "Hanukkah has eight nights, and many families give a small gift on most of them and one bigger gift on another. Smaller picks from this guide, like the Snap Circuits kit or a book from one of the boxed sets, work well as single-night gifts. For the holiday itself, Super Smalls' [activity set](gift:r1169) lets kids paint their own ceramic menorah, which holds real candles once it's finished, and comes with a booklet of trivia and jokes for the eight nights.",
       },
       { kind: "gifts", ids: ["r802", "r1167", "r1168", "r1169"] },
 
@@ -611,7 +621,7 @@ const ALL_POSTS: Post[] = [
       { kind: "h2", text: "Coworker gift ideas by occasion" },
       {
         kind: "p",
-        text: "Some of the best office memories come from celebrating milestones together. Here are quick ideas for the occasions that come up most, with the price tier for each, and more detail in the sections below.",
+        text: "Workplaces mark a lot of moments over a year, from birthdays and babies to promotions and goodbyes. Here are quick ideas for the occasions that come up most, with the price tier for each, and more detail in the sections below.",
       },
       {
         kind: "list",
@@ -622,7 +632,7 @@ const ALL_POSTS: Post[] = [
           "Farewell or retirement: Fujifilm's [smartphone photo printer](gift:r274) for the send-off, or a [ResortPass gift card](gift:r1005) or a Spafinder card for some time off between jobs (from a group, $60 to $150).",
           "Promotion or work anniversary: from you, a Starbucks card or a [Candlelight concert gift card](gift:r700) (under $60); from a group, a year of [MasterClass](gift:r362) or Smythson's [Panama weekly journal](gift:r662) ($60 to $150).",
           "Thinking of you or sympathy: Spoonful of Comfort's [care package](gift:r600) or Loved and Found's [Serenity Gift Box](gift:r263) (from a group, $60 to $150).",
-          "Any occasion: cash tucked into a card, or an Amazon gift card, lets them choose for themselves.",
+          "Any occasion: cash tucked into a card, or a gift card to a store they love, lets them choose for themselves.",
         ],
       },
 
@@ -633,9 +643,14 @@ const ALL_POSTS: Post[] = [
       },
       {
         kind: "p",
-        text: "For the coworker who can't go a day without their latte, a gift card to their favorite coffee shop, or to Starbucks, covers a week of coffee runs. Queen Majesty's [Hot Sauce Trinity](gift:r418) is a gift box of three small-batch New York sauces, from Jalapeño Tequila Lime to Red Habanero Black Coffee. For the office cook, Jacobsen Salt Co.'s [Sea Salt Slide Tin Trio](gift:r424) packs hand-harvested Oregon sea salt into three illustrated pocket tins, including a pinot noir infused salt.",
+        text: "For a coworker whose day starts with a latte, a gift card to their favorite coffee shop, or to Starbucks, covers a week of coffee runs. Queen Majesty's [Hot Sauce Trinity](gift:r418) is a gift box of three small-batch New York sauces, from Jalapeño Tequila Lime to Red Habanero Black Coffee. For the office cook, Jacobsen Salt Co.'s [Sea Salt Slide Tin Trio](gift:r424) packs hand-harvested Oregon sea salt into three illustrated pocket tins, including a pinot noir infused salt.",
       },
       { kind: "gifts", ids: ["r418", "r424"] },
+      {
+        kind: "p",
+        text: "For a coffee drinker who grinds their own beans, Onyx Coffee Lab's [Blend Discovery Box](gift:r425) holds three small boxes of whole-bean coffee, from dark to light. L.A. Burdick's [Signature Chocolate Mice](gift:r417) are four hand-piped chocolates with ganache centers and silk ribbon tails, boxed and tied, and they look like far more than they cost. For the coworker who brings the best lunches, Diaspora Co.'s [Spice Sampler](gift:r420) packs ten single-origin spices into an illustrated box. And when you know very little about the person, Rifle Paper Co.'s [2027 Desk Calendar](gift:r989) is a safe, pretty pick for the new year.",
+      },
+      { kind: "gifts", ids: ["r425", "r417", "r420", "r989"] },
 
       { kind: "h2", text: "$25 to $60: a close colleague or a bigger milestone" },
       {
@@ -647,6 +662,11 @@ const ALL_POSTS: Post[] = [
         text: "Chasing Threads' [Stitch Your Own Tea Towel kit](gift:r1027) is a white tea towel printed with nine gold cocktail drawings to fill in with colored embroidery, with thread, a needle, and video lessons for a beginner. A [Candlelight concert gift card](gift:r700) from Fever pays for a string quartet or pianist playing classical pieces and pop tributes in a venue lit by thousands of candles, which makes a generous thank-you after a hard stretch of work. For the tea drinker, Tea Forté's [Frank Lloyd Wright Terra Teapot](gift:r1049) is a 20-ounce stoneware pot etched with an original Wright pattern, with an infuser that brews loose tea for two.",
       },
       { kind: "gifts", ids: ["r1027", "r700", "r1049"] },
+      {
+        kind: "p",
+        text: "Around the holidays, Vosges Haut-Chocolat's [Snowbound Little Gift](gift:r972) stacks six dark chocolate caramels and three holiday mini bars in a ribbon-tied tower. A year of [New York Times Games](gift:r1124), with the daily Crossword, Spelling Bee, and Connections, arrives as a gift code, so it works well for a coworker who is remote. For the colleague who lives by lists, Ugmonk's [Analog Starter Kit](gift:r652) keeps the day's priorities on cards in an aluminum stand on the desk.",
+      },
+      { kind: "gifts", ids: ["r972", "r1124", "r652"] },
 
       { kind: "h2", text: "$60 to $150: when a few people chip in" },
       {
@@ -713,10 +733,10 @@ const ALL_POSTS: Post[] = [
       {
         kind: "list",
         items: [
-          "Secret Santa: stay at or just under the spending limit, which most offices set somewhere between $20 and $50, and pick something anyone would enjoy, like a treat or a small desk upgrade. The under-$25 picks above work well.",
+          "Secret Santa: stay at or just under the spending limit, which most offices set somewhere between $20 and $50, and pick something anyone would enjoy, like L.A. Burdick's [chocolate mice](gift:r417), Onyx's [coffee sampler](gift:r425), or a [desk calendar](gift:r989) for the new year.",
           "Your manager: holiday gifts usually go from managers to their team, so a card, or a group gift from everyone in the $60 to $150 range, is the comfortable choice.",
           "The whole team, from you: one small, identical treat for each person, like good chocolate or a tin of tea, keeps it fair and simple.",
-          "A remote coworker: choose something that ships easily, or a gift that arrives by email, like a [Candlelight concert gift card](gift:r700) or a year of [MasterClass](gift:r362).",
+          "A remote coworker: choose something that ships easily, or a gift that arrives by email, like a year of [New York Times Games](gift:r1124), a [Candlelight concert gift card](gift:r700), or a year of [MasterClass](gift:r362).",
         ],
       },
 
