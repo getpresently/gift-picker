@@ -126,7 +126,8 @@ export function Quiz() {
       // scoringAnswers.)
       if (a.occasion === "other" && a.occasionOther?.trim()) {
         postRequest({ ...a, occasion: `NEW: ${a.occasionOther.trim()}` });
-        track("occasion_other_typed", { value: a.occasionOther.trim() });
+        // No free text in GA (it can hold names); the Requests sheet keeps the wording.
+        track("occasion_other_typed");
       }
       // Quiz funnel completion event. Includes the high-level answer
       // dimensions so we can segment completion rate by recipient /

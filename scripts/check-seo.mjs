@@ -195,6 +195,14 @@ for (const post of P.POSTS) {
 {
   const { status, html } = await get("/blog/no-such-post");
   report("/blog/no-such-post is a 404 with noindex", status === 404 && /noindex/.test(html) ? [] : [`status ${status}`]);
+  for (const path of ["/zzz-nope", "/quiz/extra", "/gift/r999999"]) {
+    const r = await get(path);
+    report(`${path} is a 404 with noindex`, r.status === 404 && /noindex/.test(r.html) ? [] : [`status ${r.status}`]);
+  }
+  for (const path of ["/", "/quiz", "/results", "/privacy", "/terms", "/thanks", "/brands", "/review", "/blog/", "/gift/r2"]) {
+    const r = await get(path);
+    report(`${path} answers 200`, r.status === 200 ? [] : [`status ${r.status}`]);
+  }
   const sitemap = (await get("/sitemap.xml")).html;
   const problems = [];
   for (const post of P.POSTS) {

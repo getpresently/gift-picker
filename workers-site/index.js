@@ -124,6 +124,12 @@ async function handleEvent(event) {
     // allow headers to be altered
     let response = new Response(page.body, page);
 
+    // A path the app has no page for gets the SPA shell with a 404 and noindex,
+    // so search engines don't index it as another copy of the home page.
+    if (!/\.[a-z0-9]+$/i.test(url.pathname) && !APP_ROUTE.test(url.pathname)) {
+      response = await notFoundPage(response, "Page not found · GiftPicker");
+    }
+
     // Per-gift pages: rewrite the served index.html with gift-specific
     // title/meta/OG/JSON-LD and a static content block so the URL is
     // fully indexable by crawlers that don't execute JavaScript. Any
@@ -285,11 +291,18 @@ async function serveShowcase(event) {
   });
 }
 
-/** Amazon links carry the Associates tag; everything else passes through. */
+// Ad-click and other affiliates' tracking parameters (same list as src/data/affiliate.ts).
+const FOREIGN_TRACKING = /^(?:utm_\w+|gclid|gbraid|wbraid|gclsrc|msclkid|fbclid|sscid|irgwc|irclickid|clickid|cjevent|cm_ven|cm_cat|cm_pla|campaignid|adgroupid|targetid|mkwid|pcrid)$/i;
+
+/** Amazon links carry the Associates tag; other links lose any foreign tracking parameters. */
 function affiliateUrl(url) {
   try {
     const u = new URL(url);
-    if (!/(^|\.)amazon\.com$/i.test(u.hostname)) return url;
+    if (!/(^|\.)amazon\.com$/i.test(u.hostname)) {
+      const keys = [...u.searchParams.keys()].filter((k) => FOREIGN_TRACKING.test(k));
+      for (const k of keys) u.searchParams.delete(k);
+      return keys.length ? u.toString() : url;
+    }
     const m = u.pathname.match(ASIN_RE);
     if (m) return `https://www.amazon.com/dp/${m[1].toUpperCase()}?tag=${AMAZON_TAG}`;
     u.searchParams.set("tag", AMAZON_TAG);
@@ -337,7 +350,7 @@ async function prerenderGiftPage(event, response, giftId) {
   if (!gifts) return null;
   // KV only holds live rows, so a miss means retired, rejected, or unknown.
   const row = gifts.find((g) => g.row_id === giftId);
-  if (!row) return null;
+  if (!row) return notFoundPage(response, "Gift not found · GiftPicker");
 
   const html = await response.text();
 
@@ -749,6 +762,16 @@ function inlineHtml(text, live) {
       return `<a href="${escapeHtml(href)}" ${LINK_STYLE}>${escapeHtml(s.text)}</a>`;
     })
     .join("");
+}
+
+// Paths with a page in src/App.tsx (the home page, quiz, results, gift pages,
+// info pages, the blog, and the review tool). Keep in step with App.tsx.
+const APP_ROUTE = /^\/(?:quiz|results|privacy|terms|thanks|brands|review|blog(?:\/[^/]+)?|gift\/[^/]+)?\/?$/;
+
+/** The SPA shell with a 404 status, a noindex tag, and the given title. */
+async function notFoundPage(response, title) {
+  const html = await response.text();
+  return new Response(withPage(html, title, `\n\t<meta name="robots" content="noindex"/>`), { status: 404, headers: response.headers });
 }
 
 function withPage(html, title, metaBlock, staticBlock) {

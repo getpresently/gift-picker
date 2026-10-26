@@ -54,13 +54,33 @@ export function primaryBuy(gift: { link: string; amazonLink: string }): { url: s
   return amazon ? { url: amazon, destination: "amazon" } : { url: brand, destination: "brand" };
 }
 
+/**
+ * Ad-click and other affiliates' tracking parameters that sometimes come along
+ * when a product link is copied from an ad or a deal site. They don't pay us and
+ * can credit someone else, so brand links drop them (10/25/26).
+ */
+const FOREIGN_TRACKING = /^(?:utm_\w+|gclid|gbraid|wbraid|gclsrc|msclkid|fbclid|sscid|irgwc|irclickid|clickid|cjevent|cm_ven|cm_cat|cm_pla|campaignid|adgroupid|targetid|mkwid|pcrid)$/i;
+
 export function affiliateUrl(url: string): string {
-  if (!url || !AMAZON_TAG || !isAmazonUrl(url)) return url;
+  if (url && !isAmazonUrl(url)) return withoutForeignTracking(url);
+  if (!url || !AMAZON_TAG) return url;
   try {
     const u = new URL(url);
     const m = u.pathname.match(ASIN_RE);
     if (m) return `https://www.amazon.com/dp/${m[1].toUpperCase()}?tag=${AMAZON_TAG}`;
     u.searchParams.set("tag", AMAZON_TAG);
+    return u.toString();
+  } catch {
+    return url;
+  }
+}
+
+function withoutForeignTracking(url: string): string {
+  try {
+    const u = new URL(url);
+    const keys = [...u.searchParams.keys()].filter((k) => FOREIGN_TRACKING.test(k));
+    if (!keys.length) return url;
+    for (const k of keys) u.searchParams.delete(k);
     return u.toString();
   } catch {
     return url;

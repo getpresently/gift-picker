@@ -156,6 +156,11 @@ test("Amazon links get the Associates tag, rebuilt as /dp/ASIN", () => {
   );
   assert.equal(new URL(affiliateUrl("https://www.amazon.com/s?k=mug")).searchParams.get("tag"), "dalia0f8-20");
   assert.equal(affiliateUrl("https://brand.example.com/p"), "https://brand.example.com/p");
+  assert.equal(
+    affiliateUrl("https://brand.example.com/p?color=020&gclid=abc&utm_source=cj&utm_medium=affiliate&sscid=91k5&irgwc=1&size=7"),
+    "https://brand.example.com/p?color=020&size=7",
+    "brand links drop ad-click and other affiliates' tracking, and keep product options",
+  );
   assert.equal(isAmazonUrl("https://amzn.to/abc"), false);
 });
 
