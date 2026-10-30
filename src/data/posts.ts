@@ -615,9 +615,9 @@ const ALL_POSTS: Post[] = [
       },
       {
         kind: "p",
-        text: "The first months with a new baby leave very little time for cooking. An [Uber and Uber Eats gift card](gift:r135), in whatever amount the group collects, covers takeout on the nights when making dinner is out of the question.",
+        text: "The first months with a new baby leave very little time for cooking. An [Uber and Uber Eats gift card](gift:r135), in whatever amount the group collects, covers takeout on the nights when making dinner is out of the question, and an [Instacart gift card](gift:r768) brings the groceries to their door for the nights they do cook. If the collection grows past about $230, Goldbelly's [restaurant food box subscription](gift:r1091) ships a box of famous dishes from restaurants and bakeries around the country each month, enough to feed four.",
       },
-      { kind: "gifts", ids: ["r135"] },
+      { kind: "gifts", ids: ["r135", "r768", "r1091"] },
       {
         kind: "p",
         text: "For a farewell, pick something they can use at the send-off or during the break before the new job. The Fujifilm [smartphone photo printer](gift:r274) prints credit-card-size photos from a phone in seconds, which comes in handy at the goodbye party and afterward. A [ResortPass gift card](gift:r1005) books a day at one of more than 2,700 hotel pools and spas, so they can take a real break between jobs.",
