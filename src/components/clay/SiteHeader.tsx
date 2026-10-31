@@ -94,6 +94,26 @@ export function SiteHeader({
                   {isMobile ? savedIds.length : `${savedIds.length} saved`}
                 </button>
               )}
+              {nav && !isMobile && (
+                // A full page load on purpose: /gift-swap is GiftSwapper's page,
+                // served by the worker from the swap app, not by this app's router.
+                // Hidden on phones, where the header has no room; the homepage
+                // section links there instead.
+                <a
+                  href="/gift-swap"
+                  onClick={() => track("gift_swap_click", { from: "header" })}
+                  style={{
+                    fontFamily: "Geist, sans-serif",
+                    fontSize: isMobile ? 14 : 15,
+                    fontWeight: 500,
+                    color: "rgba(35,20,16,0.62)",
+                    textDecoration: "none",
+                    whiteSpace: "nowrap",
+                  }}
+                >
+                  Gift swap
+                </a>
+              )}
               {nav && (
                 <a
                   href="/blog"

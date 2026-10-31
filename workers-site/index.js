@@ -3,7 +3,7 @@ import {
   serveSinglePageApp,
 } from "@cloudflare/kv-asset-handler";
 import { serveAnalytics } from "./analytics.js";
-import { APPS_SCRIPT_URL, GIFT_PATH, GIFTS_KEY } from "./config.js";
+import { APPS_SCRIPT_URL, GIFT_PATH, GIFTS_KEY, SWAP_ORIGIN } from "./config.js";
 import { SHOWCASE_IDS } from "../src/data/showcase.ts";
 import { liveThanks, THANKS_INTRO } from "../src/data/thanks.ts";
 import { MAX_EMAIL_GIFTS, isValidEmail } from "../src/data/emailList.ts";
@@ -68,6 +68,13 @@ async function handleEvent(event) {
   }
   if (url.pathname.replace(/\/+$/, "") === "/home") {
     return Response.redirect(`${SITE_ORIGIN}/${url.search}`, 301);
+  }
+
+  // GiftSwapper's information page, proxied from the swap app so it lives on
+  // giftpicker.io (and its search ranking). Only /gift-swap itself; the app's
+  // own pages stay on its address.
+  if (url.pathname.replace(/\/+$/, "") === "/gift-swap") {
+    return proxyGiftSwap(event.request, url);
   }
 
   // Dynamic sitemap: /, /brands, /thanks, the blog, plus one URL per live gift.
@@ -917,4 +924,27 @@ async function prerenderBlog(event, response, slug) {
     out = html;
   }
   return new Response(out, { status, headers: response.headers });
+}
+
+/**
+ * Fetches GiftSwapper's information page from the swap app. No cookies are
+ * forwarded (the app's sign-in lives on its own address), and the page's
+ * links and assets already point at the app.
+ */
+async function proxyGiftSwap(request, url) {
+  if (request.method !== "GET" && request.method !== "HEAD") {
+    return new Response("Method not allowed", { status: 405 });
+  }
+  try {
+    const upstream = await fetch(`${SWAP_ORIGIN}/gift-swap${url.search}`, {
+      method: request.method,
+      headers: { accept: request.headers.get("accept") ?? "text/html", "user-agent": request.headers.get("user-agent") ?? "" },
+      cf: { cacheTtl: 300, cacheEverything: true },
+    });
+    const headers = new Headers(upstream.headers);
+    headers.delete("set-cookie");
+    return new Response(upstream.body, { status: upstream.status, headers });
+  } catch {
+    return new Response("GiftSwapper is unavailable right now. Please try again shortly.", { status: 502 });
+  }
 }
