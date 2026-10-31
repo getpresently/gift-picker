@@ -252,6 +252,83 @@ export function Landing() {
             <TestimonialCarousel isMobile={isMobile} />
           </section>
 
+          {/* Gift swap: GiftSwapper, our Secret Santa and White Elephant app (served at /gift-swap). */}
+          <section
+            id="gift-swap"
+            style={{
+              marginTop: isMobile ? 64 : 96,
+              padding: isMobile ? "28px 22px 0" : "40px 48px",
+              borderRadius: 28,
+              background: "#FBE0D6",
+              display: "flex",
+              flexDirection: isMobile ? "column" : "row",
+              alignItems: "center",
+              gap: isMobile ? 8 : 40,
+              overflow: "hidden",
+            }}
+          >
+            <div style={{ flex: "1 1 0" }}>
+              <div
+                style={{
+                  fontFamily: "Geist, sans-serif",
+                  fontSize: 12,
+                  letterSpacing: "0.14em",
+                  textTransform: "uppercase",
+                  color: "rgba(35,20,16,0.55)",
+                  marginBottom: 10,
+                }}
+              >
+                New: Gift swap
+              </div>
+              <h2
+                style={{
+                  fontFamily: '"Instrument Serif", serif',
+                  fontSize: isMobile ? 34 : 48,
+                  lineHeight: 1.05,
+                  letterSpacing: "-0.02em",
+                  color: "#231410",
+                  margin: "0 0 14px",
+                  fontWeight: 400,
+                }}
+              >
+                Doing Secret Santa this year?
+              </h2>
+              <p
+                style={{
+                  fontFamily: "Geist, sans-serif",
+                  fontSize: isMobile ? 16 : 18,
+                  lineHeight: 1.5,
+                  color: "rgba(35,20,16,0.72)",
+                  margin: "0 0 24px",
+                  maxWidth: 480,
+                }}
+              >
+                GiftSwapper pairs people who share interests and gives everyone gift ideas for their person. Play Secret Santa
+                or White Elephant with your family, friends, or coworkers.
+              </p>
+              <Pillow
+                tone="coral"
+                size="md"
+                href="/gift-swap"
+                onClick={() => {
+                  track("gift_swap_click", { from: "home" });
+                  // A full page load: /gift-swap is served by the worker from the swap app.
+                  window.location.assign("/gift-swap");
+                }}
+              >
+                Start a gift swap →
+              </Pillow>
+            </div>
+            <img
+              src="/gift-swap-arms.svg"
+              alt=""
+              width={350}
+              height={250}
+              loading="lazy"
+              style={{ flex: "0 0 auto", width: isMobile ? "100%" : 360, height: "auto", maxWidth: 420 }}
+            />
+          </section>
+
           {/* Closing CTA */}
           <section style={{ marginTop: isMobile ? 64 : 96, textAlign: "center" }}>
             <h2

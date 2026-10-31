@@ -7,3 +7,10 @@ export const GIFTS_KEY = "gifts:live:v1";
 
 /** A gift page path; the capture is the gift's row id. */
 export const GIFT_PATH = /^\/gift\/(r\d+)\/?$/;
+
+/**
+ * GiftSwapper, our Secret Santa and White Elephant app. Its information page is
+ * served here at /gift-swap (proxied from the app); the app itself runs at its
+ * own address and is linked from that page.
+ */
+export const SWAP_ORIGIN = "https://swap.giftpicker.io";
