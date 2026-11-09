@@ -255,7 +255,7 @@ const ALL_POSTS: Post[] = [
     description:
       "Holiday gifts for kids from toddlers to teens, sorted by age: toys, books, craft kits, games, and gear they keep using. Most work for fall birthdays too.",
     related: ["gifts-for-your-brother-or-sister", "baby-shower-gifts-for-a-coworker", "how-to-choose-a-gift-by-love-language"],
-    published: "2026-10-25",
+    published: "2026-11-05",
     intro: [
       "There's nothing quite like watching a kid tear into a gift they love! The best ones keep that excitement going long after the wrapping paper is gone, and they spark creativity, imagination, and curiosity along the way.",
       "We sorted our favorites by age, from babies to teens, and picked each one for how well it fits that age and how long it holds up. Most work just as well for a fall birthday, and the bigger ones make great group gifts, so the whole family can go in on one really good present.",
