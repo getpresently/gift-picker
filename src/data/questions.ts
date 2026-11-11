@@ -112,7 +112,7 @@ export const QUESTIONS: Question[] = [
     options: [
       { v: "bday",       l: "Birthday",     e: "🎂" },
       { v: "anni",       l: "Anniversary",  e: "💍" },
-      { v: "holi",       l: "Holiday",      e: "🎄" },
+      { v: "holi",       l: "Holiday season", e: "🎁" },
       { v: "wed",        l: "Wedding",      e: "💌" },
       { v: "jb",         l: "Just because", e: "☀️" },
       { v: "baby",       l: "New baby",     e: "🍼" },
@@ -232,6 +232,11 @@ const HIDE_INTERESTS_FOR_AGE: Record<string, Set<string>> = {
 // treats it as the built-in occasion. Anything unmatched stays "other".
 const TYPED_OCCASION_ALIASES: { code: string; pattern: RegExp }[] = [
   { code: "holi", pattern: /\b(christmas|xmas|x-mas|c?hanukk?ah|kwanzaa|diwali|eid|lunar new year|holidays?|secret santa)\b/i },
+  // Hidden occasions: no quiz tile, only reached by typing them (see
+  // HIDDEN_OCCASIONS in gifts.ts). Farewell comes before New Job so
+  // "leaving my job" or "lost his job" never reads as a congratulations.
+  { code: "mitzvah", pattern: /\b(bar|bat|bas|b'?nai|bnei)[\s-]*mitzvah?\b|\bmitzvah\b/i },
+  { code: "farewell", pattern: /\b(farewell|going[\s-]away|leaving|last day|moving away|good-?bye|parting|laid off|lay-?off|let go|lost (his|her|their|my|a) job|job loss|retir(e|es|ed|ing|ement))\b/i },
   { code: "newjob", pattern: /\b(new job|first job|job|promotion|promoted|new role|new position)\b/i },
 ];
 

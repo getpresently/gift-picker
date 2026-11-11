@@ -142,7 +142,7 @@ Add an interest tag only if a shopper who picked that interest would be glad, an
 
 - **Relation:** only relationships where the gift makes sense; it is the heaviest single factor in ranking. For "treat myself" requests include at least `Friend, Sibling, Partner`, plus whatever else genuinely fits, unless the gift is something people only buy for themselves, which is `Self` alone (see the 10/4 rulings). Kids' gifts are `Friend, Sibling`. A cookbook is fine for coworkers and mentors; Dalia overruled a reviewer on that.
 - **Type:** what the gift feels like (Fun, Practical, Sentimental, Luxurious).
-- **Occasion:** every occasion a thoughtful giver would choose it for. New Job covers desk, commute, and work-bag items, coffee or tea at work, focus headphones, celebratory treats, and learning memberships. Leave it off kids' toys, baby items, furniture, and wedding-type gifts.
+- **Occasion:** every occasion a thoughtful giver would choose it for. New Job covers desk, commute, and work-bag items, coffee or tea at work, focus headphones, celebratory treats, and learning memberships. Leave it off kids' toys, baby items, furniture, and wedding-type gifts. Two hidden occasions have no quiz tile and are reached only when a shopper types them under Other: `Bar/Bat Mitzvah` (keepsakes and Judaica a teen keeps, never toys) and `Farewell` (a coworker or friend who is leaving, retiring, or was laid off; warm and useful, never congratulatory). Tag a gift with one only when it genuinely suits that occasion; tagged gifts get a large boost when the shopper types it.
 
 ### Gender
 
@@ -160,7 +160,7 @@ TSV, no header, exactly 20 columns per row, no tabs or newlines inside fields. *
 4. **Relation:** comma-separated from `Partner, Parent, Grandparent, Friend, Sibling, Coworker, Mentor/Teacher`.
 5. **Type:** comma-separated from `Fun, Practical, Sentimental, Luxurious`.
 6. **Interests:** comma-separated, exact labels, primary first, at most three plus `Best Sellers` last. Labels: `Best Sellers, Apparel & Accessories, Books & Reading, Cooking, Creativity, Experiences, Fitness, Food & Drinks, Gaming, Gardening & Plants, Health & Wellness, Home & Decor, Learning, Music, Nature & Outdoors, Organization, Personalization, Pets, Rest & Relaxation, Seasonal Gifts, Self-Care & Beauty, Sports, Sustainability, Tech & Electronics, Toys & Games, Travel`.
-7. **Occasion:** comma-separated from `Birthday, Anniversary, Holiday, Wedding, Just Because, New Baby, Housewarming, Appreciation, Thank You, New Job`.
+7. **Occasion:** comma-separated from `Birthday, Anniversary, Holiday, Wedding, Just Because, New Baby, Housewarming, Appreciation, Thank You, New Job`, plus the hidden `Bar/Bat Mitzvah` and `Farewell` where they truly fit.
 8. **Price:** number only (64.99), the lowest real price for the item as sold.
 9. **PriceMax:** a number when the product genuinely has a range (sizes, set counts, gift card amounts), else empty. Gift cards use a real purchasable range; do not copy the seller's default amount (Hipcamp is listed at 25 to 500, in line with the other gift cards, because the buyer can type any amount).
 10. **BillingPeriod:** exactly `one-time`, `monthly`, or `weekly`. No other values.

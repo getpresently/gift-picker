@@ -9,6 +9,7 @@ import assert from "node:assert/strict";
 import { foldTwins, rankGifts, scoreGift, twinSeed, twinsOf, type Gift, type RankedGift } from "../src/data/gifts";
 import { affiliateUrl, AMAZON_TAG, buyLinks, isAmazonUrl, primaryBuy } from "../src/data/affiliate";
 import { QUESTIONS, questionLabel, reconcileAnswers, type Answers } from "../src/data/questions";
+import { scoringAnswers, typedOccasionCode } from "../src/data/questions";
 import { buildGiftShareUrl, decodeAnswers, encodeAnswers, hasShareRef } from "../src/data/share";
 import { budgetBand, searchShape } from "../src/data/analytics";
 import { relatedGifts } from "../src/data/related";
@@ -349,4 +350,26 @@ test("Amazon only keeps gifts with an Amazon link (theirs or the alt listing) an
   assert.ok(scoreGift(altOnAmazon, amz) >= 0);
   assert.equal(scoreGift(brandOnly, amz), -1);
   assert.deepEqual(ids(rankGifts([onAmazon, altOnAmazon, brandOnly], amz)).sort(), ["1", "2"]);
+});
+
+/* ------------------------- typed occasions ------------------------ */
+
+test("typed bar or bat mitzvah and farewell occasions map to their hidden occasions", () => {
+  for (const t of ["Bar mitzvah", "bat mitzvah", "B'nai Mitzvah", "barmitzvah"]) assert.equal(typedOccasionCode(t), "mitzvah", t);
+  for (const t of ["farewell", "layoff parting gift", "last day at work", "leaving my job", "lost his job", "retirement"]) {
+    assert.equal(typedOccasionCode(t), "farewell", t);
+  }
+  assert.equal(typedOccasionCode("new job"), "newjob");
+  assert.equal(typedOccasionCode("Christmas"), "holi");
+  assert.equal(typedOccasionCode("my cat's birthday"), null);
+});
+
+test("a hidden occasion lifts its hand-tagged gifts whatever the interests, and scores the rest as its fallback", () => {
+  const answers = scoringAnswers({ recipient: "friend", age: "teen", interests: ["gaming"], vibe: ["sentimental"], budget: 150, occasion: "other", occasionOther: "Bar mitzvah" });
+  const keepsake = { ages: ["Teenager"], interests: ["Home & Decor"], primaryInterest: "Home & Decor", types: ["Sentimental"], price: 100 };
+  const cup = gift("cup", { ...keepsake, occasions: ["Wedding", "Bar/Bat Mitzvah"] });
+  const untagged = gift("plain", { ...keepsake, occasions: ["Wedding"] });
+  assert.equal(scoreGift(cup, answers), scoreGift(untagged, answers) + 20);
+  const birthdayGift = gift("bday", { ages: ["Teenager"], interests: ["Gaming"], primaryInterest: "Gaming", occasions: ["Birthday"] });
+  assert.equal(scoreGift(birthdayGift, answers), scoreGift(birthdayGift, { ...answers, occasion: "bday" }));
 });

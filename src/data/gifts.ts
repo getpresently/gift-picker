@@ -170,6 +170,9 @@ export const OCCASION_LABELS: Record<string, string> = {
   thank: "Thank You",
   newjob: "New Job",
   sympathy: "Sympathy",
+  // Hidden occasions (no quiz tile; see HIDDEN_OCCASIONS).
+  mitzvah: "Bar/Bat Mitzvah",
+  farewell: "Farewell",
 };
 
 /* ------------------------------------------------------------------ *
@@ -366,14 +369,32 @@ function scoreVibe(gift: Gift, answers: Answers): number {
  *
  * When the user picked the free-text "Other" occasion (occasion === "other"),
  * OCCASION_LABELS doesn't have a match → this returns 0 and the algorithm
- * silently bypasses all occasion-based scoring. That's intentional: a typed
- * occasion like "Bar Mitzvah" can't be mapped to the sheet's Occasions column.
+ * silently bypasses all occasion-based scoring. Typed occasions that match
+ * TYPED_OCCASION_ALIASES are scored as that occasion instead, including the
+ * hidden ones below ("Bar Mitzvah" -> Bar/Bat Mitzvah).
  */
 const BROAD_OCCASIONS = ["Birthday", "Holiday", "Just Because"];
+
+/**
+ * Occasions with no quiz tile, reached only by typing them under Other
+ * (TYPED_OCCASION_ALIASES in questions.ts). A gift hand-tagged with the
+ * label gets the full bonus whatever interests were picked, so a few
+ * occasion classics (a kiddush cup for a bar mitzvah) can lead the list;
+ * every other gift is scored as the fallback occasion.
+ */
+const HIDDEN_OCCASIONS: Record<string, { bonus: number; fallback: string }> = {
+  mitzvah: { bonus: 20, fallback: "bday" },
+  farewell: { bonus: 20, fallback: "thank" },
+};
 
 function scoreOccasionAdjustment(gift: Gift, answers: Answers, coverage: number): number {
   const occLabel = answers.occasion ? OCCASION_LABELS[answers.occasion] : undefined;
   if (!occLabel) return 0;
+  const hidden = HIDDEN_OCCASIONS[answers.occasion as string];
+  if (hidden) {
+    if (tolerantIncludes(gift.occasions, occLabel)) return hidden.bonus;
+    return scoreOccasionAdjustment(gift, { ...answers, occasion: hidden.fallback }, coverage);
+  }
   // If the gift isn't tagged for this occasion (column empty or doesn't include
   // the user's pick), skip occasion scoring for this gift entirely. Birthday,
   // Holiday, and Just Because suit nearly any gift, so a gift tagged for any
