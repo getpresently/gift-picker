@@ -158,7 +158,7 @@ const ALL_POSTS: Post[] = [
   {
     slug: "secret-santa-gift-ideas",
     title: "Secret Santa gifts for coworkers, friends, and family",
-    metaTitle: "Secret Santa gift ideas and tips",
+    metaTitle: "Secret Santa gift ideas and tips · GiftPicker",
     description:
       "How to pick a Secret Santa gift they'll actually use, with ideas for coworkers, friends, and family at $25 and $50, plus tips for a smooth gift swap.",
     related: ["white-elephant-gift-ideas", "stocking-stuffers-for-adults", "how-much-to-spend-on-a-coworker-gift"],
@@ -326,7 +326,7 @@ const ALL_POSTS: Post[] = [
   {
     slug: "white-elephant-gift-ideas",
     title: "White elephant gift ideas everyone will want to steal",
-    metaTitle: "White elephant gift ideas and tips",
+    metaTitle: "White elephant gift ideas and tips · GiftPicker",
     description:
       "How to bring a white elephant gift that gets stolen, with games, shareable treats, and cozy picks under $25 and $50, plus the basic rules of the game.",
     related: ["secret-santa-gift-ideas", "stocking-stuffers-for-adults", "how-much-to-spend-on-a-coworker-gift"],
