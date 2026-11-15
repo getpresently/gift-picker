@@ -57,4 +57,5 @@ export const CHANGES: SiteChange[] = [
   { date: "2026-10-26", title: "New gift guides: baby shower gifts for a coworker, and holiday gifts for kids by age" },
   { date: "2026-11-11", title: "The Holiday occasion tile reads Holiday season" },
   { date: "2026-11-11", title: "Typing a bar or bat mitzvah, or a farewell or layoff, under Other brings up gifts picked for it" },
+  { date: "2026-11-15", title: "New gift guides: Secret Santa gifts, stocking stuffers for adults, and white elephant gift ideas" },
 ];

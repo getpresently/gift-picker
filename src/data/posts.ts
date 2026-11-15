@@ -156,6 +156,239 @@ const REVISED = "2026-10-18";
 
 const ALL_POSTS: Post[] = [
   {
+    slug: "secret-santa-gift-ideas",
+    title: "Secret Santa gifts for coworkers, friends, and family",
+    metaTitle: "Secret Santa gift ideas and tips",
+    description:
+      "How to pick a Secret Santa gift they'll actually use, with ideas for coworkers, friends, and family at $25 and $50, plus tips for a smooth gift swap.",
+    related: ["white-elephant-gift-ideas", "stocking-stuffers-for-adults", "how-much-to-spend-on-a-coworker-gift"],
+    published: "2026-11-11",
+    intro: [
+      "You drew a name! That's the fun part, and it's also when the questions start. What do they like? And what can you find for $25 that doesn't look like it came from the checkout aisle?",
+      "Whether you drew a coworker you barely know or the aunt who has everything, here's how to choose, with examples from our catalog and ideas you can pick up anywhere. Most of them fit a $25 limit, and there's a section at the end for groups that go up to $50.",
+    ],
+    body: [
+      { kind: "h2", text: "How much to spend on Secret Santa" },
+      {
+        kind: "p",
+        text: "Most groups set a limit between $20 and $50, and $25 is the most common, especially at work. Aim to land at or just under it, since going well over can make everyone else feel their gift came up short. If nobody set a number, ask the organizer before you shop, so you and the rest of the group are on the same page.",
+      },
+
+      { kind: "h2", text: "Gifts under $25 that suit almost anyone" },
+      {
+        kind: "p",
+        text: "When you don't know much about the person you drew, pick something small and a little special that they can enjoy right away, like a treat, a game, or something to play with at their desk. Skip anything with a size, a strong scent, or a slogan, since those depend on a taste you can't guess.",
+      },
+      {
+        kind: "p",
+        text: "L.A. Burdick's [chocolate mice](gift:r417) are four hand-piped mice with ganache centers and silk ribbon tails, boxed and tied, and they get a smile from almost everyone. [Sushi Go!](gift:r1174) is a quick pick-and-pass card game in a small tin that's perfect for lunch breaks. For the person who fidgets through every meeting, Hanayama's [Huzzle Cast Marble](gift:r386) is a heavy metal puzzle with a sphere locked inside a split frame, and it looks good on a desk while they work out how to free it.",
+      },
+      { kind: "gifts", ids: ["r417", "r1174", "r386"] },
+
+      { kind: "h2", text: "For a coworker you don't know well" },
+      {
+        kind: "p",
+        text: "Think about their workday: a nicer desk, good coffee or tea, or something that makes a meeting-heavy week feel lighter. Keep it friendly without getting personal, so leave out clothing, skincare, and alcohol unless you know they'd love it.",
+      },
+      {
+        kind: "p",
+        text: "Chronicle Books' [Desk Yoga Deck](gift:r901) has 52 illustrated cards of chair stretches, standing stretches, and short breathing exercises that fit into a workday without a mat. Rifle Paper Co.'s [2027 desk calendar](gift:r989) brings twelve months of hand-painted farm scenes to their desk, and the Onyx Coffee Lab [Blend Discovery Box](gift:r425) holds three small boxes of whole bean coffee, from dark to light roast. If they're more of a tea person, a tin of good loose-leaf tea works just as well, and so does a gift card to the café closest to your office, especially with a note about your favorite thing to order there.",
+      },
+      { kind: "gifts", ids: ["r901", "r989", "r425"] },
+
+      { kind: "h2", text: "For a friend" },
+      {
+        kind: "p",
+        text: "With a friend, you can lean into what you already share, whether that's a running joke, a game night tradition, or a photo only the two of you would appreciate. If they laugh when they open it, you nailed it!",
+      },
+      {
+        kind: "p",
+        text: "[Exploding Kittens](gift:r977), illustrated by The Oatmeal, is a 15-minute card game about dodging the exploding kitten, and it's a hit with friends who like a little chaos. Shutterfly's [custom photo playing cards](gift:r992) put any picture you choose on the back of a full deck, so that blurry photo from your road trip finally gets the attention it deserves. They're printed to order, so give yourself a week or two. For the friend who asks a lot of questions, [What If?](gift:r1105) by xkcd creator Randall Munroe answers absurd ones with real science, and the 10th anniversary hardcover adds new illustrations.",
+      },
+      { kind: "gifts", ids: ["r977", "r992", "r1105"] },
+
+      { kind: "h2", text: "For someone in your family" },
+      {
+        kind: "p",
+        text: "Family Secret Santa usually means one gift for someone you've known forever, so think about your traditions. A game for after dinner, a holiday treat from another country, or a record that plays every December all make a family member feel known, and families often set a slightly higher limit.",
+      },
+      {
+        kind: "p",
+        text: "[Rummikub Large Numbers Edition](gift:r858) has oversized, high-contrast tiles that are easy to read across the table, so grandparents and grandkids eight and up can play together. The [turrón tasting box](gift:r975) from Torrons Vicens holds four bars of Spain's classic Christmas sweet, made in the town of Agramunt since 1775. And for the relative who still has a record player, [A Charlie Brown Christmas on vinyl](gift:r964) is the Vince Guaraldi Trio's 1965 soundtrack, cut from the original analog master tapes.",
+      },
+      { kind: "gifts", ids: ["r858", "r975", "r964"] },
+
+      { kind: "h2", text: "When the limit is $50" },
+      {
+        kind: "p",
+        text: "A bigger limit means you can choose something they'll keep for years, like a hardcover they'll leave out on the coffee table, a small piece of design for their desk, or a game that comes out at every get-together.",
+      },
+      {
+        kind: "p",
+        text: "For the friend who plans every trip around something strange to see, [Atlas Obscura](gift:r976) is a 480-page illustrated guide to hidden museums, natural oddities, and other unusual places around the world. [Wavelength](gift:r852) is a party game for family or friends where one player gives a clue and everyone else turns a dial to find the target, and every round starts a friendly debate. For a coworker, the MoMA Design Store's [nesting dogs](gift:r489) are five wooden breeds by illustrator Midori Komatsu that tuck inside one another and look sweet on a desk.",
+      },
+      { kind: "gifts", ids: ["r976", "r852", "r489"] },
+
+      { kind: "h2", text: "A few tips for a smooth Secret Santa" },
+      {
+        kind: "list",
+        items: [
+          "Ask the organizer whether people shared a wish list or a few interests. Even one hint, like a love of tea or a new puppy, narrows things down fast!",
+          "Include a gift receipt when you can, so they can swap a color or size without having to ask.",
+          "Put the recipient's name on the tag and tuck in a short note signed from Your Secret Santa, since the note is often what people remember.",
+          "If you're organizing, share the limit and the exchange date up front, and give everyone at least two weeks to shop.",
+        ],
+      },
+    ],
+    cta: "Still stuck on the name you drew? Tell the quiz a little about them and your limit, and it will rank gifts from our catalog for you.",
+  },
+
+  {
+    slug: "stocking-stuffers-for-adults",
+    title: "Stocking stuffer ideas for adults",
+    description:
+      "What makes a good stocking stuffer for a grown-up, with ideas under $25 for cooks, tea and coffee lovers, game players, and anyone who loves a treat.",
+    related: ["secret-santa-gift-ideas", "white-elephant-gift-ideas", "holiday-gifts-for-kids-by-age"],
+    published: "2026-11-13",
+    intro: [
+      "Admit it, you check the toe first! For a lot of grown-ups, the stocking is the best part of the morning: it's full of small surprises, nobody expects too much, and there's always something to nibble on while the bigger presents get opened.",
+      "The trick is picking small things your people will actually use, so nothing ends up in the junk drawer by New Year's. Here's how we think about it, with ideas for the different kinds of people on your list and examples from our catalog.",
+    ],
+    body: [
+      { kind: "h2", text: "What makes a good stocking stuffer" },
+      {
+        kind: "p",
+        text: "The best stocking stuffers are small, usually cost $10 to $25, and feel a little nicer than what someone would pick up for themselves. We like a simple recipe: one treat to eat, one thing to play or try, and one small luxury they'll keep using after the holidays, with a couple of little extras if your budget allows. Personal touches count too, so their favorite candy bar or a note tucked in the toe can easily become the thing they talk about all day.",
+      },
+
+      { kind: "h2", text: "For the one who's always in the kitchen" },
+      {
+        kind: "p",
+        text: "If they cook, small upgrades to the things they reach for every day go a long way. Diaspora Co.'s [Spice Sampler](gift:r420) is an illustrated box of ten single-origin spices from small farms in India and Sri Lanka, and TRUFF's [black truffle hot sauce](gift:r1185) is a two-pack of their original sauce for the person who puts hot sauce on everything. For a baker, King Arthur Baking's [fresh sourdough starter](gift:r1191) is a live culture that keeps making loaves as long as they keep feeding it. Have it shipped a few days before Christmas, since it's happiest fed soon after it arrives.",
+      },
+      { kind: "gifts", ids: ["r420", "r1185", "r1191"] },
+
+      { kind: "h2", text: "For the tea or coffee lover" },
+      {
+        kind: "p",
+        text: "Tea and coffee people have their routines, so add a bit of fun or a new flavor to yours. OTOTO's [Baby Nessie tea infuser](gift:r1110) is a silicone Loch Ness monster that stands in the mug with her head above the water while the tea steeps, and it never fails to get a laugh. Tea Forté's [KATI steeping cup](gift:r651) brews loose tea in a double-walled ceramic tumbler, which is handy at a desk. For the coffee drinker, the Onyx Coffee Lab [Blend Discovery Box](gift:r425) holds three small boxes of whole bean coffee, from dark to light roast.",
+      },
+      { kind: "gifts", ids: ["r1110", "r651", "r425"] },
+
+      { kind: "h2", text: "For the game night regular" },
+      {
+        kind: "p",
+        text: "Card games make great stocking stuffers because they're small and usually get played the same day, often right after breakfast. theory11's [Red Monarch playing cards](gift:r382) come in a soft-touch box with gold foil, which makes an ordinary game of rummy feel a little fancier. [The Crew: Mission Deep Sea](gift:r383) is a cooperative card game with 32 missions the team has to win without talking, and [Sprawlopolis](gift:r384) is an 18-card city-building game that fits in a pocket.",
+      },
+      { kind: "gifts", ids: ["r382", "r383", "r384"] },
+
+      { kind: "h2", text: "For the person who says they don't want anything" },
+      {
+        kind: "p",
+        text: "Every family has one! For them, go for something with a bit of charm that they'd never think to buy. Casio's [vintage digital watch](gift:r980) is the retro silver design that has been in production for decades, with a battery that lasts about seven years. Hanayama's [Huzzle Cast Marble](gift:r386) is a heavy metal puzzle that keeps restless hands busy on the couch, and [What If?](gift:r1105) by xkcd creator Randall Munroe answers absurd questions with real science, which makes it easy to read a page at a time.",
+      },
+      { kind: "gifts", ids: ["r980", "r386", "r1105"] },
+
+      { kind: "h2", text: "For someone starting something new in January" },
+      {
+        kind: "p",
+        text: "A stocking is a nice place to tuck the start of a new hobby or habit. [Fluent Forever](gift:r1189) is a popular guide to learning a new language, and DMC's [Learning Embroidery Kit](gift:r691) comes with a hoop, thread, and a video that teaches seven stitches. If they like to reflect, Meera Lee Patel's [Start Where You Are](gift:r900) is a guided journal filled with her paintings and open-ended prompts.",
+      },
+      { kind: "gifts", ids: ["r1189", "r691", "r900"] },
+
+      { kind: "h2", text: "A few quiet minutes for themselves" },
+      {
+        kind: "p",
+        text: "Some of the best stocking stuffers are an excuse to slow down. Twisted Tomboy's [shower steamers](gift:r895) fizz and release essential oils when the water hits them, and Shoyeido's [Kunro incense assortment](gift:r897) holds seven blends from a Kyoto incense house that has been making them since 1705. The [Zenergy Chime](gift:r981) from Woodstock Chimes is a small tuned bar on a wooden base that rings one long, clear tone when it's struck, a lovely way to start a morning stretch.",
+      },
+      { kind: "gifts", ids: ["r895", "r897", "r981"] },
+
+      { kind: "h2", text: "A sweet treat for the toe" },
+      {
+        kind: "p",
+        text: "Many families still put a clementine in the toe of the stocking, and it's a tradition worth keeping. Next to it, add a sweet that feels like a splurge. L.A. Burdick's [chocolate mice](gift:r417) come four to a box with silk ribbon tails, and Sugarfina's [Champagne Bears](gift:r650) are alcohol-free gummies flavored with Dom Pérignon champagne, packed in a champagne bottle. Runamok's [Sugarmaker's Cut maple syrup](gift:r421) comes in a 375 ml glass bottle that looks like a nice whiskey, and it makes Christmas morning pancakes feel special.",
+      },
+      { kind: "gifts", ids: ["r417", "r650", "r421"] },
+
+      { kind: "h2", text: "How to fill a stocking without overthinking it" },
+      {
+        kind: "list",
+        items: [
+          "Set a rough budget for each stocking, so everyone in the family ends up with about the same amount. Three or four of the ideas above make a generous stocking for $50 to $75.",
+          "Put the heaviest item at the bottom and a treat at the top, so the first thing they pull out makes them smile.",
+          "Wrap the small things in tissue paper, so unpacking takes a little longer and each item feels like its own present.",
+        ],
+      },
+    ],
+    cta: "Filling a few stockings this year? Tell the quiz who each one is for and what they love, and it will rank gifts from our catalog.",
+  },
+
+  {
+    slug: "white-elephant-gift-ideas",
+    title: "White elephant gift ideas everyone will want to steal",
+    metaTitle: "White elephant gift ideas and tips",
+    description:
+      "How to bring a white elephant gift that gets stolen, with games, shareable treats, and cozy picks under $25 and $50, plus the basic rules of the game.",
+    related: ["secret-santa-gift-ideas", "stocking-stuffers-for-adults", "how-much-to-spend-on-a-coworker-gift"],
+    published: "2026-11-15",
+    intro: [
+      "White elephant is the gift exchange where anything can happen. Everyone brings one wrapped gift, players take turns opening a new one or stealing one that's already been opened, and by the end someone is guarding a popcorn maker like it's treasure.",
+      "Since you don't know who will go home with your gift, the goal is something almost anyone would be happy to take. Here's how to choose one, with ideas at the most common price limits. If your group is new to the game, the rules are at the bottom.",
+    ],
+    body: [
+      { kind: "h2", text: "What makes a white elephant gift get stolen" },
+      {
+        kind: "p",
+        text: "The gifts that get stolen are the ones the whole room wants, like something fun to use with friends, a treat that's easy to share, or a cozy thing people secretly want and never buy. Gag gifts get a big laugh when they're opened, but nobody fights to take one home, so if you love a joke, wrap something good in funny paper. It also helps to skip clothing sizes, perfume, and anything that only suits a very particular taste.",
+      },
+
+      { kind: "h2", text: "White elephant gifts under $25" },
+      {
+        kind: "p",
+        text: "At a $20 or $25 limit, look for something with a bit of personality that people will want to show off. [Exploding Kittens](gift:r977) is a fast, silly card game for 2 to 5 players that's easy to picture playing with the people in the room. OTOTO's [Baby Nessie tea infuser](gift:r1110) is a little Loch Ness monster that stands in your mug while the tea steeps, and it always gets a laugh when it's unwrapped. The [Lunar 2027 wall calendar](gift:r1001) prints the moon's phase for every day of the year in glow-in-the-dark ink, so each month glows when the lights go out.",
+      },
+      { kind: "gifts", ids: ["r977", "r1110", "r1001"] },
+
+      { kind: "h2", text: "Games the whole party will fight over" },
+      {
+        kind: "p",
+        text: "Party games are a white elephant favorite, since everyone can picture the next game night. In [Hitster](gift:r877), players scan a card with a phone to hear a song from the last hundred years, then place it on a timeline by the year it came out. [Dixit](gift:r853) is a storytelling game for 3 to 8 players built on dreamlike illustrated cards and clever clues, and [That's Dope](gift:r351) has the group guessing who voted Dope or Nope on silly, debatable topics.",
+      },
+      { kind: "gifts", ids: ["r877", "r853", "r351"] },
+
+      { kind: "h2", text: "Treats everyone can share" },
+      {
+        kind: "p",
+        text: "A gift that turns into a snack for the room is always popular. The [Whirley Pop stovetop popcorn maker](gift:r284) has a hand crank that keeps the kernels moving as it pops up to six quarts, so nothing burns, and it's the gift people circle back to steal at a party at someone's home. Sugar Plum's [nostalgic chocolate bars](gift:r340) come six to a pack in flavors like Pancakes & Syrup and Milk & Cookies, which makes them easy to pass around the office. For the person who loves heat, Fly By Jing's [chili crisp bundle](gift:r1186) has four jars to spoon over noodles, eggs, and even pizza.",
+      },
+      { kind: "gifts", ids: ["r284", "r340", "r1186"] },
+
+      { kind: "h2", text: "Cozy and useful picks around $50" },
+      {
+        kind: "p",
+        text: "At a higher limit, the most-stolen gifts tend to be things people want but rarely buy for themselves. [The Comfy](gift:r938) is the oversized wearable blanket with a sherpa lining and a deep hood, and whoever ends up with it will probably wear it for the rest of the party. Owala's [FreeSip bottle](gift:r529) lets you sip through a built-in straw or drink straight from the spout, and JBL's [Go 5 speaker](gift:r1041) is a palm-sized, waterproof Bluetooth speaker that plays for up to 10 hours.",
+      },
+      { kind: "gifts", ids: ["r938", "r529", "r1041"] },
+
+      { kind: "h2", text: "How white elephant works" },
+      {
+        kind: "p",
+        text: "If your group is new to the game, here's the most common version. Everyone brings one wrapped gift at the agreed limit and draws a number to set the order.",
+      },
+      {
+        kind: "list",
+        items: [
+          "Player one opens any gift from the pile.",
+          "Each player after that either opens a new gift or steals one that's already been opened. Anyone whose gift is stolen chooses again, either opening a new gift or stealing a different one, though they can't take back the gift that was just taken from them.",
+          "Most groups let a gift be stolen three times before it's locked with its owner.",
+          "Once the last gift is opened, player one gets a final chance to swap with anyone.",
+        ],
+      },
+    ],
+    cta: "Need a gift for someone specific after the party? Tell the quiz about them, and it will rank gifts from our catalog.",
+  },
+
+  {
     slug: "baby-shower-gifts-for-a-coworker",
     title: "Baby shower gifts for a coworker, at every budget",
     metaTitle: "Baby shower gifts for a coworker · GiftPicker",

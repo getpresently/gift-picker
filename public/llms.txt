@@ -28,6 +28,9 @@ Every gift has a permanent, indexable page at https://giftpicker.io/gift/{id} (m
 
 Each guide is a full article with sections, plain-text ideas, and links to the gift pages it recommends, plus BlogPosting, BreadcrumbList, and ItemList structured data.
 
+- [Secret Santa gifts for coworkers, friends, and family](https://giftpicker.io/blog/secret-santa-gift-ideas): How to pick a Secret Santa gift they'll actually use, with ideas for coworkers, friends, and family at $25 and $50, plus tips for a smooth gift swap.
+- [Stocking stuffer ideas for adults](https://giftpicker.io/blog/stocking-stuffers-for-adults): What makes a good stocking stuffer for a grown-up, with ideas under $25 for cooks, tea and coffee lovers, game players, and anyone who loves a treat.
+- [White elephant gift ideas everyone will want to steal](https://giftpicker.io/blog/white-elephant-gift-ideas): How to bring a white elephant gift that gets stolen, with games, shareable treats, and cozy picks under $25 and $50, plus the basic rules of the game.
 - [Baby shower gifts for a coworker, at every budget](https://giftpicker.io/blog/baby-shower-gifts-for-a-coworker): Baby shower gifts for a coworker at every budget, from a small gift from you to a gift from the whole team, plus ideas for planning an office baby shower.
 - [Holiday gifts for kids, from toddlers to teens](https://giftpicker.io/blog/holiday-gifts-for-kids-by-age): Holiday gifts for kids from toddlers to teens, sorted by age: toys, books, craft kits, games, and gear they keep using. Most work for fall birthdays too.
 - [How to choose a gift by love language](https://giftpicker.io/blog/how-to-choose-a-gift-by-love-language): Learn the everyday clues that show which love language someone speaks, then find gift ideas for quality time, words, acts of service, touch, and gifts.
