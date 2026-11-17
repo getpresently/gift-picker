@@ -23,7 +23,7 @@ export function FooterBrand() {
           color: "rgba(35,20,16,0.5)",
         }}
       >
-        GiftPicker is a free 60-second gift finder quiz for the indecisive and the deeply caring. Answer five quick
+        GiftPicker is a free 60-second gift finder quiz. Answer five quick
         questions about the person and get a shortlist of gifts they'll actually love.
       </p>
     </div>

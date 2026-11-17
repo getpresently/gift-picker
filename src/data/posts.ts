@@ -163,28 +163,23 @@ const ALL_POSTS: Post[] = [
       "How to pick a Secret Santa gift they'll actually use, with ideas for coworkers, friends, and family at $25 and $50, plus tips for a smooth gift swap.",
     related: ["white-elephant-gift-ideas", "stocking-stuffers-for-adults", "how-much-to-spend-on-a-coworker-gift"],
     published: "2026-11-11",
+    updated: "2026-11-18",
     intro: [
       "You drew a name! That's the fun part, and it's also when the questions start. What do they like? And what can you find for $25 that doesn't look like it came from the checkout aisle?",
       "Whether you drew a coworker you barely know or the aunt who has everything, here's how to choose, with examples from our catalog and ideas you can pick up anywhere. Most of them fit a $25 limit, and there's a section at the end for groups that go up to $50.",
       "If you know even one or two things they're into, you can get more ideas based on their interests [here](/quiz).",
     ],
     body: [
-      { kind: "h2", text: "How much to spend on Secret Santa" },
-      {
-        kind: "p",
-        text: "Most groups set a limit between $20 and $50, and $25 is the most common, especially at work. Aim to land at or just under it, since going well over can make everyone else feel their gift came up short. If nobody set a number, ask the organizer before you shop, so you and the rest of the group are on the same page.",
-      },
-
       { kind: "h2", text: "Gifts under $25 that suit almost anyone" },
       {
         kind: "p",
-        text: "When you don't know much about the person you drew, pick something small and a little special that they can enjoy right away, like a treat, a game, or something to play with at their desk. Skip anything with a size, a strong scent, or a slogan, since those depend on a taste you can't guess.",
+        text: "When you don't know much about the person you drew, pick something small and a little special that they can enjoy right away, like a treat or a small thing that makes their day easier. Skip anything with a size, a strong scent, or a slogan, since those depend on a taste you can't guess.",
       },
       {
         kind: "p",
-        text: "L.A. Burdick's [chocolate mice](gift:r417) are four hand-piped mice with ganache centers and silk ribbon tails, boxed and tied, and they get a smile from almost everyone. [Sushi Go!](gift:r1174) is a quick pick-and-pass card game in a small tin that's perfect for lunch breaks. For the person who fidgets through every meeting, Hanayama's [Huzzle Cast Marble](gift:r386) is a heavy metal puzzle with a sphere locked inside a split frame, and it looks good on a desk while they work out how to free it.",
+        text: "For anyone with a sweet tooth, L.A. Burdick's [chocolate mice](gift:r417) are four hand-piped mice with ganache centers and silk ribbon tails, boxed and tied, and they get a smile from almost everyone. And for the one who's always lending out books, Knock Knock's [Personal Library Kit](gift:r983) comes with pockets, checkout cards, and a date stamp, so their favorite paperbacks finally come back.",
       },
-      { kind: "gifts", ids: ["r417", "r1174", "r386"] },
+      { kind: "gifts", ids: ["r417", "r983"] },
 
       { kind: "h2", text: "For a coworker you don't know well" },
       {
@@ -193,9 +188,9 @@ const ALL_POSTS: Post[] = [
       },
       {
         kind: "p",
-        text: "Chronicle Books' [Desk Yoga Deck](gift:r901) has 52 illustrated cards of chair stretches, standing stretches, and short breathing exercises that fit into a workday without a mat. Rifle Paper Co.'s [2027 desk calendar](gift:r989) brings twelve months of hand-painted farm scenes to their desk, and the Onyx Coffee Lab [Blend Discovery Box](gift:r425) holds three small boxes of whole bean coffee, from dark to light roast. If they're more of a tea person, a tin of good loose-leaf tea works just as well, and so does a gift card to the café closest to your office, especially with a note about your favorite thing to order there.",
+        text: "For the coworker who cares about fitness, or who's always the one scheduling a stretch break for the office, Chronicle Books' [Desk Yoga Deck](gift:r901) has 52 illustrated cards of chair stretches, standing stretches, and short breathing exercises that fit into a workday without a mat. For the one who works off a laptop all day, MOFT's [invisible laptop stand](gift:r996) sticks to the underside, lies flat when it's closed, and props the screen up when they're typing. For a coworker who loves a good laugh or likes to keep track of the days, a tear-off cartoon calendar like The Far Side's 2027 Off-the-Wall Day-to-Day Calendar gives them a new Gary Larson cartoon every morning. And for the coworker who can't get through the day without three cups of coffee, a bag of whole beans from a good local roaster always gets used. If they're more of a tea person, a tin of good loose-leaf tea works just as well, and so does a gift card to the café closest to your office, especially with a note about your favorite thing to order there.",
       },
-      { kind: "gifts", ids: ["r901", "r989", "r425"] },
+      { kind: "gifts", ids: ["r901", "r996"] },
 
       { kind: "h2", text: "For a friend" },
       {
@@ -204,36 +199,37 @@ const ALL_POSTS: Post[] = [
       },
       {
         kind: "p",
-        text: "[Exploding Kittens](gift:r977), illustrated by The Oatmeal, is a 15-minute card game about dodging the exploding kitten, and it's a hit with friends who like a little chaos. Shutterfly's [custom photo playing cards](gift:r992) put any picture you choose on the back of a full deck, so that blurry photo from your road trip finally gets the attention it deserves. They're printed to order, so give yourself a week or two. For the friend who asks a lot of questions, [What If?](gift:r1105) by xkcd creator Randall Munroe answers absurd ones with real science, and the 10th anniversary hardcover adds new illustrations.",
+        text: "For the friend who loves a little chaos at game night, [Exploding Kittens](gift:r977), illustrated by The Oatmeal, is a 15-minute card game about dodging the exploding kitten. For the friend you have the most embarrassing photos of, Shutterfly's [custom photo playing cards](gift:r992) put any picture you choose on the back of a full deck, and the sillier the photo, the better. They're printed to order, so give yourself a week or two. For the friend who asks a lot of questions, [What If?](gift:r1105) by xkcd creator Randall Munroe answers absurd ones with real science, and the 10th anniversary hardcover adds new illustrations.",
       },
       { kind: "gifts", ids: ["r977", "r992", "r1105"] },
 
       { kind: "h2", text: "For someone in your family" },
       {
         kind: "p",
-        text: "Family Secret Santa usually means one gift for someone you've known forever, so think about your traditions. A game for after dinner, a holiday treat from another country, or a record that plays every December all make a family member feel known, and families often set a slightly higher limit.",
+        text: "Family Secret Santa usually means one gift for someone you've known forever, so think about your traditions. A holiday treat from another country or a record that plays every December can make a family member feel known, and families often set a slightly higher limit.",
       },
       {
         kind: "p",
-        text: "[Rummikub Large Numbers Edition](gift:r858) has oversized, high-contrast tiles that are easy to read across the table, so grandparents and grandkids eight and up can play together. The [turrón tasting box](gift:r975) from Torrons Vicens holds four bars of Spain's classic Christmas sweet, made in the town of Agramunt since 1775. And for the relative who still has a record player, [A Charlie Brown Christmas on vinyl](gift:r964) is the Vince Guaraldi Trio's 1965 soundtrack, cut from the original analog master tapes.",
+        text: "For the relative who loves holiday sweets, the [turrón tasting box](gift:r975) from Torrons Vicens holds four bars of Spain's classic Christmas sweet, made in the town of Agramunt since 1775. And for the relative who still has a record player, [A Charlie Brown Christmas on vinyl](gift:r964) is the Vince Guaraldi Trio's 1965 soundtrack, cut from the original analog master tapes.",
       },
-      { kind: "gifts", ids: ["r858", "r975", "r964"] },
+      { kind: "gifts", ids: ["r975", "r964"] },
 
       { kind: "h2", text: "When the limit is $50" },
       {
         kind: "p",
-        text: "A bigger limit means you can choose something they'll keep for years, like a hardcover they'll leave out on the coffee table, a small piece of design for their desk, or a game that comes out at every get-together.",
+        text: "A bigger limit means you can choose something they'll keep for years, like a hardcover they'll leave out on the coffee table, a well-made piece for their desk, or a game that comes out at every get-together.",
       },
       {
         kind: "p",
-        text: "For the friend who plans every trip around something strange to see, [Atlas Obscura](gift:r976) is a 480-page illustrated guide to hidden museums, natural oddities, and other unusual places around the world. [Wavelength](gift:r852) is a party game for family or friends where one player gives a clue and everyone else turns a dial to find the target, and every round starts a friendly debate. For a coworker, the MoMA Design Store's [nesting dogs](gift:r489) are five wooden breeds by illustrator Midori Komatsu that tuck inside one another and look sweet on a desk.",
+        text: "For the friend who plans every trip around something strange to see, [Atlas Obscura](gift:r976) is a 480-page illustrated guide to hidden museums, natural oddities, and other unusual places around the world. For families or friend groups that love boisterous games, [Wavelength](gift:r852) has one player give a clue while everyone else turns a dial to find the target, and every round starts a friendly debate. And for the coworker who wears headphones all day, Oakywood's [solid wood headphone stand](gift:r502) gives them a proper place to hang them, handcrafted in Poland from oak or walnut.",
       },
-      { kind: "gifts", ids: ["r976", "r852", "r489"] },
+      { kind: "gifts", ids: ["r976", "r852", "r502"] },
 
       { kind: "h2", text: "A few tips for a smooth Secret Santa" },
       {
         kind: "list",
         items: [
+          "The organizer usually sets the price limit up front, and $25 is the most common at work. Aim to land at or just under it, since going well over can make everyone else feel their gift came up short. If nobody named a number, ask before you shop.",
           "Ask the organizer whether people shared a wish list or a few interests. Even one hint, like a love of tea or a new puppy, narrows things down fast!",
           "Include a gift receipt when you can, so they can swap a color or size without having to ask.",
           "Put the recipient's name on the tag and tuck in a short note signed from Your Secret Santa, since the note is often what people remember.",
@@ -251,6 +247,7 @@ const ALL_POSTS: Post[] = [
       "What makes a good stocking stuffer for a grown-up, with ideas under $25 for cooks, tea and coffee lovers, game players, and anyone who loves a treat.",
     related: ["secret-santa-gift-ideas", "white-elephant-gift-ideas", "holiday-gifts-for-kids-by-age"],
     published: "2026-11-13",
+    updated: "2026-11-18",
     intro: [
       "Admit it, you check the toe first! For a lot of grown-ups, the stocking is the best part of the morning: it's full of small surprises, nobody expects too much, and there's always something to nibble on while the bigger presents get opened.",
       "The trick is picking small things your people will actually use, so nothing ends up in the junk drawer by New Year's. Here's how we think about it, with ideas for the different kinds of people on your list and examples from our catalog.",
@@ -272,9 +269,9 @@ const ALL_POSTS: Post[] = [
       { kind: "h2", text: "For the tea or coffee lover" },
       {
         kind: "p",
-        text: "Tea and coffee people have their routines, so add a bit of fun or a new flavor to yours. OTOTO's [Baby Nessie tea infuser](gift:r1110) is a silicone Loch Ness monster that stands in the mug with her head above the water while the tea steeps, and it never fails to get a laugh. Tea Forté's [KATI steeping cup](gift:r651) brews loose tea in a double-walled ceramic tumbler, which is handy at a desk. For the coffee drinker, the Onyx Coffee Lab [Blend Discovery Box](gift:r425) holds three small boxes of whole bean coffee, from dark to light roast.",
+        text: "Tea and coffee people have their routines, so add a bit of fun or a new flavor to yours. OTOTO's [Baby Nessie tea infuser](gift:r1110) is a silicone Loch Ness monster that stands in the mug with her head above the water while the tea steeps, and it never fails to get a laugh. Tea Forté's [KATI steeping cup](gift:r651) brews loose tea in a double-walled ceramic tumbler, which is handy at a desk. For the coffee drinker, a bag of whole beans from a roaster they haven't tried yet is a nice surprise, and so is a small bag from the café they already love.",
       },
-      { kind: "gifts", ids: ["r1110", "r651", "r425"] },
+      { kind: "gifts", ids: ["r1110", "r651"] },
 
       { kind: "h2", text: "For the game night regular" },
       {
@@ -286,9 +283,9 @@ const ALL_POSTS: Post[] = [
       { kind: "h2", text: "For the person who says they don't want anything" },
       {
         kind: "p",
-        text: "Every family has one! For them, go for something with a bit of charm that they'd never think to buy. Casio's [vintage digital watch](gift:r980) is the retro silver design that has been in production for decades, with a battery that lasts about seven years. Hanayama's [Huzzle Cast Marble](gift:r386) is a heavy metal puzzle that keeps restless hands busy on the couch, and [What If?](gift:r1105) by xkcd creator Randall Munroe answers absurd questions with real science, which makes it easy to read a page at a time.",
+        text: "Every family has one! For them, go for something with a bit of charm that they'd never think to buy. Casio's [vintage digital watch](gift:r980) is the retro silver design that has been in production for decades, with a battery that lasts about seven years. Dusen Dusen's [striped card holder](gift:r411) is a slim recycled leather wallet made for MoMA, a cheerful swap for the worn-out one in their pocket, and Yogasleep's [Rohm](gift:r999) is a palm-size white noise machine for the light sleeper who travels.",
       },
-      { kind: "gifts", ids: ["r980", "r386", "r1105"] },
+      { kind: "gifts", ids: ["r980", "r411", "r999"] },
 
       { kind: "h2", text: "For someone starting something new in January" },
       {
