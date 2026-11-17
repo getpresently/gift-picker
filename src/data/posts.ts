@@ -166,6 +166,7 @@ const ALL_POSTS: Post[] = [
     intro: [
       "You drew a name! That's the fun part, and it's also when the questions start. What do they like? And what can you find for $25 that doesn't look like it came from the checkout aisle?",
       "Whether you drew a coworker you barely know or the aunt who has everything, here's how to choose, with examples from our catalog and ideas you can pick up anywhere. Most of them fit a $25 limit, and there's a section at the end for groups that go up to $50.",
+      "If you know even one or two things they're into, you can get more ideas based on their interests [here](/quiz).",
     ],
     body: [
       { kind: "h2", text: "How much to spend on Secret Santa" },
