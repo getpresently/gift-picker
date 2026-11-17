@@ -242,7 +242,88 @@ function handleFeedback_(p) {
     p.clientId || "",
   ]);
   if (p.reason === "dont" && isOwnerDevice_(p.clientId)) rejectFromOwnerFeedback_(p);
+  else if (p.reason === "dont") reviewIfDislikedOften_(p);
   return { ok: true };
+}
+
+// When this many different visitors (not Dalia's browsers) mark the same live
+// gift "Don't like" within the window, it goes back to /review: Review status
+// turns FALSE (so it leaves the site until she decides), a "Flagged" note with
+// each visitor's search goes at the front of its Feedback cell (the review
+// page shows a banner for these), and the script owner gets an email.
+const DISLIKE_REVIEW_THRESHOLD = 3;
+const DISLIKE_WINDOW_DAYS = 90;
+
+/** "Teenager · Holiday · Fitness, Music · $15-50" from a Feedback row's answers JSON. */
+function searchSummary_(answersJson) {
+  let a = {};
+  try { a = JSON.parse(answersJson || "{}"); } catch (err) { return ""; }
+  const list = (v) => (Array.isArray(v) ? v.join(", ") : v || "");
+  return [a.recipient, a.age, a.occasion, list(a.interests), a.budget ? "$" + a.budget : ""]
+    .filter(String).join(" · ");
+}
+
+function reviewIfDislikedOften_(p) {
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  const fb = ss.getSheetByName("Feedback");
+  if (!fb || fb.getLastRow() < 2) return;
+  const h = headers_(fb);
+  const rows = fb.getRange(2, 1, fb.getLastRow() - 1, h.length).getValues();
+  const since = Date.now() - DISLIKE_WINDOW_DAYS * 86400000;
+  const skip = ownerDevices_().concat(testClientIds_());
+  const giftId = String(p.giftId || "").trim();
+  const me = String(p.clientId || "").trim();
+  // Distinct visitors before this report (the row just appended is the last one).
+  const searches = {};
+  rows.slice(0, -1).forEach(function (r) {
+    if (String(r[h.indexOf("giftId")]).trim() !== giftId || String(r[h.indexOf("reason")]) !== "dont") return;
+    const id = String(r[h.indexOf("clientId")] || "").trim();
+    if (!id || skip.indexOf(id) !== -1 || !(new Date(r[h.indexOf("at")]).getTime() >= since)) return;
+    searches[id] = searchSummary_(r[h.indexOf("answers")]);
+  });
+  // Fire once, on the visitor who reaches the threshold; repeats never re-flag.
+  if (!me || skip.indexOf(me) !== -1 || searches[me] !== undefined) return;
+  if (Object.keys(searches).length + 1 !== DISLIKE_REVIEW_THRESHOLD) return;
+  searches[me] = searchSummary_(safeJson_(p.answers));
+
+  const sheet = ss.getSheetByName("Gifts");
+  const row = sheet ? findGiftRow_(sheet, giftId) : -1;
+  if (row === -1) return;
+  const gh = headers_(sheet);
+  const giftCol = gh.indexOf("Gift") + 1;
+  const statusCol = gh.indexOf("Status") + 1;
+  const reviewCol = gh.indexOf("Review status") + 1;
+  const noteCol = gh.indexOf("Feedback") + 1;
+  if (!giftCol || !statusCol || !reviewCol || !noteCol) return;
+  const lock = LockService.getScriptLock();
+  lock.waitLock(10000);
+  let flagged = false;
+  try {
+    if (String(sheet.getRange(row, giftCol).getValue()).trim() !== String(p.giftName || "").trim()) return;
+    if (String(sheet.getRange(row, statusCol).getValue()) !== "Live") return;
+    const cell = sheet.getRange(row, noteCol);
+    const old = String(cell.getValue() || "").trim();
+    const list = Object.keys(searches).map(function (id) { return searches[id] || "no answers saved"; }).join("; ");
+    const note = "Flagged " + Utilities.formatDate(new Date(), "America/New_York", "M/d/yy") + ": " +
+      DISLIKE_REVIEW_THRESHOLD + " visitors marked Don't like. Their searches: " + list;
+    sheet.getRange(row, reviewCol).setValue(false);
+    cell.setValue(old ? note + " | " + old : note);
+    flagged = true;
+  } finally {
+    lock.releaseLock();
+  }
+  if (!flagged) return;
+  try {
+    MailApp.sendEmail(
+      Session.getEffectiveUser().getEmail(),
+      "GiftPicker: " + p.giftName + " is back in /review",
+      DISLIKE_REVIEW_THRESHOLD + " different visitors marked " + p.giftName + " (" + giftId + ") \"Don't like\" within " +
+        DISLIKE_WINDOW_DAYS + " days, so it is off the site until you approve or reject it at https://giftpicker.io/review.\n\n" +
+        "Their searches:\n" + Object.keys(searches).map(function (id) { return "- " + (searches[id] || "no answers saved"); }).join("\n")
+    );
+  } catch (err) {
+    // The flag and note are what matter; a mail quota or permission problem must not break feedback.
+  }
 }
 
 /** Owner devices, stored as a comma list in Script Properties. */

@@ -98,6 +98,9 @@ function noteKind(text: string): NoteKind {
 
 const isOpenNote = (text?: string) => !!text && noteKind(text) !== "done";
 
+/** The note docs/apps-script.gs writes when visitors' "Don't like" reports send a gift back. */
+const DISLIKE_FLAG = /^Flagged [^:]+: \d+ visitors marked Don't like/;
+
 function computeVisibleIds(
   gifts: ReviewGift[],
   filter: FilterKey,
@@ -891,6 +894,13 @@ function ReviewTool({ unlock, active, onOpenAnalytics }: { unlock: UnlockState; 
 
   const giftById = useMemo(() => new Map(merged.map((g) => [g.id, g])), [merged]);
 
+  // Gifts the Apps Script sent back after several visitors marked "Don't like"
+  // (see reviewIfDislikedOften_ in docs/apps-script.gs).
+  const dislikeFlagged = useMemo(
+    () => merged.filter((g) => !g.reviewed && DISLIKE_FLAG.test(g.feedback ?? "")),
+    [merged],
+  );
+
   const counts = useMemo(() => {
     const c: Record<FilterKey, number> = { needs: 0, approved: 0, rejected: 0, dead: 0, retired: 0, all: merged.length };
     for (const g of merged) {
@@ -1186,6 +1196,25 @@ function ReviewTool({ unlock, active, onOpenAnalytics }: { unlock: UnlockState; 
               <option value="notes">Open notes first</option>
             </select>
           </div>
+
+          {dislikeFlagged.length > 0 && !loading && (
+            <div
+              style={{
+                marginBottom: 16,
+                padding: "12px 16px",
+                borderRadius: 14,
+                background: "rgba(200,120,40,0.12)",
+                fontFamily: "Geist, sans-serif",
+                fontSize: 14,
+                lineHeight: 1.5,
+                color: "#5A3410",
+              }}
+            >
+              {dislikeFlagged.length === 1
+                ? `Back for review after 3 visitors marked it "Don't like": ${dislikeFlagged[0].name}. It's off the site until you approve or reject it, and its note lists their searches.`
+                : `Back for review after 3 visitors marked each one "Don't like": ${dislikeFlagged.map((g) => g.name).join(", ")}. They're off the site until you approve or reject them, and each note lists the searches.`}
+            </div>
+          )}
 
           {caughtUp && filter === "all" && !loading && (
             <div
