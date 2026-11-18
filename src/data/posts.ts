@@ -119,9 +119,14 @@ export function postTitleTag(post: Post): string {
   return post.metaTitle ?? `${post.title} · GiftPicker`;
 }
 
-/** The post's share image (1200x630, in public/blog/og/, made by scripts/make-share-images.mjs). */
+/** The post's share image file (1200x630, in public/blog/og/, made by scripts/make-share-images.mjs). */
 export function postShareImage(post: Post): string {
   return `/blog/og/${post.slug}.jpg`;
+}
+
+/** The share image URL for og:image; the date makes social sites fetch it again after an update. */
+export function postShareImageUrl(post: Post): string {
+  return `${postShareImage(post)}?v=${post.updated ?? post.published}`;
 }
 
 /** Two or three posts to link at the end of a post: its `related` list, topped up with the newest others. */

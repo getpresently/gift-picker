@@ -7,7 +7,7 @@ import { APPS_SCRIPT_URL, GIFT_PATH, GIFTS_KEY } from "./config.js";
 import { SHOWCASE_IDS } from "../src/data/showcase.ts";
 import { liveThanks, THANKS_INTRO } from "../src/data/thanks.ts";
 import { MAX_EMAIL_GIFTS, isValidEmail } from "../src/data/emailList.ts";
-import { POSTS, findPost, formatPostDate, parseInline, postShareImage, postsFeaturing, postTitleTag, relatedPosts, segmentHref } from "../src/data/posts.ts";
+import { POSTS, findPost, formatPostDate, parseInline, postShareImageUrl, postsFeaturing, postTitleTag, relatedPosts, segmentHref } from "../src/data/posts.ts";
 
 /**
  * The DEBUG flag will do two things that help during development:
@@ -796,7 +796,7 @@ function blogIndexHtml(html) {
       url: `${url}/${p.slug}`,
       datePublished: p.published,
       dateModified: p.updated || p.published,
-      image: `${SITE_ORIGIN}${postShareImage(p)}`,
+      image: `${SITE_ORIGIN}${postShareImageUrl(p)}`,
     })),
   };
   const jsonLd = [blog, breadcrumbs([["Home", `${SITE_ORIGIN}/`], ["Gift guides", url]])];
@@ -821,7 +821,7 @@ function blogPostHtml(html, post, gifts) {
   const url = `${SITE_ORIGIN}/blog/${post.slug}`;
   const title = postTitleTag(post);
   const modified = post.updated || post.published;
-  const image = `${SITE_ORIGIN}${postShareImage(post)}`;
+  const image = `${SITE_ORIGIN}${postShareImageUrl(post)}`;
   const imageAlt = `${post.title}: a GiftPicker gift guide, with photos of gifts it recommends`;
   const byId = gifts ? new Map(gifts.map((g) => [g.row_id, g])) : null;
   const live = byId ? new Set(byId.keys()) : null;

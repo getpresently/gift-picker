@@ -137,7 +137,7 @@ for (const post of P.POSTS) {
   const description = decode(meta(html, "name", "description") ?? "");
   if (description !== post.description || description.length > 155) problems.push(`meta description (${description.length} characters)`);
   if (!html.includes(`<link rel="canonical" href="${url}"/>`)) problems.push("canonical");
-  const image = `https://giftpicker.io${P.postShareImage(post)}`;
+  const image = `https://giftpicker.io${P.postShareImageUrl(post)}`;
   for (const [attr, name, want] of [
     ["property", "og:type", "article"],
     ["property", "og:url", url],

@@ -76,8 +76,12 @@ fs.mkdirSync(ogDir, { recursive: true });
 const browser = await puppeteer.launch({ executablePath: process.env.CHROME, headless: true });
 for (const post of POSTS) {
   if (only.length && !only.includes(post.slug)) continue;
-  // Product photos first; gift cards (mostly logos) only if a post runs short.
-  const all = [...new Set(post.body.flatMap((b) => (b.kind === "gifts" ? b.ids : [])))];
+  // One gift from each card row before a second from any, so the four photos span the
+  // post's sections (not three games from one row). Product photos first; gift cards
+  // (mostly logos) only if a post runs short.
+  const rows = post.body.filter((b) => b.kind === "gifts").map((b) => b.ids);
+  const longest = Math.max(0, ...rows.map((r) => r.length));
+  const all = [...new Set(Array.from({ length: longest }, (_, i) => rows.map((r) => r[i]).filter(Boolean)).flat())];
   const isCard = (id) => /gift card/i.test(live.get(id)?.Gift ?? "");
   const ids = [...all.filter((id) => !isCard(id)), ...all.filter(isCard)].filter((id) => !NO_SHARE_PHOTO.has(id));
   const photos = [];
