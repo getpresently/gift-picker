@@ -801,8 +801,8 @@ const ALL_POSTS: Post[] = [
     slug: "how-much-to-spend-on-a-coworker-gift",
     title: "How much to spend on a coworker gift, with picks at every price",
     description:
-      "Budget guidance for coworker gifts from you or the whole team, with picks for birthdays, promotions, weddings, new babies, farewells, and hard times.",
-    metaTitle: "How much to spend on a coworker gift · GiftPicker",
+      "Spend under $25 on a solo gift, $25 to $60 for a close work friend, and $60 to $150 or more as a group, with gift picks for every tier and occasion.",
+    metaTitle: "How much to spend on a coworker gift: $25 to $150+",
     related: ["what-to-send-someone-who-is-sick-or-grieving", "gifts-for-men-who-say-they-dont-need-anything", "how-to-choose-a-gift-by-love-language"],
     published: "2026-08-05",
     updated: "2026-10-19",
