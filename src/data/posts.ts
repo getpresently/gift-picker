@@ -169,6 +169,83 @@ const REVISED = "2026-10-18";
 
 const ALL_POSTS: Post[] = [
   {
+    slug: "hanukkah-gift-ideas",
+    title: "Hanukkah gifts for all eight nights",
+    metaTitle: "Hanukkah gift ideas for all eight nights · GiftPicker",
+    description:
+      "Plan Hanukkah gifts for all eight nights, with small surprises for kids, treats for the table, Judaica that lasts, a night of giving, and planning tips.",
+    related: ["holiday-gifts-for-kids-by-age", "gifts-for-mom-and-dad-from-morning-to-night", "gifts-for-your-brother-or-sister"],
+    published: "2026-11-19",
+    hero: { src: "/blog/hero/hanukkah-gift-ideas", alt: "A mother and her young son setting up a brass menorah with orange candles" },
+    intro: [
+      "Hanukkah begins at sundown on Friday, December 4 this year! Every family celebrates a little differently, with traditions handed down over generations, from the latke recipe you swear by to how competitive the dreidel games get.",
+      "In a lot of homes the presents are mostly for the kids, and they don't always come every night. However your family does it, here are ideas for everyone from the little ones to the family cook, plus a few tips for the week.",
+    ],
+    body: [
+      { kind: "h2", text: "For the kids in the family" },
+      {
+        kind: "p",
+        text: "Kids love having something to open after the candles are lit, so small, hands-on gifts are a great fit. For the kid who loves an art project, Super Smalls' [Hanukkah activity set](gift:r1169) comes with a ceramic menorah to paint, plus a booklet of trivia and jokes for all eight nights.",
+      },
+      {
+        kind: "p",
+        text: "The young builder can snap together LEGO's [3-in-1 retro camera](gift:r398) and rebuild it into a camcorder or a vintage TV. And for the bookworm, a Hanukkah picture book like Eric Kimmel's Hershel and the Hanukkah Goblins is a perfect story for after the candles.",
+      },
+      { kind: "gifts", ids: ["r1169", "r398"] },
+      {
+        kind: "p",
+        text: "For bigger kids, our guide to [holiday gifts for kids](/blog/holiday-gifts-for-kids-by-age) is sorted by age, so you can fill the rest of the week.",
+      },
+      { kind: "h2", text: "For the family hosting the party" },
+      {
+        kind: "p",
+        text: "Latkes and jelly doughnuts are fried in oil to remember the oil that lasted eight nights, so the table is already full, and a treat everyone can share fits right in.",
+      },
+      {
+        kind: "p",
+        text: "For the family that hosts every year, Zabar's [Hanukkah gift basket](gift:r1120) is packed with a mini menorah, candles, gelt, babka, rugelach, and blue and white cookies from the Upper West Side shop. For a smaller household, the [babka and rugelach crate](gift:r1121) adds a bag of Zabar's coffee and a mug for the morning after. And for the family that winds down after the candles with something warm, MarieBelle's [hot chocolate duo](gift:r808) brings two tins of thick hot chocolate in the brand's signature blue box.",
+      },
+      { kind: "gifts", ids: ["r1120", "r1121", "r808"] },
+      { kind: "h2", text: "For the keeper of the latke recipe" },
+      {
+        kind: "p",
+        text: "Every family has someone whose latkes everyone waits for all year. Help them save the recipe so it gets passed down.",
+      },
+      {
+        kind: "p",
+        text: "For the grandparent who cooks from memory, Uncommon Goods' [My Family Cookbook](gift:r358) has room for more than 80 recipes in the family's own handwriting. Or have their recipe etched into a [family recipe cutting board](gift:r116) in maple or cherry, for the cook who keeps it on the counter all year.",
+      },
+      { kind: "gifts", ids: ["r358", "r116"] },
+      { kind: "h2", text: "For the newlyweds and new homeowners" },
+      {
+        kind: "p",
+        text: "A menorah often gets passed down for years, so a beautiful one is a gift that becomes part of the family's own traditions.",
+      },
+      {
+        kind: "p",
+        text: "For the newlyweds celebrating their first Hanukkah together, Michael Aram's [pomegranate menorah](gift:r805) sets brass branches and golden pomegranates on a granite base, the kind of menorah they'll light for decades. For the friend who just moved into a new place, a box of colorful hand-dipped Hanukkah candles makes a lovely housewarming gift.",
+      },
+      { kind: "gifts", ids: ["r805"] },
+      { kind: "h2", text: "For the family that gives back" },
+      {
+        kind: "p",
+        text: "Giving tzedakah is a mitzvah, and many families set aside one Hanukkah night for it, which is a meaningful way to involve the kids. For the friend who loves choosing a cause, a [TisBest charity gift card](gift:r769) lets them pick the charity themselves, and you can always make a donation in someone's name instead. For the family that wants to give all year, Michael Aram's [Tree of Life tzedakah box](gift:r1201), which many families call a pushke, gives the family's spare coins a beautiful home.",
+      },
+      { kind: "gifts", ids: ["r769", "r1201"] },
+      { kind: "h2", text: "Tips for planning the eight nights" },
+      {
+        kind: "list",
+        items: [
+          "If the kids get presents, decide before the first candle which nights they'll open them. A latke dinner, a dreidel tournament, or a night of giving can be the highlight of the others.",
+          "Set one budget for the whole week, and decide early which night gets the biggest gift.",
+          "Order soon, because Hanukkah starts December 4 this year and shipping slows down right after Thanksgiving.",
+          "Nights one and eight are both Fridays this year. On Friday the menorah is lit before sundown, ahead of the Shabbat candles, so plan to gather earlier and use candles big enough to burn past nightfall.",
+        ],
+      },
+    ],
+    cta: "Shopping for someone specific this Hanukkah? Tell the quiz a little about them, and it will rank gifts from our catalog that fit.",
+  },
+  {
     slug: "secret-santa-gift-ideas",
     title: "Secret Santa gifts for coworkers, friends, and family",
     metaTitle: "Secret Santa gift ideas and tips · GiftPicker",
