@@ -852,7 +852,7 @@ function blogPostHtml(html, post, gifts) {
       "@id": `${url}#article`,
       headline: post.title,
       description: post.description,
-      image: [image],
+      image: post.hero ? [image, `${SITE_ORIGIN}${post.hero.src}-1600.jpg`] : [image],
       datePublished: post.published,
       dateModified: modified,
       author: { "@type": "Organization", name: "GiftPicker", url: `${SITE_ORIGIN}/` },
@@ -888,6 +888,7 @@ function blogPostHtml(html, post, gifts) {
 		<article>
 			<h1 style="font-size:36px;line-height:1.1;margin:0 0 12px;">${escapeHtml(post.title)}</h1>
 			<p style="font-size:14px;color:#8a7a72;">By GiftPicker · <time datetime="${post.published}">${formatPostDate(post.published)}</time>${post.updated && post.updated !== post.published ? ` · Updated <time datetime="${post.updated}">${formatPostDate(post.updated)}</time>` : ""}</p>
+			${post.hero ? `<img src="${post.hero.src}-1600.jpg" width="1600" height="900" alt="${escapeHtml(post.hero.alt)}" style="width:100%;height:auto;border-radius:20px;"/>` : ""}
 			${post.intro.map((p) => `<p>${inlineHtml(p, live)}</p>`).join("\n\t\t\t")}
 			${body}
 			<p>${escapeHtml(post.cta)} <a href="${SITE_ORIGIN}/quiz" ${LINK_STYLE}>Take the GiftPicker quiz</a>.</p>

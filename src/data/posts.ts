@@ -37,6 +37,11 @@ export type Post = {
   /** ISO date, YYYY-MM-DD. */
   published: string;
   updated?: string;
+  /**
+   * Opening photo under the byline: `src` is the path without the size suffix, with
+   * `${src}-1600.jpg` and `${src}-800.jpg` in public/ (16:9). Free stock photos only.
+   */
+  hero?: { src: string; alt: string };
   /** Lead paragraphs, set larger than the body. */
   intro: string[];
   body: PostBlock[];
@@ -172,6 +177,7 @@ const ALL_POSTS: Post[] = [
     related: ["white-elephant-gift-ideas", "stocking-stuffers-for-adults", "how-much-to-spend-on-a-coworker-gift"],
     published: "2026-11-11",
     updated: "2026-11-18",
+    hero: { src: "/blog/hero/secret-santa-gift-ideas", alt: "Coworkers in Santa hats trading wrapped presents in an office lounge" },
     intro: [
       "You drew a name! That's the fun part, and it's also when the questions start. What do they like? And what can you find for $25 that doesn't look like it came from the checkout aisle?",
       "Whether you drew a coworker you barely know or the aunt who has everything, here's how to choose, with examples from our catalog and ideas you can pick up anywhere. Most of them fit a $25 limit, and there's a section at the end for groups that go up to $50.",
@@ -256,6 +262,7 @@ const ALL_POSTS: Post[] = [
     related: ["secret-santa-gift-ideas", "white-elephant-gift-ideas", "holiday-gifts-for-kids-by-age"],
     published: "2026-11-13",
     updated: "2026-11-18",
+    hero: { src: "/blog/hero/stocking-stuffers-for-adults", alt: "Christmas stockings hanging over a glowing fireplace" },
     intro: [
       "Admit it, you check the toe first! For a lot of grown-ups, the stocking is the best part of the morning: it's full of small surprises, nobody expects too much, and there's always something to nibble on while the bigger presents get opened.",
       "The trick is picking small things your people will actually use, so nothing ends up in the junk drawer by New Year's. Here's how we think about it, with ideas for the different kinds of people on your list and examples from our catalog.",
@@ -338,6 +345,7 @@ const ALL_POSTS: Post[] = [
     related: ["secret-santa-gift-ideas", "stocking-stuffers-for-adults", "how-much-to-spend-on-a-coworker-gift"],
     published: "2026-11-15",
     updated: "2026-11-18",
+    hero: { src: "/blog/hero/white-elephant-gift-ideas", alt: "Friends in holiday sweaters laughing on a couch with their presents" },
     intro: [
       "A white elephant exchange plays out like a friendly heist, with every wrapped box up for grabs until the very last turn. Everyone brings one gift, players take turns opening a new one or stealing one that's already been opened, and by the end someone is guarding a popcorn maker with their life.",
       "Since you don't know who will go home with your gift, the goal is something almost anyone would be happy to take. Here's how to choose one, with ideas at the most common price limits. If your group is new to the game, the rules are at the bottom.",

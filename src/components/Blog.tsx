@@ -404,6 +404,30 @@ export function BlogPostView({
               </>
             )}
           </div>
+        </div>
+        {post.hero && (
+          <img
+            src={`${post.hero.src}-1600.jpg`}
+            srcSet={`${post.hero.src}-800.jpg 800w, ${post.hero.src}-1600.jpg 1600w`}
+            sizes="(max-width: 920px) 100vw, 880px"
+            width={1600}
+            height={900}
+            alt={post.hero.alt}
+            fetchPriority="high"
+            style={{
+              display: "block",
+              width: "100%",
+              maxWidth: 880,
+              height: "auto",
+              aspectRatio: isMobile ? "16 / 9" : "2 / 1",
+              objectFit: "cover",
+              borderRadius: isMobile ? 18 : 26,
+              margin: isMobile ? "0 auto 24px" : "0 auto 36px",
+              background: "#E8D7B8",
+            }}
+          />
+        )}
+        <div style={{ maxWidth: 680, margin: "0 auto" }}>
           {post.intro.map((p, i) => (
             <p key={i} style={{ ...text, fontSize: isMobile ? 18 : 20, lineHeight: 1.6, color: "rgba(35,20,16,0.78)" }}>
               <RichText text={p} live={live} slug={post.slug} />
