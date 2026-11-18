@@ -20,7 +20,7 @@
 export type PostBlock =
   | { kind: "h2"; text: string }
   | { kind: "p"; text: string }
-  | { kind: "list"; items: string[] }
+  | { kind: "list"; items: string[]; ordered?: boolean }
   /** A row of gift cards, by sheet ID. */
   | { kind: "gifts"; ids: string[] };
 
@@ -88,7 +88,10 @@ export function formatPostDate(iso: string): string {
  * reports these as pending, says when one has gone live (then delete its entry
  * here), and fails if she rejects one, so its sentence can be rewritten.
  */
-export const PENDING_GIFTS: Record<string, { name: string; presentlySource: string }> = {};
+export const PENDING_GIFTS: Record<string, { name: string; presentlySource: string }> = {
+  r1208: { name: "Peanuts x Dash 75th Anniversary Mini Waffle Maker", presentlySource: "11/18/26 batch (white elephant guide)" },
+  r1211: { name: "The Far Side 2027 Off-The-Wall Day-to-Day Calendar", presentlySource: "11/18/26 batch (Secret Santa guide)" },
+};
 
 export function isPendingGift(id: string): boolean {
   return Object.prototype.hasOwnProperty.call(PENDING_GIFTS, id);
@@ -188,9 +191,9 @@ const ALL_POSTS: Post[] = [
       },
       {
         kind: "p",
-        text: "For the coworker who cares about fitness, or who's always the one scheduling a stretch break for the office, Chronicle Books' [Desk Yoga Deck](gift:r901) has 52 illustrated cards of chair stretches, standing stretches, and short breathing exercises that fit into a workday without a mat. For the one who works off a laptop all day, MOFT's [invisible laptop stand](gift:r996) sticks to the underside, lies flat when it's closed, and props the screen up when they're typing. For a coworker who loves a good laugh or likes to keep track of the days, a tear-off cartoon calendar like The Far Side's 2027 Off-the-Wall Day-to-Day Calendar gives them a new Gary Larson cartoon every morning. And for the coworker who can't get through the day without three cups of coffee, a bag of whole beans from a good local roaster always gets used. If they're more of a tea person, a tin of good loose-leaf tea works just as well, and so does a gift card to the café closest to your office, especially with a note about your favorite thing to order there.",
+        text: "For the coworker who cares about fitness, or who's always the one scheduling a stretch break for the office, Chronicle Books' [Desk Yoga Deck](gift:r901) has 52 illustrated cards of chair stretches, standing stretches, and short breathing exercises that fit into a workday without a mat. For a coworker who loves a good laugh or likes to keep track of the days, a tear-off cartoon calendar like [The Far Side's 2027 Off-the-Wall Day-to-Day Calendar](gift:r1211) gives them a new Gary Larson cartoon every morning. And for the coworker who can't get through the day without three cups of coffee, the Onyx Coffee Lab [Blend Discovery Box](gift:r425) holds three small boxes of whole bean coffee, from dark to light roast. If they're more of a tea person, a tin of good loose-leaf tea works just as well, and so does a gift card to the café closest to your office, especially with a note about your favorite thing to order there.",
       },
-      { kind: "gifts", ids: ["r901", "r996"] },
+      { kind: "gifts", ids: ["r901", "r1211", "r425"] },
 
       { kind: "h2", text: "For a friend" },
       {
@@ -329,23 +332,39 @@ const ALL_POSTS: Post[] = [
       "How to bring a white elephant gift that gets stolen, with games, shareable treats, and cozy picks under $25 and $50, plus the basic rules of the game.",
     related: ["secret-santa-gift-ideas", "stocking-stuffers-for-adults", "how-much-to-spend-on-a-coworker-gift"],
     published: "2026-11-15",
+    updated: "2026-11-18",
     intro: [
-      "White elephant is the gift exchange where anything can happen. Everyone brings one wrapped gift, players take turns opening a new one or stealing one that's already been opened, and by the end someone is guarding a popcorn maker like it's treasure.",
+      "A white elephant exchange plays out like a friendly heist, with every wrapped box up for grabs until the very last turn. Everyone brings one gift, players take turns opening a new one or stealing one that's already been opened, and by the end someone is guarding a popcorn maker with their life.",
       "Since you don't know who will go home with your gift, the goal is something almost anyone would be happy to take. Here's how to choose one, with ideas at the most common price limits. If your group is new to the game, the rules are at the bottom.",
     ],
     body: [
       { kind: "h2", text: "What makes a white elephant gift get stolen" },
       {
         kind: "p",
-        text: "The gifts that get stolen are the ones the whole room wants, like something fun to use with friends, a treat that's easy to share, or a cozy thing people secretly want and never buy. Gag gifts get a big laugh when they're opened, but nobody fights to take one home, so if you love a joke, wrap something good in funny paper. It also helps to skip clothing sizes, perfume, and anything that only suits a very particular taste.",
+        text: "The gifts that get stolen are the ones the whole room wants. Before you buy, check yours against these five things:",
+      },
+      {
+        kind: "list",
+        ordered: true,
+        items: [
+          "Everyone can enjoy it together, like a party game the group could play that same night.",
+          "It's easy to share, like a treat that gets passed around the room.",
+          "It's something people want but rarely buy for themselves, like a cozy wearable blanket or a really good water bottle.",
+          "It suits almost anyone, whatever their age or taste, since you won't know who takes it home.",
+          "It gets a reaction the moment it's unwrapped, so the players who go next can see it's worth stealing.",
+        ],
+      },
+      {
+        kind: "p",
+        text: "It also helps to skip clothing sizes, perfume, and anything that only suits a very particular taste. Gag gifts get a big laugh when they're opened, but nobody fights to take one home, so if you love a joke, wrap something good in funny paper.",
       },
 
       { kind: "h2", text: "White elephant gifts under $25" },
       {
         kind: "p",
-        text: "At a $20 or $25 limit, look for something with a bit of personality that people will want to show off. [Exploding Kittens](gift:r977) is a fast, silly card game for 2 to 5 players that's easy to picture playing with the people in the room. OTOTO's [Baby Nessie tea infuser](gift:r1110) is a little Loch Ness monster that stands in your mug while the tea steeps, and it always gets a laugh when it's unwrapped. The [Lunar 2027 wall calendar](gift:r1001) prints the moon's phase for every day of the year in glow-in-the-dark ink, so each month glows when the lights go out.",
+        text: "At a $20 or $25 limit, look for something with a bit of personality that people will want to show off. [Exploding Kittens](gift:r977) is a fast, silly card game for 2 to 5 players that's easy to picture playing with the people in the room. OTOTO's [Baby Nessie tea infuser](gift:r1110) is a little Loch Ness monster that stands in your mug while the tea steeps, and it always gets a laugh when it's unwrapped. And for whoever loves a lazy weekend breakfast, the [Peanuts edition of Dash's mini waffle maker](gift:r1208) presses Snoopy and Woodstock into every waffle.",
       },
-      { kind: "gifts", ids: ["r977", "r1110", "r1001"] },
+      { kind: "gifts", ids: ["r977", "r1110", "r1208"] },
 
       { kind: "h2", text: "Games the whole party will fight over" },
       {

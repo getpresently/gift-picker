@@ -176,6 +176,15 @@ test("Treat myself hides gifts made only for someone else", () => {
   assert.ok(scoreGift(gift("f", { relations: ["Parent", "Friend"] }), self) >= 0);
 });
 
+test("Treat myself shows a gift card only when it is tagged Self", () => {
+  const self: Answers = { recipient: "self", interests: ["travel"], budget: 200 };
+  const store = gift("a", { name: "Apple Gift Card", relations: ["Friend", "Partner"] });
+  const stay = gift("b", { name: "Airbnb Stay or Gift Card", relations: ["Friend", "Self"] });
+  assert.equal(scoreGift(store, self), -1, "store credit is not a treat you'd buy yourself");
+  assert.ok(scoreGift(stay, self) >= 0, "a Self-tagged experience card stays");
+  assert.ok(scoreGift(store, { recipient: "friend", interests: ["travel"], budget: 200 }) >= 0, "store cards still show for others");
+});
+
 test("a gift tagged only Self never shows for someone else", () => {
   const g = gift("s", { relations: ["Self"] });
   assert.equal(scoreGift(g, { recipient: "friend", interests: ["cooking"] }), -1);

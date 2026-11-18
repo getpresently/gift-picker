@@ -48,6 +48,8 @@ Her standard: gifts that are "meaningful, unique, and wow" and high quality. Nev
 8. **Dated or uncool tech:** Koss KSC75 ear-clip headphones ("an outdated uncool gift").
 9. **Not right for a gift catalog:** sex toys ("it doesn't feel right").
 10. **Low-quality sources:** dropship or generic personalized goods, keyword-stuffed titles, spam-style brand names, generic designs sold under many house brands, vague listings ("Live Plant" with no plant named), kitschy gags, sellers with records of non-delivery.
+11. **Things people buy for themselves (Dalia 11/18/26):** a laptop stand ("people tend to buy those for themselves"), and by extension phone and laptop accessories, chargers, packing cubes, and generic organizers.
+12. **Decor knickknacks and plain-looking puzzles (11/18/26):** the MoMA nesting dogs, the Kay Bojesen monkey, a plain floral or farm calendar (calendars only if they're funny), and the Hanayama Cast Marble puzzle ("not visually aesthetic"). A puzzle or desk object has to look beautiful on its own.
 
 ### Gifts at $20 or under need a higher bar (Dalia 10/3/26)
 

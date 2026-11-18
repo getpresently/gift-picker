@@ -830,7 +830,7 @@ function blogPostHtml(html, post, gifts) {
     .map((b) => {
       if (b.kind === "h2") return `<h2 style="font-size:26px;line-height:1.2;margin:32px 0 8px;">${escapeHtml(b.text)}</h2>`;
       if (b.kind === "p") return `<p>${inlineHtml(b.text, live)}</p>`;
-      if (b.kind === "list") return `<ul>${b.items.map((item) => `<li>${inlineHtml(item, live)}</li>`).join("")}</ul>`;
+      if (b.kind === "list") { const tag = b.ordered ? "ol" : "ul"; return `<${tag}>${b.items.map((item) => `<li>${inlineHtml(item, live)}</li>`).join("")}</${tag}>`; }
       // Gift rows need the catalog for names and prices; without it the prose still links each gift.
       const rows = byId ? b.ids.map((id) => byId.get(id)).filter(Boolean) : [];
       if (!rows.length) return "";

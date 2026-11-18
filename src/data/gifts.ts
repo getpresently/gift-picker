@@ -279,6 +279,15 @@ const FOR_OTHERS_ONLY = ["parent", "grandparent", "coworker", "mentor"].flatMap(
 const isForOthersOnly = (gift: Gift) =>
   gift.relations.length > 0 && gift.relations.every((r) => tolerantIncludes(FOR_OTHERS_ONLY, r));
 
+/**
+ * A gift card is store credit unless its Relation tags include Self. "Treat
+ * myself" only shows the Self-tagged ones, which read as booking a treat for
+ * yourself ("Airbnb Stay or Gift Card", a facial), never an Apple or
+ * Lululemon card you'd just spend on yourself (Dalia 11/18/26).
+ */
+const isGiftCard = (gift: Gift) => /\bgift card\b/i.test(gift.name);
+const isTaggedSelf = (gift: Gift) => gift.relations.some((r) => tolerantIncludes([r], "Self"));
+
 function scoreRelation(gift: Gift, answers: Answers): number {
   if (!answers.recipient) return 0;
   if (answers.recipient === "self") {
@@ -532,6 +541,7 @@ export function scoreGift(gift: Gift, answers: Answers): number {
   // for someone else.
   if (answers.recipient && answers.recipient !== "self" && isSelfOnly(gift)) return -1;
   if (answers.recipient === "self" && isForOthersOnly(gift)) return -1;
+  if (answers.recipient === "self" && isGiftCard(gift) && !isTaggedSelf(gift)) return -1;
 
   // Hard filter: age tags both specified, no overlap.
   if (gift.ages.length > 0) {

@@ -439,7 +439,7 @@ export function BlogPostView({
                   <RichText text={b.text} live={live} slug={post.slug} />
                 </p>
               )}
-              {b.kind === "list" && (
+              {b.kind === "list" && !b.ordered && (
                 <ul style={{ ...text, listStyle: "disc", paddingLeft: 22 }}>
                   {b.items.map((item, j) => (
                     <li key={j} style={{ marginBottom: 8, paddingLeft: 4 }}>
@@ -447,6 +447,15 @@ export function BlogPostView({
                     </li>
                   ))}
                 </ul>
+              )}
+              {b.kind === "list" && b.ordered && (
+                <ol style={{ ...text, listStyle: "decimal", paddingLeft: 26 }}>
+                  {b.items.map((item, j) => (
+                    <li key={j} style={{ marginBottom: 8, paddingLeft: 6 }}>
+                      <RichText text={item} live={live} slug={post.slug} />
+                    </li>
+                  ))}
+                </ol>
               )}
             </div>
           );
