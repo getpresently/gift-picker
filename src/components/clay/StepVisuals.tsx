@@ -91,13 +91,13 @@ function MatchThumb({ id, score }: { id: string; score: number }) {
   );
 }
 
-/** Step 2: three catalog gifts for those interests (a toaster, a controller, a pasta class), each with a match score. */
+/** Step 2: three catalog gifts for those interests (an Ooni pizza oven, an 8BitDo controller, a pasta class), each with a match score. */
 export function MatchStepVisual() {
   return (
     <div aria-hidden="true" style={panel}>
       <div style={label}>Top picks for Maya</div>
       <div style={{ display: "grid", gridTemplateColumns: "repeat(3, minmax(0, 1fr))", gap: 8 }}>
-        <MatchThumb id="r565" score={98} />
+        <MatchThumb id="r530" score={98} />
         <MatchThumb id="r462" score={95} />
         <MatchThumb id="r702" score={92} />
       </div>
