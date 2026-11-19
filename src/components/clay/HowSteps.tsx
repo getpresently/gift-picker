@@ -1,7 +1,7 @@
-import type { CSSProperties } from "react";
+import type { CSSProperties, ReactNode } from "react";
 import { ClaySurface } from "./ClaySurface";
 
-export type HowStep = { n: string; title: string; body: string };
+export type HowStep = { n: string; title: string; body: string; visual?: ReactNode };
 
 const INK = "#231410";
 const MUTED = "rgba(35,20,16,0.65)";
@@ -26,26 +26,29 @@ export function HowSteps({ steps, isMobile }: { steps: HowStep[]; isMobile: bool
   return (
     <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "repeat(3, 1fr)", gap: 16 }}>
       {steps.map((s, i) => (
-        <ClaySurface key={s.n} tint="cream" style={{ padding: 24, display: isMobile ? "flex" : "block", gap: 16, alignItems: "flex-start" }}>
-          <div
-            style={{
-              width: 44,
-              height: 44,
-              borderRadius: "50%",
-              background: "rgba(230,75,69,0.12)",
-              color: "#B4362F",
-              display: "grid",
-              placeItems: "center",
-              fontFamily: '"Instrument Serif", serif',
-              fontSize: 24,
-              flexShrink: 0,
-            }}
-          >
-            {i + 1}
-          </div>
-          <div style={{ marginTop: isMobile ? 2 : 18 }}>
-            <div style={title}>{s.title}</div>
-            <div style={body}>{s.body}</div>
+        <ClaySurface key={s.n} tint="cream" style={{ padding: 24 }}>
+          {s.visual}
+          <div style={{ display: isMobile ? "flex" : "block", gap: 16, alignItems: "flex-start" }}>
+            <div
+              style={{
+                width: 44,
+                height: 44,
+                borderRadius: "50%",
+                background: "rgba(230,75,69,0.12)",
+                color: "#B4362F",
+                display: "grid",
+                placeItems: "center",
+                fontFamily: '"Instrument Serif", serif',
+                fontSize: 24,
+                flexShrink: 0,
+              }}
+            >
+              {i + 1}
+            </div>
+            <div style={{ marginTop: isMobile ? 2 : 18 }}>
+              <div style={title}>{s.title}</div>
+              <div style={body}>{s.body}</div>
+            </div>
           </div>
         </ClaySurface>
       ))}

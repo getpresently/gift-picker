@@ -10,13 +10,14 @@ import { FooterLinks } from "./clay/FooterLinks";
 import { TestimonialCarousel } from "./clay/TestimonialCarousel";
 import { FooterBrand } from "./clay/FooterBrand";
 import { HowSteps, type HowStep } from "./clay/HowSteps";
+import { GiveStepVisual, MatchStepVisual, QuizStepVisual } from "./clay/StepVisuals";
 import { HomeGuides } from "./HomeGuides";
 import { CatalogShowcase } from "./clay/CatalogShowcase";
 
 const HOW_STEPS: HowStep[] = [
-  { n: "01", title: "Tell us about them", body: "Closeness, vibes, budget. Five questions, no account." },
-  { n: "02", title: "We do the thinking", body: "Every gift is hand-curated by our team, then matched to your answers." },
-  { n: "03", title: "Show up looking great", body: "Send the link or just buy it yourself." },
+  { n: "01", title: "Tell us about them", body: "Closeness, vibes, budget. Five questions, no account.", visual: <QuizStepVisual /> },
+  { n: "02", title: "We do the thinking", body: "Every gift is hand-curated by our team, then matched to your answers.", visual: <MatchStepVisual /> },
+  { n: "03", title: "Show up looking great", body: "Send the link or just buy it yourself.", visual: <GiveStepVisual /> },
 ];
 
 // 12 brands → renders cleanly as 6×2 on desktop, 3×4 on mobile.
