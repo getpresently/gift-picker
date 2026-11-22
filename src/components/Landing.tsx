@@ -174,7 +174,7 @@ export function Landing() {
             <div
               style={{
                 position: "relative",
-                height: isMobile ? 390 : 590,
+                height: isMobile ? 410 : 640,
                 // On phones the stack sits in a centered 320px frame so the
                 // boxes overlap like the desktop cluster instead of drifting
                 // to the corners of a full-width panel.
@@ -183,21 +183,21 @@ export function Landing() {
                 margin: isMobile ? "28px auto 0" : 0,
               }}
             >
-              <div style={{ position: "absolute", top: isMobile ? 30 : 70, left: isMobile ? 26 : 40 }}>
-                <GiftBox3D size={isMobile ? 190 : 270} color="butter" rotate={-12} ribbonColor="#FF8166" />
+              <div style={{ position: "absolute", top: isMobile ? 40 : 60, left: isMobile ? 16 : 10 }}>
+                <GiftBox3D size={isMobile ? 205 : 300} color="butter" rotate={-12} ribbonColor="#FF8166" />
               </div>
-              <div style={{ position: "absolute", top: isMobile ? 100 : 160, ...(isMobile ? { left: 100 } : { right: 20 }), zIndex: 2 }}>
-                <GiftBox3D size={isMobile ? 225 : 310} color="coral" rotate={8} />
+              <div style={{ position: "absolute", top: isMobile ? 112 : 150, ...(isMobile ? { left: 96 } : { right: 0 }), zIndex: 2 }}>
+                <GiftBox3D size={isMobile ? 245 : 350} color="coral" rotate={8} />
               </div>
-              <div style={{ position: "absolute", ...(isMobile ? { top: 222, left: 66 } : { bottom: 20, left: 110 }) }}>
-                <GiftBox3D size={isMobile ? 170 : 230} color="plum" rotate={4} ribbonColor="#FFC9B9" />
+              <div style={{ position: "absolute", ...(isMobile ? { top: 236, left: 56 } : { bottom: 10, left: 90 }) }}>
+                <GiftBox3D size={isMobile ? 185 : 260} color="plum" rotate={4} ribbonColor="#FFC9B9" />
               </div>
               <ClaySurface
                 tint="cream"
                 style={{
                   position: "absolute",
-                  top: isMobile ? 10 : 110,
-                  right: isMobile ? 10 : 10,
+                  top: isMobile ? 70 : 180,
+                  right: isMobile ? 0 : 0,
                   padding: "10px 14px",
                   borderRadius: 16,
                   fontFamily: "Geist, sans-serif",
