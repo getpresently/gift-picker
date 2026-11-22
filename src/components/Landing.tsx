@@ -122,8 +122,8 @@ export function Landing() {
                   textWrap: "pretty" as never,
                 }}
               >
-                Stop guessing.<br />
-                Start <em style={{ color: "#C4477E", fontStyle: "italic" }}>gifting</em>.
+                The gift finder for<br />
+                <em style={{ color: "#C4477E", fontStyle: "italic" }}>everyone</em> on your list.
               </h1>
               <p
                 style={{
@@ -136,8 +136,7 @@ export function Landing() {
                   textWrap: "pretty" as never,
                 }}
               >
-                Five questions. A shortlist of gifts they'll actually love. Built for the indecisive and the deeply
-                caring.
+                Answer five quick questions about them and get a short list of actually good, hand-picked gifts.
               </p>
 
               <div style={{ display: "flex", gap: 12, marginTop: 28, flexWrap: "wrap" }}>
@@ -197,8 +196,8 @@ export function Landing() {
                 tint="cream"
                 style={{
                   position: "absolute",
-                  top: isMobile ? 0 : 20,
-                  right: isMobile ? 10 : 0,
+                  top: isMobile ? 10 : 110,
+                  right: isMobile ? 10 : 10,
                   padding: "10px 14px",
                   borderRadius: 16,
                   fontFamily: "Geist, sans-serif",
