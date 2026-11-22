@@ -1,8 +1,8 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="250 95 390 270" role="img" aria-label="One arm hands a wrapped gift to another">
     
     
-    <path d="M -300 345 C 100 345, 340 335, 372 280 C 379 250, 381 214, 392 196" fill="none" stroke="#231410" stroke-width="51" stroke-linecap="round" stroke-linejoin="round"/>
-    <path d="M -300 345 C 100 345, 340 335, 372 280 C 379 250, 381 214, 392 196" fill="none" stroke="#F2B23A" stroke-width="46" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M -300 345 C 100 345, 340 335, 372 280 C 384 259, 381 214, 392 196" fill="none" stroke="#231410" stroke-width="51" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M -300 345 C 100 345, 340 335, 372 280 C 384 259, 381 214, 392 196" fill="none" stroke="#F2B23A" stroke-width="46" stroke-linecap="round" stroke-linejoin="round"/>
     
     <g transform="translate(392 196) rotate(-50) scale(1.2 1.2)">
       <ellipse cx="11" cy="0" rx="19.6" ry="22.6" fill="#231410"/><line x1="8" y1="-14" x2="22" y2="-31" stroke="#231410" stroke-width="15.5" stroke-linecap="round"/><line x1="18" y1="-14" x2="44.692208514878445" y2="-17.910861626005772" stroke="#231410" stroke-width="13.5" stroke-linecap="round"/><line x1="18" y1="-4.5" x2="48.98233398355377" y2="-5.512085404372528" stroke="#231410" stroke-width="13.5" stroke-linecap="round"/><line x1="18" y1="5" x2="45.901062150385386" y2="7.2660493114391125" stroke="#231410" stroke-width="13.5" stroke-linecap="round"/><line x1="18" y1="14" x2="38.58480441394231" y2="17.950322125537426" stroke="#231410" stroke-width="13.5" stroke-linecap="round"/>
