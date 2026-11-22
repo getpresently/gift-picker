@@ -322,10 +322,18 @@ export function Landing() {
             <img
               src="/gift-swap-arms.svg"
               alt=""
-              width={350}
-              height={250}
+              width={390}
+              height={270}
               loading="lazy"
-              style={{ flex: "0 0 auto", width: isMobile ? "100%" : 360, height: "auto", maxWidth: 420 }}
+              style={{
+                flex: "0 0 auto",
+                width: isMobile ? "100%" : 360,
+                height: "auto",
+                maxWidth: 420,
+                // The arms reach in from both sides; fade them there so they trail off instead of stopping at the image edge.
+                maskImage: "linear-gradient(to right, transparent, #000 18%, #000 82%, transparent)",
+                WebkitMaskImage: "linear-gradient(to right, transparent, #000 18%, #000 82%, transparent)",
+              }}
             />
           </section>
 

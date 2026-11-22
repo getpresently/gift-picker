@@ -77,7 +77,7 @@ async function handleEvent(event) {
     return proxyGiftSwap(event.request, url);
   }
 
-  // Dynamic sitemap: /, /brands, /thanks, the blog, plus one URL per live gift.
+  // Dynamic sitemap: /, /brands, /thanks, /gift-swap, the blog, plus one URL per live gift.
   if (url.pathname === "/sitemap.xml") {
     return serveSitemap(event);
   }
@@ -665,7 +665,7 @@ async function prerenderStaticPage(response, path, page) {
 
 function buildSitemap(rows) {
   const postDate = (p) => p.updated || p.published;
-  const urls = [{ loc: `${SITE_ORIGIN}/` }, { loc: `${SITE_ORIGIN}/brands` }, { loc: `${SITE_ORIGIN}/thanks` }]
+  const urls = [{ loc: `${SITE_ORIGIN}/` }, { loc: `${SITE_ORIGIN}/brands` }, { loc: `${SITE_ORIGIN}/thanks` }, { loc: `${SITE_ORIGIN}/gift-swap` }]
     .concat(POSTS.length ? [{ loc: `${SITE_ORIGIN}/blog`, lastmod: POSTS.map(postDate).sort().pop() }] : [])
     .concat(POSTS.map((p) => ({ loc: `${SITE_ORIGIN}/blog/${p.slug}`, lastmod: postDate(p) })))
     .concat((rows || []).map((g) => ({ loc: `${SITE_ORIGIN}/gift/${g.row_id}` })));
@@ -944,6 +944,8 @@ async function proxyGiftSwap(request, url) {
     });
     const headers = new Headers(upstream.headers);
     headers.delete("set-cookie");
+    // GiftSwapper's HSTS covers its subdomains; giftpicker.io keeps its own policy.
+    headers.delete("strict-transport-security");
     return new Response(upstream.body, { status: upstream.status, headers });
   } catch {
     return new Response("GiftSwapper is unavailable right now. Please try again shortly.", { status: 502 });
