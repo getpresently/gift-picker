@@ -175,23 +175,23 @@ export function Landing() {
             <div
               style={{
                 position: "relative",
-                height: isMobile ? 350 : 460,
+                height: isMobile ? 390 : 590,
                 // On phones the stack sits in a centered 320px frame so the
                 // boxes overlap like the desktop cluster instead of drifting
                 // to the corners of a full-width panel.
-                width: isMobile ? 320 : undefined,
+                width: isMobile ? 340 : undefined,
                 maxWidth: "100%",
                 margin: isMobile ? "28px auto 0" : 0,
               }}
             >
-              <div style={{ position: "absolute", top: isMobile ? 30 : 60, left: isMobile ? 34 : 80 }}>
-                <GiftBox3D size={isMobile ? 170 : 200} color="butter" rotate={-12} ribbonColor="#FF8166" />
+              <div style={{ position: "absolute", top: isMobile ? 30 : 70, left: isMobile ? 26 : 40 }}>
+                <GiftBox3D size={isMobile ? 190 : 270} color="butter" rotate={-12} ribbonColor="#FF8166" />
               </div>
-              <div style={{ position: "absolute", top: isMobile ? 92 : 130, ...(isMobile ? { left: 92 } : { right: 60 }), zIndex: 2 }}>
-                <GiftBox3D size={isMobile ? 200 : 230} color="coral" rotate={8} />
+              <div style={{ position: "absolute", top: isMobile ? 100 : 160, ...(isMobile ? { left: 100 } : { right: 20 }), zIndex: 2 }}>
+                <GiftBox3D size={isMobile ? 225 : 310} color="coral" rotate={8} />
               </div>
-              <div style={{ position: "absolute", ...(isMobile ? { top: 196, left: 70 } : { bottom: 30, left: 130 }) }}>
-                <GiftBox3D size={isMobile ? 150 : 170} color="plum" rotate={4} ribbonColor="#FFC9B9" />
+              <div style={{ position: "absolute", ...(isMobile ? { top: 222, left: 66 } : { bottom: 20, left: 110 }) }}>
+                <GiftBox3D size={isMobile ? 170 : 230} color="plum" rotate={4} ribbonColor="#FFC9B9" />
               </div>
               <ClaySurface
                 tint="cream"
