@@ -1,8 +1,8 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="290 40 350 250" role="img" aria-label="One arm hands a wrapped gift to another">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="250 95 390 270" role="img" aria-label="One arm hands a wrapped gift to another">
     
     
-    <path d="M -60 640 C 40 560, 150 520, 215 470 C 300 405, 300 320, 238 312 C 172 304, 160 392, 248 404 C 335 416, 372 340, 376 282 C 379 240, 381 214, 392 196" fill="none" stroke="#231410" stroke-width="51" stroke-linecap="round" stroke-linejoin="round"/>
-    <path d="M -60 640 C 40 560, 150 520, 215 470 C 300 405, 300 320, 238 312 C 172 304, 160 392, 248 404 C 335 416, 372 340, 376 282 C 379 240, 381 214, 392 196" fill="none" stroke="#F2B23A" stroke-width="46" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M -300 345 C 100 345, 340 335, 372 280 C 379 250, 381 214, 392 196" fill="none" stroke="#231410" stroke-width="51" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M -300 345 C 100 345, 340 335, 372 280 C 379 250, 381 214, 392 196" fill="none" stroke="#F2B23A" stroke-width="46" stroke-linecap="round" stroke-linejoin="round"/>
     
     <g transform="translate(392 196) rotate(-50) scale(1.2 1.2)">
       <ellipse cx="11" cy="0" rx="19.6" ry="22.6" fill="#231410"/><line x1="8" y1="-14" x2="22" y2="-31" stroke="#231410" stroke-width="15.5" stroke-linecap="round"/><line x1="18" y1="-14" x2="44.692208514878445" y2="-17.910861626005772" stroke="#231410" stroke-width="13.5" stroke-linecap="round"/><line x1="18" y1="-4.5" x2="48.98233398355377" y2="-5.512085404372528" stroke="#231410" stroke-width="13.5" stroke-linecap="round"/><line x1="18" y1="5" x2="45.901062150385386" y2="7.2660493114391125" stroke="#231410" stroke-width="13.5" stroke-linecap="round"/><line x1="18" y1="14" x2="38.58480441394231" y2="17.950322125537426" stroke="#231410" stroke-width="13.5" stroke-linecap="round"/>
@@ -11,8 +11,8 @@
     </g>
     <line x1="382.6218266268696" y1="211.3639143509559" x2="398.2521155820869" y2="185.75739043269607" stroke="#F2B23A" stroke-width="45" stroke-linecap="butt"/>
     
-    <path d="M 690 -40 C 630 30, 650 120, 610 165 C 585 194, 555 208, 520 212" fill="none" stroke="#231410" stroke-width="45" stroke-linecap="round" stroke-linejoin="round"/>
-    <path d="M 690 -40 C 630 30, 650 120, 610 165 C 585 194, 555 208, 520 212" fill="none" stroke="#E64B45" stroke-width="40" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M 1000 290 C 860 290, 700 245, 620 222 C 585 212, 555 208, 520 212" fill="none" stroke="#231410" stroke-width="45" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M 1000 290 C 860 290, 700 245, 620 222 C 585 212, 555 208, 520 212" fill="none" stroke="#E64B45" stroke-width="40" stroke-linecap="round" stroke-linejoin="round"/>
     
     <g transform="translate(480 154)">
       <rect x="-40" y="-17.6" width="80" height="64" rx="4" fill="#FFF8EE" stroke="#231410" stroke-width="2.5"/>
