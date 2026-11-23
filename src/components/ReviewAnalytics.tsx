@@ -629,6 +629,7 @@ function Dashboard({ r }: { r: Report }) {
     ["Saved a gift", ev("gift_save").eventCount], ["Shared", ev("gift_share").eventCount], ["Asked for more", ev("request_more").eventCount],
     ["Opened saved gifts", ev("saved_open").eventCount], ["Emailed their saved list", ev("saved_email_sent").eventCount],
     ["Visits from that email", r.savedList.visits], ["Store clicks from those visits", r.savedList.storeClicks],
+    ["Tapped through to GiftSwapper", ev("gift_swap_click").eventCount],
   ];
 
   const steps = (r.quizSteps ?? [])
@@ -869,6 +870,7 @@ function mockReport(days: number, variant: string | null): Report {
         request_more: people(Math.round(sum("resultsViews") * 0.02), 1),
         gift_link_copy: people(Math.round(sum("resultsViews") * 0.045), 1.1), share_open: people(Math.round(sum("resultsViews") * 0.07), 1),
         saved_open: people(Math.round(sum("resultsViews") * 0.05), 1.4), saved_email_sent: people(Math.round(sum("resultsViews") * 0.012), 1),
+        gift_swap_click: people(Math.round(sum("resultsViews") * 0.03), 1.1),
       },
       results: { views: sum("resultsViews"), seconds: sum("resultsViews") * (to >= "20261003" ? 104 : 88), users: Math.round(sum("quizFinishers") * 0.98) },
     };
