@@ -34,6 +34,8 @@ export type SliderQuestion = QuestionBase & {
   defaultValue: number;
   /** Starting position of the floor handle; dragging it down to `min` removes the floor. */
   defaultMin?: number;
+  /** Starting range for occasions that run higher than the default, by occasion code. */
+  occasionDefaults?: Record<string, { min: number; max: number }>;
 };
 
 export type Question = ChoiceQuestion | MultiQuestion | SliderQuestion;
@@ -193,6 +195,10 @@ export const QUESTIONS: Question[] = [
     step: 5,
     defaultValue: 120,
     defaultMin: 20,
+    // The Knot's 2024 guest study puts the average wedding gift at $150, more
+    // for close friends and family; anniversaries also run above the everyday
+    // default (Dalia, 11/23).
+    occasionDefaults: { wed: { min: 75, max: 250 }, anni: { min: 50, max: 200 } },
   },
 ];
 
@@ -257,6 +263,24 @@ export function scoringAnswers(answers: Answers): Answers {
   if (answers.occasion !== "other") return answers;
   const code = typedOccasionCode(answers.occasionOther);
   return code ? { ...answers, occasion: code } : answers;
+}
+
+/** Where the budget slider starts for these answers: the occasion's range if it has one, else the default. */
+export function sliderStart(q: SliderQuestion, answers: Answers): { min?: number; max: number } {
+  const o = answers.occasion ? q.occasionDefaults?.[answers.occasion] : undefined;
+  return o ?? { min: q.defaultMin, max: q.defaultValue };
+}
+
+/**
+ * True when the budget still sits exactly where the slider started, so a
+ * shopper who goes back and changes the occasion gets the new occasion's
+ * starting range instead of the old one.
+ */
+export function budgetAtStart(answers: Answers): boolean {
+  const q = QUESTIONS.find((x) => x.id === "budget");
+  if (!q || q.type !== "slider" || answers.budget === undefined) return false;
+  const s = sliderStart(q, answers);
+  return answers.budget === s.max && answers.budgetMin === s.min;
 }
 
 export function getActiveQuestions(answers: Answers): Question[] {

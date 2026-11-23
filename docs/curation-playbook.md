@@ -442,7 +442,7 @@ Two of these rules (Just Because and New Baby) never fired before 10/3 because o
 
 ### Which gifts show, and in what order
 
-- If more than 5 gifts score 60 or higher, only those show. Otherwise every gift at 55 or higher shows. Nothing under 55 ever shows. Results load 8 at a time. Sympathy is the exception: its small hand-tagged set has no vibe points, so every tagged gift that passes the hard filters shows, best first.
+- If more than 5 gifts score 60 or higher, only those show. Otherwise every gift at 55 or higher shows. Nothing under 55 ever shows. Results load 8 at a time. Sympathy and Wedding are the exceptions: each shows only gifts hand-tagged for it (Wedding since 11/23/26), so every tagged gift that passes the hard filters shows, best first, and interests only set the order. The budget slider starts at $75 to $250 for Wedding and $50 to $200 for Anniversary (The Knot's 2024 guest study puts the average wedding gift at $150); every other occasion starts at $20 to $120.
 - Spacing: among gifts with the same score only, no two of a kind (or near-duplicates) and no same brand back to back, so the match % never rises as you scroll (10/3).
 - Ties break on: (1) weighted interest hits, (2) Best Sellers first, (3) price closest to the budget. Closeness is price ÷ budget at or under budget; a range uses its top up to the budget; open prices and "Your choice" count as 1; over budget it is budget ÷ price.
 

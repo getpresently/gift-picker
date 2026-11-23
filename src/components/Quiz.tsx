@@ -18,6 +18,8 @@ import {
   reconcileAnswers,
   saveAnswers,
   clearAnswers,
+  budgetAtStart,
+  sliderStart,
   type Answers,
   type Option,
   type Question,
@@ -109,7 +111,10 @@ export function Quiz() {
   // Initialize slider default once on landing on a slider question.
   useEffect(() => {
     if (q.type === "slider" && answers[q.id] === undefined) {
-      setAnswers((a) => ({ ...a, [q.id]: q.defaultValue, budgetMin: a.budgetMin ?? q.defaultMin }));
+      setAnswers((a) => {
+        const start = sliderStart(q, a);
+        return { ...a, [q.id]: start.max, budgetMin: a.budgetMin ?? start.min };
+      });
     }
   }, [step]); // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -171,6 +176,7 @@ export function Quiz() {
       ...answers,
       [q.id]: opt.v,
       ...(clearOccasionOther ? { occasionOther: undefined } : {}),
+      ...(q.id === "occasion" && budgetAtStart(answers) ? { budget: undefined, budgetMin: undefined } : {}),
     });
     setAnswers(newAnswers);
     if (q.type === "choice" && q.autoAdvance && !pickingOccasionOther) {
@@ -414,7 +420,7 @@ export function Quiz() {
 
             {q.type === "slider" && (
               <BudgetSlider
-                value={typeof value === "number" ? value : q.defaultValue}
+                value={typeof value === "number" ? value : sliderStart(q, answers).max}
                 onChange={setSlider}
                 minValue={answers.budgetMin ?? q.min}
                 onMinChange={(v) => setAnswers((a) => ({ ...a, budgetMin: v > q.min ? v : undefined }))}

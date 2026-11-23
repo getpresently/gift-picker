@@ -537,6 +537,11 @@ export function scoreGift(gift: Gift, answers: Answers): number {
   if (answers.occasion === "sympathy" && !forSympathy) return -1;
   if (answers.occasion !== "sympathy" && forSympathy && gift.occasions.length === 1) return -1;
 
+  // Hard filter: Wedding shows only gifts hand-tagged for it, so a guest sees
+  // registry-style gifts for the couple, never a snack box or a grocery gift
+  // card (Dalia, 11/23).
+  if (answers.occasion === "wed" && !tolerantIncludes(gift.occasions, "Wedding")) return -1;
+
   // Hard filter: a gift tagged only Self is for treating yourself, never
   // for someone else.
   if (answers.recipient && answers.recipient !== "self" && isSelfOnly(gift)) return -1;
@@ -737,9 +742,10 @@ export function rankGifts(gifts: Gift[], answers: Answers): RankedGift[] {
   const finalize = (list: Scored[]): RankedGift[] =>
     spreadOut(list.sort(compare), gifts).map((s) => ({ ...s.gift, matchScore: s.score }));
 
-  // Sympathy draws on a small hand-tagged set and has no vibe points, so
-  // every tagged gift that passes the hard filters is shown, best first.
-  if (answers.occasion === "sympathy") return finalize(scored);
+  // Sympathy and Wedding draw on small hand-tagged sets (and Sympathy has no
+  // vibe points), so every tagged gift that passes the hard filters is shown,
+  // best first; interests only set the order.
+  if (answers.occasion === "sympathy" || answers.occasion === "wed") return finalize(scored);
 
   const above60 = scored.filter((s) => s.score >= MATCH_STRICT);
   if (above60.length > 5) return finalize(above60);
