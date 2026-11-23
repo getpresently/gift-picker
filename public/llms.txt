@@ -45,6 +45,10 @@ Each guide is a full article with sections, plain-text ideas, and links to the g
 
 Note: /results pages are per-visitor quiz output and are not meant to be indexed or cited as a canonical source. Use the gift pages above instead.
 
+## GiftSwapper (https://giftpicker.io/gift-swap)
+
+GiftSwapper is GiftPicker's online Secret Santa and White Elephant organizer. The organizer sets the date, the budget, and who's in, then invites people by email or a shareable link. Everyone answers a few questions about what they love. In Secret Santa, people who share interests are paired in secret, and nobody sees who drew whom, the organizer included. In White Elephant, the app finds what the group loves. Every giver gets gift ideas from GiftPicker's catalog within the budget. Couples and roommates can be kept from drawing each other, and a parent can answer for a child. Setup is free; one swap costs $10 for up to 20 people, $25 for up to 50, or $49 for up to 100.
+
 ## About
 
 GiftPicker is built and curated by Presently. The catalog is maintained by hand, and every gift is a real product from a real brand. Feedback tools are built in (users can flag broken links, unavailable products, or bad matches, and request new gift categories).
