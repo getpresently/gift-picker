@@ -48,7 +48,7 @@ const DAILY_EVENTS = ["quiz_start", "quiz_step_view", "quiz_complete", "gift_ope
 const COUNT_EVENTS = [
   "quiz_start", "quiz_complete", "gift_open", "gift_buy_click", "results_load_more",
   "results_refine", "gift_save", "gift_share", "request_more", "gift_link_copy", "share_open",
-  "saved_open", "saved_email_sent",
+  "saved_open", "saved_email_sent", "gift_swap_click",
 ];
 // Session source the saved-list email's links carry (utm_source in workers-site/index.js).
 const EMAIL_SOURCE = "saved_list_email";
