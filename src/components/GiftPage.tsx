@@ -140,7 +140,7 @@ export function GiftPage() {
                 we'll find you something even better.
               </p>
               <Pillow tone="coral" size="lg" href="/quiz" onClick={() => navigate("/quiz")}>
-                Take the quiz · 60s
+                Take the quiz · 30s
               </Pillow>
             </div>
           )}
@@ -390,7 +390,7 @@ export function GiftPage() {
                 Not quite it? Find their <em style={{ color: "#C4477E" }}>perfect</em> gift.
               </p>
               <Pillow tone="ink" size="lg" href="/quiz" onClick={() => navigate("/quiz")}>
-                Take the 60-second quiz →
+                Take the 30-second quiz →
               </Pillow>
             </div>
           )}

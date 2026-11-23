@@ -414,7 +414,7 @@ async function prerenderGiftPage(event, response, giftId) {
 		${label ? `<p style="font-size:20px;margin:0 0 12px;">${escapeHtml(label)}</p>` : ""}
 		${desc ? `<p>${desc}</p>` : ""}
 		<p><a href="${buyLink}" rel="sponsored noopener" style="color:#C4477E;">Buy this gift</a></p>${featuredInHtml(giftId)}
-		<p>This is a hand-curated gift pick on <a href="${SITE_ORIGIN}/" style="color:#C4477E;">GiftPicker</a>, a free 60-second gift finder quiz that recommends genuinely good gifts from 800+ brands. <a href="${SITE_ORIGIN}/quiz" style="color:#C4477E;">Take the quiz</a> to get picks tailored to your recipient.</p>
+		<p>This is a hand-curated gift pick on <a href="${SITE_ORIGIN}/" style="color:#C4477E;">GiftPicker</a>, a free 30-second gift finder quiz that recommends genuinely good gifts from 800+ brands. <a href="${SITE_ORIGIN}/quiz" style="color:#C4477E;">Take the quiz</a> to get picks tailored to your recipient.</p>
 		<p style="font-size:12px;color:#8a7a72;">As an Amazon Associate, GiftPicker earns from qualifying purchases.</p>
 	</div>`;
 
@@ -623,7 +623,7 @@ function thanksHtml(rows) {
 	<div style="max-width:720px;margin:0 auto;padding:48px 24px;font-family:Geist,system-ui,sans-serif;color:#231410;background:#FBF1E1;line-height:1.6;">
 		<h1 style="font-size:36px;line-height:1.1;margin:0 0 12px;">Thanks</h1>
 		<p>${escapeHtml(THANKS_INTRO)}</p>${sources}
-		<p><a href="${SITE_ORIGIN}/" style="color:#C4477E;">GiftPicker</a> is a free 60-second gift finder quiz with hand-curated picks from 800+ brands.</p>
+		<p><a href="${SITE_ORIGIN}/" style="color:#C4477E;">GiftPicker</a> is a free 30-second gift finder quiz with hand-curated picks from 800+ brands.</p>
 	</div>`;
 }
 
@@ -655,7 +655,7 @@ async function prerenderStaticPage(response, path, page) {
 	<div style="max-width:720px;margin:0 auto;padding:48px 24px;font-family:Geist,system-ui,sans-serif;color:#231410;background:#FBF1E1;line-height:1.6;">
 		<h1 style="font-size:36px;line-height:1.1;margin:0 0 12px;">${escapeHtml(page.title.split(" · ")[0])}</h1>
 		<p>${escapeHtml(page.body)}</p>
-		<p><a href="${SITE_ORIGIN}/" style="color:#C4477E;">GiftPicker</a> is a free 60-second gift finder quiz with hand-curated picks from 800+ brands.</p>
+		<p><a href="${SITE_ORIGIN}/" style="color:#C4477E;">GiftPicker</a> is a free 30-second gift finder quiz with hand-curated picks from 800+ brands.</p>
 	</div>`;
     out = replaceBetween(out, "<!--gp-static-->", "<!--/gp-static-->", staticBlock);
   }
@@ -703,7 +703,7 @@ async function serveSitemap(event) {
 const BLOG_TITLE = "Gift guides · GiftPicker";
 const BLOG_DESCRIPTION =
   "Gift guides from GiftPicker: practical advice for choosing gifts for coworkers, partners, family, and friends, with picks from our hand-curated catalog.";
-const DEFAULT_OG_IMAGE = `${SITE_ORIGIN}/og-image.png?v=20261019`;
+const DEFAULT_OG_IMAGE = `${SITE_ORIGIN}/og-image.png?v=20261123`;
 const ORG = {
   "@type": "Organization",
   name: "GiftPicker",

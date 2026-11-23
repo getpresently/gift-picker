@@ -141,7 +141,7 @@ export function Landing() {
 
               <div style={{ display: "flex", gap: 12, marginTop: 28, flexWrap: "wrap" }}>
                 <Pillow tone="coral" size="lg" href="/quiz" onClick={goStart}>
-                  Take the quiz · 60s
+                  Take the quiz · 30s
                 </Pillow>
               </div>
 
