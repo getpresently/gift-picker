@@ -72,7 +72,7 @@ export const THANKS: ThanksSource[] = [
   },
   {
     by: "Forbes Vetted",
-    note: "The [Forbes Vetted Holiday Gift Guide](https://www.forbes.com/sites/forbes-personal-shopper/article/gift-guide-2024/) and its [2026 edition](https://www.forbes.com/sites/forbes-personal-shopper/article/gift-guide-2026/), edited by Jennifer Ferrise and Kimberly Peiffer, especially their lists of the [best luxury gifts](https://www.forbes.com/sites/forbes-personal-shopper/article/best-luxury-gifts/) and the [best gifts under $100](https://www.forbes.com/sites/forbes-personal-shopper/article/best-gifts-under-100/).",
+    note: "Their editors' lists of the [best luxury gifts](https://www.forbes.com/sites/forbes-personal-shopper/article/best-luxury-gifts/) and the [best gifts under $100](https://www.forbes.com/sites/forbes-personal-shopper/article/best-gifts-under-100/), part of the [Forbes Vetted Holiday Gift Guide](https://www.forbes.com/sites/forbes-personal-shopper/article/gift-guide-2026/).",
     gifts: [
       { id: "r1255", label: "Field Company Chef's Starter Set No.10" },
       { id: "r1259", label: "Therabody JetBoots Prime" },
