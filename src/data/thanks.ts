@@ -29,7 +29,7 @@ export const THANKS_INTRO =
   "Every gift on GiftPicker is picked by hand, and some of our favorites started on someone else's list. These are the people whose recommendations led us to them, and the gifts each one inspired.";
 
 /** Shown under the page title; update it when a source is added. */
-export const THANKS_UPDATED = "2026-10-19";
+export const THANKS_UPDATED = "2026-11-24";
 
 export const THANKS: ThanksSource[] = [
   {
@@ -69,6 +69,19 @@ export const THANKS: ThanksSource[] = [
     by: "Anthony Hobday",
     note: "His [list of short design books](https://web.archive.org/web/20260304000632/https://www.anthonyhobday.com/blog/20230101.html) recommends Dieter Rams's Less but Better, which led us to the complete catalogue of Rams's work.",
     gifts: [{ id: "r1103", label: "Dieter Rams: The Complete Works" }],
+  },
+  {
+    by: "Forbes Vetted",
+    note: "The [Forbes Vetted Holiday Gift Guide](https://www.forbes.com/sites/forbes-personal-shopper/article/gift-guide-2024/) and its [2026 edition](https://www.forbes.com/sites/forbes-personal-shopper/article/gift-guide-2026/), edited by Jennifer Ferrise and Kimberly Peiffer, especially their lists of the [best luxury gifts](https://www.forbes.com/sites/forbes-personal-shopper/article/best-luxury-gifts/) and the [best gifts under $100](https://www.forbes.com/sites/forbes-personal-shopper/article/best-gifts-under-100/).",
+    gifts: [
+      { id: "r1255", label: "Field Company Chef's Starter Set No.10" },
+      { id: "r1259", label: "Therabody JetBoots Prime" },
+      { id: "r1256", label: "HigherDose infrared sauna blanket" },
+      { id: "r1253", label: "Flamingo Estate personalized olive oil" },
+      { id: "r1254", label: "BaubleBar custom tennis bracelet" },
+      { id: "r1257", label: "Claus Porto mini soaps gift box" },
+      { id: "r1258", label: "Harney & Sons bamboo tea chest" },
+    ],
   },
 ];
 
