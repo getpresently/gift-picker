@@ -3,7 +3,7 @@ import {
   serveSinglePageApp,
 } from "@cloudflare/kv-asset-handler";
 import { serveAnalytics } from "./analytics.js";
-import { APPS_SCRIPT_URL, GIFT_PATH, GIFTS_KEY, SWAP_ORIGIN } from "./config.js";
+import { APPS_SCRIPT_URL, GIFT_PATH, GIFTS_KEY, SWAP_FETCH_ORIGIN } from "./config.js";
 import { SHOWCASE_IDS } from "../src/data/showcase.ts";
 import { liveThanks, THANKS_INTRO } from "../src/data/thanks.ts";
 import { MAX_EMAIL_GIFTS, isValidEmail } from "../src/data/emailList.ts";
@@ -937,7 +937,7 @@ async function proxyGiftSwap(request, url) {
     return new Response("Method not allowed", { status: 405 });
   }
   try {
-    const upstream = await fetch(`${SWAP_ORIGIN}/gift-swap${url.search}`, {
+    const upstream = await fetch(`${SWAP_FETCH_ORIGIN}/gift-swap${url.search}`, {
       method: request.method,
       headers: { accept: request.headers.get("accept") ?? "text/html", "user-agent": request.headers.get("user-agent") ?? "" },
       cf: { cacheTtl: 300, cacheEverything: true },
@@ -947,7 +947,8 @@ async function proxyGiftSwap(request, url) {
     // GiftSwapper's HSTS covers its subdomains; giftpicker.io keeps its own policy.
     headers.delete("strict-transport-security");
     return new Response(upstream.body, { status: upstream.status, headers });
-  } catch {
+  } catch (e) {
+    console.error("gift-swap proxy failed", e && e.message ? e.message : e);
     return new Response("GiftSwapper is unavailable right now. Please try again shortly.", { status: 502 });
   }
 }

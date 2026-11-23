@@ -14,3 +14,10 @@ export const GIFT_PATH = /^\/gift\/(r\d+)\/?$/;
  * own address and is linked from that page.
  */
 export const SWAP_ORIGIN = "https://swap.giftpicker.io";
+/**
+ * Where the worker fetches that page from: Vercel's own address for the app.
+ * A subrequest to swap.giftpicker.io goes through this zone's SSL setting and
+ * loops on Vercel's HTTPS redirect ("Too many redirects"), so we go around it.
+ * The page's links and assets still point at SWAP_ORIGIN.
+ */
+export const SWAP_FETCH_ORIGIN = "https://giftswapper.vercel.app";
