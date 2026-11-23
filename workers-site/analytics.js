@@ -50,6 +50,10 @@ const COUNT_EVENTS = [
   "results_refine", "gift_save", "gift_share", "request_more", "gift_link_copy", "share_open",
   "saved_open", "saved_email_sent", "gift_swap_click",
 ];
+// GiftSwapper's events (its app reports into this property), counted across both hosts.
+const SWAP_EVENTS = ["gift_swap_notify", "gift_swap_paid", "gift_swap_upgrade", "gift_swap_look", "gift_swap_egg"];
+// GiftSwapper pages worth counting: the info page (on both hosts), starting a swap, and joining.
+const SWAP_PAGES = ["/gift-swap", "/new", "/join", "/swaps/[id]/quiz", "/swaps/[id]/reveal"];
 // Session source the saved-list email's links carry (utm_source in workers-site/index.js).
 const EMAIL_SOURCE = "saved_list_email";
 
@@ -72,7 +76,7 @@ export async function serveAnalytics(request, url) {
 
   const days = ALLOWED_DAYS.includes(Number(url.searchParams.get("days"))) ? Number(url.searchParams.get("days")) : 30;
   const fresh = url.searchParams.get("fresh") === "1";
-  const cacheKey = `analytics:v4:${days}`;
+  const cacheKey = `analytics:v5:${days}`;
   if (!fresh) {
     const cached = await GIFTS_CACHE.get(cacheKey);
     if (cached) return respond(cached);
@@ -209,11 +213,19 @@ const notSet = (v) => v && v !== "(not set)";
  */
 const EXCLUDED_COUNTRIES = ["Seychelles"];
 const keepCountries = { notExpression: inList("country", EXCLUDED_COUNTRIES) };
-/** A report or funnel request with the country exclusion added to its filter. */
-const withExclusions = (req) => ({
-  ...req,
-  dimensionFilter: req.dimensionFilter ? { andGroup: { expressions: [req.dimensionFilter, keepCountries] } } : keepCountries,
-});
+/**
+ * GiftSwapper's app (swap.giftpicker.io) reports into this property too. Its
+ * visits stay out of GiftPicker's numbers; only the GiftSwapper section
+ * (requests marked allHosts) sees them. giftpicker.io/gift-swap counts as a
+ * GiftPicker page.
+ */
+const SWAP_HOST = "swap.giftpicker.io";
+const keepGiftPicker = { notExpression: eq("hostName", SWAP_HOST) };
+/** A report or funnel request with the country (and, unless allHosts, GiftSwapper app) exclusions added. */
+const withExclusions = ({ allHosts, ...req }) => {
+  const keep = allHosts ? [keepCountries] : [keepCountries, keepGiftPicker];
+  return { ...req, dimensionFilter: { andGroup: { expressions: req.dimensionFilter ? [req.dimensionFilter, ...keep] : keep } } };
+};
 
 /** Report rows as objects keyed by the response's own header names (a second date range adds a dateRange column). */
 function rows(report) {
@@ -377,6 +389,10 @@ async function buildReport(days, fresh) {
       : quizzesAndShares,
     orderBys: [{ metric: { metricName: "eventCount" }, desc: true }],
   });
+  named.swapEvents = { dateRanges: current, dimensions: [{ name: "eventName" }], metrics: [{ name: "eventCount" }, { name: "totalUsers" }],
+    dimensionFilter: inList("eventName", SWAP_EVENTS), allHosts: true };
+  named.swapPages = { dateRanges: current, dimensions: [{ name: "pagePath" }, { name: "hostName" }], metrics: [{ name: "screenPageViews" }, { name: "activeUsers" }],
+    dimensionFilter: inList("pagePath", SWAP_PAGES), allHosts: true };
   if (has("recipient")) named.recipients = byAnswer("recipient");
   if (has("occasion")) named.occasions = byAnswer("occasion");
   // Both periods, for the change on the share tiles.
@@ -463,6 +479,10 @@ async function buildReport(days, fresh) {
     copiedGifts: gifts && mostCopiedGifts(gifts),
     shareRecipients,
     shareOccasions: occasionRows && shareBreakdown(occasionRows),
+    giftSwapper: {
+      events: Object.fromEntries(rows(r.swapEvents).map((x) => [x.eventName, { eventCount: x.eventCount, totalUsers: x.totalUsers }])),
+      pages: rows(r.swapPages).map((x) => ({ path: x.pagePath, host: x.hostName, views: x.screenPageViews, users: x.activeUsers })),
+    },
   };
 }
 

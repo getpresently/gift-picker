@@ -22,6 +22,8 @@ import {
 
 type Report = {
   ok: true;
+  /** GiftSwapper's events and pages (it reports into this property). */
+  giftSwapper?: SwapReport;
   days: number;
   generatedAt: string;
   /** Today in the GA property's time zone, YYYYMMDD. */
@@ -712,7 +714,8 @@ function Dashboard({ r }: { r: Report }) {
           {r.destinations ? <SplitBar a={{ label: "Amazon", value: amazon }} b={{ label: "Brand store", value: brand }} />
             : <Empty text={needsDim("destination")} />}
         </Card>
-        <Card title="What people do on results" sub="Counts in this period"
+        {r.giftSwapper && <GiftSwapperCard data={r.giftSwapper} taps={ev("gift_swap_click").eventCount} />}
+      <Card title="What people do on results" sub="Counts in this period"
           table={<DataTable head={["Action", "Count", "Per 100 results views"]}
             rows={actions.map(([label, value], i) => [label, fmt(value), i ? fmtRate(per100(value, r.results.views)) : ""])} />}
         >
@@ -978,4 +981,39 @@ function mockReport(days: number, variant: string | null): Report {
       ["newjob", 30, 3.3], ["housewarm", 25, 2.2], ["other", 22, 4.1], ["baby", 20, 3.9], ["appreciate", 15, 2.1], ["sympathy", 8, 1],
     ])),
   };
+}
+
+type SwapReport = {
+  events: Record<string, { eventCount: number; totalUsers: number }>;
+  pages: { path: string; host: string; views: number; users: number }[];
+};
+
+/** GiftSwapper: from GiftPicker's buttons to the info page, launch signups, and paid swaps. */
+function GiftSwapperCard({ data, taps }: { data: SwapReport; taps: number }) {
+  const e = (n: string) => data.events[n]?.eventCount ?? 0;
+  const page = (path: string, host?: string) =>
+    data.pages.filter((p) => p.path === path && (!host || p.host === host)).reduce((a, p) => a + p.views, 0);
+  const rowsOut: [string, number][] = [
+    ["Tapped Gift swap on GiftPicker", taps],
+    ["Views of giftpicker.io/gift-swap", page("/gift-swap", "giftpicker.io")],
+    ["Views of swap.giftpicker.io/gift-swap", page("/gift-swap", "swap.giftpicker.io")],
+    ["Signed up for launch news", e("gift_swap_notify")],
+    ["Opened swap setup", page("/new")],
+    ["Paid for a swap", e("gift_swap_paid")],
+    ["Upgraded a swap", e("gift_swap_upgrade")],
+    ["Joined with a code or link", page("/join")],
+    ["Answered the questions (page views)", page("/swaps/[id]/quiz")],
+    ["Opened their match (page views)", page("/swaps/[id]/reveal")],
+    ["Switched the look", e("gift_swap_look")],
+    ["Played with an Easter egg", e("gift_swap_egg")],
+  ];
+  return (
+    <Card
+      title="GiftSwapper"
+      sub="Counts in this period, across giftpicker.io and swap.giftpicker.io (your own visits excluded)"
+      table={<DataTable head={["Step", "Count"]} rows={rowsOut.map(([label, n]) => [label, fmt(n)])} />}
+    >
+      <HBars items={rowsOut.map(([label, value]) => ({ label, value, tip: `${label}: ${fmt(value)}` }))} />
+    </Card>
+  );
 }
