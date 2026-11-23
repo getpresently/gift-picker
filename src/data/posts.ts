@@ -14,7 +14,8 @@
  * status TRUE in the Gifts sheet); `npm test` checks this against the live
  * catalog (scripts/check-posts.mjs). Free ideas (a handwritten note, a
  * playlist) stay plain text with no link. House style: no em-dashes, the
- * Oxford comma, US spelling, and no Presently mentions.
+ * Oxford comma, US spelling, and no Presently mentions in gift guides (posts about
+ * GiftPicker's own history may name it; see STORY_POSTS in scripts/logic.test.ts).
  */
 
 export type PostBlock =
@@ -168,6 +169,58 @@ export function postGiftIds(post: Post): string[] {
 const REVISED = "2026-10-18";
 
 const ALL_POSTS: Post[] = [
+  {
+    slug: "introducing-giftpicker-2-0",
+    title: "Introducing GiftPicker 2.0",
+    metaTitle: "Introducing GiftPicker 2.0, the free gift finder quiz",
+    description:
+      "GiftPicker began at Presently in 2021 and was #3 on Product Hunt. Version 2.0 is still free and simple, with more than 4x the hand-picked gifts.",
+    related: ["secret-santa-gift-ideas", "hanukkah-gift-ideas", "how-much-to-spend-on-a-coworker-gift"],
+    published: "2026-10-13",
+    updated: "2026-11-23",
+    intro: [
+      "GiftPicker started in 2021 as a side project by a team of interns at [Presently](https://getpresently.com), a company that began as a group gifting platform and now shares gift ideas on its blog. The quiz was [#3 Product of the Day on Product Hunt](https://www.producthunt.com/products/giftpicker-by-presently/launches/giftpicker-by-presently) the day it launched.",
+      "Years later, people are still using GiftPicker to figure out what to give, so in 2026 we relaunched it as GiftPicker 2.0. It's still free and still simple, and the catalog now holds more than four times the gifts we launched with.",
+    ],
+    body: [
+      { kind: "h2", text: "More than 1,000 gifts, all chosen by our team" },
+      {
+        kind: "p",
+        text: "Every gift in the catalog is picked by hand, from over 800 brands. For the friend who documents everything, there's Kodak's [Ektar H35N half-frame film camera](gift:r446), and for the coworker whose birthday snuck up on you, a [Milk Bar birthday cake](gift:r469) shipped right to the office. The pour-over devotee will love Fellow's [Stagg EKG Pro electric kettle](gift:r532), which heats the water to the exact degree they set.",
+      },
+      { kind: "gifts", ids: ["r446", "r469", "r532"] },
+      {
+        kind: "p",
+        text: "Since the relaunch, we've kept adding interests as you asked for them. For the reader who's always between books, there's a [Book of the Month membership](gift:r615). The sports fan can hang a [blueprint print of their favorite ballpark](gift:r1071), and the plant lover gets a new plant every month from [The Sill's Houseplant of the Month Club](gift:r1075).",
+      },
+      { kind: "gifts", ids: ["r615", "r1071", "r1075"] },
+      { kind: "h2", text: "What's new in the matching" },
+      {
+        kind: "p",
+        text: "Every gift now gets a score from 0 to 100 against your answers, with the things they're into counting most. Your budget is a range instead of a single number, and you can choose from 25 interests and 11 occasions. If your occasion isn't on the list, like a farewell or a bar mitzvah, you can type it in.",
+      },
+      { kind: "h2", text: "Saving and sharing your list" },
+      {
+        kind: "p",
+        text: "Tap the heart to save gifts as you go, then email the list to yourself. Share your results with a link, and when your sister opens it, she sees the same picks you do. Every gift also has its own page now, with more gifts like it underneath, and if your results feel thin, you can ask for more like them. We use those requests to decide what to add next.",
+      },
+      { kind: "h2", text: "Gift guides for the busy season" },
+      {
+        kind: "p",
+        text: "We also started writing [gift guides](/blog) for the people who are hardest to shop for, with real examples from the catalog. The holiday ones are up now: [Secret Santa gifts](/blog/secret-santa-gift-ideas), [stocking stuffers for adults](/blog/stocking-stuffers-for-adults), [white elephant gifts](/blog/white-elephant-gift-ideas) that people will actually fight over, and [Hanukkah gifts for all eight nights](/blog/hanukkah-gift-ideas).",
+      },
+      { kind: "h2", text: "A few tips for the best picks" },
+      {
+        kind: "list",
+        items: [
+          "Pick the interests they'd bring up first, even if that's only one or two.",
+          "Be honest about the top of your budget. A little room at the high end helps the best gifts show up.",
+          "If the picks aren't quite right, change an answer and update them without starting over.",
+        ],
+      },
+    ],
+    cta: "Who's next on your list? Tell the quiz about them and see what it picks.",
+  },
   {
     slug: "hanukkah-gift-ideas",
     title: "Hanukkah gifts for all eight nights",

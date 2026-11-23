@@ -245,6 +245,9 @@ test("post dates read as the calendar day in any time zone", () => {
   assert.equal(formatPostDate("2027-01-02"), "January 2, 2027");
 });
 
+/** Posts about GiftPicker itself, which may name Presently, where it started. */
+const STORY_POSTS = new Set(["introducing-giftpicker-2-0"]);
+
 test("blog posts: unique slugs, sheet-style gift IDs, links to real posts, and house style", () => {
   const slugs = POSTS.map((p) => p.slug);
   assert.equal(new Set(slugs).size, slugs.length, "duplicate slug");
@@ -260,7 +263,8 @@ test("blog posts: unique slugs, sheet-style gift IDs, links to real posts, and h
     }
     for (const t of texts) {
       assert.ok(!t.includes("\u2014"), `${post.slug}: em-dash in "${t.slice(0, 40)}"`);
-      assert.ok(!/presently/i.test(t), `${post.slug}: mentions Presently`);
+      // Gift guides never mention Presently; posts about GiftPicker's own history may (Dalia, 11/23/26).
+      if (!STORY_POSTS.has(post.slug)) assert.ok(!/presently/i.test(t), `${post.slug}: mentions Presently`);
       for (const s of parseInline(t)) {
         const blog = s.href?.match(/^\/blog\/(.+)$/);
         if (blog) assert.ok(findPost(blog[1]), `${post.slug}: links to missing post ${blog[1]}`);
