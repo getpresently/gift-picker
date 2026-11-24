@@ -35,6 +35,11 @@ const COLD_WAIT_MS = 2500;
 // so parsing it stays well inside the per-request CPU budget.
 const SLIM_FIELDS = ["row_id", "Gift", "Brand", "Description", "PhotoAddress", "Link",
                      "AmazonAltLink", "Price", "PriceMax", "BillingPeriod"];
+// The only columns the quiz reads (adaptRow and isShownOnSite in
+// src/data/giftsApi.ts). Curation notes (Feedback), dates, and anything else
+// in the sheet stay private (Dalia, 11/24).
+const PUBLIC_FIELDS = [...SLIM_FIELDS, "Age", "Type", "Interests", "Primary interest", "Relation",
+                       "Occasion", "Gender", "Twin group", "Status", "Review status"];
 
 const AMAZON_TAG = "dalia0f8-20";
 const ASIN_RE = /\/(?:dp|gp\/product|gp\/aw\/d|exec\/obidos\/ASIN|o\/ASIN)\/([A-Z0-9]{10})(?:[/?&#]|$)/i;
@@ -245,7 +250,12 @@ async function refreshGifts() {
     return slim;
   });
   if (!rows.length) throw new Error("gifts fetch returned no live rows");
-  await GIFTS_CACHE.put(FULL_KEY, JSON.stringify({ data: all.filter(isLive) }));
+  const publicRows = all.filter(isLive).map((r) => {
+    const out = {};
+    for (const k of PUBLIC_FIELDS) if (r[k] !== undefined && r[k] !== "") out[k] = r[k];
+    return out;
+  });
+  await GIFTS_CACHE.put(FULL_KEY, JSON.stringify({ data: publicRows }));
   await GIFTS_CACHE.put(GIFTS_KEY, JSON.stringify({ at: Date.now(), rows }));
   await GIFTS_CACHE.put(SITEMAP_KEY, buildSitemap(rows));
   return rows;

@@ -19,6 +19,7 @@ import {
   saveAnswers,
   clearAnswers,
   budgetAtStart,
+  scoringAnswers,
   sliderStart,
   type Answers,
   type Option,
@@ -172,12 +173,17 @@ export function Quiz() {
 
     // Changing an earlier answer drops later ones the quiz no longer offers
     // (an interest hidden for the new age, say).
-    const newAnswers = reconcileAnswers({
+    const reconciled = reconcileAnswers({
       ...answers,
       [q.id]: opt.v,
       ...(clearOccasionOther ? { occasionOther: undefined } : {}),
-      ...(q.id === "occasion" && budgetAtStart(answers) ? { budget: undefined, budgetMin: undefined } : {}),
     });
+    // A budget still at the old occasion's starting range follows the new
+    // one, whichever question changed the occasion (picking a kid can drop
+    // Wedding, say), so a second search doesn't inherit $75 to $250.
+    const occasionChanged = scoringAnswers(reconciled).occasion !== scoringAnswers(answers).occasion;
+    const newAnswers =
+      occasionChanged && budgetAtStart(answers) ? { ...reconciled, budget: undefined, budgetMin: undefined } : reconciled;
     setAnswers(newAnswers);
     if (q.type === "choice" && q.autoAdvance && !pickingOccasionOther) {
       if (advanceTimerRef.current !== null) window.clearTimeout(advanceTimerRef.current);

@@ -207,6 +207,18 @@ function tolerantIncludes(haystack: string[], candidate: string): boolean {
   });
 }
 
+/**
+ * Exact count for the closed Age and Relation vocabularies. A substring
+ * match there is wrong: "Young Adult" contains "Adult" and "Grandparent"
+ * contains "Parent", so a gift tagged Adult only (21+, like a wine club)
+ * would reach 18 to 25 searches and every Parent tag would count as
+ * Grandparent.
+ */
+function exactCount(haystack: string[], candidates: string[]): number {
+  const have = new Set(haystack.map(normalize));
+  return candidates.filter((c) => have.has(normalize(c))).length;
+}
+
 function matchCount(haystack: string[], candidates: string[]): number {
   let hits = 0;
   for (const c of candidates) {
@@ -296,7 +308,7 @@ function scoreRelation(gift: Gift, answers: Answers): number {
   }
   const wanted = RECIPIENT_LABELS[answers.recipient] ?? [];
   if (!wanted.length) return 0;
-  return matchCount(gift.relations, wanted) > 0 ? 25 : 0;
+  return exactCount(gift.relations, wanted) > 0 ? 25 : 0;
 }
 
 function scoreAge(gift: Gift, answers: Answers): number {
@@ -311,7 +323,7 @@ function scoreAge(gift: Gift, answers: Answers): number {
     wanted.add("Baby");
   }
   if (!wanted.size) return 0;
-  return matchCount(gift.ages, [...wanted]) > 0 ? 10 : 0;
+  return exactCount(gift.ages, [...wanted]) > 0 ? 10 : 0;
 }
 
 function scoreBudget(gift: Gift, answers: Answers): number {
@@ -434,7 +446,7 @@ function occasionRule(gift: Gift, answers: Answers, occLabel: string): { bonus: 
       // +10 if gift.relations matches the user's recipient
       let fits = false;
       if (answers.recipient === "self") fits = gift.relations.length > 0;
-      else if (answers.recipient) fits = matchCount(gift.relations, RECIPIENT_LABELS[answers.recipient] ?? []) > 0;
+      else if (answers.recipient) fits = exactCount(gift.relations, RECIPIENT_LABELS[answers.recipient] ?? []) > 0;
       return { bonus: fits ? 10 : 0, penalty: 0 };
     }
     case "Wedding": {
@@ -554,19 +566,13 @@ export function scoreGift(gift: Gift, answers: Answers): number {
       // Explicit user age choice, gift must match one of the allowed labels.
       const wantedAges = new Set<string>(AGE_LABELS[answers.age]);
       if (answers.occasion === "baby") wantedAges.add("Baby");
-      if (matchCount(gift.ages, [...wantedAges]) === 0) return -1;
+      if (exactCount(gift.ages, [...wantedAges]) === 0) return -1;
     } else if (answers.recipient && RECIPIENT_EXCLUDED_AGES[answers.recipient]?.length) {
       // No explicit age but the recipient implies one (e.g. grandparent =
       // Senior; partner != kid). Exclude when every gift age tag is on
       // the recipient's denied list.
       const denied = RECIPIENT_EXCLUDED_AGES[answers.recipient];
-      const allDenied = gift.ages.every((ageTag) =>
-        denied.some((d) => {
-          const na = normalize(ageTag);
-          const nd = normalize(d);
-          return na === nd || na.includes(nd) || nd.includes(na);
-        }),
-      );
+      const allDenied = gift.ages.every((ageTag) => exactCount(denied, [ageTag]) > 0);
       if (allDenied) return -1;
     }
   }
@@ -845,7 +851,15 @@ export function buildMatchReasons(gift: Gift, answers: Answers): string[] {
   const lc = (s: string) => s.toLowerCase();
   const bullets: string[] = [];
 
-  if (typeof answers.budget === "number") {
+  // Claim the budget only when the price really sits inside it (a $275
+  // carry-on passes a $250 cap through the 10% fuzz, and a range gift only
+  // needs some of its range inside).
+  const top = Math.max(gift.price, gift.priceMax ?? 0);
+  const inBudget =
+    typeof answers.budget === "number" &&
+    (gift.priceOpen || gift.isYourChoice ||
+      (gift.price <= answers.budget && (typeof answers.budgetMin !== "number" || top >= answers.budgetMin)));
+  if (typeof answers.budget === "number" && inBudget) {
     bullets.push(
       typeof answers.budgetMin === "number"
         ? `Lands inside your $${answers.budgetMin} to $${answers.budget} budget`

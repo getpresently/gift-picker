@@ -243,7 +243,14 @@ const TYPED_OCCASION_ALIASES: { code: string; pattern: RegExp }[] = [
   // "leaving my job" or "lost his job" never reads as a congratulations.
   { code: "mitzvah", pattern: /\b(bar|bat|bas|b'?nai|bnei)[\s-]*mitzvah?\b|\bmitzvah\b/i },
   { code: "farewell", pattern: /\b(farewell|going[\s-]away|leaving|last day|moving away|good-?bye|parting|laid off|lay-?off|let go|lost (his|her|their|my|a) job|job loss|retir(e|es|ed|ing|ement))\b/i },
-  { code: "newjob", pattern: /\b(new job|first job|job|promotion|promoted|new role|new position)\b/i },
+  // Thanks and parent days before anniversary, so "work anniversary" and
+  // "job well done" read as appreciation (Dalia, 11/24).
+  { code: "appreciate", pattern: /\b(work anniversary|job well done|well done|great job|kudos|boss['’]?s? day|(mother|father|mom|dad|mum)['’]?s?['’]? day)\b/i },
+  // Anniversary before Wedding, so "wedding anniversary" is an anniversary.
+  { code: "anni", pattern: /\b(anniversary|anniversaries|valentine['’]?s?( day)?)\b/i },
+  { code: "wed", pattern: /\b(weddings?|bridal|bride|groom|newlyweds?|engaged|engagement|elop(e|ed|ing|ement)|just married|honeymoon)\b/i },
+  { code: "baby", pattern: /\b(baby shower|new baby|newborn|gender reveal|sip and see|push present|expecting)\b/i },
+  { code: "newjob", pattern: /\b(new job|first job|new gig|job offer|promotion|promoted|new role|new position)\b/i },
 ];
 
 /** The question's label in the shopper's own words: "you" when they picked "Treat myself". */
@@ -267,7 +274,8 @@ export function scoringAnswers(answers: Answers): Answers {
 
 /** Where the budget slider starts for these answers: the occasion's range if it has one, else the default. */
 export function sliderStart(q: SliderQuestion, answers: Answers): { min?: number; max: number } {
-  const o = answers.occasion ? q.occasionDefaults?.[answers.occasion] : undefined;
+  const occ = scoringAnswers(answers).occasion; // a typed "wedding" starts like Wedding
+  const o = occ ? q.occasionDefaults?.[occ] : undefined;
   return o ?? { min: q.defaultMin, max: q.defaultValue };
 }
 

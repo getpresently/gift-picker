@@ -6,10 +6,10 @@
  */
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { foldTwins, rankGifts, scoreGift, twinSeed, twinsOf, type Gift, type RankedGift } from "../src/data/gifts";
+import { buildMatchReasons, foldTwins, rankGifts, scoreGift, twinSeed, twinsOf, type Gift, type RankedGift } from "../src/data/gifts";
 import { affiliateUrl, AMAZON_TAG, buyLinks, isAmazonUrl, primaryBuy } from "../src/data/affiliate";
 import { QUESTIONS, questionLabel, reconcileAnswers, type Answers } from "../src/data/questions";
-import { scoringAnswers, typedOccasionCode } from "../src/data/questions";
+import { budgetAtStart, scoringAnswers, sliderStart, typedOccasionCode } from "../src/data/questions";
 import { buildGiftShareUrl, decodeAnswers, encodeAnswers, hasShareRef } from "../src/data/share";
 import { budgetBand, searchShape } from "../src/data/analytics";
 import { relatedGifts } from "../src/data/related";
@@ -385,4 +385,57 @@ test("a hidden occasion lifts its hand-tagged gifts whatever the interests, and 
   assert.equal(scoreGift(cup, answers), scoreGift(untagged, answers) + 20);
   const birthdayGift = gift("bday", { ages: ["Teenager"], interests: ["Gaming"], primaryInterest: "Gaming", occasions: ["Birthday"] });
   assert.equal(scoreGift(birthdayGift, answers), scoreGift(birthdayGift, { ...answers, occasion: "bday" }));
+});
+
+test("age and relation tags match exactly: Adult-only (21+) gifts skip 18 to 25, Parent is not Grandparent", () => {
+  const wine = gift("wine", { ages: ["Adult", "Senior"], interests: ["Food & Drinks"], primaryInterest: "Food & Drinks" });
+  const youngAdult = { recipient: "friend", age: "twenty", interests: ["food"], vibe: ["fun"], budget: 120 } as Answers;
+  assert.equal(scoreGift(wine, youngAdult), -1);
+  assert.ok(scoreGift(wine, { ...youngAdult, age: "adult" }) >= 0);
+  const forParent = gift("p", { ages: ["Senior"], relations: ["Parent"] });
+  const forGrandparent = gift("g", { ages: ["Senior"], relations: ["Grandparent"] });
+  const grandparent = { recipient: "grandparent", interests: ["cooking"], vibe: ["fun"], budget: 120 } as Answers;
+  assert.equal(scoreGift(forGrandparent, grandparent) - scoreGift(forParent, grandparent), 25);
+  // No age picked: a parent's gift tagged Adult only is still allowed (Young Adult is denied, Adult is not).
+  assert.ok(scoreGift(gift("a", { ages: ["Adult"], relations: ["Parent"] }), { recipient: "parent", interests: ["cooking"], budget: 120 } as Answers) >= 0);
+});
+
+test("Wedding shows only Wedding-tagged gifts, typed or picked", () => {
+  const card = gift("card", { price: 120, occasions: ["Birthday", "Housewarming"] });
+  const registry = gift("pan", { price: 120, occasions: ["Birthday", "Wedding"] });
+  const picked = { recipient: "friend", age: "adult", occasion: "wed", interests: ["cooking"], vibe: ["practical"], budget: 250, budgetMin: 75 } as Answers;
+  assert.equal(scoreGift(card, picked), -1);
+  assert.ok(scoreGift(registry, picked) >= 0);
+  const typed = scoringAnswers({ ...picked, occasion: "other", occasionOther: "Bridal shower" });
+  assert.equal(scoreGift(card, typed), -1);
+});
+
+test("typed occasions map to the built-in ones, most specific first", () => {
+  const cases: [string, string | null][] = [
+    ["wedding", "wed"], ["Bridal shower", "wed"], ["engagement party", "wed"], ["our wedding anniversary", "anni"],
+    ["Valentine's Day", "anni"], ["Mother's Day", "appreciate"], ["fathers day", "appreciate"], ["job well done", "appreciate"],
+    ["work anniversary", "appreciate"], ["baby shower", "baby"], ["got a promotion", "newjob"], ["graduation", null],
+  ];
+  for (const [t, code] of cases) assert.equal(typedOccasionCode(t), code, t);
+});
+
+test("the budget starts higher for Wedding and Anniversary and follows a changed occasion", () => {
+  const q = QUESTIONS.find((x) => x.id === "budget");
+  assert.ok(q && q.type === "slider");
+  if (!q || q.type !== "slider") return;
+  assert.deepEqual(sliderStart(q, { occasion: "wed" } as Answers), { min: 75, max: 250 });
+  assert.deepEqual(sliderStart(q, { occasion: "anni" } as Answers), { min: 50, max: 200 });
+  assert.deepEqual(sliderStart(q, { occasion: "other", occasionOther: "our wedding" } as Answers), { min: 75, max: 250 });
+  assert.deepEqual(sliderStart(q, { occasion: "bday" } as Answers), { min: 20, max: 120 });
+  assert.equal(budgetAtStart({ occasion: "wed", budget: 250, budgetMin: 75 } as Answers), true);
+  assert.equal(budgetAtStart({ occasion: "wed", budget: 300, budgetMin: 75 } as Answers), false);
+});
+
+test("the budget line in Why we picked this only shows when the price is inside the budget", () => {
+  const answers = { recipient: "friend", budget: 250, budgetMin: 75 } as Answers;
+  const has = (g: Gift) => buildMatchReasons(g, answers).some((b) => b.includes("budget"));
+  assert.equal(has(gift("in", { price: 120 })), true);
+  assert.equal(has(gift("over", { price: 275 })), false);
+  assert.equal(has(gift("under", { price: 69 })), false);
+  assert.equal(has(gift("range", { price: 25, priceMax: 500 })), true);
 });
