@@ -42,21 +42,35 @@ type FetchState = {
 /**
  * Fetches the full catalog for review. Unlike the public useGifts, this
  * always bypasses HTTP caching (the sheet changes as Dalia works through
- * it) and carries the Review status / Feedback columns.
+ * it) and carries the Review status / Feedback columns. The full sheet comes
+ * only from the password-gated "export" call; the public GET returns live
+ * gifts only. A script without "export" yet (before the 11/24 paste) still
+ * serves everything on GET, so that is the fallback.
  */
-export function useReviewGifts(): FetchState & { reload: () => void } {
+export function useReviewGifts(secret: string | null): FetchState & { reload: () => void } {
   const [state, setState] = useState<FetchState>({ data: [], loading: true, error: null });
   const [tick, setTick] = useState(0);
 
   useEffect(() => {
     let cancelled = false;
+    if (!secret) {
+      setState({ data: [], loading: false, error: null });
+      return;
+    }
     setState((s) => ({ data: s.data, loading: true, error: null }));
-    withRetry(() =>
+    const getAll = () =>
       fetch(`${API_ENDPOINT}?tab=Gifts`, { cache: "no-store" }).then((r) => {
         if (!r.ok) throw new Error(`Gift API responded ${r.status}`);
-        return r.json();
-      }),
+        return r.json() as Promise<{ data?: RawRow[] }>;
+      });
+    withRetry(() =>
+      fetch(API_ENDPOINT, { method: "POST", body: JSON.stringify({ type: "export", secret }) }).then((r) => r.json()),
     )
+      .then((payload: { data?: RawRow[]; error?: string }) => {
+        if (Array.isArray(payload?.data)) return payload;
+        if (String(payload?.error ?? "").startsWith("Unknown type")) return withRetry(getAll);
+        throw new Error(String(payload?.error ?? "export failed"));
+      })
       .then((payload: { data?: RawRow[] }) => {
         if (cancelled) return;
         const rows = Array.isArray(payload?.data) ? payload.data : [];
@@ -69,7 +83,7 @@ export function useReviewGifts(): FetchState & { reload: () => void } {
     return () => {
       cancelled = true;
     };
-  }, [tick]);
+  }, [tick, secret]);
 
   const reload = useCallback(() => setTick((t) => t + 1), []);
   return { ...state, reload };

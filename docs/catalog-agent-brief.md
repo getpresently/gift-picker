@@ -9,7 +9,7 @@ This brief is self-contained. The full reasoning, with examples and history, is 
 ## 1. Current catalog: read it all before proposing anything
 
 - **Live rows:** `curl -s https://giftpicker.io/api/gifts` returns `{"data":[...]}` with the public fields of the gifts shoppers can see (no Feedback or dates since 11/24/26; use the Apps Script feed below for those).
-- **Every row, including Rejected, Retired, and Dead:** `curl -sL "https://script.google.com/macros/s/AKfycbwPuaXtXuurdqNg94_mGoOR1YHXqKrJyZrkxkt09oFbGGZtS_KdH44vhJNn4qLzeJqhuQ/exec?tab=Gifts"`. It fails about 1 in 3 calls with an HTML page instead of JSON; retry until you get JSON. The Feedback field often records why a row was rejected or retired; rows Dalia rejected in /review may carry only their original "Added" note.
+- **Every row, including Rejected, Retired, and Dead:** run `~/Sites/gift-picker-batches/tools/feed.sh out.json` (writes `{"data":[...]}`). Since 11/24/26 the Apps Script GET returns live gifts only, with public columns; the full sheet comes from its key-gated export, which feed.sh calls with the key Dalia keeps in `~/.config/giftpicker/catalog-key`. If feed.sh warns "public feed only", tell Dalia instead of working from live rows alone. The Feedback field often records why a row was rejected or retired; rows Dalia rejected in /review may carry only their original "Added" note.
 
 Before proposing a gift, check both:
 

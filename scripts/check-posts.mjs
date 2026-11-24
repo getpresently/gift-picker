@@ -84,17 +84,40 @@ const byId = new Map(gifts.map((g) => [g.id, g]));
 const live = new Set(byId.keys());
 const esc = (s) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#x27;");
 
-// Sheet status for pending gifts that are not live yet (the Apps Script feed has
-// every row; it is slow and fails now and then, so retry a few times).
+// Sheet status for pending gifts that are not live yet. Since 11/24 the
+// public GET returns live gifts only, so the full sheet comes from the
+// key-gated "export" (CATALOG_KEY, from GP_CATALOG_KEY or
+// ~/.config/giftpicker/catalog-key). Without it, a GET is used only if it
+// still returns every row (a script from before the change); otherwise the
+// state stays "unknown" and the check passes.
 const isTrue = (v) => v === true || String(v ?? "").trim().toUpperCase() === "TRUE";
 const waiting = Object.keys(M.PENDING_GIFTS).filter((id) => !live.has(id));
 const sheet = new Map();
+function reviewSecret() {
+  if (process.env.GP_CATALOG_KEY) return process.env.GP_CATALOG_KEY.trim();
+  try {
+    return fs.readFileSync(path.join(os.homedir(), ".config/giftpicker/catalog-key"), "utf8").trim();
+  } catch {
+    return "";
+  }
+}
+async function fullSheet() {
+  const secret = reviewSecret();
+  if (secret) {
+    const r = await fetch(M.API_ENDPOINT, { method: "POST", body: JSON.stringify({ type: "export", secret }), signal: AbortSignal.timeout(90000) });
+    const body = await r.json();
+    if (Array.isArray(body?.data)) return body.data;
+  }
+  const r = await fetch(`${M.API_ENDPOINT}?tab=Gifts`, { signal: AbortSignal.timeout(90000) });
+  const rows = (await r.json()).data ?? [];
+  const isLiveRow = (row) => String(row.Status ?? "").trim().toLowerCase() === "live" && isTrue(row["Review status"]);
+  return rows.some((row) => !isLiveRow(row)) ? rows : [];
+}
 if (waiting.length) {
   for (let attempt = 0; attempt < 3 && !sheet.size; attempt++) {
     try {
-      const r = await fetch(`${M.API_ENDPOINT}?tab=Gifts`, { signal: AbortSignal.timeout(90000) });
-      const body = await r.json();
-      for (const row of body.data ?? []) sheet.set(String(row.row_id ?? row.ID ?? ""), row);
+      for (const row of await fullSheet()) sheet.set(String(row.row_id ?? row.ID ?? ""), row);
+      if (!sheet.size) break;
     } catch {
       // try again
     }

@@ -5,8 +5,10 @@
  * When updating, edit the EXISTING deployment and pick "New version" so the
  * /exec URL (hardcoded in the site) stays the same.
  *
- *   GET  /exec?tab=Gifts  -> { data: [...] }  rows with row_id = the gift's permanent ID (column "ID").
- *        Only tabs in PUBLIC_TABS are served; Brands holds contact details.
+ *   GET  /exec?tab=Gifts  -> { data: [...] }  only the gifts shown on the site (Status Live AND
+ *        Review status TRUE), only the columns the site reads (PUBLIC_FIELDS), each with
+ *        row_id = the gift's permanent ID (column "ID"). Feedback, dates, and pending or
+ *        rejected rows never leave through GET. Only tabs in PUBLIC_TABS are served.
  *   POST /exec  JSON body routed on `type`:
  *     "feedback" -> append to Feedback
  *     "request"  -> append to Requests
@@ -16,9 +18,13 @@
  *                   posted by the worker after it sends the email); if they ticked
  *                   "Also send me gift ideas", the address also joins the Emails tab
  *     "review"   -> internal review tool (password-gated), see handleReview_
+ *     "export"   -> every Gifts row and column, for /review and Dalia's catalog
+ *                   tools (password-gated like "review"), see handleExport_
  *
  * The review password is NOT in this file. Set it once under
- * Project Settings > Script Properties as REVIEW_SECRET.
+ * Project Settings > Script Properties as REVIEW_SECRET. The catalog tools
+ * on Dalia's Mac use a separate key, CATALOG_KEY (same place), which they
+ * read from ~/.config/giftpicker/catalog-key.
  *
  * Owner devices: every browser that unlocks the review tool registers its
  * anonymous clientId in the Script Property OWNER_CLIENT_IDS. When one of
@@ -56,6 +62,16 @@ const BRAND_HEADERS = [
 
 // The GET endpoint is public. Never add a tab that holds personal details.
 const PUBLIC_TABS = ["Gifts"];
+
+// The only Gifts columns GET returns: what the site reads (adaptRow and
+// isShownOnSite in src/data/giftsApi.ts; keep in step with PUBLIC_FIELDS in
+// workers-site/index.js). row_id is added on top.
+const PUBLIC_FIELDS = [
+  "Gift", "Brand", "Description", "PhotoAddress", "Link", "AmazonAltLink",
+  "Price", "PriceMax", "BillingPeriod", "Age", "Type", "Interests",
+  "Primary interest", "Relation", "Occasion", "Gender", "Twin group",
+  "Status", "Review status"
+];
 
 // Values the review tool may write into the Gifts "Status" column.
 const REVIEW_STATUSES = ["Live", "Rejected", "Retired", "Dead", "OOS", "Draft"];
@@ -176,30 +192,49 @@ function findGiftRow_(sheet, rowId) {
   return -1;
 }
 
+/** Every row of a tab as objects, row_id first. Assigns missing Gifts IDs. */
+function readRows_(tab) {
+  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(tab);
+  if (!sheet) return null;
+  let values = sheet.getDataRange().getValues();
+  // One read per request; the lock and writes happen only when a new row
+  // still needs an ID.
+  if (tab === "Gifts" && values.length > 1 && idsNeedFixing_(values) && assignMissingIds_(sheet)) {
+    values = sheet.getDataRange().getValues();
+  }
+  if (values.length < 2) return [];
+  const headers = values[0].map(String);
+  const idCol = tab === "Gifts" ? headers.indexOf(ID_HEADER) : -1;
+  return values.slice(1).map(function (row, i) {
+    const fixedId = idCol === -1 ? "" : String(row[idCol]).trim();
+    const obj = { row_id: fixedId || "r" + (i + 2) };
+    headers.forEach(function (h, c) { obj[h] = row[c]; });
+    return obj;
+  });
+}
+
+/** Shown on the site: Status Live AND Review status TRUE. */
+function isLiveRow_(row) {
+  const reviewed = row["Review status"] === true || String(row["Review status"] || "").trim().toUpperCase() === "TRUE";
+  return String(row.Status || "").trim().toLowerCase() === "live" && reviewed;
+}
+
+/** A live row cut down to the columns the site reads. */
+function publicRow_(row) {
+  const out = { row_id: row.row_id };
+  PUBLIC_FIELDS.forEach(function (k) {
+    if (row[k] !== undefined && row[k] !== "") out[k] = row[k];
+  });
+  return out;
+}
+
 function doGet(e) {
   try {
     const tab = (e && e.parameter && e.parameter.tab) || "Gifts";
     if (PUBLIC_TABS.indexOf(tab) === -1) return jsonOut_({ error: "Sheet not found: " + tab });
-    const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(tab);
-    if (!sheet) return jsonOut_({ error: "Sheet not found: " + tab });
-
-    let values = sheet.getDataRange().getValues();
-    // One read per request; the lock and writes happen only when a new row
-    // still needs an ID.
-    if (tab === "Gifts" && values.length > 1 && idsNeedFixing_(values) && assignMissingIds_(sheet)) {
-      values = sheet.getDataRange().getValues();
-    }
-    if (values.length < 2) return jsonOut_({ data: [] });
-
-    const headers = values[0].map(String);
-    const idCol = tab === "Gifts" ? headers.indexOf(ID_HEADER) : -1;
-    const data = values.slice(1).map(function (row, i) {
-      const fixedId = idCol === -1 ? "" : String(row[idCol]).trim();
-      const obj = { row_id: fixedId || "r" + (i + 2) };
-      headers.forEach(function (h, c) { obj[h] = row[c]; });
-      return obj;
-    });
-    return jsonOut_({ data: data });
+    const rows = readRows_(tab);
+    if (rows === null) return jsonOut_({ error: "Sheet not found: " + tab });
+    return jsonOut_({ data: rows.filter(isLiveRow_).map(publicRow_) });
   } catch (err) {
     return jsonOut_({ error: String(err) });
   }
@@ -213,6 +248,7 @@ function doPost(e) {
     const type = String(body.type || "").toLowerCase();
 
     if (type === "review")   return jsonOut_(handleReview_(body));
+    if (type === "export")   return jsonOut_(handleExport_(body));
     // Over the limit: answer as if it worked, so a bot learns nothing.
     if (["feedback", "request", "notify", "brand", "savedlist"].indexOf(type) !== -1 && !allowWrite_(body.clientId)) {
       return jsonOut_({ ok: true });
@@ -541,7 +577,8 @@ function handleBrand_(p) {
  * `gift` must match what is in that row right now, so a write can never land
  * on the wrong gift if rows were inserted or deleted since the tool loaded.
  */
-function handleReview_(p) {
+/** Null when p.secret is the review password, else the error to return. */
+function reviewAuthError_(p) {
   const secret = PropertiesService.getScriptProperties().getProperty("REVIEW_SECRET");
   if (!secret) return { ok: false, error: "not_configured" };
   // After too many wrong guesses, refuse every check (even a right one)
@@ -552,6 +589,27 @@ function handleReview_(p) {
     Utilities.sleep(500);  // slows down password guessing
     return { ok: false, error: "unauthorized" };
   }
+  return null;
+}
+
+/**
+ * The full Gifts tab (every row and column). /review sends the review
+ * password; Dalia's local catalog tools send their own CATALOG_KEY (a
+ * separate Script Property), so the review password never sits on disk.
+ */
+function handleExport_(p) {
+  const toolsKey = PropertiesService.getScriptProperties().getProperty("CATALOG_KEY");
+  const isTools = !!toolsKey && !!p.secret && String(p.secret) === toolsKey && !reviewLocked_();
+  if (!isTools) {
+    const denied = reviewAuthError_(p);
+    if (denied) return denied;
+  }
+  return { ok: true, data: readRows_("Gifts") || [] };
+}
+
+function handleReview_(p) {
+  const denied = reviewAuthError_(p);
+  if (denied) return denied;
   registerOwnerDevice_(p.clientId);
   if (p.action === "ping") return { ok: true };
   if (p.action !== "set") return { ok: false, error: "bad_action" };

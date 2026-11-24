@@ -861,7 +861,7 @@ function ErrorBanner({ text, reloadable, onDismiss }: { text: string; reloadable
 function ReviewTool({ unlock, active, onOpenAnalytics }: { unlock: UnlockState; active: boolean; onOpenAnalytics: () => void }) {
   const isMobile = useIsMobile();
   const navigate = useNavigate();
-  const { data, loading, error, reload } = useReviewGifts();
+  const { data, loading, error, reload } = useReviewGifts(unlock.secret);
 
   const [overrides, setOverrides] = useState<Record<string, { status: string; reviewed: boolean }>>({});
   const [filter, setFilter] = useState<FilterKey>("needs");
