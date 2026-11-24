@@ -174,7 +174,7 @@ export function Landing() {
             <div
               style={{
                 position: "relative",
-                height: isMobile ? 410 : 640,
+                height: isMobile ? 410 : 560,
                 // On phones the stack sits in a centered 320px frame so the
                 // boxes overlap like the desktop cluster instead of drifting
                 // to the corners of a full-width panel.
@@ -183,20 +183,20 @@ export function Landing() {
                 margin: isMobile ? "28px auto 0" : 0,
               }}
             >
-              <div style={{ position: "absolute", top: isMobile ? 40 : 60, left: isMobile ? 16 : 10 }}>
+              <div style={{ position: "absolute", top: isMobile ? 40 : 0, left: isMobile ? 16 : 10 }}>
                 <GiftBox3D size={isMobile ? 205 : 300} color="butter" rotate={-12} ribbonColor="#FF8166" />
               </div>
-              <div style={{ position: "absolute", top: isMobile ? 112 : 150, ...(isMobile ? { left: 96 } : { right: 0 }), zIndex: 2 }}>
+              <div style={{ position: "absolute", top: isMobile ? 112 : 90, ...(isMobile ? { left: 96 } : { right: 0 }), zIndex: 2 }}>
                 <GiftBox3D size={isMobile ? 245 : 350} color="coral" rotate={8} />
               </div>
-              <div style={{ position: "absolute", ...(isMobile ? { top: 236, left: 56 } : { bottom: 10, left: 90 }) }}>
+              <div style={{ position: "absolute", ...(isMobile ? { top: 236, left: 56 } : { bottom: 0, left: 90 }) }}>
                 <GiftBox3D size={isMobile ? 185 : 260} color="plum" rotate={4} ribbonColor="#FFC9B9" />
               </div>
               <ClaySurface
                 tint="cream"
                 style={{
                   position: "absolute",
-                  top: isMobile ? 70 : 180,
+                  top: isMobile ? 70 : 120,
                   right: isMobile ? 0 : 0,
                   padding: "10px 14px",
                   borderRadius: 16,
