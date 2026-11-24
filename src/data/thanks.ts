@@ -72,7 +72,7 @@ export const THANKS: ThanksSource[] = [
   },
   {
     by: "Forbes Vetted",
-    note: "Their editors' lists of the [best luxury gifts](https://www.forbes.com/sites/forbes-personal-shopper/article/best-luxury-gifts/) and the [best gifts under $100](https://www.forbes.com/sites/forbes-personal-shopper/article/best-gifts-under-100/), part of the [Forbes Vetted Holiday Gift Guide](https://www.forbes.com/sites/forbes-personal-shopper/article/gift-guide-2026/).",
+    note: "Their editors' lists of the [best luxury gifts](https://www.forbes.com/sites/forbes-personal-shopper/article/best-luxury-gifts/), the [best gifts under $100](https://www.forbes.com/sites/forbes-personal-shopper/article/best-gifts-under-100/), and the [best Christmas gifts](https://www.forbes.com/sites/forbes-personal-shopper/article/best-christmas-gifts/), part of the [Forbes Vetted Holiday Gift Guide](https://www.forbes.com/sites/forbes-personal-shopper/article/gift-guide-2026/).",
     gifts: [
       { id: "r1255", label: "Field Company Chef's Starter Set No.10" },
       { id: "r1259", label: "Therabody JetBoots Prime" },
@@ -81,6 +81,16 @@ export const THANKS: ThanksSource[] = [
       { id: "r1254", label: "BaubleBar custom tennis bracelet" },
       { id: "r1257", label: "Claus Porto mini soaps gift box" },
       { id: "r1258", label: "Harney & Sons bamboo tea chest" },
+      { id: "r1260", label: "Dyson Airwrap i.d." },
+      { id: "r1261", label: "Dyson Supersonic Nural hair dryer" },
+      { id: "r1263", label: "Waterford Winter Wonders pinecone flutes" },
+      { id: "r1267", label: "High Camp Parkside wine flask" },
+      { id: "r1264", label: "Via Carota martini set" },
+      { id: "r1262", label: "LEGO Hanging Golden Pothos" },
+      { id: "r1265", label: "Printique glass photo prints" },
+      { id: "r1266", label: "Super Smalls Super Entrepreneur bead kit" },
+      { id: "r1268", label: "Shot Ready by Stephen Curry" },
+      { id: "r1269", label: "Something from Nothing by Alison Roman" },
     ],
   },
 ];
