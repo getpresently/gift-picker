@@ -11,7 +11,8 @@
  * (check the page before adding), and add a source whenever a batch of gifts
  * comes from someone else's list. A source that inspired only one generic
  * gift (an iPad) is not credited unless its list has other good ideas
- * (Dalia, 10/24). House style: no em-dashes, the Oxford comma.
+ * (Dalia, 10/24). Credit curated lists by bloggers and individuals only, never
+ * journalists or publications (Dalia, 11/26). House style: no em-dashes, the Oxford comma.
  * Links in a note use the blog's [label](url) form (parseInline in posts.ts).
  */
 
@@ -29,7 +30,7 @@ export const THANKS_INTRO =
   "Every gift on GiftPicker is picked by hand, and some of our favorites started on someone else's list. These are the people whose recommendations led us to them, and the gifts each one inspired.";
 
 /** Shown under the page title; update it when a source is added. */
-export const THANKS_UPDATED = "2026-11-24";
+export const THANKS_UPDATED = "2026-11-26";
 
 export const THANKS: ThanksSource[] = [
   {
@@ -69,6 +70,11 @@ export const THANKS: ThanksSource[] = [
     by: "Anthony Hobday",
     note: "His [list of short design books](https://web.archive.org/web/20260304000632/https://www.anthonyhobday.com/blog/20230101.html) recommends Dieter Rams's Less but Better, which led us to the complete catalogue of Rams's work.",
     gifts: [{ id: "r1103", label: "Dieter Rams: The Complete Works" }],
+  },
+  {
+    by: "Jamie Grimstad Huth",
+    note: "Her [home and wedding registry edit](https://jamieslist.substack.com/p/home-and-wedding-registry-edit) on Jamie's List calls Zafferano's portable lamps an unexpected registry pick, and it led us to the Poldina Pro.",
+    gifts: [{ id: "r1278", label: "Zafferano Poldina Pro cordless lamp" }],
   },
   {
     by: "Forbes Vetted",
