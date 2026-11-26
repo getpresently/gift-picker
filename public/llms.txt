@@ -47,7 +47,7 @@ Note: /results pages are per-visitor quiz output and are not meant to be indexed
 
 ## GiftSwapper (https://giftpicker.io/gift-swap)
 
-GiftSwapper is GiftPicker's online Secret Santa and White Elephant organizer. The organizer sets the date, the budget, and who's in, then invites people by email or a shareable link. Everyone answers a few questions about what they love. In Secret Santa, people who share interests are paired in secret, and nobody sees who drew whom, the organizer included. In White Elephant, the app finds what the group loves. Every giver gets gift ideas from GiftPicker's catalog within the budget. Couples and roommates can be kept from drawing each other, and a parent can answer for a child. Setup is free; one swap costs $10 for up to 20 people, $25 for up to 50, or $49 for up to 100.
+GiftSwapper is GiftPicker's online Secret Santa generator and White Elephant organizer. Names are drawn online, so it works for office Secret Santa, remote teams, and families in different cities. The organizer sets the date, the budget, and who's in, then invites people by email or a shareable link. Everyone answers a few questions about what they love. In Secret Santa, people who share interests are paired in secret, and nobody sees who drew whom, the organizer included. In White Elephant, the app finds what the group loves. Every giver gets gift ideas from GiftPicker's catalog within the budget. Couples and roommates can be kept from drawing each other, and a parent can answer for a child. Setup is free; one swap costs $10 for up to 20 people, $25 for up to 50, or $49 for up to 100.
 
 ## About
 
