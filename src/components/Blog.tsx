@@ -444,6 +444,19 @@ export function BlogPostView({
         </div>
 
         {post.body.map((b, i) => {
+          if (b.kind === "image") {
+            return (
+              <img
+                key={i}
+                src={b.src}
+                alt={b.alt}
+                width={b.width}
+                height={b.height}
+                loading="lazy"
+                style={{ display: "block", width: "100%", maxWidth: 880, height: "auto", margin: "28px auto", borderRadius: 20 }}
+              />
+            );
+          }
           if (b.kind === "gifts") {
             return (
               <GiftRow key={i} ids={b.ids} slug={post.slug} byId={byId} loading={loading} saved={saved} onToggleSave={toggleSave} />

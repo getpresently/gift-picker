@@ -254,12 +254,13 @@ test("blog posts: unique slugs, sheet-style gift IDs, links to real posts, and h
   for (const post of POSTS) {
     assert.match(post.slug, /^[a-z0-9]+(-[a-z0-9]+)*$/, post.slug);
     assert.match(post.published, /^\d{4}-\d{2}-\d{2}$/, post.slug);
-    assert.ok(postGiftIds(post).length > 0, `${post.slug}: no gifts`);
+    // Guides show gifts; announcements may show product images instead.
+    assert.ok(postGiftIds(post).length > 0 || post.body.some((b) => b.kind === "image"), `${post.slug}: no gifts or images`);
     for (const id of postGiftIds(post)) assert.match(id, /^r\d+$/, `${post.slug}: ${id}`);
     const texts = [post.title, post.description, post.cta, ...post.intro];
     for (const b of post.body) {
       if (b.kind === "list") texts.push(...b.items);
-      else if (b.kind !== "gifts") texts.push(b.text);
+      else if (b.kind !== "gifts" && b.kind !== "image") texts.push(b.text);
     }
     for (const t of texts) {
       assert.ok(!t.includes("\u2014"), `${post.slug}: em-dash in "${t.slice(0, 40)}"`);
@@ -279,7 +280,7 @@ test("every gift in a post is both a card and a link in the text", () => {
     const texts = [...post.intro];
     for (const b of post.body) {
       if (b.kind === "list") texts.push(...b.items);
-      else if (b.kind !== "gifts") texts.push(b.text);
+      else if (b.kind !== "gifts" && b.kind !== "image") texts.push(b.text);
     }
     const linked = new Set(texts.flatMap((t) => parseInline(t).flatMap((s) => (s.giftId ? [s.giftId] : []))));
     for (const id of cards) assert.ok(linked.has(id), `${post.slug}: ${id} has a card but no link in the text`);
@@ -301,9 +302,9 @@ test("a gift link reads as plain text once its gift leaves the site, and stays a
 });
 
 test("Featured in lists every post that recommends a gift, newest first", () => {
-  const id = postGiftIds(POSTS[0])[0];
+  const id = postGiftIds(POSTS.find((p) => postGiftIds(p).length)!)[0];
   const featured = postsFeaturing(id);
-  assert.ok(featured.includes(POSTS[0]));
+  assert.ok(featured.includes(POSTS.find((p) => postGiftIds(p).length)!));
   assert.deepEqual(featured, POSTS.filter((p) => postGiftIds(p).includes(id)));
   assert.deepEqual(postsFeaturing("r0"), []);
 });

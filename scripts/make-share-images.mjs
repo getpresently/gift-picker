@@ -79,6 +79,8 @@ for (const post of POSTS) {
   // One gift from each card row before a second from any, so the four photos span the
   // post's sections (not three games from one row). Product photos first; gift cards
   // (mostly logos) only if a post runs short.
+  // Posts without gifts (announcements) keep a hand-made share image.
+  if (!post.body.some((b) => b.kind === "gifts")) continue;
   const rows = post.body.filter((b) => b.kind === "gifts").map((b) => b.ids);
   const longest = Math.max(0, ...rows.map((r) => r.length));
   const all = [...new Set(Array.from({ length: longest }, (_, i) => rows.map((r) => r[i]).filter(Boolean)).flat())];

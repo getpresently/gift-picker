@@ -23,7 +23,9 @@ export type PostBlock =
   | { kind: "p"; text: string }
   | { kind: "list"; items: string[]; ordered?: boolean }
   /** A row of gift cards, by sheet ID. */
-  | { kind: "gifts"; ids: string[] };
+  | { kind: "gifts"; ids: string[] }
+  /** A wide image (a product screenshot or graphic) in public/, with its pixel size. */
+  | { kind: "image"; src: string; alt: string; width: number; height: number };
 
 export type Post = {
   slug: string;
@@ -160,7 +162,7 @@ export function postGiftIds(post: Post): string[] {
   for (const b of post.body) {
     if (b.kind === "gifts") b.ids.forEach(add);
     else if (b.kind === "list") b.items.forEach(scan);
-    else scan(b.text);
+    else if (b.kind !== "image") scan(b.text);
   }
   return ids;
 }
@@ -174,67 +176,79 @@ const ALL_POSTS: Post[] = [
     title: "Introducing GiftSwapper, our Secret Santa generator",
     metaTitle: "Introducing GiftSwapper, a Secret Santa generator",
     description:
-      "GiftSwapper draws names online for Secret Santa and White Elephant, pairs people who share interests, and gives every giver gift ideas within the budget.",
-    related: ["secret-santa-gift-ideas", "white-elephant-gift-ideas", "how-much-to-spend-on-a-coworker-gift"],
+      "Meet GiftSwapper, our Secret Santa and White Elephant generator. It pairs people who share interests and gives every giver gift ideas for their person.",
+    related: ["secret-santa-gift-ideas", "white-elephant-gift-ideas", "introducing-giftpicker-2-0"],
     published: "2026-11-26",
     intro: [
-      "Every December, someone in the family group chat volunteers to organize Secret Santa, and then spends a week chasing people for their names, wish lists, and \"wait, who did I get?\" texts. We built [GiftSwapper](/gift-swap) to take that job off their hands!",
-      "GiftSwapper is an online Secret Santa generator and White Elephant organizer from the GiftPicker team. It sends the invites, draws names in secret, and, in Secret Santa, pairs people who share interests whenever it can.",
+      "Everything we do at GiftPicker starts with the idea that a good gift shows someone you were paying attention. When we looked at the holiday gift swap, we wanted to bring that same care to it, so we built something a little different. Today we're so excited to introduce [GiftSwapper](/gift-swap), the first Secret Santa and White Elephant generator built around what people love!",
+      "The holidays are one of the few times of year when a whole family, friend group, or office stops to make each other feel loved and cared for. A gift swap is a big part of that, and we think it should bring people closer together. GiftSwapper pairs people who share interests whenever it can, and it gives every giver ideas for the person they drew.",
     ],
     body: [
-      { kind: "h2", text: "How the name drawing works" },
+      { kind: "h2", text: "How GiftSwapper got started" },
       {
         kind: "p",
-        text: "The organizer picks the game, the budget, the gift swap date, and the day names get drawn. Then they add everyone by email, or turn on one shareable link and drop it in the WhatsApp or text thread. Each person joins from their own phone or computer, so it works just as well for cousins in three time zones and remote teams as it does for an office down the hall. Nobody needs a password, since everyone signs in with a link sent to their email.",
+        text: "GiftSwapper began about five years ago as a project some of our interns were working on. They had a big idea: a Secret Santa where the draw actually knows something about the people in it. Then life got busy, the holidays came and went, and the project sat unfinished for years.",
       },
       {
         kind: "p",
-        text: "Names are drawn the morning of the draw date, or sooner if the organizer is ready, and each giver gets an email with their match. Nobody sees who drew whom, the organizer included, so the organizer gets to play too. The one exception is a late joiner: the organizer picks who switches to give to them, so they'll know that one pair.",
+        text: "This fall, we decided it was finally time. After a couple of all-nighters and a lot of test swaps with our own family, GiftSwapper is ready for your group this holiday season.",
       },
-      { kind: "h2", text: "A short questionnaire instead of a wish list" },
+      { kind: "h2", text: "Why we match people by what they love" },
       {
         kind: "p",
-        text: "Instead of asking everyone to write a wish list, GiftSwapper asks a few quick questions about what they love, like cooking, hiking, or a favorite kind of treat, plus anything they'd rather not get. In Secret Santa, we use those answers to pair people who share interests, starting with hobbies and then broader things like food or the outdoors. If two people have nothing in common, it's a regular draw.",
-      },
-      {
-        kind: "p",
-        text: "Your giver only sees your answers once you're their match, so the wine lover who'd rather not get another bottle of wine can say so without the whole group knowing.",
-      },
-      { kind: "h2", text: "Exclusions for couples, roommates, and little ones" },
-      {
-        kind: "p",
-        text: "The organizer can keep couples and roommates who already trade gifts from drawing each other. For family swaps, a parent can add their kids and answer for them, so a seven-year-old's giver gets ideas that fit a seven-year-old.",
-      },
-      { kind: "h2", text: "Gift ideas for every giver" },
-      {
-        kind: "p",
-        text: "Once names are drawn, each giver gets picks from the GiftPicker catalog for their person, all within the budget. For the coworker who drew the person who never talks about their weekend, that's a real head start! Work swaps stay office-friendly, so nobody's list includes cocktail kits or anything too personal.",
+        text: "In most Secret Santa draws, you pull a name and then spend weeks wondering what that person is into. We think a swap feels better when you already have a way in. If you draw someone who also loves baking, hiking, or a good mystery novel, the gift turns into a small conversation between the two of you, and you'll probably have plenty to talk about when they open it.",
       },
       {
         kind: "p",
-        text: "Here's what that can look like. If you and your match both start the day with good coffee, the [AeroPress Go travel coffee press](gift:r685) packs into its own mug and brews a smooth cup in about two minutes, anywhere. For a match who loves a craft project, The Woobles' [Pierre the Penguin crochet kit](gift:r864) comes with beginner yarn and video lessons. And for the jazz fan who'd rather spend a Sunday at the puzzle table, Blue Note Records' [500-piece puzzle](gift:r415) is a collage of their classic album covers.",
+        text: "So before names are drawn, everyone answers a few quick, fun questions about what they love, plus anything they'd rather not get.",
       },
-      { kind: "gifts", ids: ["r685", "r864", "r415"] },
-      { kind: "h2", text: "How it works for White Elephant" },
+      {
+        kind: "image",
+        src: "/blog/img/introducing-giftswapper/questions.jpg",
+        alt: "The GiftSwapper question screen asking What are you into, with interests like baking, mystery novels, and houseplants",
+        width: 1270,
+        height: 760,
+      },
       {
         kind: "p",
-        text: "In White Elephant, there are no pairs. Everyone answers the same few questions, and GiftSwapper shares the group's favorite things as anonymous totals, along with gift ideas the whole room will want to steal. If your group is new to the game, our [white elephant guide](/blog/white-elephant-gift-ideas) walks through the rules.",
+        text: "GiftSwapper then pairs people who share interests, and the organizer can keep couples and roommates who already trade gifts from drawing each other. The pairs stay secret, so the surprise holds until swap day.",
       },
-      { kind: "h2", text: "What it costs" },
+      {
+        kind: "image",
+        src: "/blog/img/introducing-giftswapper/pairs.jpg",
+        alt: "A GiftSwapper match card: you're giving to Sam Rivera, and you both love cozy, meaningful gifts like mystery novels and loose-leaf tea",
+        width: 1270,
+        height: 760,
+      },
+      { kind: "h2", text: "Where the gift ideas come from" },
       {
         kind: "p",
-        text: "Setting up a swap is free. The organizer pays once when the invites go out: $10 for up to 20 people, $25 for up to 50, and $49 for up to 100. That covers the invites, the reminders, the interest matching, and gift ideas for every person in the swap. There's no subscription, and if more people join than you planned this season, we move your swap up one size for free, so a 20-person swap can grow to 50 at no charge. You can cancel for a full refund until names are drawn (in White Elephant, until gift ideas go out). Ready to get started? [Start a swap on GiftSwapper](/gift-swap).",
+        text: "Once names are drawn, every giver gets ideas for their person from the GiftPicker catalog, about 1,000 gifts from more than 800 brands that our team picked by hand, all within the group's budget. They're ranked by how well they fit, so the best match for your person is right at the top, and if none of them feel right, one tap opens GiftPicker with their answers already filled in.",
       },
-      { kind: "h2", text: "A few tips for organizers" },
       {
-        kind: "list",
-        items: [
-          "You need at least four people for a swap.",
-          "Set the draw date about two weeks before the gift swap, so everyone has time to shop and ship.",
-          "Answer the questions yourself first. It takes about a minute, and you'll know what you're asking everyone else to do.",
-          "If someone joins after the draw, GiftSwapper fits them in, and you pick a volunteer to give to them.",
-          "Need ideas for your own match? Our [Secret Santa guide](/blog/secret-santa-gift-ideas) has picks at $25 and $50.",
-        ],
+        kind: "image",
+        src: "/blog/img/introducing-giftswapper/gift-ideas.jpg",
+        alt: "GiftSwapper's gift ideas for Sam, ranked best first and all within the budget, like a tea steeping cup and a murder mystery puzzle",
+        width: 1270,
+        height: 760,
+      },
+      {
+        kind: "p",
+        text: "Gift ideas for work swaps stay office-friendly, and kids get ideas that fit their age, since a parent can add their little ones and answer for them.",
+      },
+      { kind: "h2", text: "Secret Santa or White Elephant" },
+      {
+        kind: "p",
+        text: "In Secret Santa, each person draws one name and shops for them in secret. Your group can call it whatever feels like yours, like Hanukkah Harry, Mystery Moses, or Secret Gifter, and dress up the swap in a Christmas, Hanukkah, or wintry look.",
+      },
+      {
+        kind: "p",
+        text: "White Elephant is the one with the stealing! Everyone brings one wrapped gift, and players take turns opening a new one or swiping one that's already been opened. There are no pairs, so GiftSwapper shares what the group loves as anonymous totals and gives everyone ideas the whole room will want to take home. Our [white elephant guide](/blog/white-elephant-gift-ideas) has more on how the game works.",
+      },
+      { kind: "h2", text: "Bringing your group together" },
+      {
+        kind: "p",
+        text: "Whether it's your family, your friends, or your team, we hope GiftSwapper makes this year's swap feel a little more personal. [Start a swap](/gift-swap), share the invite link in your group chat, and tell us how it goes! If you've already drawn a name, our [Secret Santa guide](/blog/secret-santa-gift-ideas) has more ideas for your person.",
       },
     ],
     cta: "Already drew a name? Tell the quiz about your person and the budget, and it will rank gifts from our catalog for you.",
