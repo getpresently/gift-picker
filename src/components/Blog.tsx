@@ -71,6 +71,14 @@ function RichText({ text, live, slug }: { text: string; live: Set<string> | null
             </a>
           );
         }
+        // /gift-swap is served by the worker from the swap app, so it needs a full page load.
+        if (href.startsWith("/gift-swap")) {
+          return (
+            <a key={i} href={href} style={LINK} onClick={() => track("blog_swap_open", { slug })}>
+              {s.text}
+            </a>
+          );
+        }
         const giftId = s.giftId;
         return (
           <AppLink
