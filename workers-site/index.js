@@ -76,10 +76,11 @@ async function handleEvent(event) {
   }
 
   // GiftSwapper's information page, proxied from the swap app so it lives on
-  // giftpicker.io (and its search ranking). Only /gift-swap itself; the app's
-  // own pages stay on its address.
-  if (url.pathname.replace(/\/+$/, "") === "/gift-swap") {
-    return proxyGiftSwap(event.request, url);
+  // giftpicker.io (and its search ranking). Only /gift-swap and its FAQ; the
+  // app's own pages stay on its address.
+  const swapPath = url.pathname.replace(/\/+$/, "");
+  if (swapPath === "/gift-swap" || swapPath === "/gift-swap/faq") {
+    return proxyGiftSwap(event.request, url, swapPath);
   }
 
   // Dynamic sitemap: /, /brands, /thanks, /gift-swap, the blog, plus one URL per live gift.
@@ -675,7 +676,7 @@ async function prerenderStaticPage(response, path, page) {
 
 function buildSitemap(rows) {
   const postDate = (p) => p.updated || p.published;
-  const urls = [{ loc: `${SITE_ORIGIN}/` }, { loc: `${SITE_ORIGIN}/brands` }, { loc: `${SITE_ORIGIN}/thanks` }, { loc: `${SITE_ORIGIN}/gift-swap` }]
+  const urls = [{ loc: `${SITE_ORIGIN}/` }, { loc: `${SITE_ORIGIN}/brands` }, { loc: `${SITE_ORIGIN}/thanks` }, { loc: `${SITE_ORIGIN}/gift-swap` }, { loc: `${SITE_ORIGIN}/gift-swap/faq` }]
     .concat(POSTS.length ? [{ loc: `${SITE_ORIGIN}/blog`, lastmod: POSTS.map(postDate).sort().pop() }] : [])
     .concat(POSTS.map((p) => ({ loc: `${SITE_ORIGIN}/blog/${p.slug}`, lastmod: postDate(p) })))
     .concat((rows || []).map((g) => ({ loc: `${SITE_ORIGIN}/gift/${g.row_id}` })));
@@ -940,16 +941,16 @@ async function prerenderBlog(event, response, slug) {
 }
 
 /**
- * Fetches GiftSwapper's information page from the swap app. No cookies are
+ * Fetches GiftSwapper's information page (or its FAQ) from the swap app. No cookies are
  * forwarded (the app's sign-in lives on its own address), and the page's
  * links and assets already point at the app.
  */
-async function proxyGiftSwap(request, url) {
+async function proxyGiftSwap(request, url, path = "/gift-swap") {
   if (request.method !== "GET" && request.method !== "HEAD") {
     return new Response("Method not allowed", { status: 405 });
   }
   try {
-    const upstream = await fetch(`${SWAP_FETCH_ORIGIN}/gift-swap${url.search}`, {
+    const upstream = await fetch(`${SWAP_FETCH_ORIGIN}${path}${url.search}`, {
       method: request.method,
       headers: { accept: request.headers.get("accept") ?? "text/html", "user-agent": request.headers.get("user-agent") ?? "" },
       cf: { cacheTtl: 300, cacheEverything: true },
